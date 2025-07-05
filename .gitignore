@@ -40,3 +40,42 @@ _darcs
 **/node_modules
 yarn.lock
 package-lock.json
+
+# SAM+YOLO character segmentation files
+# テスト用画像ファイル
+notebooks/images/img*.jpg
+notebooks/images/preview_masks.png
+notebooks/img004_*.jpg
+notebooks/masked_images/
+notebooks/output.png
+
+# 結果ファイル
+results_*/
+test_*/
+character_boudingbox_preview/
+exec_log*.md
+
+# 一時ファイル
+Untitled*.ipynb
+sam_batch_interactive*.py
+sam-env/
+
+# 画像ファイルの除外
+*.jpg
+*.jpeg
+*.png
+*.bmp
+*.tiff
+*.tif
+*.gif
+*.webp
+*.svg
+
+# YOLOモデルファイル
+yolov8*.pt
+yolov8*.onnx
+yolov8*.torchscript
+
+# SAMモデルファイル
+sam_vit_*.pth
+sam_vit_*.onnx
