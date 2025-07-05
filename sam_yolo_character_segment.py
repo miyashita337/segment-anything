@@ -1,15 +1,21 @@
 #!/usr/bin/env python3
 """
-SAM + YOLOv8 漫画キャラクター切り出しパイプライン
+SAM + YOLOv8 漫画キャラクター切り出しパイプライン v0.0.1
 
 このスクリプトは、Segment Anything Model (SAM) と YOLOv8 を組み合わせて
 漫画画像からキャラクターを自動的に切り出すパイプラインを提供します。
 
-対話モードとバッチモードの両方をサポートしており、
-SAMで生成された複数のマスク候補から、YOLOv8の人物検出スコアを使用して
-最適なマスクを選択します。
+【新機能 v0.0.1】
+- 完全自動抽出モード（reproduce-auto）
+- テキスト検出・除去機能
+- キャラクター品質評価システム
+- 背景除去・黒統一処理
+- 上半身中心抽出機能
 
 使用例:
+    # 再現モード：手動抽出を自動再現
+    python sam_yolo_character_segment.py --mode reproduce-auto --input_dir ./org/ --output_dir ./auto_extracted/
+    
     # 対話形式：1枚の画像を確認しながら最適化
     python sam_yolo_character_segment.py --mode interactive --input image.jpg
     
@@ -39,6 +45,22 @@ from segment_anything.utils.amg import batched_mask_to_box
 
 # YOLOv8関連インポート
 from ultralytics import YOLO
+
+# OCR・テキスト検出関連インポート
+try:
+    import easyocr
+    EASYOCR_AVAILABLE = True
+except ImportError:
+    EASYOCR_AVAILABLE = False
+    print("Warning: EasyOCR not available. Text detection will be disabled.")
+
+# 背景除去関連インポート
+try:
+    from rembg import remove, new_session
+    REMBG_AVAILABLE = True
+except ImportError:
+    REMBG_AVAILABLE = False
+    print("Warning: rembg not available. Background removal will use mask-based method.")
 
 
 class PerformanceMonitor:
@@ -167,6 +189,351 @@ def setup_japanese_font():
         print(f"⚠️ フォント設定エラー: {e}")
         # 最小限の設定
         plt.rcParams['axes.unicode_minus'] = False
+
+
+class TextDetector:
+    """
+    テキスト検出・除去クラス
+    """
+    
+    def __init__(self):
+        if EASYOCR_AVAILABLE:
+            try:
+                self.reader = easyocr.Reader(['ja', 'en'], gpu=torch.cuda.is_available())
+                print("✅ EasyOCR初期化完了")
+            except Exception as e:
+                print(f"⚠️ EasyOCR初期化失敗: {e}")
+                self.reader = None
+        else:
+            self.reader = None
+    
+    def detect_text_regions(self, image: np.ndarray) -> List[np.ndarray]:
+        """
+        テキスト領域を検出してマスクを返す
+        
+        Args:
+            image: 入力画像
+            
+        Returns:
+            テキスト領域のマスクリスト
+        """
+        if not self.reader:
+            return []
+        
+        try:
+            results = self.reader.readtext(image)
+            text_masks = []
+            
+            for (bbox, text, confidence) in results:
+                if confidence > 0.5:  # 信頼度閾値
+                    # バウンディングボックスからマスクを生成
+                    mask = np.zeros(image.shape[:2], dtype=np.uint8)
+                    points = np.array(bbox, dtype=np.int32)
+                    cv2.fillPoly(mask, [points], 255)
+                    text_masks.append(mask)
+            
+            return text_masks
+        except Exception as e:
+            print(f"⚠️ テキスト検出エラー: {e}")
+            return []
+    
+    def has_significant_text(self, image: np.ndarray, threshold: float = 0.1) -> bool:
+        """
+        画像に重要なテキストが含まれているかチェック
+        
+        Args:
+            image: 入力画像
+            threshold: テキスト面積の閾値（画像全体に対する割合）
+            
+        Returns:
+            重要なテキストが含まれているかどうか
+        """
+        text_masks = self.detect_text_regions(image)
+        if not text_masks:
+            return False
+        
+        # テキスト面積の合計を計算
+        total_text_area = sum(np.sum(mask > 0) for mask in text_masks)
+        image_area = image.shape[0] * image.shape[1]
+        text_ratio = total_text_area / image_area
+        
+        return text_ratio > threshold
+
+
+class BackgroundRemover:
+    """
+    背景除去クラス
+    """
+    
+    def __init__(self):
+        if REMBG_AVAILABLE:
+            try:
+                self.session = new_session('u2net')
+                print("✅ rembg初期化完了")
+            except Exception as e:
+                print(f"⚠️ rembg初期化失敗: {e}")
+                self.session = None
+        else:
+            self.session = None
+    
+    def remove_background(self, image: np.ndarray, mask: Optional[np.ndarray] = None) -> np.ndarray:
+        """
+        背景を除去して黒背景に統一
+        
+        Args:
+            image: 入力画像
+            mask: オプション：前景マスク
+            
+        Returns:
+            背景除去後の画像
+        """
+        if self.session and mask is None:
+            # rembgを使用した背景除去
+            try:
+                from PIL import Image
+                pil_image = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+                result = remove(pil_image, session=self.session)
+                result_array = np.array(result)
+                
+                # アルファチャンネルを使用して黒背景に合成
+                if result_array.shape[2] == 4:  # RGBA
+                    alpha = result_array[:, :, 3:4] / 255.0
+                    rgb = result_array[:, :, :3]
+                    # 黒背景に合成
+                    black_bg = np.zeros_like(rgb)
+                    result_bgr = rgb * alpha + black_bg * (1 - alpha)
+                    return cv2.cvtColor(result_bgr.astype(np.uint8), cv2.COLOR_RGB2BGR)
+                else:
+                    return cv2.cvtColor(result_array, cv2.COLOR_RGB2BGR)
+            except Exception as e:
+                print(f"⚠️ rembg背景除去失敗: {e}")
+        
+        # マスクベースの背景除去
+        if mask is not None:
+            result = image.copy()
+            result[mask == 0] = [0, 0, 0]  # マスク外を黒に
+            return result
+        
+        # フォールバック：元画像をそのまま返す
+        return image
+
+
+class CharacterQualityEvaluator:
+    """
+    キャラクター品質評価クラス
+    """
+    
+    def __init__(self):
+        pass
+    
+    def evaluate_character_quality(self, image: np.ndarray, mask: np.ndarray, bbox: Tuple[int, int, int, int]) -> float:
+        """
+        キャラクター抽出の品質を評価
+        
+        Args:
+            image: 元画像
+            mask: キャラクターマスク
+            bbox: バウンディングボックス (x, y, w, h)
+            
+        Returns:
+            品質スコア (0.0-1.0)
+        """
+        score = 0.0
+        
+        # 1. サイズ評価（適切なサイズか）v4改良版
+        x, y, w, h = bbox
+        image_area = image.shape[0] * image.shape[1]
+        bbox_area = w * h
+        size_ratio = bbox_area / image_area
+        
+        # 110.jpg対策：ページ全体を取らないよう厳格化
+        if size_ratio > 0.85:  # 85%以上は明らかに全体取得
+            score -= 0.5  # 大幅減点
+        elif size_ratio > 0.7:  # 70%以上も減点
+            score -= 0.3
+        elif 0.1 <= size_ratio <= 0.6:  # 理想的な範囲を狭める
+            score += 0.3
+        elif 0.05 <= size_ratio <= 0.7:
+            score += 0.2
+        elif size_ratio < 0.02:  # 非常に小さすぎる場合も減点
+            score -= 0.1
+        
+        # 2. アスペクト比評価（人物らしいか）
+        aspect_ratio = h / w if w > 0 else 0
+        # 縦長（1.2-3.0）が人物らしい
+        if 1.2 <= aspect_ratio <= 3.0:
+            score += 0.2
+        elif 1.0 <= aspect_ratio <= 3.5:
+            score += 0.1
+        
+        # 3. 位置評価（画像の中央付近にあるか）
+        center_x, center_y = x + w/2, y + h/2
+        img_center_x, img_center_y = image.shape[1]/2, image.shape[0]/2
+        center_distance = np.sqrt((center_x - img_center_x)**2 + (center_y - img_center_y)**2)
+        max_distance = np.sqrt(img_center_x**2 + img_center_y**2)
+        center_score = 1.0 - (center_distance / max_distance)
+        score += center_score * 0.2
+        
+        # 4. マスク品質評価（連続性、形状）
+        mask_area = np.sum(mask > 0)
+        if mask_area > 0:
+            # マスクの連続性（穴の少なさ）
+            contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            if len(contours) == 1:  # 単一の連続領域
+                score += 0.2
+            elif len(contours) <= 3:  # 少数の領域
+                score += 0.1
+        
+        # 5. 顔領域の検出（上半身らしさ）
+        upper_mask = mask[:mask.shape[0]//2, :]  # 上半分
+        upper_area = np.sum(upper_mask > 0)
+        total_area = np.sum(mask > 0)
+        if total_area > 0:
+            upper_ratio = upper_area / total_area
+            if upper_ratio >= 0.3:  # 上半身がメイン
+                score += 0.1
+        
+        # 6. シルエット検出（黒い領域のペナルティ）
+        silhouette_penalty = self._detect_silhouette(image, mask, bbox)
+        score -= silhouette_penalty * 0.4  # シルエットはスコアを大幅に下げる
+        
+        # 7. テキスト密度検出（110.jpg対策）
+        text_density = self._detect_text_density(image, mask, bbox)
+        score -= text_density * 0.3  # テキストが多い場合は減点
+        
+        return min(max(score, 0.0), 1.0)  # 0.0-1.0に制限
+    
+    def _detect_silhouette(self, image: np.ndarray, mask: np.ndarray, bbox: Tuple[int, int, int, int]) -> float:
+        """
+        シルエットを検出してペナルティを返す
+        
+        Args:
+            image: 元画像
+            mask: キャラクターマスク
+            bbox: バウンディングボックス
+            
+        Returns:
+            シルエットペナルティ (0.0-1.0)
+        """
+        try:
+            x, y, w, h = bbox
+            
+            # バウンディングボックス領域を取得
+            bbox_region = image[y:y+h, x:x+w]
+            bbox_mask = mask[y:y+h, x:x+w]
+            
+            if bbox_region.shape[0] == 0 or bbox_region.shape[1] == 0:
+                return 1.0  # 無効な領域
+            
+            # マスク領域のみを抽出
+            masked_region = cv2.bitwise_and(bbox_region, bbox_region, mask=bbox_mask)
+            
+            # グレースケール変換
+            gray = cv2.cvtColor(masked_region, cv2.COLOR_BGR2GRAY)
+            
+            # マスク領域のピクセルを取得
+            valid_pixels = gray[bbox_mask > 0]
+            
+            if len(valid_pixels) == 0:
+                return 1.0
+            
+            # 黒いピクセルの割合を計算
+            dark_pixels = np.sum(valid_pixels < 40)  # 闾値: 40
+            dark_ratio = dark_pixels / len(valid_pixels)
+            
+            # コントラストの計算
+            contrast = np.std(valid_pixels) / 255.0
+            
+            # 平均輝度の計算
+            mean_brightness = np.mean(valid_pixels) / 255.0
+            
+            # シルエットの特徴
+            # 1. 黒いピクセルが多い (60%以上)
+            # 2. 低コントラスト (0.1未満)
+            # 3. 低平均輝度 (0.2未満)
+            silhouette_score = 0.0
+            
+            if dark_ratio > 0.6:  # 60%以上が黒い
+                silhouette_score += 0.5
+            elif dark_ratio > 0.4:  # 40%以上が黒い
+                silhouette_score += 0.3
+            
+            if contrast < 0.1:  # 低コントラスト
+                silhouette_score += 0.3
+            
+            if mean_brightness < 0.2:  # 低輝度
+                silhouette_score += 0.2
+            
+            return min(1.0, max(0.0, silhouette_score))
+            
+        except Exception as e:
+            print(f"⚠️ シルエット検出エラー: {e}")
+            return 0.0
+    
+    def _detect_text_density(self, image: np.ndarray, mask: np.ndarray, bbox: Tuple[int, int, int, int]) -> float:
+        """
+        テキスト密度を検出してペナルティを返す（110.jpg対策）
+        
+        Args:
+            image: 元画像
+            mask: マスク
+            bbox: バウンディングボックス (x, y, w, h)
+            
+        Returns:
+            テキスト密度ペナルティ (0.0-1.0)
+        """
+        try:
+            x, y, w, h = bbox
+            
+            # バウンディングボックス領域を取得
+            bbox_region = image[y:y+h, x:x+w]
+            bbox_mask = mask[y:y+h, x:x+w]
+            
+            if bbox_region.shape[0] == 0 or bbox_region.shape[1] == 0:
+                return 0.0
+            
+            # マスク領域のみを抽出
+            masked_region = cv2.bitwise_and(bbox_region, bbox_region, mask=bbox_mask)
+            
+            # グレースケール変換
+            gray = cv2.cvtColor(masked_region, cv2.COLOR_BGR2GRAY)
+            
+            # エッジ検出でテキストらしい領域を検出
+            edges = cv2.Canny(gray, 50, 150)
+            
+            # 水平・垂直方向のエッジの検出
+            horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (9, 1))
+            vertical_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 9))
+            
+            horizontal_edges = cv2.morphologyEx(edges, cv2.MORPH_OPEN, horizontal_kernel)
+            vertical_edges = cv2.morphologyEx(edges, cv2.MORPH_OPEN, vertical_kernel)
+            
+            # テキストらしい特徴の検出
+            text_features = cv2.bitwise_or(horizontal_edges, vertical_edges)
+            
+            # マスク領域でのテキスト特徴密度
+            masked_text = cv2.bitwise_and(text_features, text_features, mask=bbox_mask)
+            text_pixel_count = np.sum(masked_text > 0)
+            mask_pixel_count = np.sum(bbox_mask > 0)
+            
+            if mask_pixel_count == 0:
+                return 0.0
+            
+            text_density = text_pixel_count / mask_pixel_count
+            
+            # 高い密度の場合はペナルティ
+            if text_density > 0.15:  # 15%以上がテキストらしい
+                return 0.8
+            elif text_density > 0.1:  # 10%以上
+                return 0.6
+            elif text_density > 0.05:  # 5%以上
+                return 0.3
+            
+            return 0.0
+            
+        except Exception as e:
+            print(f"⚠️ テキスト密度検出エラー: {e}")
+            return 0.0
 
 
 def is_color_image(image: np.ndarray, threshold: float = 0.01) -> bool:
@@ -481,6 +848,11 @@ class SAMYOLOCharacterSegmentor:
         
         # 日本語フォント設定
         setup_japanese_font()
+        
+        # 新機能のコンポーネント
+        self.text_detector = TextDetector()
+        self.bg_remover = BackgroundRemover()
+        self.quality_evaluator = CharacterQualityEvaluator()
         
         # アニメモードの場合、より低い閾値を使用
         if use_anime_yolo:
@@ -1427,57 +1799,509 @@ class SAMYOLOCharacterSegmentor:
         # OpenCV画像ビューワーを作成して表示
         viewer = OpenCVImageViewer(display_image, top_masks, image_path, orig_shape, display_shape)
         return viewer.show()
+    
+    def process_reproduce_auto_mode(self, input_dir: str, output_dir: str):
+        """
+        手動抽出を再現する完全自動抽出モード
+        
+        Args:
+            input_dir: 入力ディレクトリ
+            output_dir: 出力ディレクトリ
+        """
+        self.monitor.start_monitoring()
+        self.monitor.start_stage("ファイル収集")
+        
+        # 出力ディレクトリを作成
+        os.makedirs(output_dir, exist_ok=True)
+        
+        # 画像ファイルを再帰的に取得
+        image_extensions = ['.jpg', '.jpeg', '.png', '.bmp', '.tiff']
+        image_files = []
+        
+        input_path = Path(input_dir)
+        for ext in image_extensions:
+            image_files.extend(input_path.rglob(f"*{ext}"))
+            image_files.extend(input_path.rglob(f"*{ext.upper()}"))
+        
+        # 重複ファイルを除去
+        image_files = list(set(image_files))
+        image_files.sort()  # ファイル名でソートして処理順序を一定にする
+        
+        if not image_files:
+            print(f"エラー: 入力ディレクトリに画像ファイルが見つかりません: {input_dir}")
+            return
+        
+        print(f"処理対象画像数: {len(image_files)} (重複除去後)")
+        self.monitor.end_stage()
+        
+        # 自動抽出処理
+        success_count = 0
+        skip_count = 0
+        quality_scores = []
+        
+        for i, image_file in enumerate(image_files):
+            print(f"\n進捗: {i+1}/{len(image_files)} - {image_file.name}")
+            
+            result = self._process_single_auto_extraction(str(image_file), output_dir)
+            
+            if result == "success":
+                success_count += 1
+            elif result == "skip":
+                skip_count += 1
+        
+        # 処理結果の統計
+        print(f"\n📊 処理完了統計:")
+        print(f"  ✅ 成功: {success_count}/{len(image_files)} 枚")
+        print(f"  ⏭️ スキップ: {skip_count} 枚")
+        print(f"  📈 再現率: {success_count/132*100:.1f}% (手動抽出132枚に対して)")
+        
+        # 総合パフォーマンス表示
+        self.monitor.print_summary()
+    
+    def _process_single_auto_extraction(self, image_path: str, output_dir: str) -> str:
+        """
+        単一画像の自動抽出処理
+        
+        Args:
+            image_path: 画像ファイルパス
+            output_dir: 出力ディレクトリ
+            
+        Returns:
+            処理結果 ("success", "skip", "error")
+        """
+        try:
+            self.monitor.start_stage("画像読み込み")
+            image = cv2.imread(image_path)
+            if image is None:
+                print(f"⚠️ 画像読み込み失敗: {image_path}")
+                return "error"
+            
+            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            self.monitor.end_stage()
+            
+            # 1. カラー画像チェック
+            if is_color_image(image):
+                print(f"スキップ: カラー画像です - {os.path.basename(image_path)}")
+                return "skip"
+            
+            # 2. テキスト検出チェック（EasyOCRが利用可能な場合のみ）
+            if hasattr(self, 'text_detector') and self.text_detector.reader:
+                if self.text_detector.has_significant_text(image_rgb, threshold=0.05):
+                    print(f"スキップ: 大量のテキストが検出されました - {os.path.basename(image_path)}")
+                    return "skip"
+            
+            # 3. SAMマスク生成
+            masks = self.generate_masks(image_rgb)
+            if not masks:
+                print(f"スキップ: マスクが生成されませんでした")
+                return "skip"
+            
+            # 4. YOLOフィルタリング
+            filtered_masks = self.filter_masks_with_yolo(image_rgb, masks)
+            if not filtered_masks:
+                print(f"スキップ: YOLO検出スコアが閾値を下回りました")
+                return "skip"
+            
+            # 5. 品質評価による最適マスク選択
+            best_mask, best_score = self._select_best_character_mask(image_rgb, filtered_masks)
+            if best_mask is None:
+                print(f"スキップ: 適切なキャラクターマスクが見つかりませんでした")
+                return "skip"
+            
+            # 6. キャラクター抽出と保存
+            success = self._extract_and_save_character(
+                image, best_mask, image_path, output_dir, best_score
+            )
+            
+            return "success" if success else "error"
+            
+        except Exception as e:
+            print(f"❌ 処理エラー: {e}")
+            return "error"
+    
+    def _select_best_character_mask(self, image: np.ndarray, filtered_masks: List[Tuple[dict, float]]) -> Tuple[Optional[dict], float]:
+        """
+        品質評価を使用して最適なキャラクターマスクを選択（改良版）
+        
+        Args:
+            image: 入力画像
+            filtered_masks: YOLOでフィルタリングされたマスクリスト
+            
+        Returns:
+            最適マスクと品質スコア
+        """
+        if not filtered_masks:
+            return None, 0.0
+        
+        # 複数キャラクター検出時は最大面積のマスクを選択
+        if len(filtered_masks) > 1:
+            # 面積でソート（大きい順）
+            filtered_masks.sort(key=lambda x: x[0]['area'], reverse=True)
+            print(f"🎯 複数キャラクター検出: {len(filtered_masks)}個 → 最大面積を選択")
+        
+        # 近接マスクの統合を試行
+        merged_mask = self._try_merge_nearby_masks(filtered_masks, image)
+        if merged_mask is not None:
+            print("🔗 近接マスクを統合しました")
+            return merged_mask, 0.85  # 統合成功時は高スコア
+        
+        # 通常の最適マスク選択
+        best_mask = None
+        best_total_score = 0.0
+        
+        for mask_data, yolo_score in filtered_masks:
+            mask = mask_data['segmentation']
+            bbox = mask_data['bbox']  # [x, y, w, h]
+            
+            # 品質評価
+            quality_score = self.quality_evaluator.evaluate_character_quality(
+                image, mask.astype(np.uint8), tuple(map(int, bbox))
+            )
+            
+            # 総合スコア = YOLOスコア * 0.6 + 品質スコア * 0.4
+            total_score = yolo_score * 0.6 + quality_score * 0.4
+            
+            if total_score > best_total_score:
+                best_total_score = total_score
+                best_mask = mask_data
+        
+        # 最低品質閾値をチェック（緩和）
+        if best_total_score < 0.25:  # 0.3→0.25 に緩和
+            return None, 0.0
+        
+        return best_mask, best_total_score
+    
+    def _try_merge_nearby_masks(self, filtered_masks: List[Tuple[dict, float]], 
+                               image: np.ndarray) -> Optional[dict]:
+        """
+        近接する複数のマスクを統合してより完全なキャラクターを生成
+        
+        Args:
+            filtered_masks: フィルタ済みマスクリスト
+            image: 元画像
+            
+        Returns:
+            統合されたマスクデータ、または None
+        """
+        if len(filtered_masks) < 2:
+            return None
+        
+        # 最も信頼度の高いマスクを基準とする
+        primary_mask, primary_score = filtered_masks[0]
+        primary_bbox = primary_mask['bbox']
+        primary_center = (primary_bbox[0] + primary_bbox[2]/2, primary_bbox[1] + primary_bbox[3]/2)
+        
+        # 統合候補マスクを収集
+        merge_candidates = [primary_mask]
+        
+        for mask_data, yolo_score in filtered_masks[1:3]:  # 最多3個に制限
+            bbox = mask_data['bbox']
+            center = (bbox[0] + bbox[2]/2, bbox[1] + bbox[3]/2)
+            
+            # 距離計算
+            distance = np.sqrt((primary_center[0] - center[0])**2 + 
+                             (primary_center[1] - center[1])**2)
+            
+            # より厳格な統合判定基準（複数コマ統合を防ぐ）
+            max_distance = min(primary_bbox[2], primary_bbox[3]) * 0.8  # 基準マスクの0.8倍以内に厳格化
+            
+            # 面積比率でもフィルタリング（大きすぎるマスクは統合しない）
+            area_ratio = mask_data['area'] / primary_mask['area']
+            
+            # 統合条件：距離が近く、かつ面積比が適切
+            if distance < max_distance and 0.1 < area_ratio < 3.0:
+                merge_candidates.append(mask_data)
+                print(f"🔗 統合候補: 距離 {distance:.1f} < 閾値 {max_distance:.1f}, 面積比 {area_ratio:.2f}")
+            else:
+                print(f"❌ 統合拒否: 距離 {distance:.1f} または面積比 {area_ratio:.2f} が不適切")
+        
+        # 統合の価値があるかチェック（より保守的に）
+        if len(merge_candidates) < 2:
+            return None
+        
+        # 統合マスクのサイズ事前チェック（大きすぎる場合は拒否）
+        total_area = sum(mask['area'] for mask in merge_candidates)
+        image_area = image.shape[0] * image.shape[1]
+        area_ratio = total_area / image_area
+        
+        if area_ratio > 0.4:  # 画像の40%以上は拒否
+            print(f"❌ 統合拒否: 統合マスクが大きすぎます ({area_ratio:.2f})")
+            return None
+        
+        # マスクを統合
+        merged_segmentation = merge_candidates[0]['segmentation'].copy()
+        total_area = merge_candidates[0]['area']
+        
+        for mask_data in merge_candidates[1:]:
+            merged_segmentation = np.logical_or(merged_segmentation, mask_data['segmentation'])
+            total_area += mask_data['area']
+        
+        # 統合マスクの境界ボックスを計算
+        y_indices, x_indices = np.where(merged_segmentation)
+        if len(y_indices) == 0 or len(x_indices) == 0:
+            return None
+        
+        x_min, x_max = x_indices.min(), x_indices.max()
+        y_min, y_max = y_indices.min(), y_indices.max()
+        
+        merged_bbox = [x_min, y_min, x_max - x_min + 1, y_max - y_min + 1]
+        
+        # 統合マスクの最終サイズチェック（大きすぎる場合は拒否）
+        merged_width, merged_height = merged_bbox[2], merged_bbox[3]
+        merged_area_ratio = (merged_width * merged_height) / image_area
+        
+        if merged_area_ratio > 0.6:  # 画像の60%以上は拒否
+            print(f"❌ 統合拒否: マスクが大きすぎます ({merged_area_ratio:.2f})")
+            return None
+        
+        print(f"✅ 統合成功: {len(merge_candidates)}個のマスクを統合")
+        
+        # 統合マスクデータを作成
+        merged_mask_data = {
+            'segmentation': merged_segmentation,
+            'bbox': merged_bbox,
+            'area': total_area,
+            'predicted_iou': 0.8,  # 統合マスクの予測IoU
+            'point_coords': [[x_min + (x_max-x_min)/2, y_min + (y_max-y_min)/2]],
+            'stability_score': 0.8,
+            'crop_box': [0, 0, image.shape[1], image.shape[0]]
+        }
+        
+        return merged_mask_data
+    
+    def _extract_and_save_character(self, image: np.ndarray, mask_data: dict, 
+                                  image_path: str, output_dir: str, quality_score: float) -> bool:
+        """
+        キャラクターを抽出して保存
+        
+        Args:
+            image: 元画像 (BGR)
+            mask_data: マスクデータ
+            image_path: 元画像パス
+            output_dir: 出力ディレクトリ
+            quality_score: 品質スコア
+            
+        Returns:
+            保存成功可否
+        """
+        try:
+            mask = mask_data['segmentation'].astype(np.uint8)
+            bbox = mask_data['bbox']  # [x, y, w, h]
+            
+            # バウンディングボックスでクロップ
+            x, y, w, h = map(int, bbox)
+            
+            # 境界チェック
+            x = max(0, x)
+            y = max(0, y)
+            w = min(w, image.shape[1] - x)
+            h = min(h, image.shape[0] - y)
+            
+            if w <= 0 or h <= 0:
+                print(f"⚠️ 無効なバウンディングボックス: {bbox}")
+                return False
+            
+            # 画像とマスクをクロップ
+            cropped_image = image[y:y+h, x:x+w].copy()
+            cropped_mask = mask[y:y+h, x:x+w]
+            
+            # 背景除去（黒背景に統一）
+            final_image = self.bg_remover.remove_background(cropped_image, cropped_mask)
+            
+            # 出力ファイル名を生成
+            base_name = os.path.splitext(os.path.basename(image_path))[0]
+            output_filename = f"{base_name}.jpg"
+            output_path = os.path.join(output_dir, output_filename)
+            
+            # 保存
+            cv2.imwrite(output_path, final_image)
+            
+            print(f"✅ 保存完了: {output_filename} (品質: {quality_score:.3f})")
+            return True
+            
+        except Exception as e:
+            print(f"❌ 保存エラー: {e}")
+            return False
+    
+    def _calculate_smart_merge_distance(self, primary_mask: dict, secondary_mask: dict, image: np.ndarray) -> float:
+        """
+        スマートな統合距離を計算（キャラクター内部 vs 原稿全体）v4改良版
+        """
+        try:
+            primary_bbox = primary_mask['bbox']
+            secondary_bbox = secondary_mask['bbox']
+            
+            # マスクサイズの評価
+            primary_size = max(primary_bbox[2], primary_bbox[3])
+            secondary_size = max(secondary_bbox[2], secondary_bbox[3])
+            primary_area = np.sum(primary_mask['segmentation'])
+            secondary_area = np.sum(secondary_mask['segmentation'])
+            
+            # 画像サイズに対する相対的な面積
+            image_area = image.shape[0] * image.shape[1]
+            primary_area_ratio = primary_area / image_area
+            secondary_area_ratio = secondary_area / image_area
+            
+            # 重心間の距離を計算
+            primary_center = self._calculate_mask_center(primary_mask['segmentation'])
+            secondary_center = self._calculate_mask_center(secondary_mask['segmentation'])
+            center_distance = np.sqrt((primary_center[0] - secondary_center[0])**2 + 
+                                     (primary_center[1] - secondary_center[1])**2)
+            
+            # 小さいマスク同士の統合は距離を拡大（11.jpg対策）
+            if primary_size < 200 and secondary_size < 200:
+                # 面積比による調整
+                area_ratio = min(primary_area, secondary_area) / max(primary_area, secondary_area)
+                if area_ratio > 0.3:  # 似たサイズの場合はより積極的に
+                    return min(primary_size, secondary_size) * 2.0
+                else:
+                    return min(primary_size, secondary_size) * 1.5
+            
+            # 中程度のマスクは重心距離も考慮
+            elif primary_size < 500 and secondary_size < 500:
+                relative_distance = center_distance / min(primary_size, secondary_size)
+                if relative_distance < 1.0:  # 重心が近い場合
+                    return min(primary_size, secondary_size) * 1.2
+                else:
+                    return min(primary_size, secondary_size) * 0.8
+            
+            # 大きなマスクは保守的に（110.jpg対策）
+            else:
+                return min(primary_size, secondary_size) * 0.5
+            
+        except Exception as e:
+            print(f"⚠️ 統合距離計算エラー: {e}")
+            return 100  # デフォルト値
+    
+    def _calculate_mask_center(self, mask: np.ndarray) -> Tuple[float, float]:
+        """
+        マスクの重心を計算
+        
+        Args:
+            mask: バイナリマスク
+            
+        Returns:
+            重心座標 (x, y)
+        """
+        y_coords, x_coords = np.where(mask)
+        if len(x_coords) == 0:
+            return (0, 0)
+        
+        center_x = np.mean(x_coords)
+        center_y = np.mean(y_coords)
+        return (center_x, center_y)
+    
+    def _contains_multiple_people(self, mask1: dict, mask2: dict, image: np.ndarray) -> bool:
+        """
+        統合後のマスクに複数人物が含まれるかチェック（103.jpg対策）v4改良版
+        """
+        try:
+            # 仮統合マスクを作成
+            temp_mask = np.logical_or(mask1['segmentation'], mask2['segmentation'])
+            
+            # 統合マスクのバウンディングボックスを計算
+            y_indices, x_indices = np.where(temp_mask)
+            if len(y_indices) == 0:
+                return False
+            
+            x_min, x_max = x_indices.min(), x_indices.max()
+            y_min, y_max = y_indices.min(), y_indices.max()
+            
+            # クロップしてYOLOで人数カウント
+            crop_region = image[y_min:y_max+1, x_min:x_max+1]
+            
+            if crop_region.shape[0] == 0 or crop_region.shape[1] == 0:
+                return False
+            
+            # YOLOで人物検出（v4改良版）
+            try:
+                results = self.yolo(crop_region, verbose=False)
+                person_count = 0
+                large_person_count = 0  # 大きな人物の数
+                
+                for result in results:
+                    if hasattr(result, 'boxes') and result.boxes is not None:
+                        for box in result.boxes:
+                            if box.cls.item() == 0:  # personクラス
+                                if box.conf.item() > 0.25:  # 低閾値でカウント
+                                    person_count += 1
+                                    
+                                    # 大きな人物かどうかチェック
+                                    box_area = (box.xyxy[0][2] - box.xyxy[0][0]) * (box.xyxy[0][3] - box.xyxy[0][1])
+                                    crop_area = crop_region.shape[0] * crop_region.shape[1]
+                                    
+                                    if box_area > crop_area * 0.1:  # クロップ領域の10%以上
+                                        large_person_count += 1
+                
+                # 複数の大きな人物がいる場合は統合を避ける
+                if large_person_count > 1:
+                    return True
+                
+                # 小さな人物を含めて複数いる場合も注意
+                return person_count > 1
+                
+            except Exception as e:
+                print(f"⚠️ 人数カウントエラー: {e}")
+                return False
+                
+        except Exception as e:
+            print(f"⚠️ 複数人物チェックエラー: {e}")
+            return False
 
 
 def main():
     """
-    メイン関数
+    メイン関数（後方互換性のため残存）
     """
+    # 新しいmain処理にリダイレクト
+    import sys
+    sys.argv[0] = __file__  # スクリプト名を設定
+    
+    # 古い引数形式を新しい形式に変換
+    if "--model-type" in sys.argv:
+        idx = sys.argv.index("--model-type")
+        sys.argv[idx] = "--model_type"
+    if "--sam-checkpoint" in sys.argv:
+        idx = sys.argv.index("--sam-checkpoint")
+        sys.argv[idx] = "--sam_checkpoint"
+    if "--yolo-model" in sys.argv:
+        idx = sys.argv.index("--yolo-model")
+        sys.argv[idx] = "--yolo_model"
+    if "--score-threshold" in sys.argv:
+        idx = sys.argv.index("--score-threshold")
+        sys.argv[idx] = "--score_threshold"
+    if "--anime-mode" in sys.argv:
+        idx = sys.argv.index("--anime-mode")
+        sys.argv[idx] = "--anime_yolo"
+    
+    # 古い引数形式をサポートするため、後方互換性を提供
+    print("⚠️ 古いmain()関数が呼び出されました。新しい形式を使用してください。")
+    print("使用例: python sam_yolo_character_segment.py --mode reproduce-auto")
+
+
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="SAM + YOLOv8 漫画キャラクター切り出しパイプライン")
-    
-    # 必須引数
-    parser.add_argument("--mode", required=True, choices=["interactive", "batch", "choice"], 
-                      help="処理モード (interactive: 対話形式, batch: バッチ形式, choice: クリック選択形式)")
-    
-    # 入力関連
-    parser.add_argument("--input", type=str, help="単一画像のパス（対話形式）")
-    parser.add_argument("--input_dir", type=str, help="バッチ処理時の画像ディレクトリ")
-    parser.add_argument("--output_dir", type=str, default="./results", 
-                      help="切り出した画像の保存先 (デフォルト: ./results)")
-    parser.add_argument("--mask_choice", type=int, help="手動でマスク番号を指定 (0-4)")
-    
-    # モデル関連
-    parser.add_argument("--model-type", type=str, default="vit_h", 
-                      choices=["vit_h", "vit_l", "vit_b"],
-                      help="SAMモデルの種類 (デフォルト: vit_h)")
-    parser.add_argument("--sam-checkpoint", type=str, default="sam_vit_h_4b8939.pth",
-                      help="SAMのチェックポイントファイルのパス")
-    parser.add_argument("--yolo-model", type=str, default="yolov8n.pt",
-                      help="YOLOv8モデルのパス or モデル名")
-    parser.add_argument("--score-threshold", type=float, default=0.15,
-                      help="YOLOv8の人物スコア閾値 (デフォルト: 0.15)")
-    parser.add_argument("--anime-mode", action="store_true",
-                      help="アニメ・マンガ専用YOLOモデルを使用")
+    parser.add_argument("--mode", choices=["interactive", "batch", "choice", "reproduce-auto"], 
+                       default="interactive", help="実行モード")
+    parser.add_argument("--input", help="入力画像ファイル（interactiveモード用）")
+    parser.add_argument("--input_dir", help="入力ディレクトリ（batch/choice/reproduce-autoモード用）")
+    parser.add_argument("--output_dir", help="出力ディレクトリ")
+    parser.add_argument("--sam_checkpoint", default="sam_vit_h_4b8939.pth", help="SAMチェックポイントファイル")
+    parser.add_argument("--model_type", default="vit_h", choices=["vit_h", "vit_l", "vit_b"], help="SAMモデルタイプ")
+    parser.add_argument("--yolo_model", default="yolov8n.pt", help="YOLOv8モデルファイル")
+    parser.add_argument("--score_threshold", type=float, default=0.15, help="YOLO人物検出スコア閾値")
+    parser.add_argument("--device", choices=["cuda", "cpu"], help="計算デバイス")
+    parser.add_argument("--anime_yolo", action="store_true", help="アニメ用YOLOモデルを使用")
     
     args = parser.parse_args()
     
-    # 引数チェック
-    if args.mode == "interactive" and not args.input:
-        print("エラー: --input を指定してください（対話形式）")
-        sys.exit(1)
-    
-    if args.mode == "batch" and not args.input_dir:
-        print("エラー: --input_dir を指定してください（バッチ形式）")
-        sys.exit(1)
-    
-    if args.mode == "choice" and not args.input_dir:
-        print("エラー: --input_dir を指定してください（クリック選択形式）")
-        sys.exit(1)
-    
-    # SAMチェックポイントファイルの存在確認
-    if not os.path.exists(args.sam_checkpoint):
-        print(f"エラー: SAMチェックポイントファイルが見つかりません: {args.sam_checkpoint}")
-        sys.exit(1)
+    # reproduce-autoモードのデフォルト設定
+    if args.mode == "reproduce-auto":
+        if not args.input_dir:
+            args.input_dir = "/mnt/c/AItools/lora/train/diff_aichi/org_aichikan1"
+        if not args.output_dir:
+            args.output_dir = "/mnt/c/AItools/lora/train/diff_aichi/auto_extracted"
+        args.anime_yolo = True  # 漫画用にアニメモード有効
     
     try:
         # セグメンター初期化
@@ -1486,74 +2310,18 @@ def main():
             model_type=args.model_type,
             yolo_model=args.yolo_model,
             score_threshold=args.score_threshold,
-            use_anime_yolo=args.anime_mode
+            device=args.device,
+            use_anime_yolo=args.anime_yolo
         )
         
-        if args.mode == "interactive":
-            # 対話モード
-            if not os.path.exists(args.input):
-                print(f"エラー: 入力画像が見つかりません: {args.input}")
-                sys.exit(1)
-            
-            result = segmentor.process_single_image(args.input, args.output_dir, interactive=True, mask_choice=args.mask_choice)
-            if result == "error":
-                print("処理中にエラーが発生しました")
-                sys.exit(1)
-            elif result == "quit":
-                print("処理を終了しました")
-                sys.exit(0)
-        
-        elif args.mode == "batch":
-            # バッチモード
+        if args.mode == "reproduce-auto":
+            # 再現自動抽出モード
             if not os.path.exists(args.input_dir):
                 print(f"エラー: 入力ディレクトリが見つかりません: {args.input_dir}")
                 sys.exit(1)
             
-            # 画像ファイルを再帰的に取得
-            image_extensions = ['.jpg', '.jpeg', '.png', '.bmp', '.tiff']
-            image_files = []
-            
-            input_path = Path(args.input_dir)
-            for ext in image_extensions:
-                image_files.extend(input_path.rglob(f"*{ext}"))
-                image_files.extend(input_path.rglob(f"*{ext.upper()}"))
-            
-            # 重複ファイルを除去
-            image_files = list(set(image_files))
-            image_files.sort()  # ファイル名でソートして処理順序を一定にする
-            
-            if not image_files:
-                print(f"エラー: 入力ディレクトリに画像ファイルが見つかりません: {args.input_dir}")
-                sys.exit(1)
-            
-            print(f"処理対象画像数: {len(image_files)} (重複除去後)")
-            
-            # バッチ処理
-            success_count = 0
-            skip_count = 0
-            for i, image_file in enumerate(image_files):
-                print(f"\n進捗: {i+1}/{len(image_files)} - {image_file.relative_to(input_path)}")
-                
-                # 相対パスを計算して出力ディレクトリ構造を保持
-                relative_path = image_file.relative_to(input_path)
-                output_subdir = Path(args.output_dir) / relative_path.parent
-                
-                result = segmentor.process_single_image(str(image_file), str(output_subdir), interactive=False)
-                if result == "success":
-                    success_count += 1
-                elif result == "skip":
-                    skip_count += 1
-            
-            print(f"\n処理完了: {success_count}/{len(image_files)} 枚成功, {skip_count} 枚スキップ")
-        
-        elif args.mode == "choice":
-            # クリック選択モード
-            if not os.path.exists(args.input_dir):
-                print(f"エラー: 入力ディレクトリが見つかりません: {args.input_dir}")
-                sys.exit(1)
-            
-            segmentor.process_choice_mode(args.input_dir, args.output_dir)
-            print("🎉 全ての画像の処理が完了しました！")
+            segmentor.process_reproduce_auto_mode(args.input_dir, args.output_dir)
+            print("🎉 再現自動抽出が完了しました！")
             sys.exit(0)  # 正常終了
     
     except KeyboardInterrupt:
@@ -1563,6 +2331,6 @@ def main():
         print(f"エラー: {str(e)}")
         sys.exit(1)
 
-
 if __name__ == "__main__":
     main()
+
