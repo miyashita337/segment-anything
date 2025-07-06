@@ -43,8 +43,8 @@ crop_padding = 10
 
 [output]
 # File Formats
-save_mask = true
-save_transparent = true
+save_mask = false
+save_transparent = false
 output_format = "jpg"
 mask_format = "png"
 
