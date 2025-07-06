@@ -33,8 +33,8 @@ def extract_character_from_path(image_path: str,
                                output_path: Optional[str] = None,
                                enhance_contrast: bool = False,
                                filter_text: bool = True,
-                               save_mask: bool = True,
-                               save_transparent: bool = True,
+                               save_mask: bool = False,
+                               save_transparent: bool = False,
                                min_yolo_score: float = 0.1,
                                verbose: bool = True) -> Dict[str, Any]:
     """
@@ -309,8 +309,8 @@ def main():
     parser.add_argument('--batch', action='store_true', help='Batch processing mode')
     parser.add_argument('--enhance-contrast', action='store_true', help='Enhance image contrast')
     parser.add_argument('--filter-text', action='store_true', default=True, help='Filter text regions')
-    parser.add_argument('--save-mask', action='store_true', default=True, help='Save mask files')
-    parser.add_argument('--save-transparent', action='store_true', default=True, help='Save transparent background')
+    parser.add_argument('--save-mask', action='store_true', default=False, help='Save mask files')
+    parser.add_argument('--save-transparent', action='store_true', default=False, help='Save transparent background')
     parser.add_argument('--min-yolo-score', type=float, default=0.1, help='Minimum YOLO score threshold')
     parser.add_argument('--verbose', action='store_true', default=True, help='Verbose output')
     

@@ -9,22 +9,28 @@
 ### 基本的な使い方
 
 ```bash
-# 単一画像の処理
+# 単一画像の処理（基本）
 /extract_character path/to/image.jpg
 
 # 出力先を指定
 /extract_character path/to/image.jpg -o output/character
 
+# マスクと透明背景版も保存
+/extract_character path/to/image.jpg --save-mask --save-transparent
+
 # バッチ処理
 /extract_character input_directory/ --batch -o output_directory/
+
+# バッチ処理（全オプション）
+/extract_character input_directory/ --batch -o output_directory/ --save-mask --save-transparent
 ```
 
 ### オプション
 
 - `--enhance-contrast`: 画像のコントラストを強化
 - `--filter-text`: テキスト領域をフィルタリング（デフォルト: ON）
-- `--save-mask`: マスクファイルも保存（デフォルト: ON）
-- `--save-transparent`: 透明背景版も保存（デフォルト: ON）
+- `--save-mask`: マスクファイルも保存（デフォルト: OFF）
+- `--save-transparent`: 透明背景版も保存（デフォルト: OFF）
 - `--min-yolo-score FLOAT`: YOLO最小スコア閾値（デフォルト: 0.1）
 - `--verbose`: 詳細な出力を表示
 
@@ -42,8 +48,8 @@
 ## 出力ファイル
 
 - `{name}.jpg`: 抽出されたキャラクター画像（黒背景）
-- `{name}_mask.png`: セグメンテーションマスク
-- `{name}_transparent.png`: 透明背景のキャラクター画像
+- `{name}_mask.png`: セグメンテーションマスク（`--save-mask`オプション時）
+- `{name}_transparent.png`: 透明背景のキャラクター画像（`--save-transparent`オプション時）
 
 ## 要件
 
