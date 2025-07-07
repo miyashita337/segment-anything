@@ -18,6 +18,12 @@ import cv2
 import numpy as np
 
 from hooks.start import get_sam_model, get_yolo_model, get_performance_monitor
+from utils.difficult_pose import (
+    DifficultPoseProcessor, 
+    detect_difficult_pose, 
+    get_difficult_pose_config,
+    process_with_retry
+)
 from utils.preprocessing import preprocess_image_pipeline
 from utils.postprocessing import (
     enhance_character_mask, 
@@ -36,9 +42,17 @@ def extract_character_from_path(image_path: str,
                                save_mask: bool = False,
                                save_transparent: bool = False,
                                min_yolo_score: float = 0.1,
-                               verbose: bool = True) -> Dict[str, Any]:
+                               verbose: bool = True,
+                               difficult_pose: bool = False,
+                               low_threshold: bool = False,
+                               auto_retry: bool = False,
+                               high_quality: bool = False,
+                               manga_mode: bool = False,
+                               effect_removal: bool = False,
+                               panel_split: bool = False,
+                               **kwargs) -> Dict[str, Any]:
     """
-    画像パスからキャラクターを抽出
+    画像パスからキャラクターを抽出 (Phase 2対応版)
     
     Args:
         image_path: 入力画像パス
@@ -49,6 +63,13 @@ def extract_character_from_path(image_path: str,
         save_transparent: 透明背景版を保存
         min_yolo_score: YOLO最小スコア
         verbose: 詳細出力
+        difficult_pose: 複雑ポーズモード
+        low_threshold: 低閾値モード（YOLO 0.02）
+        auto_retry: 自動リトライモード
+        high_quality: 高品質SAM処理
+        manga_mode: 漫画前処理モード (Phase 2)
+        effect_removal: エフェクト線除去を有効化 (Phase 2)
+        panel_split: マルチコマ分割を有効化 (Phase 2)
         
     Returns:
         抽出結果の辞書
@@ -64,6 +85,30 @@ def extract_character_from_path(image_path: str,
     
     start_time = time.time()
     
+    # 自動リトライモードの場合は process_with_retry を使用
+    if auto_retry:
+        if verbose:
+            print(f"🔄 自動リトライモードでキャラクター抽出開始: {image_path}")
+        
+        def extract_function(img_path, **config):
+            # 元の処理ロジックを呼び出し（リトライ用）
+            return extract_character_from_path(
+                img_path, output_path, enhance_contrast, filter_text,
+                save_mask, save_transparent, config.get('min_yolo_score', min_yolo_score),
+                verbose=False,  # リトライ中は詳細出力を抑制
+                difficult_pose=False, low_threshold=False, auto_retry=False,  # 無限ループ防止
+                high_quality=config.get('enable_enhanced_processing', high_quality),
+                manga_mode=config.get('enable_manga_preprocessing', manga_mode),
+                effect_removal=config.get('enable_effect_removal', effect_removal),
+                panel_split=config.get('enable_panel_split', panel_split),
+                **{k: v for k, v in config.items() if k not in [
+                    'min_yolo_score', 'enable_enhanced_processing', 'enable_manga_preprocessing',
+                    'enable_effect_removal', 'enable_panel_split'
+                ]}
+            )
+        
+        return process_with_retry(image_path, extract_function, max_retries=4)
+    
     try:
         # Get models
         sam_model = get_sam_model()
@@ -73,8 +118,65 @@ def extract_character_from_path(image_path: str,
         if not sam_model or not yolo_model:
             raise RuntimeError("Models not initialized. Run start hook first.")
         
+        # 複雑ポーズ判定と設定調整 (Phase 2対応版)
+        if difficult_pose or low_threshold or manga_mode:
+            processor = DifficultPoseProcessor()
+            
+            if difficult_pose:
+                # 複雑ポーズモード: 自動判定による設定
+                complexity_info = processor.detect_pose_complexity(image_path)
+                recommended_config = processor.get_recommended_config(complexity_info)
+                
+                if verbose:
+                    print(f"🔍 ポーズ複雑度: {complexity_info['complexity']} (スコア: {complexity_info['score']:.1f})")
+                    print(f"🔧 推奨設定適用: {recommended_config['description']}")
+                
+                # 推奨設定を適用
+                min_yolo_score = min(min_yolo_score, recommended_config['min_yolo_score'])
+                if 'sam_points_per_side' in recommended_config:
+                    # SAM設定をkwargsに追加
+                    kwargs.update({
+                        'sam_points_per_side': recommended_config['sam_points_per_side'],
+                        'sam_pred_iou_thresh': recommended_config['sam_pred_iou_thresh'],
+                        'sam_stability_score_thresh': recommended_config['sam_stability_score_thresh']
+                    })
+            
+            if low_threshold:
+                min_yolo_score = 0.02
+                if verbose:
+                    print(f"🔧 低閾値モード: YOLO閾値を{min_yolo_score}に設定")
+            
+            # Phase 2: 漫画前処理モード
+            if manga_mode or effect_removal or panel_split:
+                if verbose:
+                    print(f"🎨 漫画前処理モード有効")
+                    print(f"   エフェクト線除去: {'✅' if effect_removal else '❌'}")
+                    print(f"   マルチコマ分割: {'✅' if panel_split else '❌'}")
+                
+                # 前処理を適用
+                processed_image_path = processor.preprocess_for_difficult_pose(
+                    image_path,
+                    enable_manga_preprocessing=True,
+                    enable_effect_removal=effect_removal,
+                    enable_panel_split=panel_split
+                )
+                
+                # 処理済み画像を使用
+                image_path = processed_image_path
+        
+        if high_quality:
+            # 高品質SAM設定
+            kwargs.update({
+                'sam_points_per_side': kwargs.get('sam_points_per_side', 64),
+                'sam_pred_iou_thresh': kwargs.get('sam_pred_iou_thresh', 0.88),
+                'sam_stability_score_thresh': kwargs.get('sam_stability_score_thresh', 0.92)
+            })
+            if verbose:
+                print(f"🔧 高品質モード: SAM密度 {kwargs.get('sam_points_per_side', 64)} ポイント/サイド")
+        
         if verbose:
             print(f"🎯 キャラクター抽出開始: {image_path}")
+            print(f"📊 YOLO閾値: {min_yolo_score}")
         
         # Step 1: Image preprocessing
         performance_monitor.start_stage("Image Preprocessing")
@@ -90,7 +192,39 @@ def extract_character_from_path(image_path: str,
         
         # Step 2: SAM mask generation
         performance_monitor.start_stage("SAM Mask Generation")
-        all_masks = sam_model.generate_masks(rgb_image)
+        
+        # 高品質/複雑ポーズモードでSAM設定を動的に適用
+        if any(key.startswith('sam_') for key in kwargs.keys()) or high_quality:
+            # SAMGeneratorを一時的に再構築
+            try:
+                from segment_anything import SamAutomaticMaskGenerator
+                
+                sam_params = {
+                    'model': sam_model.sam,
+                    'points_per_side': kwargs.get('sam_points_per_side', 32),
+                    'pred_iou_thresh': kwargs.get('sam_pred_iou_thresh', 0.8),
+                    'stability_score_thresh': kwargs.get('sam_stability_score_thresh', 0.85),
+                    'crop_n_layers': 1,
+                    'crop_n_points_downscale_factor': 2,
+                    'min_mask_region_area': 100,
+                }
+                
+                if verbose:
+                    print(f"🔧 カスタムSAM設定適用:")
+                    print(f"   ポイント密度: {sam_params['points_per_side']}")
+                    print(f"   IoU閾値: {sam_params['pred_iou_thresh']}")
+                    print(f"   安定性閾値: {sam_params['stability_score_thresh']}")
+                
+                # 一時的なマスクジェネレータで処理
+                temp_generator = SamAutomaticMaskGenerator(**sam_params)
+                all_masks = temp_generator.generate(rgb_image)
+                
+            except Exception as e:
+                if verbose:
+                    print(f"⚠️ カスタムSAM設定失敗、デフォルト設定で継続: {e}")
+                all_masks = sam_model.generate_masks(rgb_image)
+        else:
+            all_masks = sam_model.generate_masks(rgb_image)
         
         if not all_masks:
             raise ValueError("No masks generated by SAM")
@@ -142,12 +276,24 @@ def extract_character_from_path(image_path: str,
         # Step 5: Mask refinement
         performance_monitor.start_stage("Mask Refinement")
         raw_mask = sam_model.mask_to_binary(best_mask)
-        enhanced_mask = enhance_character_mask(
-            raw_mask,
-            remove_small_area=100,
-            smooth_kernel=3,
-            fill_holes=True
-        )
+        
+        # 複雑ポーズ用の強化マスク処理を適用
+        if difficult_pose or low_threshold or high_quality:
+            if verbose:
+                print("🔧 複雑ポーズ用マスク強化処理を適用")
+            
+            # DifficultPoseProcessorを使用した強化処理
+            if 'processor' not in locals():
+                processor = DifficultPoseProcessor()
+            
+            enhanced_mask = processor.enhance_mask_for_complex_pose(raw_mask, bgr_image)
+        else:
+            enhanced_mask = enhance_character_mask(
+                raw_mask,
+                remove_small_area=100,
+                smooth_kernel=3,
+                fill_holes=True
+            )
         
         # Calculate mask quality metrics
         quality_metrics = calculate_mask_quality_metrics(enhanced_mask)
@@ -268,11 +414,13 @@ def batch_extract_characters(input_dir: str,
         output_file = output_path / image_file.stem
         
         # 抽出実行
+        # verboseはバッチ処理では抑制
+        batch_kwargs = extract_kwargs.copy()
+        batch_kwargs['verbose'] = False
         result = extract_character_from_path(
             str(image_file),
             output_path=str(output_file),
-            verbose=False,  # バッチ処理では詳細出力を抑制
-            **extract_kwargs
+            **batch_kwargs
         )
         
         result['filename'] = image_file.name
@@ -297,6 +445,26 @@ def batch_extract_characters(input_dir: str,
     print(f"\n📊 バッチ処理完了:")
     print(f"   成功: {successful}/{len(image_files)} ({batch_result['success_rate']:.1%})")
     
+    # Pushover通知送信
+    try:
+        from utils.notification import send_batch_notification
+        print("\n📱 通知送信中...")
+        notification_sent = send_batch_notification(
+            successful=successful,
+            total=len(image_files),
+            failed=len(image_files) - successful,
+            total_time=batch_result['total_time']
+        )
+        
+        if notification_sent:
+            print("✅ Pushover通知送信完了")
+        else:
+            print("⚠️ Pushover通知送信失敗またはスキップ")
+    except ImportError:
+        print("⚠️ 通知モジュールが見つかりません")
+    except Exception as e:
+        print(f"⚠️ 通知送信エラー: {e}")
+    
     return batch_result
 
 
@@ -314,17 +482,51 @@ def main():
     parser.add_argument('--min-yolo-score', type=float, default=0.1, help='Minimum YOLO score threshold')
     parser.add_argument('--verbose', action='store_true', default=True, help='Verbose output')
     
+    # 複雑ポーズ・ダイナミック構図対応オプション
+    parser.add_argument('--difficult-pose', action='store_true', help='Enable difficult pose processing mode')
+    parser.add_argument('--low-threshold', action='store_true', help='Use low threshold settings (YOLO score 0.02)')
+    parser.add_argument('--auto-retry', action='store_true', help='Enable automatic retry with progressive settings')
+    parser.add_argument('--high-quality', action='store_true', help='Enable high-quality SAM processing')
+    
+    # Phase 2: 漫画前処理オプション
+    parser.add_argument('--manga-mode', action='store_true', help='Enable manga-specific preprocessing (Phase 2)')
+    parser.add_argument('--effect-removal', action='store_true', help='Enable effect line removal (Phase 2)')
+    parser.add_argument('--panel-split', action='store_true', help='Enable multi-panel splitting (Phase 2)')
+    
     args = parser.parse_args()
     
-    # Extract common arguments
+    # Extract common arguments (Phase 2対応版)
     extract_args = {
         'enhance_contrast': args.enhance_contrast,
         'filter_text': args.filter_text,
         'save_mask': args.save_mask,
         'save_transparent': args.save_transparent,
         'min_yolo_score': args.min_yolo_score,
-        'verbose': args.verbose
+        'verbose': args.verbose,
+        'difficult_pose': args.difficult_pose,
+        'low_threshold': args.low_threshold,
+        'auto_retry': args.auto_retry,
+        'high_quality': args.high_quality,
+        'manga_mode': args.manga_mode,
+        'effect_removal': args.effect_removal,
+        'panel_split': args.panel_split
     }
+    
+    # 複雑ポーズモード用の設定調整
+    if args.low_threshold:
+        extract_args['min_yolo_score'] = 0.02
+        print("🔧 低閾値モード: YOLO閾値を0.02に設定")
+    
+    if args.high_quality:
+        print("🔧 高品質モード: SAM高密度処理を有効化")
+    
+    # Phase 2: 漫画前処理モードの設定
+    if args.manga_mode or args.effect_removal or args.panel_split:
+        print("🎨 Phase 2: 漫画前処理モード有効")
+        if args.effect_removal:
+            print("   📝 エフェクト線除去: 有効")
+        if args.panel_split:
+            print("   📊 マルチコマ分割: 有効")
     
     if args.batch:
         # Batch processing

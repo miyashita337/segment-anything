@@ -79,3 +79,9 @@ yolov8*.torchscript
 # SAMモデルファイル
 sam_vit_*.pth
 sam_vit_*.onnx
+
+# 設定ファイル（機密情報含む）
+config/pushover.json
+config/secret*.json
+config/*.key
+config/*.token
