@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画像抽出結果評価ツール</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .folder-selection {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        
+        .folder-input {
+            flex: 1;
+        }
+        
+        .folder-input label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .folder-input input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .load-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .load-button:hover {
+            background: #0056b3;
+        }
+        
+        .load-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.loading {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .evaluation-grid {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        
+        .grid-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .grid-table th,
+        .grid-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            vertical-align: top;
+        }
+        
+        .grid-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .image-cell {
+            width: 500px;
+            height: 500px;
+            padding: 5px;
+        }
+        
+        .image-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .image-container.no-image {
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .rating-select {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            min-width: 60px;
+        }
+        
+        .issues-container {
+            max-width: 200px;
+        }
+        
+        .issues-select {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+        
+        .custom-issue-input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .selected-issues {
+            margin-top: 5px;
+        }
+        
+        .issue-tag {
+            display: inline-block;
+            background: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 12px;
+            padding: 2px 8px;
+            margin: 2px;
+            font-size: 11px;
+            position: relative;
+        }
+        
+        .issue-tag .remove {
+            margin-left: 5px;
+            color: #dc3545;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .export-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .export-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+        }
+        
+        .export-button:hover {
+            background: #218838;
+        }
+        
+        .filename-column {
+            min-width: 150px;
+            max-width: 200px;
+            word-break: break-all;
+        }
+        
+        .notes-input {
+            width: 100%;
+            min-height: 60px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🖼️ 画像抽出結果評価ツール</h1>
+        <p>複数バージョンの抽出結果を比較評価するためのスプレッドシート型インターフェース</p>
+        
+        <div class="folder-selection">
+            <div class="folder-input">
+                <label for="folder1">フォルダー1 (例: kaname03):</label>
+                <input type="text" id="folder1" value="C:/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname03">
+            </div>
+            <div class="folder-input">
+                <label for="folder2">フォルダー2 (例: kaname03_0_0_3):</label>
+                <input type="text" id="folder2" value="C:/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname03_0_0_3">
+            </div>
+            <button id="loadFolders" class="load-button">フォルダー読み込み</button>
+        </div>
+        
+        <div id="status" class="status"></div>
+    </div>
+    
+    <div id="evaluationGrid" class="evaluation-grid" style="display: none;">
+        <table class="grid-table">
+            <thead>
+                <tr>
+                    <th class="filename-column">画像ファイル名</th>
+                    <th class="image-cell">フォルダー1結果</th>
+                    <th>フォルダー1評価</th>
+                    <th>フォルダー1問題</th>
+                    <th class="image-cell">フォルダー2結果</th>
+                    <th>フォルダー2評価</th>
+                    <th>フォルダー2問題</th>
+                    <th>メモ</th>
+                </tr>
+            </thead>
+            <tbody id="gridBody">
+                <!-- Dynamic content will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="export-section">
+        <button id="exportCSV" class="export-button" style="display: none;">📊 CSV出力</button>
+        <button id="saveProgress" class="export-button" style="display: none;">💾 進捗保存</button>
+        <button id="loadProgress" class="export-button" style="display: none;">📂 進捗読み込み</button>
+    </div>
+
+    <script>
+        // 共通問題リスト（再利用可能）
+        const COMMON_ISSUES = [
+            '抽出範囲不適切',
+            'キャラクター欠損',
+            '背景残り',
+            'エフェクト線残り',
+            '境界不正確',
+            '他キャラクター混入',
+            '手足切断',
+            '顔部分欠損',
+            'マスク精度低',
+            '輪郭ガタガタ',
+            '透明度異常',
+            '色調変化',
+            'ノイズ多数',
+            '解像度不足',
+            '画質劣化'
+        ];
+        
+        let evaluationData = [];
+        let currentFolder1 = '';
+        let currentFolder2 = '';
+        
+        // DOM要素の取得
+        const folder1Input = document.getElementById('folder1');
+        const folder2Input = document.getElementById('folder2');
+        const loadButton = document.getElementById('loadFolders');
+        const statusDiv = document.getElementById('status');
+        const evaluationGrid = document.getElementById('evaluationGrid');
+        const gridBody = document.getElementById('gridBody');
+        const exportButton = document.getElementById('exportCSV');
+        const saveButton = document.getElementById('saveProgress');
+        const loadProgressButton = document.getElementById('loadProgress');
+        
+        // イベントリスナー
+        loadButton.addEventListener('click', loadFolders);
+        exportButton.addEventListener('click', exportToCSV);
+        saveButton.addEventListener('click', saveProgress);
+        loadProgressButton.addEventListener('click', loadProgress);
+        
+        // フォルダー読み込み
+        async function loadFolders() {
+            const folder1 = folder1Input.value.trim();
+            const folder2 = folder2Input.value.trim();
+            
+            if (!folder1 || !folder2) {
+                showStatus('両方のフォルダーパスを入力してください', 'error');
+                return;
+            }
+            
+            showStatus('フォルダーを読み込み中...', 'loading');
+            loadButton.disabled = true;
+            
+            try {
+                const response = await fetch('/api/load-folders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ folder1, folder2 })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentFolder1 = folder1;
+                    currentFolder2 = folder2;
+                    evaluationData = result.data;
+                    buildEvaluationGrid();
+                    showStatus(`${result.data.length}件の画像を読み込みました`, 'success');
+                    
+                    // 表示・ボタン有効化
+                    evaluationGrid.style.display = 'block';
+                    exportButton.style.display = 'inline-block';
+                    saveButton.style.display = 'inline-block';
+                    loadProgressButton.style.display = 'inline-block';
+                } else {
+                    showStatus(`エラー: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus(`通信エラー: ${error.message}`, 'error');
+            } finally {
+                loadButton.disabled = false;
+            }
+        }
+        
+        // 評価グリッド構築
+        function buildEvaluationGrid() {
+            gridBody.innerHTML = '';
+            
+            evaluationData.forEach((item, index) => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td class="filename-column">${item.filename}</td>
+                    <td class="image-cell">
+                        <div class="image-container ${item.folder1_image ? '' : 'no-image'}">
+                            ${item.folder1_image ? 
+                                `<img src="/api/image/${encodeURIComponent(item.folder1_image)}" alt="${item.filename}" onerror="this.parentElement.innerHTML='画像読み込み失敗'">` : 
+                                '画像なし'
+                            }
+                        </div>
+                    </td>
+                    <td>
+                        <select class="rating-select" data-index="${index}" data-field="folder1_rating">
+                            <option value="">-</option>
+                            <option value="A">A (優秀)</option>
+                            <option value="B">B (良好)</option>
+                            <option value="C">C (普通)</option>
+                            <option value="D">D (改善要)</option>
+                            <option value="E">E (不良)</option>
+                            <option value="F">F (失敗)</option>
+                        </select>
+                    </td>
+                    <td>
+                        <div class="issues-container">
+                            <select class="issues-select" data-index="${index}" data-field="folder1_issues">
+                                <option value="">問題を選択...</option>
+                                ${COMMON_ISSUES.map(issue => `<option value="${issue}">${issue}</option>`).join('')}
+                            </select>
+                            <input type="text" class="custom-issue-input" placeholder="カスタム問題..." data-index="${index}" data-field="folder1_custom">
+                            <div class="selected-issues" data-index="${index}" data-field="folder1_display"></div>
+                        </div>
+                    </td>
+                    <td class="image-cell">
+                        <div class="image-container ${item.folder2_image ? '' : 'no-image'}">
+                            ${item.folder2_image ? 
+                                `<img src="/api/image/${encodeURIComponent(item.folder2_image)}" alt="${item.filename}" onerror="this.parentElement.innerHTML='画像読み込み失敗'">` : 
+                                '画像なし'
+                            }
+                        </div>
+                    </td>
+                    <td>
+                        <select class="rating-select" data-index="${index}" data-field="folder2_rating">
+                            <option value="">-</option>
+                            <option value="A">A (優秀)</option>
+                            <option value="B">B (良好)</option>
+                            <option value="C">C (普通)</option>
+                            <option value="D">D (改善要)</option>
+                            <option value="E">E (不良)</option>
+                            <option value="F">F (失敗)</option>
+                        </select>
+                    </td>
+                    <td>
+                        <div class="issues-container">
+                            <select class="issues-select" data-index="${index}" data-field="folder2_issues">
+                                <option value="">問題を選択...</option>
+                                ${COMMON_ISSUES.map(issue => `<option value="${issue}">${issue}</option>`).join('')}
+                            </select>
+                            <input type="text" class="custom-issue-input" placeholder="カスタム問題..." data-index="${index}" data-field="folder2_custom">
+                            <div class="selected-issues" data-index="${index}" data-field="folder2_display"></div>
+                        </div>
+                    </td>
+                    <td>
+                        <textarea class="notes-input" data-index="${index}" data-field="notes" placeholder="メモ..."></textarea>
+                    </td>
+                `;
+                
+                gridBody.appendChild(row);
+            });
+            
+            // イベントリスナー追加
+            attachEventListeners();
+        }
+        
+        // イベントリスナー追加
+        function attachEventListeners() {
+            // 評価選択
+            document.querySelectorAll('.rating-select').forEach(select => {
+                select.addEventListener('change', (e) => {
+                    const index = parseInt(e.target.dataset.index);
+                    const field = e.target.dataset.field;
+                    evaluationData[index][field] = e.target.value;
+                });
+            });
+            
+            // 問題選択
+            document.querySelectorAll('.issues-select').forEach(select => {
+                select.addEventListener('change', (e) => {
+                    if (e.target.value) {
+                        addIssue(parseInt(e.target.dataset.index), e.target.dataset.field, e.target.value);
+                        e.target.value = ''; // リセット
+                    }
+                });
+            });
+            
+            // カスタム問題入力
+            document.querySelectorAll('.custom-issue-input').forEach(input => {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && e.target.value.trim()) {
+                        addIssue(parseInt(e.target.dataset.index), e.target.dataset.field.replace('_custom', '_issues'), e.target.value.trim());
+                        e.target.value = ''; // リセット
+                    }
+                });
+            });
+            
+            // メモ入力
+            document.querySelectorAll('.notes-input').forEach(textarea => {
+                textarea.addEventListener('input', (e) => {
+                    const index = parseInt(e.target.dataset.index);
+                    evaluationData[index].notes = e.target.value;
+                });
+            });
+        }
+        
+        // 問題追加
+        function addIssue(index, field, issue) {
+            const fieldName = field.replace('_issues', '_issues_list');
+            if (!evaluationData[index][fieldName]) {
+                evaluationData[index][fieldName] = [];
+            }
+            
+            if (!evaluationData[index][fieldName].includes(issue)) {
+                evaluationData[index][fieldName].push(issue);
+                updateIssuesDisplay(index, field);
+            }
+        }
+        
+        // 問題表示更新
+        function updateIssuesDisplay(index, field) {
+            const fieldName = field.replace('_issues', '_issues_list');
+            const displayField = field.replace('_issues', '_display');
+            const displayElement = document.querySelector(`[data-index="${index}"][data-field="${displayField}"]`);
+            
+            if (displayElement && evaluationData[index][fieldName]) {
+                displayElement.innerHTML = evaluationData[index][fieldName].map(issue => 
+                    `<span class="issue-tag">${issue}<span class="remove" onclick="removeIssue(${index}, '${fieldName}', '${issue}')">×</span></span>`
+                ).join('');
+            }
+        }
+        
+        // 問題削除
+        function removeIssue(index, fieldName, issue) {
+            if (evaluationData[index][fieldName]) {
+                const issueIndex = evaluationData[index][fieldName].indexOf(issue);
+                if (issueIndex > -1) {
+                    evaluationData[index][fieldName].splice(issueIndex, 1);
+                    const displayField = fieldName.replace('_list', '_display');
+                    const field = fieldName.replace('_list', '_issues');
+                    updateIssuesDisplay(index, field);
+                }
+            }
+        }
+        
+        // ステータス表示
+        function showStatus(message, type) {
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            statusDiv.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        // CSV出力
+        function exportToCSV() {
+            const headers = [
+                'ファイル名',
+                'フォルダー1評価',
+                'フォルダー1問題',
+                'フォルダー2評価', 
+                'フォルダー2問題',
+                'メモ'
+            ];
+            
+            const rows = evaluationData.map(item => [
+                item.filename,
+                item.folder1_rating || '',
+                (item.folder1_issues_list || []).join('; '),
+                item.folder2_rating || '',
+                (item.folder2_issues_list || []).join('; '),
+                item.notes || ''
+            ]);
+            
+            const csvContent = [headers, ...rows]
+                .map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(','))
+                .join('\n');
+            
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            // タイムスタンプサフィックスを生成 (yyyymmddhhmm)
+            const now = new Date();
+            const timestamp = now.getFullYear().toString() + 
+                            (now.getMonth() + 1).toString().padStart(2, '0') + 
+                            now.getDate().toString().padStart(2, '0') + 
+                            now.getHours().toString().padStart(2, '0') + 
+                            now.getMinutes().toString().padStart(2, '0');
+            
+            link.download = `evaluation_results~${timestamp}.csv`;
+            link.click();
+        }
+        
+        // 進捗保存
+        function saveProgress() {
+            const progressData = {
+                folder1: currentFolder1,
+                folder2: currentFolder2,
+                evaluationData: evaluationData,
+                timestamp: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(progressData, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            // タイムスタンプサフィックスを生成 (yyyymmddhhmm)
+            const now = new Date();
+            const timestamp = now.getFullYear().toString() + 
+                            (now.getMonth() + 1).toString().padStart(2, '0') + 
+                            now.getDate().toString().padStart(2, '0') + 
+                            now.getHours().toString().padStart(2, '0') + 
+                            now.getMinutes().toString().padStart(2, '0');
+            
+            link.download = `evaluation_progress~${timestamp}.json`;
+            link.click();
+        }
+        
+        // 進捗読み込み
+        function loadProgress() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const progressData = JSON.parse(e.target.result);
+                            
+                            currentFolder1 = progressData.folder1;
+                            currentFolder2 = progressData.folder2;
+                            evaluationData = progressData.evaluationData;
+                            
+                            folder1Input.value = currentFolder1;
+                            folder2Input.value = currentFolder2;
+                            
+                            buildEvaluationGrid();
+                            
+                            // 保存されたデータを復元
+                            evaluationData.forEach((item, index) => {
+                                // 評価値復元
+                                if (item.folder1_rating) {
+                                    document.querySelector(`[data-index="${index}"][data-field="folder1_rating"]`).value = item.folder1_rating;
+                                }
+                                if (item.folder2_rating) {
+                                    document.querySelector(`[data-index="${index}"][data-field="folder2_rating"]`).value = item.folder2_rating;
+                                }
+                                
+                                // メモ復元
+                                if (item.notes) {
+                                    document.querySelector(`[data-index="${index}"][data-field="notes"]`).value = item.notes;
+                                }
+                                
+                                // 問題リスト復元
+                                if (item.folder1_issues_list) {
+                                    updateIssuesDisplay(index, 'folder1_issues');
+                                }
+                                if (item.folder2_issues_list) {
+                                    updateIssuesDisplay(index, 'folder2_issues');
+                                }
+                            });
+                            
+                            evaluationGrid.style.display = 'block';
+                            exportButton.style.display = 'inline-block';
+                            saveButton.style.display = 'inline-block';
+                            loadProgressButton.style.display = 'inline-block';
+                            
+                            showStatus('進捗データを読み込みました', 'success');
+                        } catch (error) {
+                            showStatus('進捗ファイルの読み込みに失敗しました', 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            
+            input.click();
+        }
+        
+        // グローバル関数として公開（HTML内のonclickから呼び出し用）
+        window.removeIssue = removeIssue;
+    </script>
+</body>
+</html>
