@@ -30,7 +30,7 @@ import cv2
 import numpy as np
 import torch
 from pathlib import Path
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import time
@@ -829,7 +829,8 @@ class SAMYOLOCharacterSegmentor:
                  yolo_model: str = "yolov8n.pt",
                  score_threshold: float = 0.15,
                  device: Optional[str] = None,
-                 use_anime_yolo: bool = False):
+                 use_anime_yolo: bool = False,
+                 default_multi_character_criteria: str = 'balanced'):
         """
         初期化
         
@@ -839,9 +840,11 @@ class SAMYOLOCharacterSegmentor:
             yolo_model: YOLOv8モデルファイルパス
             score_threshold: YOLO人物検出スコアの閾値
             device: 計算デバイス（cuda/cpu）
+            default_multi_character_criteria: デフォルトの複数キャラクター選択基準
         """
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
         self.score_threshold = score_threshold
+        self.default_multi_character_criteria = default_multi_character_criteria
         
         # パフォーマンス監視
         self.monitor = PerformanceMonitor()
@@ -1903,7 +1906,7 @@ class SAMYOLOCharacterSegmentor:
                 return "skip"
             
             # 5. 品質評価による最適マスク選択
-            best_mask, best_score = self._select_best_character_mask(image_rgb, filtered_masks)
+            best_mask, best_score = self._select_best_character_mask(image_rgb, filtered_masks, self.default_multi_character_criteria)
             if best_mask is None:
                 print(f"スキップ: 適切なキャラクターマスクが見つかりませんでした")
                 return "skip"
@@ -1913,19 +1916,27 @@ class SAMYOLOCharacterSegmentor:
                 image, best_mask, image_path, output_dir, best_score
             )
             
+            # 7. メモリクリア
+            import gc
+            gc.collect()
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+            
             return "success" if success else "error"
             
         except Exception as e:
             print(f"❌ 処理エラー: {e}")
             return "error"
     
-    def _select_best_character_mask(self, image: np.ndarray, filtered_masks: List[Tuple[dict, float]]) -> Tuple[Optional[dict], float]:
+    def _select_best_character_mask(self, image: np.ndarray, filtered_masks: List[Tuple[dict, float]], 
+                                  criteria: str = 'balanced') -> Tuple[Optional[dict], float]:
         """
         品質評価を使用して最適なキャラクターマスクを選択（改良版）
         
         Args:
             image: 入力画像
             filtered_masks: YOLOでフィルタリングされたマスクリスト
+            criteria: 複数キャラクター選択基準
             
         Returns:
             最適マスクと品質スコア
@@ -1933,11 +1944,21 @@ class SAMYOLOCharacterSegmentor:
         if not filtered_masks:
             return None, 0.0
         
-        # 複数キャラクター検出時は最大面積のマスクを選択
+        # 複数キャラクター検出時は複合スコアで最適選択
         if len(filtered_masks) > 1:
-            # 面積でソート（大きい順）
-            filtered_masks.sort(key=lambda x: x[0]['area'], reverse=True)
-            print(f"🎯 複数キャラクター検出: {len(filtered_masks)}個 → 最大面積を選択")
+            print(f"🎯 複数キャラクター検出: {len(filtered_masks)}個 → 複合スコアで最適選択")
+            
+            # バッチサイズ制限（メモリ保護）
+            max_masks = 20  # 最大20個まで制限
+            if len(filtered_masks) > max_masks:
+                print(f"⚠️ マスク数制限: {len(filtered_masks)}個 → {max_masks}個に制限")
+                # YOLOスコア順でトップ20を選択
+                filtered_masks = sorted(filtered_masks, key=lambda x: x[1], reverse=True)[:max_masks]
+            
+            # 複合スコアによる選択（改良版）
+            best_mask_info = self._select_best_character_with_criteria(filtered_masks, image.shape, criteria)
+            if best_mask_info:
+                return best_mask_info[0], best_mask_info[1]
         
         # 近接マスクの統合を試行
         merged_mask = self._try_merge_nearby_masks(filtered_masks, image)
@@ -1970,6 +1991,130 @@ class SAMYOLOCharacterSegmentor:
             return None, 0.0
         
         return best_mask, best_total_score
+    
+    def _select_best_character_with_criteria(self, 
+                                           filtered_masks: List[Tuple[dict, float]], 
+                                           image_shape: tuple,
+                                           criteria: str = 'balanced') -> Optional[Tuple[dict, float]]:
+        """
+        複合スコアによる最適キャラクター選択 (Gemini提案実装)
+        
+        Args:
+            filtered_masks: (マスクデータ, YOLOスコア) のタプルリスト
+            image_shape: 画像サイズ (height, width, channels)
+            criteria: 選択基準 ('balanced', 'size_priority', 'fullbody_priority', 'central_priority', 'confidence_priority')
+            
+        Returns:
+            (最適マスク, 品質スコア) または None
+        """
+        if not filtered_masks:
+            return None
+        
+        h, w = image_shape[:2]
+        image_center_x, image_center_y = w / 2, h / 2
+        
+        def calculate_composite_score(mask_data: dict, yolo_score: float) -> Dict[str, float]:
+            """複合スコア計算"""
+            scores = {}
+            
+            # 1. 面積スコア (30%): 適度な大きさを評価
+            area_ratio = mask_data['area'] / (h * w)
+            if 0.05 <= area_ratio <= 0.4:  # 画像の5-40%が理想的
+                scores['area'] = min(area_ratio / 0.4, 1.0)
+            else:
+                scores['area'] = max(0, 1.0 - abs(area_ratio - 0.2) / 0.2)
+            
+            # 2. アスペクト比スコア (25%): 全身キャラクターを優先
+            bbox = mask_data['bbox']
+            aspect_ratio = bbox[3] / max(bbox[2], 1)  # height / width
+            if 1.2 <= aspect_ratio <= 2.5:  # 全身キャラクター範囲
+                scores['fullbody'] = min((aspect_ratio - 0.5) / 2.0, 1.0)
+            else:
+                scores['fullbody'] = max(0, 1.0 - abs(aspect_ratio - 1.8) / 1.0)
+            
+            # 3. 中央位置スコア (20%): 画像中央に近いキャラクターを優先
+            mask_center_x = bbox[0] + bbox[2] / 2
+            mask_center_y = bbox[1] + bbox[3] / 2
+            distance_from_center = np.sqrt(
+                ((mask_center_x - image_center_x) / w)**2 + 
+                ((mask_center_y - image_center_y) / h)**2
+            )
+            scores['central'] = max(0, 1.0 - distance_from_center)
+            
+            # 4. 接地スコア (15%): 画面下部にいるキャラクターを優先
+            bottom_position = (bbox[1] + bbox[3]) / h
+            if bottom_position >= 0.6:  # 下部60%以降
+                scores['grounded'] = min(bottom_position, 1.0)
+            else:
+                scores['grounded'] = bottom_position / 0.6
+            
+            # 5. YOLO信頼度スコア (10%)
+            scores['confidence'] = yolo_score
+            
+            return scores
+        
+        # 基準別の重み設定
+        weight_configs = {
+            'balanced': {'area': 0.30, 'fullbody': 0.25, 'central': 0.20, 'grounded': 0.15, 'confidence': 0.10},
+            'size_priority': {'area': 0.50, 'fullbody': 0.15, 'central': 0.15, 'grounded': 0.10, 'confidence': 0.10},
+            'fullbody_priority': {'area': 0.20, 'fullbody': 0.40, 'central': 0.15, 'grounded': 0.15, 'confidence': 0.10},
+            'central_priority': {'area': 0.20, 'fullbody': 0.20, 'central': 0.35, 'grounded': 0.15, 'confidence': 0.10},
+            'confidence_priority': {'area': 0.25, 'fullbody': 0.20, 'central': 0.15, 'grounded': 0.10, 'confidence': 0.30}
+        }
+        
+        weights = weight_configs.get(criteria, weight_configs['balanced'])
+        
+        # 各マスクのスコア計算
+        best_mask = None
+        best_score = 0.0
+        best_composite_score = 0.0
+        
+        print(f"🎯 複合スコア評価開始 (基準: {criteria}, {len(filtered_masks)}個のマスク)")
+        
+        for i, (mask_data, yolo_score) in enumerate(filtered_masks):
+            try:
+                scores = calculate_composite_score(mask_data, yolo_score)
+                
+                # キー整合性チェック
+                required_keys = set(weights.keys())
+                score_keys = set(scores.keys())
+                if not required_keys.issubset(score_keys):
+                    missing_keys = required_keys - score_keys
+                    print(f"❌ マスク{i+1}: スコアキー不足 {missing_keys}")
+                    continue
+                
+                # 重み付き総合スコア計算
+                composite_score = sum(scores[key] * weights[key] for key in weights.keys())
+                
+                # NaN/Inf チェック
+                if not np.isfinite(composite_score):
+                    print(f"❌ マスク{i+1}: 無効スコア {composite_score}")
+                    continue
+                
+                print(f"   マスク{i+1}: 総合={composite_score:.3f} "
+                      f"(面積={scores['area']:.2f}, 全身={scores['fullbody']:.2f}, "
+                      f"中央={scores['central']:.2f}, 接地={scores['grounded']:.2f}, "
+                      f"YOLO={scores['confidence']:.2f})")
+                
+                if composite_score > best_composite_score:
+                    best_composite_score = composite_score
+                    best_mask = mask_data
+                    best_score = yolo_score * 0.6 + composite_score * 0.4  # 品質スコア算出
+                    
+                # 5個ごとにガベージコレクション
+                if (i + 1) % 5 == 0:
+                    import gc
+                    gc.collect()
+                    
+            except Exception as e:
+                print(f"❌ マスク{i+1}評価エラー: {e}")
+                continue
+        
+        if best_mask is not None:
+            print(f"✅ 最適マスク選択: 複合スコア {best_composite_score:.3f}, 品質スコア {best_score:.3f}")
+            return best_mask, best_score
+        
+        return None
     
     def _try_merge_nearby_masks(self, filtered_masks: List[Tuple[dict, float]], 
                                image: np.ndarray) -> Optional[dict]:
@@ -2292,6 +2437,10 @@ if __name__ == "__main__":
     parser.add_argument("--score_threshold", type=float, default=0.15, help="YOLO人物検出スコア閾値")
     parser.add_argument("--device", choices=["cuda", "cpu"], help="計算デバイス")
     parser.add_argument("--anime_yolo", action="store_true", help="アニメ用YOLOモデルを使用")
+    parser.add_argument("--multi_character_criteria", 
+                       choices=['balanced', 'size_priority', 'fullbody_priority', 'central_priority', 'confidence_priority'],
+                       default='balanced',
+                       help="複数キャラクター選択基準 (default: balanced)")
     
     args = parser.parse_args()
     
@@ -2311,7 +2460,8 @@ if __name__ == "__main__":
             yolo_model=args.yolo_model,
             score_threshold=args.score_threshold,
             device=args.device,
-            use_anime_yolo=args.anime_yolo
+            use_anime_yolo=args.anime_yolo,
+            default_multi_character_criteria=args.multi_character_criteria
         )
         
         if args.mode == "reproduce-auto":

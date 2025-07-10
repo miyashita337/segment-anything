@@ -50,6 +50,7 @@ def extract_character_from_path(image_path: str,
                                manga_mode: bool = False,
                                effect_removal: bool = False,
                                panel_split: bool = False,
+                               multi_character_criteria: str = 'balanced',
                                **kwargs) -> Dict[str, Any]:
     """
     画像パスからキャラクターを抽出 (Phase 2対応版)
@@ -70,6 +71,7 @@ def extract_character_from_path(image_path: str,
         manga_mode: 漫画前処理モード (Phase 2)
         effect_removal: エフェクト線除去を有効化 (Phase 2)
         panel_split: マルチコマ分割を有効化 (Phase 2)
+        multi_character_criteria: 複数キャラクター選択基準 ('balanced', 'size_priority', 'fullbody_priority', 'central_priority', 'confidence_priority')
         
     Returns:
         抽出結果の辞書
@@ -101,6 +103,7 @@ def extract_character_from_path(image_path: str,
                 manga_mode=config.get('enable_manga_preprocessing', manga_mode),
                 effect_removal=config.get('enable_effect_removal', effect_removal),
                 panel_split=config.get('enable_panel_split', panel_split),
+                multi_character_criteria=multi_character_criteria,
                 **{k: v for k, v in config.items() if k not in [
                     'min_yolo_score', 'enable_enhanced_processing', 'enable_manga_preprocessing',
                     'enable_effect_removal', 'enable_panel_split'
@@ -493,6 +496,12 @@ def main():
     parser.add_argument('--effect-removal', action='store_true', help='Enable effect line removal (Phase 2)')
     parser.add_argument('--panel-split', action='store_true', help='Enable multi-panel splitting (Phase 2)')
     
+    # 複数キャラクター選択基準オプション
+    parser.add_argument('--multi-character-criteria', 
+                       choices=['balanced', 'size_priority', 'fullbody_priority', 'central_priority', 'confidence_priority'],
+                       default='balanced',
+                       help='Character selection criteria for multiple characters (default: balanced)')
+    
     args = parser.parse_args()
     
     # Extract common arguments (Phase 2対応版)
@@ -509,7 +518,8 @@ def main():
         'high_quality': args.high_quality,
         'manga_mode': args.manga_mode,
         'effect_removal': args.effect_removal,
-        'panel_split': args.panel_split
+        'panel_split': args.panel_split,
+        'multi_character_criteria': args.multi_character_criteria
     }
     
     # 複雑ポーズモード用の設定調整
