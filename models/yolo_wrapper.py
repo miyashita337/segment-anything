@@ -247,6 +247,105 @@ class YOLOModelWrapper:
         
         return None
     
+    def _select_best_character_with_criteria(self, 
+                                           masks: List[Dict[str, Any]], 
+                                           image_shape: tuple,
+                                           criteria: str = 'balanced') -> Optional[Tuple[Dict[str, Any], float]]:
+        """
+        複合スコアによる最適キャラクター選択 (Gemini提案実装)
+        
+        Args:
+            masks: マスク候補リスト
+            image_shape: 画像サイズ (height, width, channels)
+            criteria: 選択基準 ('balanced', 'size_priority', 'fullbody_priority', 'central_priority', 'confidence_priority')
+            
+        Returns:
+            (最適マスク, 品質スコア) または None
+        """
+        if not masks:
+            return None
+        
+        h, w = image_shape[:2]
+        image_center_x, image_center_y = w / 2, h / 2
+        
+        def calculate_composite_score(mask_data: Dict[str, Any]) -> Dict[str, float]:
+            """複合スコア計算"""
+            scores = {}
+            
+            # 1. 面積スコア (30%): 適度な大きさを評価
+            area_ratio = mask_data['area'] / (h * w)
+            if 0.05 <= area_ratio <= 0.4:  # 画像の5-40%が理想的
+                scores['area'] = min(area_ratio / 0.4, 1.0)
+            else:
+                scores['area'] = max(0, 1.0 - abs(area_ratio - 0.2) / 0.2)
+            
+            # 2. アスペクト比スコア (25%): 全身キャラクターを優先
+            bbox = mask_data['bbox']
+            aspect_ratio = bbox[3] / max(bbox[2], 1)  # height / width
+            if 1.2 <= aspect_ratio <= 2.5:  # 全身キャラクター範囲
+                scores['fullbody'] = min((aspect_ratio - 0.5) / 2.0, 1.0)
+            else:
+                scores['fullbody'] = max(0, 1.0 - abs(aspect_ratio - 1.8) / 1.0)
+            
+            # 3. 中央位置スコア (20%): 画像中央に近いキャラクターを優先
+            mask_center_x = bbox[0] + bbox[2] / 2
+            mask_center_y = bbox[1] + bbox[3] / 2
+            distance_from_center = np.sqrt(
+                ((mask_center_x - image_center_x) / w)**2 + 
+                ((mask_center_y - image_center_y) / h)**2
+            )
+            scores['central'] = max(0, 1.0 - distance_from_center)
+            
+            # 4. 接地スコア (15%): 画面下部にいるキャラクターを優先
+            bottom_position = (bbox[1] + bbox[3]) / h
+            if bottom_position >= 0.6:  # 下部60%以降
+                scores['grounded'] = min(bottom_position, 1.0)
+            else:
+                scores['grounded'] = bottom_position / 0.6
+            
+            # 5. YOLO信頼度スコア (10%)
+            scores['confidence'] = mask_data.get('yolo_confidence', 0.0)
+            
+            return scores
+        
+        # 基準別の重み設定
+        weight_configs = {
+            'balanced': {'area': 0.30, 'fullbody': 0.25, 'central': 0.20, 'grounded': 0.15, 'confidence': 0.10},
+            'size_priority': {'area': 0.50, 'fullbody': 0.15, 'central': 0.15, 'grounded': 0.10, 'confidence': 0.10},
+            'fullbody_priority': {'area': 0.20, 'fullbody': 0.40, 'central': 0.15, 'grounded': 0.15, 'confidence': 0.10},
+            'central_priority': {'area': 0.20, 'fullbody': 0.20, 'central': 0.35, 'grounded': 0.15, 'confidence': 0.10},
+            'confidence_priority': {'area': 0.25, 'fullbody': 0.20, 'central': 0.15, 'grounded': 0.10, 'confidence': 0.30}
+        }
+        
+        weights = weight_configs.get(criteria, weight_configs['balanced'])
+        
+        # 各マスクのスコア計算
+        best_mask = None
+        best_score = 0.0
+        
+        print(f"🎯 複合スコア評価開始 (基準: {criteria})")
+        
+        for i, mask_data in enumerate(masks):
+            scores = calculate_composite_score(mask_data)
+            
+            # 重み付き総合スコア計算
+            composite_score = sum(scores[key] * weights[key] for key in weights.keys())
+            
+            print(f"   マスク{i+1}: 総合={composite_score:.3f} "
+                  f"(面積={scores['area']:.2f}, 全身={scores['fullbody']:.2f}, "
+                  f"中央={scores['central']:.2f}, 接地={scores['grounded']:.2f}, "
+                  f"信頼度={scores['confidence']:.2f})")
+            
+            if composite_score > best_score:
+                best_score = composite_score
+                best_mask = mask_data
+        
+        if best_mask is not None:
+            print(f"✅ 最適マスク選択: 総合スコア {best_score:.3f}")
+            return best_mask, best_score
+        
+        return None
+    
     def get_model_info(self) -> Dict[str, Any]:
         """
         Get information about the loaded model
