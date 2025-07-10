@@ -62,6 +62,16 @@ except ImportError:
     REMBG_AVAILABLE = False
     print("Warning: rembg not available. Background removal will use mask-based method.")
 
+# v0.0.43新機能インポート
+try:
+    from utils.mask_expansion_processor import MaskExpansionProcessor
+    from utils.limb_protection_system import LimbProtectionSystem
+    from utils.stability_manager import StabilityManager
+    V043_FEATURES_AVAILABLE = True
+except ImportError as e:
+    print(f"Warning: v0.0.43機能が利用できません: {e}")
+    V043_FEATURES_AVAILABLE = False
+
 
 class PerformanceMonitor:
     """
@@ -856,6 +866,18 @@ class SAMYOLOCharacterSegmentor:
         self.text_detector = TextDetector()
         self.bg_remover = BackgroundRemover()
         self.quality_evaluator = CharacterQualityEvaluator()
+        
+        # v0.0.43 抽出範囲改善機能
+        if V043_FEATURES_AVAILABLE:
+            self.mask_expander = MaskExpansionProcessor()
+            self.limb_protector = LimbProtectionSystem()
+            self.stability_manager = StabilityManager()
+            print("✅ v0.0.43 抽出範囲改善機能有効")
+        else:
+            self.mask_expander = None
+            self.limb_protector = None
+            self.stability_manager = None
+            print("⚠️ v0.0.43 機能が無効（従来機能を使用）")
         
         # アニメモードの場合、より低い閾値を使用
         if use_anime_yolo:
@@ -2230,8 +2252,45 @@ class SAMYOLOCharacterSegmentor:
             保存成功可否
         """
         try:
-            mask = mask_data['segmentation'].astype(np.uint8)
-            bbox = mask_data['bbox']  # [x, y, w, h]
+            # v0.0.43: 抽出範囲改善処理適用
+            enhanced_mask_data = mask_data
+            if V043_FEATURES_AVAILABLE and self.mask_expander and self.limb_protector:
+                # A評価保護（品質スコア0.8以上は変更しない）
+                preserve_a_rating = quality_score >= 0.8
+                
+                if not preserve_a_rating:
+                    # 安定性監視開始
+                    if self.stability_manager:
+                        self.stability_manager.start_monitoring("character_extraction_v043")
+                    
+                    try:
+                        # 手足保護処理
+                        enhanced_mask_data = self.limb_protector.protect_limbs(
+                            mask_data, image.shape, enable_protection=True
+                        )
+                        
+                        # マスク拡張処理
+                        enhanced_mask_data = self.mask_expander.expand_mask_adaptive(
+                            enhanced_mask_data, image.shape, preserve_a_rating=False
+                        )
+                        
+                        print("🚀 v0.0.43抽出範囲改善適用")
+                        
+                    except Exception as e:
+                        print(f"⚠️ v0.0.43機能エラー（従来処理継続）: {e}")
+                        enhanced_mask_data = mask_data
+                    
+                    finally:
+                        # 安定性監視停止
+                        if self.stability_manager:
+                            stats = self.stability_manager.stop_monitoring()
+                            if stats.get('emergency_stopped'):
+                                print("⚠️ 安定性監視: 緊急停止実行済み")
+                else:
+                    print("🛡️ A評価保護: v0.0.43機能スキップ")
+            
+            mask = enhanced_mask_data['segmentation'].astype(np.uint8)
+            bbox = enhanced_mask_data['bbox']  # [x, y, w, h]
             
             # バウンディングボックスでクロップ
             x, y, w, h = map(int, bbox)
