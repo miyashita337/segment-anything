@@ -374,7 +374,7 @@ def batch_extract_characters(input_dir: str,
                            output_dir: str,
                            **extract_kwargs) -> Dict[str, Any]:
     """
-    ディレクトリ内の全画像に対してバッチ処理
+    ディレクトリ内の全画像に対してバッチ処理 (TDR安全対策版)
     
     Args:
         input_dir: 入力ディレクトリ
@@ -384,6 +384,19 @@ def batch_extract_characters(input_dir: str,
     Returns:
         バッチ処理結果
     """
+    import torch
+    import gc
+    
+    def gpu_memory_cleanup():
+        """GPU メモリクリーンアップ (TDR対策)"""
+        try:
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+                torch.cuda.synchronize()
+                gc.collect()
+        except Exception as e:
+            print(f"⚠️ GPU メモリクリーンアップ失敗: {e}")
+    
     input_path = Path(input_dir)
     output_path = Path(output_dir)
     
@@ -409,31 +422,60 @@ def batch_extract_characters(input_dir: str,
     successful = 0
     
     print(f"🚀 バッチ処理開始: {len(image_files)} 画像")
+    print(f"🛡️ TDR安全対策: GPU メモリクリーンアップ有効")
     
     for i, image_file in enumerate(image_files, 1):
         print(f"\n📁 処理中 [{i}/{len(image_files)}]: {image_file.name}")
         
-        # 出力パス生成
-        output_file = output_path / image_file.stem
-        
-        # 抽出実行
-        # verboseはバッチ処理では抑制
-        batch_kwargs = extract_kwargs.copy()
-        batch_kwargs['verbose'] = False
-        result = extract_character_from_path(
-            str(image_file),
-            output_path=str(output_file),
-            **batch_kwargs
-        )
-        
-        result['filename'] = image_file.name
-        results.append(result)
-        
-        if result['success']:
-            successful += 1
-            print(f"✅ 成功: {image_file.name}")
-        else:
-            print(f"❌ 失敗: {image_file.name} - {result['error']}")
+        try:
+            # 出力パス生成
+            output_file = output_path / image_file.stem
+            
+            # 抽出実行
+            batch_kwargs = extract_kwargs.copy()
+            batch_kwargs['verbose'] = False
+            
+            result = extract_character_from_path(
+                str(image_file),
+                output_path=str(output_file),
+                **batch_kwargs
+            )
+            
+            result['filename'] = image_file.name
+            results.append(result)
+            
+            if result['success']:
+                successful += 1
+                print(f"✅ 成功: {image_file.name}")
+            else:
+                print(f"❌ 失敗: {image_file.name} - {result.get('error', 'Unknown error')}")
+            
+            # 5枚ごとにGPU メモリクリーンアップ (TDR対策)
+            if i % 5 == 0:
+                print(f"🧹 GPU メモリクリーンアップ実行 ({i}/{len(image_files)})")
+                gpu_memory_cleanup()
+                
+        except KeyboardInterrupt:
+            print("\n⏹️ ユーザーによる処理中断")
+            gpu_memory_cleanup()
+            break
+        except Exception as e:
+            print(f"❌ 画像処理エラー: {image_file.name} - {e}")
+            # エラーでもバッチ処理は継続
+            error_result = {
+                'success': False,
+                'error': str(e),
+                'filename': image_file.name,
+                'processing_time': 0.0
+            }
+            results.append(error_result)
+            
+            # エラー時もGPU クリーンアップ
+            gpu_memory_cleanup()
+    
+    # 最終GPU メモリクリーンアップ
+    print("\n🧹 最終GPU メモリクリーンアップ...")
+    gpu_memory_cleanup()
     
     # 結果サマリ
     batch_result = {
@@ -441,12 +483,13 @@ def batch_extract_characters(input_dir: str,
         'total_files': len(image_files),
         'successful': successful,
         'failed': len(image_files) - successful,
-        'success_rate': successful / len(image_files),
+        'success_rate': successful / len(image_files) if len(image_files) > 0 else 0,
         'results': results
     }
     
     print(f"\n📊 バッチ処理完了:")
     print(f"   成功: {successful}/{len(image_files)} ({batch_result['success_rate']:.1%})")
+    print(f"   🛡️ TDR対策: 安全にGPU処理完了")
     
     # Pushover通知送信
     try:
