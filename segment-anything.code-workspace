@@ -1,0 +1,152 @@
+{
+    "folders": [
+        {
+            "name": "Segment Anything - Character Extraction",
+            "path": "."
+        }
+    ],
+    "settings": {
+        "peacock.color": "#FF6B35",
+        "python.defaultInterpreterPath": "./sam-env/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "python.terminal.activateEnvInCurrentTerminal": true,
+        "python.linting.enabled": true,
+        "python.linting.flake8Enabled": true,
+        "python.linting.mypyEnabled": true,
+        "python.formatting.provider": "black",
+        "python.formatting.blackArgs": ["--line-length", "100"],
+        "files.exclude": {
+            "**/__pycache__": true,
+            "**/*.pyc": true,
+            "**/.pytest_cache": true,
+            "**/sam-env": true,
+            "**/results_batch": true,
+            "**/results_test": true,
+            "**/*.pth": true,
+            "**/*.pt": true,
+            "**/*.log": true
+        },
+        "search.exclude": {
+            "**/sam-env": true,
+            "**/results_batch": true,
+            "**/segment_anything.egg-info": true
+        },
+        "git.ignoreLimitWarning": true,
+        "git.suggestSmartCommit": false,
+        "terminal.integrated.cwd": "${workspaceFolder}",
+        "editor.rulers": [100],
+        "editor.formatOnSave": true,
+        "python.testing.pytestEnabled": true,
+        "python.testing.pytestArgs": [
+            "tests/"
+        ],
+        "workbench.colorCustomizations": {
+            "activityBar.activeBackground": "#ff9068",
+            "activityBar.background": "#ff9068",
+            "activityBar.foreground": "#15202b",
+            "activityBar.inactiveForeground": "#15202b99",
+            "activityBarBadge.background": "#dfffe8",
+            "activityBarBadge.foreground": "#15202b",
+            "commandCenter.border": "#15202b99",
+            "sash.hoverBorder": "#ff9068",
+            "statusBar.background": "#ff6b35",
+            "statusBar.foreground": "#15202b",
+            "statusBarItem.hoverBackground": "#ff4602",
+            "statusBarItem.remoteBackground": "#ff6b35",
+            "statusBarItem.remoteForeground": "#15202b",
+            "titleBar.activeBackground": "#ff6b35",
+            "titleBar.activeForeground": "#15202b",
+            "titleBar.inactiveBackground": "#ff6b3599",
+            "titleBar.inactiveForeground": "#15202b99"
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "ms-python.python",
+            "ms-python.flake8",
+            "ms-python.black-formatter",
+            "ms-python.mypy-type-checker",
+            "ms-vscode.test-adapter-converter",
+            "njpwerner.autodocstring",
+            "ms-toolsai.jupyter"
+        ]
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "Install Dependencies",
+                "type": "shell",
+                "command": "pip install -e . && pip install opencv-python pycocotools matplotlib onnxruntime onnx ultralytics easyocr",
+                "group": "build",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared"
+                }
+            },
+            {
+                "label": "Run Linter",
+                "type": "shell",
+                "command": "./linter.sh",
+                "group": "test",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always"
+                }
+            },
+            {
+                "label": "Run Tests",
+                "type": "shell",
+                "command": "python -m pytest tests/ -v",
+                "group": "test",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always"
+                }
+            },
+            {
+                "label": "Extract Characters (Interactive)",
+                "type": "shell",
+                "command": "python sam_batch_interactive.py",
+                "group": "build",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": true,
+                    "panel": "dedicated"
+                }
+            }
+        ]
+    },
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Test Phase3 CLI",
+                "type": "python",
+                "request": "launch",
+                "program": "test_phase3_cli.py",
+                "console": "integratedTerminal",
+                "cwd": "${workspaceFolder}"
+            },
+            {
+                "name": "Extract Kaname03",
+                "type": "python",
+                "request": "launch",
+                "program": "extract_kaname03.py",
+                "console": "integratedTerminal",
+                "cwd": "${workspaceFolder}"
+            },
+            {
+                "name": "Interactive Batch",
+                "type": "python",
+                "request": "launch",
+                "program": "sam_batch_interactive.py",
+                "console": "integratedTerminal",
+                "cwd": "${workspaceFolder}"
+            }
+        ]
+    }
+}
