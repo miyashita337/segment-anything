@@ -23,18 +23,30 @@ python -m venv sam-env
 source sam-env/bin/activate  # Linux
 sam-env\Scripts\activate     # Windows
 
-# 依存関係インストール
+# 依存関係インストール（setup.pyのdev版推奨）
+pip install -e .[dev]
+# または個別インストール
 pip install -e .
 pip install opencv-python pycocotools matplotlib onnxruntime onnx ultralytics easyocr
 ```
 
 ### キャラクター抽出実行
 ```bash
+# 最新パイプライン（v0.0.43）- 推奨
+python extract_kaname03.py --quality_method balanced
+
+# 改良版パイプライン（kaname04系列）
+python extract_kaname04.py
+
 # インタラクティブバッチ処理
 python sam_batch_interactive.py
 
-# メインパイプライン実行（kaname03系列）
-python extract_kaname03.py
+# Phase 3インタラクティブ抽出（100%成功率）
+python commands/quick_interactive.py <image_path> --points 750,1000,pos 800,1200,pos 500,500,neg
+
+# バッチ実行スクリプト
+./run_v042_sequential.sh
+./run_v042_resume.sh
 
 # コマンドライン個別実行
 python scripts/amg.py --checkpoint sam_vit_h_4b8939.pth --model-type vit_h --input <image_path> --output <output_path>
@@ -77,18 +89,24 @@ python -m pytest tests/test_extract.py -v
 - `requirements.txt` - Python依存関係
 
 ### ログファイル
-- `kaname03_*.log` - パイプライン実行ログ
+- `kaname03_*.log` - パイプライン実行ログ（balanced, confidence, size, fullbody, central各手法別）
+- `kaname04_*.log` - 改良版パイプラインログ
 - `v042_sequential_full.log` - フル実行ログ
 
 ## アーキテクチャ
 
-### 処理フロー
+### 処理フロー（v0.0.43最新版）
 1. **入力画像準備**: test_small/またはカスタムディレクトリから画像読み込み
 2. **YOLO検出**: キャラクター候補の境界ボックス検出
 3. **SAM精密分割**: YOLOの結果を元にSAMで高精度セグメンテーション
 4. **品質評価**: 5つの評価手法から最適な抽出結果を選択
-5. **後処理**: マスク適用、背景除去、リサイズ等
-6. **結果保存**: results_batch/に処理結果を保存
+5. **A評価保護**: 品質スコア≥0.8の場合は改善処理をスキップ
+6. **v0.0.43改善処理** (A評価以外):
+   - 手足切断防止処理（LimbProtectionSystem）
+   - 適応的マスク拡張（MaskExpansionProcessor）
+   - 安定性監視（StabilityManager）
+7. **後処理**: マスク適用、背景除去、リサイズ等
+8. **結果保存**: results_batch/に処理結果を保存
 
 ### 品質評価システム
 
@@ -125,6 +143,10 @@ python extract_kaname03.py --quality_method confidence_priority
 - `notification.py` - Pushover通知システム
 - `performance.py` - パフォーマンス監視
 - `difficult_pose.py` - 困難な姿勢の検出・処理
+- `manga_preprocessing.py` - 漫画特化前処理（テキスト除去）
+- `text_detection.py` - OCR統合テキスト検出
+- `interactive_assistant.py` - GUIインタラクティブモード（tkinter）
+- `interactive_core.py` - インタラクティブ機能の共通基盤
 
 ## 開発ガイドライン
 
@@ -139,6 +161,7 @@ python extract_kaname03.py --quality_method confidence_priority
 - `./linter.sh`で統合チェック実行
 - 100文字行制限
 - setup.pyのdev依存関係: `pip install -e .[dev]`
+- **重要**: black==23.*, isort==5.12.0の特定バージョン必須（linter.shで確認）
 
 ### テスト戦略
 - 新機能追加時は対応するテストを作成
@@ -185,10 +208,17 @@ ls -la sam_vit_h_4b8939.pth yolov8*.pt
 
 ## 重要な注意事項
 - SAMモデルファイル(2.6GB)が必要 - [Meta公式からダウンロード](https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth)
-- GPU推奨（CPU処理は非常に遅い）
-- バッチ処理は長時間実行される可能性（大規模データセットでは数時間）
+- GPU推奨（CPU処理は非常に遅い）、8GB VRAM以上推奨
+- バッチ処理は長時間実行される可能性（5-8秒/画像、大規模データセットでは数時間）
 - 処理中断時はレジューム機能を利用
-- メモリ使用量が大きい（8GB VRAM推奨）
+- メモリ制限: RAM 2GB、VRAM 8GB、処理時間5分/画像（v0.0.43安定性管理）
+- **アニメキャラクター特化**: YOLO閾値0.07に調整済み
+
+## 実績データ（v0.0.43）
+- **処理成功率**: 96.7% (148/153画像)
+- **品質評価**: balanced 30% → size_priority 40%成功率
+- **平均品質スコア**: 0.742（範囲: 0.482-0.938）
+- **Phase 3インタラクティブ**: 100%成功率（従来自動処理0%から改善）
 
 ## プロジェクト固有の設計判断
 
@@ -204,3 +234,15 @@ ls -la sam_vit_h_4b8939.pth yolov8*.pt
 ### レジューム機能
 - 大規模バッチ処理の中断・再開をサポート
 - 処理済みファイルをスキップして効率的に継続
+
+### v0.0.43改善システム（最新）
+- **MaskExpansionProcessor**: 体型別適応的マスク拡張（全身/上半身判定）
+- **LimbProtectionSystem**: エッジ検出による手足切断防止
+- **StabilityManager**: メモリ・時間制限による安定性確保
+- **A評価保護**: 高品質結果(≥0.8)の保護機能
+
+### Phase 3インタラクティブ抽出
+- GUI版: `utils/interactive_assistant.py`（tkinter、X11環境必要）
+- CLI版: `commands/quick_interactive.py`（コマンドライン）  
+- 手動ポイント指定による100%成功率達成
+- 自動処理失敗時の手動介入システム

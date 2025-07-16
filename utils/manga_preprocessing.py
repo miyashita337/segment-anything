@@ -344,21 +344,186 @@ class MultiPanelSplitter:
         return best_panel
 
 
+class ScreentoneBoundaryProcessor:
+    """スクリーントーン・モザイク境界問題処理"""
+    
+    def __init__(self):
+        self.screentone_threshold = 0.3  # スクリーントーン検出閾値
+        self.mosaic_threshold = 0.05     # モザイク検出閾値
+    
+    def detect_screentone_regions(self, image: np.ndarray) -> Tuple[np.ndarray, float]:
+        """
+        スクリーントーン領域を検出
+        
+        Args:
+            image: 入力画像
+            
+        Returns:
+            (mask, confidence): スクリーントーンマスクと信頼度
+        """
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) if len(image.shape) == 3 else image
+        h, w = gray.shape
+        
+        # FFTを使用した周期的パターン検出
+        f_transform = np.fft.fft2(gray.astype(np.float32))
+        f_shift = np.fft.fftshift(f_transform)
+        magnitude_spectrum = np.log(np.abs(f_shift) + 1)
+        
+        # 高周波成分の検出
+        center_h, center_w = h // 2, w // 2
+        mask_size = min(50, h // 4, w // 4)
+        
+        # 周波数領域での特徴抽出
+        high_freq_mask = np.zeros_like(magnitude_spectrum)
+        high_freq_mask[center_h-mask_size:center_h+mask_size, 
+                      center_w-mask_size:center_w+mask_size] = 1
+        
+        high_freq_power = np.mean(magnitude_spectrum * high_freq_mask)
+        
+        # スクリーントーン領域のマスク生成
+        screentone_mask = np.zeros((h, w), dtype=np.uint8)
+        
+        if high_freq_power > 12.0:  # スクリーントーン検出閾値
+            # 局所的なテクスチャ分析
+            kernel_size = 15
+            kernel = np.ones((kernel_size, kernel_size), np.float32) / (kernel_size * kernel_size)
+            local_variance = cv2.filter2D(gray.astype(np.float32), -1, kernel)
+            
+            # 分散が一定範囲内の領域をスクリーントーンとして検出
+            variance_mean = np.mean(local_variance)
+            variance_std = np.std(local_variance)
+            
+            screentone_regions = (local_variance > variance_mean - 0.5 * variance_std) & \
+                               (local_variance < variance_mean + 0.5 * variance_std)
+            
+            screentone_mask[screentone_regions] = 255
+            
+            # モルフォロジー処理でノイズ除去
+            kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+            screentone_mask = cv2.morphologyEx(screentone_mask, cv2.MORPH_CLOSE, kernel)
+        
+        confidence = min(high_freq_power / 15.0, 1.0)
+        return screentone_mask, confidence
+    
+    def detect_mosaic_regions(self, image: np.ndarray) -> Tuple[np.ndarray, float]:
+        """
+        モザイク領域を検出
+        
+        Args:
+            image: 入力画像
+            
+        Returns:
+            (mask, confidence): モザイクマスクと信頼度
+        """
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) if len(image.shape) == 3 else image
+        
+        # エッジ検出
+        edges = cv2.Canny(gray, 50, 150)
+        
+        # 水平・垂直線の検出
+        horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (25, 1))
+        vertical_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 25))
+        
+        horizontal_lines = cv2.morphologyEx(edges, cv2.MORPH_OPEN, horizontal_kernel)
+        vertical_lines = cv2.morphologyEx(edges, cv2.MORPH_OPEN, vertical_kernel)
+        
+        # 格子パターンの検出
+        grid_pattern = cv2.bitwise_or(horizontal_lines, vertical_lines)
+        grid_ratio = np.sum(grid_pattern > 0) / grid_pattern.size
+        
+        # モザイクマスク生成
+        mosaic_mask = np.zeros_like(gray, dtype=np.uint8)
+        
+        if grid_ratio > self.mosaic_threshold:
+            # 格子の交点周辺をモザイク領域として検出
+            intersection_points = cv2.bitwise_and(horizontal_lines, vertical_lines)
+            
+            # 交点周辺を拡張
+            kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (10, 10))
+            mosaic_mask = cv2.dilate(intersection_points, kernel, iterations=2)
+        
+        confidence = min(grid_ratio / self.mosaic_threshold, 1.0)
+        return mosaic_mask, confidence
+    
+    def create_boundary_enhancement_mask(self, image: np.ndarray) -> Dict[str, Any]:
+        """
+        境界問題対応のための拡張マスクを作成
+        
+        Args:
+            image: 入力画像
+            
+        Returns:
+            境界拡張情報の辞書
+        """
+        screentone_mask, screentone_conf = self.detect_screentone_regions(image)
+        mosaic_mask, mosaic_conf = self.detect_mosaic_regions(image)
+        
+        # 統合境界問題マスク
+        boundary_mask = cv2.bitwise_or(screentone_mask, mosaic_mask)
+        
+        # 境界拡張領域を計算
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15))
+        enhanced_mask = cv2.dilate(boundary_mask, kernel, iterations=1)
+        
+        return {
+            'screentone_mask': screentone_mask,
+            'screentone_confidence': screentone_conf,
+            'mosaic_mask': mosaic_mask,
+            'mosaic_confidence': mosaic_conf,
+            'boundary_mask': boundary_mask,
+            'enhanced_mask': enhanced_mask,
+            'has_boundary_issues': screentone_conf > 0.3 or mosaic_conf > 0.3,
+            'issue_types': {
+                'screentone': screentone_conf > 0.3,
+                'mosaic': mosaic_conf > 0.3
+            }
+        }
+    
+    def apply_boundary_smoothing(self, image: np.ndarray, mask: np.ndarray) -> np.ndarray:
+        """
+        境界部分の平滑化処理
+        
+        Args:
+            image: 入力画像
+            mask: 処理対象マスク
+            
+        Returns:
+            平滑化済み画像
+        """
+        # ガウシアンブラーによる境界平滑化
+        blurred = cv2.GaussianBlur(image, (5, 5), 1.0)
+        
+        # マスク領域のみブラー適用
+        result = image.copy()
+        mask_3ch = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR) if len(mask.shape) == 2 else mask
+        mask_normalized = mask_3ch.astype(np.float32) / 255.0
+        
+        result = result.astype(np.float32)
+        blurred = blurred.astype(np.float32)
+        
+        result = result * (1 - mask_normalized) + blurred * mask_normalized
+        
+        return result.astype(np.uint8)
+
+
 class MangaPreprocessor:
     """漫画前処理の統合クラス"""
     
     def __init__(self):
         self.effect_remover = EffectLineRemover()
         self.panel_splitter = MultiPanelSplitter()
+        self.boundary_processor = ScreentoneBoundaryProcessor()
     
-    def preprocess_manga_image(self, image: np.ndarray, enable_effect_removal: bool = True, enable_panel_split: bool = True) -> Dict[str, Any]:
+    def preprocess_manga_image(self, image: np.ndarray, enable_effect_removal: bool = True, 
+                              enable_panel_split: bool = True, enable_boundary_processing: bool = True) -> Dict[str, Any]:
         """
-        漫画画像の総合前処理
+        漫画画像の総合前処理（境界問題対応強化版）
         
         Args:
             image: 入力画像
             enable_effect_removal: エフェクト線除去を有効化
             enable_panel_split: パネル分割を有効化
+            enable_boundary_processing: 境界問題処理を有効化
             
         Returns:
             処理結果の辞書
@@ -369,12 +534,31 @@ class MangaPreprocessor:
             'panels': [],
             'effect_lines_detected': False,
             'effect_line_density': 0.0,
+            'boundary_issues': {},
             'processing_stages': []
         }
         
+        # 境界問題検出・処理（最初に実行）
+        if enable_boundary_processing:
+            boundary_info = self.boundary_processor.create_boundary_enhancement_mask(image)
+            result['boundary_issues'] = boundary_info
+            
+            if boundary_info['has_boundary_issues']:
+                # 境界問題がある場合は平滑化処理を適用
+                result['processed_image'] = self.boundary_processor.apply_boundary_smoothing(
+                    result['processed_image'], boundary_info['enhanced_mask']
+                )
+                result['processing_stages'].append('boundary_smoothing')
+                
+                # スクリーントーン/モザイク検出をログ
+                if boundary_info['issue_types']['screentone']:
+                    result['processing_stages'].append('screentone_detected')
+                if boundary_info['issue_types']['mosaic']:
+                    result['processing_stages'].append('mosaic_detected')
+        
         # エフェクト線除去
         if enable_effect_removal:
-            lines, density = self.effect_remover.detect_effect_lines(image)
+            lines, density = self.effect_remover.detect_effect_lines(result['processed_image'])
             result['effect_line_density'] = density
             
             if density > 0.01:  # 閾値以上でエフェクト線処理
@@ -396,3 +580,52 @@ class MangaPreprocessor:
             result['panels'] = [(result['processed_image'], (0, 0, w, h))]
         
         return result
+    
+    def get_preprocessing_recommendations(self, image: np.ndarray) -> Dict[str, Any]:
+        """
+        画像に対する前処理推奨事項を生成
+        
+        Args:
+            image: 入力画像
+            
+        Returns:
+            推奨事項の辞書
+        """
+        # 境界問題の分析
+        boundary_info = self.boundary_processor.create_boundary_enhancement_mask(image)
+        
+        # エフェクト線密度の計算
+        _, effect_density = self.effect_remover.detect_effect_lines(image)
+        
+        # パネル分割の必要性チェック
+        borders = self.panel_splitter.detect_panel_borders(image)
+        
+        recommendations = {
+            'boundary_processing': {
+                'recommended': boundary_info['has_boundary_issues'],
+                'screentone_detected': boundary_info['issue_types']['screentone'],
+                'mosaic_detected': boundary_info['issue_types']['mosaic'],
+                'confidence': max(boundary_info['screentone_confidence'], boundary_info['mosaic_confidence'])
+            },
+            'effect_removal': {
+                'recommended': effect_density > 0.01,
+                'density': effect_density,
+                'priority': 'high' if effect_density > 0.05 else 'medium'
+            },
+            'panel_split': {
+                'recommended': len(borders) > 0,
+                'detected_borders': len(borders),
+                'priority': 'high' if len(borders) > 2 else 'low'
+            },
+            'processing_order': []
+        }
+        
+        # 処理順序の推奨
+        if recommendations['boundary_processing']['recommended']:
+            recommendations['processing_order'].append('boundary_processing')
+        if recommendations['effect_removal']['recommended']:
+            recommendations['processing_order'].append('effect_removal')
+        if recommendations['panel_split']['recommended']:
+            recommendations['processing_order'].append('panel_split')
+        
+        return recommendations

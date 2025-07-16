@@ -44,9 +44,9 @@ def start():
         sam_model.load_model()
         performance_monitor.end_stage()
         
-        # Initialize YOLO model
+        # Initialize YOLO model (yolov8x.pt for high precision testing)
         performance_monitor.start_stage("YOLO Model Loading")
-        yolo_model = YOLOModelWrapper()
+        yolo_model = YOLOModelWrapper(model_path="yolov8x.pt")
         yolo_model.load_model()
         performance_monitor.end_stage()
         
