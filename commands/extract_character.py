@@ -33,6 +33,7 @@ from utils.postprocessing import (
     calculate_mask_quality_metrics
 )
 from utils.text_detection import TextDetector
+from utils.learned_quality_assessment import assess_image_quality, LearnedQualityAssessment
 
 
 def extract_character_from_path(image_path: str,
@@ -51,6 +52,7 @@ def extract_character_from_path(image_path: str,
                                effect_removal: bool = False,
                                panel_split: bool = False,
                                multi_character_criteria: str = 'balanced',
+                               adaptive_learning: bool = False,
                                **kwargs) -> Dict[str, Any]:
     """
     画像パスからキャラクターを抽出 (Phase 2対応版)
@@ -72,6 +74,7 @@ def extract_character_from_path(image_path: str,
         effect_removal: エフェクト線除去を有効化 (Phase 2)
         panel_split: マルチコマ分割を有効化 (Phase 2)
         multi_character_criteria: 複数キャラクター選択基準 ('balanced', 'size_priority', 'fullbody_priority', 'central_priority', 'confidence_priority')
+        adaptive_learning: 適応学習モード（281評価データに基づく最適手法選択）
         
     Returns:
         抽出結果の辞書
@@ -82,7 +85,8 @@ def extract_character_from_path(image_path: str,
         'output_path': None,
         'processing_time': 0.0,
         'mask_quality': {},
-        'error': None
+        'error': None,
+        'adaptive_learning_info': None
     }
     
     start_time = time.time()
@@ -104,6 +108,7 @@ def extract_character_from_path(image_path: str,
                 effect_removal=config.get('enable_effect_removal', effect_removal),
                 panel_split=config.get('enable_panel_split', panel_split),
                 multi_character_criteria=multi_character_criteria,
+                adaptive_learning=adaptive_learning,
                 **{k: v for k, v in config.items() if k not in [
                     'min_yolo_score', 'enable_enhanced_processing', 'enable_manga_preprocessing',
                     'enable_effect_removal', 'enable_panel_split'
@@ -113,13 +118,105 @@ def extract_character_from_path(image_path: str,
         return process_with_retry(image_path, extract_function, max_retries=4)
     
     try:
+        # Phase 3: 適応学習モード - 281評価データに基づく最適手法選択
+        if adaptive_learning:
+            if verbose:
+                print(f"🧠 適応学習モード: 281評価データに基づく最適手法選択を実行中...")
+            
+            try:
+                # 品質評価システムで画像特性を分析し最適手法を予測
+                quality_prediction = assess_image_quality(image_path)
+                result['adaptive_learning_info'] = {
+                    'predicted_quality': quality_prediction.predicted_quality,
+                    'confidence': quality_prediction.confidence,
+                    'recommended_method': quality_prediction.recommended_method,
+                    'fallback_method': quality_prediction.fallback_method,
+                    'reasoning': quality_prediction.reasoning,
+                    'image_characteristics': quality_prediction.image_characteristics
+                }
+                
+                # 推奨手法をmulti_character_criteriaに適用
+                multi_character_criteria = quality_prediction.recommended_method
+                
+                # ImageCharacteristicsオブジェクトを作成
+                from utils.learned_quality_assessment import ImageCharacteristics
+                img_chars_dict = quality_prediction.image_characteristics
+                img_chars = ImageCharacteristics(**img_chars_dict) if isinstance(img_chars_dict, dict) else img_chars_dict
+                
+                # 画像特性に基づく最適化パラメータ取得
+                assessor = LearnedQualityAssessment()
+                optimized_params = assessor.get_method_parameters(
+                    quality_prediction.recommended_method,
+                    img_chars
+                )
+                
+                # 最適化パラメータを適用
+                if optimized_params.get('score_threshold'):
+                    min_yolo_score = optimized_params['score_threshold']
+                
+                # 境界問題がある場合は漫画前処理を強制有効化（一時的に無効化）
+                if img_chars.has_boundary_complexity:
+                    # manga_mode = True
+                    # effect_removal = True
+                    if verbose:
+                        print(f"   🎨 境界問題検出: 漫画前処理を強制有効化（無効化中）")
+                
+                if verbose:
+                    print(f"   📊 推奨手法: {quality_prediction.recommended_method}")
+                    print(f"   🎯 予測品質: {quality_prediction.predicted_quality:.3f}")
+                    print(f"   🔧 信頼度: {quality_prediction.confidence:.3f}")
+                    print(f"   📝 理由: {quality_prediction.reasoning}")
+                    print(f"   ⚙️  最適YOLO閾値: {min_yolo_score}")
+                    
+                    # 画像特性の詳細表示
+                    if img_chars.has_complex_pose:
+                        print(f"   🤸 複雑姿勢検出")
+                    if img_chars.has_multiple_characters:
+                        print(f"   👥 複数キャラクター")
+                    if img_chars.has_screentone_issues:
+                        print(f"   📰 スクリーントーン境界問題")
+                    if img_chars.has_mosaic_issues:
+                        print(f"   🔲 モザイク境界問題")
+                
+            except Exception as e:
+                if verbose:
+                    print(f"⚠️ 適応学習エラー、デフォルト手法で継続: {e}")
+                # エラー時はデフォルト手法を継続使用
+                result['adaptive_learning_info'] = {
+                    'error': str(e),
+                    'fallback_to_default': True
+                }
+        
         # Get models
         sam_model = get_sam_model()
         yolo_model = get_yolo_model()
         performance_monitor = get_performance_monitor()
         
         if not sam_model or not yolo_model:
-            raise RuntimeError("Models not initialized. Run start hook first.")
+            if verbose:
+                print("🔄 モデル未初期化、自動初期化を実行中...")
+            
+            # 直接初期化関数を呼び出し
+            try:
+                from hooks.start import start
+                start()
+                
+                # 再度モデル取得を試行
+                sam_model = get_sam_model()
+                yolo_model = get_yolo_model()
+                performance_monitor = get_performance_monitor()
+                
+                if verbose:
+                    print("✅ モデル自動初期化完了")
+                
+                if not sam_model or not yolo_model:
+                    raise RuntimeError("Auto initialization failed. Models still not available.")
+                    
+            except ImportError:
+                # start関数がない場合のフォールバック
+                raise RuntimeError("Models not initialized. Please run: python3 hooks/start.py")
+            except Exception as e:
+                raise RuntimeError(f"Failed to auto-initialize models: {e}")
         
         # 複雑ポーズ判定と設定調整 (Phase 2対応版)
         if difficult_pose or low_threshold or manga_mode:
@@ -255,6 +352,10 @@ def extract_character_from_path(image_path: str,
         if verbose:
             print(f"🎯 最適マスク選択: YOLO score={best_mask['yolo_score']:.3f}, "
                   f"combined score={best_mask['combined_score']:.3f}")
+            if adaptive_learning:
+                print(f"   🧠 推奨手法: {multi_character_criteria} (適応学習)")
+            else:
+                print(f"   🔧 選択基準: {multi_character_criteria}")
         
         performance_monitor.end_stage()
         
@@ -280,10 +381,27 @@ def extract_character_from_path(image_path: str,
         performance_monitor.start_stage("Mask Refinement")
         raw_mask = sam_model.mask_to_binary(best_mask)
         
-        # 複雑ポーズ用の強化マスク処理を適用
-        if difficult_pose or low_threshold or high_quality:
+        # 適応学習による境界問題対応 + 複雑ポーズ用の強化マスク処理
+        boundary_complexity = False
+        if adaptive_learning and result['adaptive_learning_info'] and 'image_characteristics' in result['adaptive_learning_info']:
+            img_chars_dict = result['adaptive_learning_info']['image_characteristics']
+            boundary_complexity = img_chars_dict.get('has_boundary_complexity', False)
+        
+        use_enhanced_processing = (difficult_pose or low_threshold or high_quality or boundary_complexity)
+        
+        if use_enhanced_processing:
             if verbose:
-                print("🔧 複雑ポーズ用マスク強化処理を適用")
+                enhancement_reason = []
+                if difficult_pose:
+                    enhancement_reason.append("複雑ポーズ")
+                if low_threshold:
+                    enhancement_reason.append("低閾値")
+                if high_quality:
+                    enhancement_reason.append("高品質")
+                if boundary_complexity:
+                    enhancement_reason.append("境界問題対応")
+                
+                print(f"🔧 マスク強化処理を適用: {'+'.join(enhancement_reason)}")
             
             # DifficultPoseProcessorを使用した強化処理
             if 'processor' not in locals():
@@ -354,9 +472,41 @@ def extract_character_from_path(image_path: str,
         result['success'] = True
         result['processing_time'] = time.time() - start_time
         
+        # 適応学習結果のログ記録
+        if adaptive_learning and result['adaptive_learning_info']:
+            try:
+                assessor = LearnedQualityAssessment()
+                # 実際の品質を計算（マスク品質メトリクスから推定）
+                actual_quality = (quality_metrics['coverage_ratio'] * 2 + 
+                                quality_metrics['compactness'] * 2 + 1.0)  # 1-5スケール推定
+                
+                # 予測結果をログに記録（将来の学習更新用）
+                assessor.log_prediction_result(
+                    image_path, 
+                    type('QualityPrediction', (), result['adaptive_learning_info'])(),
+                    actual_quality=actual_quality
+                )
+                
+                result['adaptive_learning_info']['estimated_actual_quality'] = actual_quality
+                
+            except Exception as e:
+                if verbose:
+                    print(f"⚠️ 適応学習ログ記録エラー: {e}")
+        
         if verbose:
             print(f"✅ キャラクター抽出完了: {result['processing_time']:.2f}秒")
             print(f"   出力: {result['output_path']}")
+            
+            # 適応学習結果のサマリ表示
+            if adaptive_learning and result['adaptive_learning_info'] and not result['adaptive_learning_info'].get('error'):
+                adaptive_info = result['adaptive_learning_info']
+                print(f"   🧠 適応学習結果:")
+                print(f"      手法: {adaptive_info['recommended_method']}")
+                print(f"      予測品質: {adaptive_info['predicted_quality']:.3f}")
+                if 'estimated_actual_quality' in adaptive_info:
+                    print(f"      実際品質: {adaptive_info['estimated_actual_quality']:.3f}")
+                    prediction_error = abs(adaptive_info['predicted_quality'] - adaptive_info['estimated_actual_quality'])
+                    print(f"      予測精度: ±{prediction_error:.3f}")
         
         return result
         
@@ -545,9 +695,13 @@ def main():
                        default='balanced',
                        help='Character selection criteria for multiple characters (default: balanced)')
     
+    # Phase 3: 適応学習モード（281評価データに基づく最適手法選択）
+    parser.add_argument('--adaptive-learning', action='store_true', 
+                       help='Enable adaptive learning mode based on 281 evaluation records (Phase 3)')
+    
     args = parser.parse_args()
     
-    # Extract common arguments (Phase 2対応版)
+    # Extract common arguments (Phase 3対応版)
     extract_args = {
         'enhance_contrast': args.enhance_contrast,
         'filter_text': args.filter_text,
@@ -562,7 +716,8 @@ def main():
         'manga_mode': args.manga_mode,
         'effect_removal': args.effect_removal,
         'panel_split': args.panel_split,
-        'multi_character_criteria': args.multi_character_criteria
+        'multi_character_criteria': args.multi_character_criteria,
+        'adaptive_learning': args.adaptive_learning
     }
     
     # 複雑ポーズモード用の設定調整
@@ -580,6 +735,13 @@ def main():
             print("   📝 エフェクト線除去: 有効")
         if args.panel_split:
             print("   📊 マルチコマ分割: 有効")
+    
+    # Phase 3: 適応学習モード
+    if args.adaptive_learning:
+        print("🧠 Phase 3: 適応学習モード有効")
+        print("   📊 281評価データに基づく最適手法自動選択")
+        print("   🎯 境界問題自動検出・対応")
+        print("   ⚙️  パラメータ最適化")
     
     if args.batch:
         # Batch processing
