@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.3.2] - 2025-07-17
+
+### Added
+- **Region Priority System**: New region-based character selection system based on user evaluation feedback
+- **User Evaluation Data Integration**: Added kaname07_user_evaluation.jsonl with 41 image evaluations
+- **Character Selection Optimization**: Enhanced character selection with position-based prioritization
+
+### Changed
+- **Improved Character Selection**: Better handling of multi-character manga panels with specific region preferences
+- **Enhanced Quality Assessment**: Integration of user feedback into character extraction pipeline
+- **Size Priority Refinement**: Improved size_priority method based on evaluation data showing higher success rates
+
+### Fixed
+- **Wrong Character Selection**: Reduced incorrect character selection in multi-character scenes
+- **Extraction Failure Rate**: Improved extraction success rate from 58.5% baseline with targeted improvements
+
+### Technical Improvements
+- Added RegionPrioritySystem class for position-aware character selection
+- Integrated user evaluation patterns into learned quality assessment
+- Enhanced region-based scoring for better character targeting
+
 ## [v0.3.1] - 2025-07-17
 
 ### Fixed

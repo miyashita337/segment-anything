@@ -1,0 +1,372 @@
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+🔄 モデル初期化中...
+🚀 Character Extraction System起動中...
+🖥️ システム情報:
+   CPU: 12コア, 使用率: 0.7%
+   メモリ: 18.2GB / 19.5GB 利用可能
+   GPU: NVIDIA GeForce RTX 4070 Ti SUPER (1基), VRAM: 16.0GB
+🔄 開始: SAM Model Loading (RAM: 629.4MB, GPU: 0.0MB)
+✅ SAM vit_h loaded on cuda
+✅ 完了: SAM Model Loading (11.32秒, RAM: 756.3MB, GPU: 2509.6MB)
+🔄 開始: YOLO Model Loading (RAM: 756.3MB, GPU: 2509.6MB)
+✅ YOLO yolov8x.pt loaded on cuda
+✅ 完了: YOLO Model Loading (0.60秒, RAM: 864.3MB, GPU: 2771.5MB)
+✅ モデル初期化完了
+   - SAM: vit_h
+   - YOLO: yolov8x.pt
+   - Device: cuda
+✅ モデル初期化完了
+🚀 kaname07バッチ処理開始...
+🚀 バッチ処理開始: 52 画像
+🛡️ TDR安全対策: GPU メモリクリーンアップ有効
+
+📁 処理中 [1/52]: kaname07_0000_cover.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+🔄 開始: Image Preprocessing (RAM: 871.9MB, GPU: 2771.5MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0000_cover.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=28.639, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 183.3, カラー
+✅ 完了: Image Preprocessing (0.05秒, RAM: 889.7MB, GPU: 2771.5MB)
+🔄 開始: SAM Mask Generation (RAM: 889.7MB, GPU: 2771.5MB)
+✅ 完了: SAM Mask Generation (40.56秒, RAM: 2002.7MB, GPU: 2803.5MB)
+🔄 開始: YOLO Scoring (RAM: 1998.7MB, GPU: 2803.5MB)
+✅ 完了: YOLO Scoring (0.56秒, RAM: 2005.4MB, GPU: 2806.3MB)
+🔄 開始: Text Filtering (RAM: 2004.0MB, GPU: 2806.3MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2004.0MB, GPU: 2806.3MB)
+🔄 開始: Mask Refinement (RAM: 2004.0MB, GPU: 2806.3MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2004.0MB, GPU: 2806.3MB)
+🔄 開始: Character Extraction (RAM: 2004.0MB, GPU: 2806.3MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2004.0MB, GPU: 2806.3MB)
+🔄 開始: Saving Results (RAM: 2004.0MB, GPU: 2806.3MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0000_cover.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2004.0MB, GPU: 2806.3MB)
+✅ 成功: kaname07_0000_cover.jpg
+
+📁 処理中 [2/52]: kaname07_0001.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+🔄 開始: Image Preprocessing (RAM: 2023.2MB, GPU: 2806.3MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0001.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.145, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 202.5, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2023.2MB, GPU: 2806.3MB)
+🔄 開始: SAM Mask Generation (RAM: 2023.2MB, GPU: 2806.3MB)
+✅ 完了: SAM Mask Generation (40.50秒, RAM: 2495.9MB, GPU: 2806.3MB)
+🔄 開始: YOLO Scoring (RAM: 2492.9MB, GPU: 2806.3MB)
+✅ 完了: YOLO Scoring (0.28秒, RAM: 2492.9MB, GPU: 2806.3MB)
+🔄 開始: Text Filtering (RAM: 2492.9MB, GPU: 2806.3MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2492.9MB, GPU: 2806.3MB)
+🔄 開始: Mask Refinement (RAM: 2492.9MB, GPU: 2806.3MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2492.9MB, GPU: 2806.3MB)
+🔄 開始: Character Extraction (RAM: 2492.9MB, GPU: 2806.3MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2492.9MB, GPU: 2806.3MB)
+🔄 開始: Saving Results (RAM: 2492.9MB, GPU: 2806.3MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0001.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2492.9MB, GPU: 2806.3MB)
+✅ 成功: kaname07_0001.jpg
+
+📁 処理中 [3/52]: kaname07_0002.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+🔄 開始: Image Preprocessing (RAM: 2016.6MB, GPU: 2806.3MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0002.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.100, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 181.0, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2016.6MB, GPU: 2806.3MB)
+🔄 開始: SAM Mask Generation (RAM: 2016.6MB, GPU: 2806.3MB)
+✅ 完了: SAM Mask Generation (37.31秒, RAM: 2123.2MB, GPU: 2806.3MB)
+🔄 開始: YOLO Scoring (RAM: 2119.2MB, GPU: 2806.3MB)
+❌ 失敗: kaname07_0002.jpg - No good character masks found (min YOLO score: 0.005)
+
+📁 処理中 [4/52]: kaname07_0003.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+✅ 完了: YOLO Scoring (2.86秒, RAM: 2033.4MB, GPU: 2806.3MB)
+🔄 開始: Image Preprocessing (RAM: 2033.4MB, GPU: 2806.3MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0003.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.204, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 192.6, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2033.4MB, GPU: 2806.3MB)
+🔄 開始: SAM Mask Generation (RAM: 2033.4MB, GPU: 2806.3MB)
+✅ 完了: SAM Mask Generation (38.45秒, RAM: 2104.1MB, GPU: 2806.3MB)
+🔄 開始: YOLO Scoring (RAM: 2102.1MB, GPU: 2806.3MB)
+✅ 完了: YOLO Scoring (0.24秒, RAM: 2104.7MB, GPU: 2806.3MB)
+🔄 開始: Text Filtering (RAM: 2104.7MB, GPU: 2806.3MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2104.7MB, GPU: 2806.3MB)
+🔄 開始: Mask Refinement (RAM: 2104.7MB, GPU: 2806.3MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2106.2MB, GPU: 2806.3MB)
+🔄 開始: Character Extraction (RAM: 2106.2MB, GPU: 2806.3MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2140.9MB, GPU: 2806.3MB)
+🔄 開始: Saving Results (RAM: 2140.9MB, GPU: 2806.3MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0003.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2140.9MB, GPU: 2806.3MB)
+✅ 成功: kaname07_0003.jpg
+
+📁 処理中 [5/52]: kaname07_0004.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+🔄 開始: Image Preprocessing (RAM: 2026.9MB, GPU: 2806.3MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0004.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.146, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 191.9, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2026.9MB, GPU: 2806.3MB)
+🔄 開始: SAM Mask Generation (RAM: 2026.9MB, GPU: 2806.3MB)
+✅ 完了: SAM Mask Generation (38.50秒, RAM: 2249.7MB, GPU: 2806.3MB)
+🔄 開始: YOLO Scoring (RAM: 2244.7MB, GPU: 2806.3MB)
+✅ 完了: YOLO Scoring (0.25秒, RAM: 2243.7MB, GPU: 2806.3MB)
+🔄 開始: Text Filtering (RAM: 2243.7MB, GPU: 2806.3MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2243.7MB, GPU: 2806.3MB)
+🔄 開始: Mask Refinement (RAM: 2243.7MB, GPU: 2806.3MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2243.7MB, GPU: 2806.3MB)
+🔄 開始: Character Extraction (RAM: 2243.7MB, GPU: 2806.3MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2243.7MB, GPU: 2806.3MB)
+🔄 開始: Saving Results (RAM: 2243.7MB, GPU: 2806.3MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0004.jpg
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+✅ 完了: Saving Results (0.01秒, RAM: 2243.7MB, GPU: 2806.3MB)
+✅ 成功: kaname07_0004.jpg
+🧹 GPU メモリクリーンアップ実行 (5/52)
+
+📁 処理中 [6/52]: kaname07_0005.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+🔄 開始: Image Preprocessing (RAM: 2040.9MB, GPU: 2806.3MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0005.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.138, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 182.9, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2040.9MB, GPU: 2806.3MB)
+🔄 開始: SAM Mask Generation (RAM: 2040.9MB, GPU: 2806.3MB)
+✅ 完了: SAM Mask Generation (41.85秒, RAM: 2398.3MB, GPU: 2806.3MB)
+🔄 開始: YOLO Scoring (RAM: 2396.4MB, GPU: 2806.3MB)
+✅ 完了: YOLO Scoring (0.30秒, RAM: 2396.4MB, GPU: 2806.3MB)
+🔄 開始: Text Filtering (RAM: 2396.4MB, GPU: 2806.3MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2396.4MB, GPU: 2806.3MB)
+🔄 開始: Mask Refinement (RAM: 2396.4MB, GPU: 2806.3MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2396.4MB, GPU: 2806.3MB)
+🔄 開始: Character Extraction (RAM: 2396.4MB, GPU: 2806.3MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2396.4MB, GPU: 2806.3MB)
+🔄 開始: Saving Results (RAM: 2396.4MB, GPU: 2806.3MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0005.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2395.4MB, GPU: 2806.3MB)
+✅ 成功: kaname07_0005.jpg
+
+📁 処理中 [7/52]: kaname07_0006.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+🔄 開始: Image Preprocessing (RAM: 2033.1MB, GPU: 2806.3MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0006.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.127, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 174.3, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2033.1MB, GPU: 2806.3MB)
+🔄 開始: SAM Mask Generation (RAM: 2033.1MB, GPU: 2806.3MB)
+✅ 完了: SAM Mask Generation (41.73秒, RAM: 2324.5MB, GPU: 2806.3MB)
+🔄 開始: YOLO Scoring (RAM: 2321.5MB, GPU: 2806.3MB)
+✅ 完了: YOLO Scoring (0.21秒, RAM: 2319.6MB, GPU: 2806.3MB)
+🔄 開始: Text Filtering (RAM: 2319.6MB, GPU: 2806.3MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2319.6MB, GPU: 2806.3MB)
+🔄 開始: Mask Refinement (RAM: 2319.6MB, GPU: 2806.3MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2319.6MB, GPU: 2806.3MB)
+🔄 開始: Character Extraction (RAM: 2319.6MB, GPU: 2806.3MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2319.6MB, GPU: 2806.3MB)
+🔄 開始: Saving Results (RAM: 2319.6MB, GPU: 2806.3MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0006.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2319.6MB, GPU: 2806.3MB)
+✅ 成功: kaname07_0006.jpg
+
+📁 処理中 [8/52]: kaname07_0007.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: boundary_smoothing, mosaic_detected, effect_line_removal
+🔄 開始: Image Preprocessing (RAM: 2319.6MB, GPU: 2806.3MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0007.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.235, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 170.5, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2319.6MB, GPU: 2806.3MB)
+🔄 開始: SAM Mask Generation (RAM: 2319.6MB, GPU: 2806.3MB)
+✅ 完了: SAM Mask Generation (41.06秒, RAM: 2361.2MB, GPU: 2806.3MB)
+🔄 開始: YOLO Scoring (RAM: 2361.2MB, GPU: 2806.3MB)
+❌ 失敗: kaname07_0007.jpg - No good character masks found (min YOLO score: 0.005)
+
+📁 処理中 [9/52]: kaname07_0008.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+✅ 完了: YOLO Scoring (3.59秒, RAM: 2040.4MB, GPU: 2806.3MB)
+🔄 開始: Image Preprocessing (RAM: 2040.4MB, GPU: 2806.3MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0008.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.196, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 174.8, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2040.4MB, GPU: 2806.3MB)
+🔄 開始: SAM Mask Generation (RAM: 2040.4MB, GPU: 2806.3MB)
+✅ 完了: SAM Mask Generation (41.23秒, RAM: 2404.7MB, GPU: 2806.3MB)
+🔄 開始: YOLO Scoring (RAM: 2402.8MB, GPU: 2806.3MB)
+✅ 完了: YOLO Scoring (0.23秒, RAM: 2401.8MB, GPU: 2806.3MB)
+🔄 開始: Text Filtering (RAM: 2401.8MB, GPU: 2806.3MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2401.8MB, GPU: 2806.3MB)
+🔄 開始: Mask Refinement (RAM: 2401.8MB, GPU: 2806.3MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2401.8MB, GPU: 2806.3MB)
+🔄 開始: Character Extraction (RAM: 2401.8MB, GPU: 2806.3MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2401.8MB, GPU: 2806.3MB)
+🔄 開始: Saving Results (RAM: 2401.8MB, GPU: 2806.3MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0008.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2401.8MB, GPU: 2806.3MB)
+✅ 成功: kaname07_0008.jpg
+
+📁 処理中 [10/52]: kaname07_0009.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+🔄 開始: Image Preprocessing (RAM: 2039.8MB, GPU: 2806.3MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0009.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.136, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 191.5, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2038.8MB, GPU: 2806.3MB)
+🔄 開始: SAM Mask Generation (RAM: 2038.8MB, GPU: 2806.3MB)
+✅ 完了: SAM Mask Generation (38.39秒, RAM: 2339.3MB, GPU: 2806.3MB)
+🔄 開始: YOLO Scoring (RAM: 2339.3MB, GPU: 2806.3MB)
+✅ 完了: YOLO Scoring (0.22秒, RAM: 2338.3MB, GPU: 2806.3MB)
+🔄 開始: Text Filtering (RAM: 2338.3MB, GPU: 2806.3MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2338.3MB, GPU: 2806.3MB)
+🔄 開始: Mask Refinement (RAM: 2338.3MB, GPU: 2806.3MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2338.3MB, GPU: 2806.3MB)
+🔄 開始: Character Extraction (RAM: 2338.3MB, GPU: 2806.3MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2338.3MB, GPU: 2806.3MB)
+🔄 開始: Saving Results (RAM: 2338.3MB, GPU: 2806.3MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0009.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2338.3MB, GPU: 2806.3MB)
+✅ 成功: kaname07_0009.jpg
+🧹 GPU メモリクリーンアップ実行 (10/52)
+
+📁 処理中 [11/52]: kaname07_0010.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+🔄 開始: Image Preprocessing (RAM: 2338.3MB, GPU: 2806.3MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0010.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.183, 閾値=0.01, 結果=カラー
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 品質分析データを読み込み: 6手法
+INFO:utils.learned_quality_assessment:✅ 推奨データを読み込み: 6手法

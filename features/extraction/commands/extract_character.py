@@ -34,6 +34,7 @@ from features.processing.postprocessing.postprocessing import (
 )
 from features.evaluation.utils.text_detection import TextDetector
 from features.evaluation.utils.learned_quality_assessment import assess_image_quality, LearnedQualityAssessment
+from features.evaluation.utils.region_priority_system import RegionPrioritySystem
 from features.evaluation.utils.partial_extraction_detector import PartialExtractionDetector, analyze_extraction_completeness
 
 
@@ -58,6 +59,7 @@ class CharacterExtractor:
             'auto_retry': False,
             'high_quality': False
         }
+        self.region_priority_system = RegionPrioritySystem()
     
     def extract(self, image_path: str, output_path: str = None, **kwargs):
         """

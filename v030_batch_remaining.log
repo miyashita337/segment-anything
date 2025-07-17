@@ -1,0 +1,2244 @@
+WARNING:root:dlib not available. Face detection will use OpenCV only.
+🚀 最高品質キャラクター抽出バッチ実行開始
+入力パス: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07
+出力パス: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07
+📊 処理対象: 32個の画像ファイル（11枚目以降）
+
+📷 処理中 (1/32): kaname07_0010.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 9.5)
+📊 検出要素: high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+🚀 Phase 0対応モデル初期化開始...
+✅ SAM vit_h loaded on cuda
+✅ SAM model initialized and loaded
+✅ YOLO yolov8n.pt loaded on cuda
+✅ YOLO model initialized and loaded
+✅ Performance monitor initialized
+🎉 全モデル初期化完了（load_model()実行済み）
+🔄 開始: Image Preprocessing (RAM: 2403.5MB, GPU: 2522.0MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0010.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 215.2, グレースケール
+✅ 完了: Image Preprocessing (0.05秒, RAM: 2403.5MB, GPU: 2522.0MB)
+🔄 開始: SAM Mask Generation (RAM: 2403.5MB, GPU: 2522.0MB)
+✅ 完了: SAM Mask Generation (6.29秒, RAM: 2526.9MB, GPU: 2554.0MB)
+🔄 開始: YOLO Scoring (RAM: 2526.9MB, GPU: 2554.0MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0010.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.21秒, RAM: 2538.4MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2538.4MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0010.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.145, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 198.5, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2538.4MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2538.4MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (11.79秒, RAM: 2542.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2542.1MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.03秒, RAM: 2542.1MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 2542.1MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2542.1MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 2542.1MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2542.1MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 2542.1MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.09秒, RAM: 2542.9MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 2542.9MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2542.9MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 2542.9MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0010.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2542.9MB, GPU: 2553.8MB)
+✅ Stage 2: 低閾値 + エフェクト線除去 で成功!
+✅ 成功: kaname07_0010.jpg
+
+📷 処理中 (2/32): kaname07_0011.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 10.5)
+📊 検出要素: medium_edge_density, high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+🔄 開始: Image Preprocessing (RAM: 2542.9MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0011.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 201.2, グレースケール
+✅ 完了: Image Preprocessing (0.07秒, RAM: 2542.9MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2542.9MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.85秒, RAM: 2542.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2542.9MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0011.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.09秒, RAM: 2542.9MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2542.9MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0011.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.152, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 192.4, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2542.9MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2542.9MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (12.65秒, RAM: 2547.6MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2547.6MB, GPU: 2553.8MB)
+❌ Stage 2: 低閾値 + エフェクト線除去 で失敗: No good character masks found (min YOLO score: 0.05)
+
+🔄 Stage 3: 極低閾値 + マルチコマ分割 実行中...
+   YOLO閾値: 0.02
+   SAMポイント密度: 64
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0011.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.12秒, RAM: 2547.6MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2547.6MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0011.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.152, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 192.4, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2547.6MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2547.6MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (20.21秒, RAM: 2560.7MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2558.3MB, GPU: 2553.8MB)
+❌ Stage 3: 極低閾値 + マルチコマ分割 で失敗: No good character masks found (min YOLO score: 0.02)
+
+🔄 Stage 4: 最終手段 + 全機能 実行中...
+   YOLO閾値: 0.01
+   SAMポイント密度: 96
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0011.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.15秒, RAM: 2558.3MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2558.3MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0011.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.152, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 192.4, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2558.3MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2558.3MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (40.91秒, RAM: 2659.6MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2659.6MB, GPU: 2553.8MB)
+❌ Stage 4: 最終手段 + 全機能 で失敗: No good character masks found (min YOLO score: 0.01)
+💔 全4段階のリトライが失敗しました
+❌ 失敗: 出力ファイル未作成
+
+📷 処理中 (3/32): kaname07_0012.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 8.5)
+📊 検出要素: medium_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+✅ 完了: YOLO Scoring (0.32秒, RAM: 2659.6MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2659.6MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0012.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 222.2, グレースケール
+✅ 完了: Image Preprocessing (0.05秒, RAM: 2659.6MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2659.6MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.43秒, RAM: 2537.0MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2537.0MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0012.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.10秒, RAM: 2537.0MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2537.0MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0012.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.120, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 211.7, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2537.0MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2537.0MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (11.87秒, RAM: 2526.0MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2526.0MB, GPU: 2553.8MB)
+❌ Stage 2: 低閾値 + エフェクト線除去 で失敗: No good character masks found (min YOLO score: 0.05)
+
+🔄 Stage 3: 極低閾値 + マルチコマ分割 実行中...
+   YOLO閾値: 0.02
+   SAMポイント密度: 64
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0012.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.17秒, RAM: 2526.0MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2526.0MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0012.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.120, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 211.7, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2526.0MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2526.0MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (19.10秒, RAM: 2525.2MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2525.2MB, GPU: 2553.8MB)
+❌ Stage 3: 極低閾値 + マルチコマ分割 で失敗: No good character masks found (min YOLO score: 0.02)
+
+🔄 Stage 4: 最終手段 + 全機能 実行中...
+   YOLO閾値: 0.01
+   SAMポイント密度: 96
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0012.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.14秒, RAM: 2525.2MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2525.2MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0012.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.120, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 211.7, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2525.2MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2525.2MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (38.27秒, RAM: 2597.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2597.1MB, GPU: 2553.8MB)
+❌ Stage 4: 最終手段 + 全機能 で失敗: No good character masks found (min YOLO score: 0.01)
+💔 全4段階のリトライが失敗しました
+❌ 失敗: 出力ファイル未作成
+
+📷 処理中 (4/32): kaname07_0013.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 9.5)
+📊 検出要素: high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+✅ 完了: YOLO Scoring (0.28秒, RAM: 2538.7MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2538.7MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0013.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 218.5, グレースケール
+✅ 完了: Image Preprocessing (0.05秒, RAM: 2538.7MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2538.7MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.66秒, RAM: 2535.7MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2535.7MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 2535.7MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 2535.7MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2535.7MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 2535.7MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2535.7MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 2535.7MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.13秒, RAM: 2535.7MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 2535.7MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2535.7MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 2535.7MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0013.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2535.7MB, GPU: 2553.8MB)
+✅ Stage 1: 軽度緩和 で成功!
+✅ 成功: kaname07_0013.jpg
+
+📷 処理中 (5/32): kaname07_0014.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 9.5)
+📊 検出要素: high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+🔄 開始: Image Preprocessing (RAM: 2535.7MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0014.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 206.1, グレースケール
+✅ 完了: Image Preprocessing (0.06秒, RAM: 2535.7MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2535.7MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.63秒, RAM: 2535.7MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2535.7MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 2535.7MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 2535.7MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2535.7MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 2535.7MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2535.7MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 2535.7MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.06秒, RAM: 2535.7MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 2535.7MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2535.7MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 2535.7MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0014.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2535.7MB, GPU: 2553.8MB)
+✅ Stage 1: 軽度緩和 で成功!
+✅ 成功: kaname07_0014.jpg
+
+📷 処理中 (6/32): kaname07_0015.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 7.5)
+📊 検出要素: high_contrast, many_lines, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+🔄 開始: Image Preprocessing (RAM: 2535.7MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0015.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 188.6, グレースケール
+✅ 完了: Image Preprocessing (0.05秒, RAM: 2535.7MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2535.7MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.27秒, RAM: 2534.7MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2534.7MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0015.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.00秒, RAM: 2534.7MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2534.7MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0015.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.184, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 179.3, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2534.7MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2534.7MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (12.55秒, RAM: 2533.7MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2533.7MB, GPU: 2553.8MB)
+❌ Stage 2: 低閾値 + エフェクト線除去 で失敗: No good character masks found (min YOLO score: 0.05)
+
+🔄 Stage 3: 極低閾値 + マルチコマ分割 実行中...
+   YOLO閾値: 0.02
+   SAMポイント密度: 64
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 2
+   処理段階: effect_line_removal, panel_split
+   最大パネル選択: (0, 0, 781, 2112)
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0015.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (2.49秒, RAM: 2533.7MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2533.7MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 781x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0015.jpg
+🔄 画像リサイズ: 781x2112 → 378x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.210, 閾値=0.01, 結果=カラー
+📊 画像統計: 378x1024, 平均輝度: 160.1, カラー
+✅ 完了: Image Preprocessing (0.02秒, RAM: 2533.7MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2533.7MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (16.63秒, RAM: 2533.7MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2533.7MB, GPU: 2553.8MB)
+❌ Stage 3: 極低閾値 + マルチコマ分割 で失敗: No good character masks found (min YOLO score: 0.02)
+
+🔄 Stage 4: 最終手段 + 全機能 実行中...
+   YOLO閾値: 0.01
+   SAMポイント密度: 96
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 2
+   処理段階: effect_line_removal, panel_split
+   最大パネル選択: (0, 0, 781, 2112)
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0015.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (2.48秒, RAM: 2533.7MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2533.7MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 781x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0015.jpg
+🔄 画像リサイズ: 781x2112 → 378x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.210, 閾値=0.01, 結果=カラー
+📊 画像統計: 378x1024, 平均輝度: 160.1, カラー
+✅ 完了: Image Preprocessing (0.02秒, RAM: 2533.7MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2533.7MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (33.85秒, RAM: 2550.7MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2547.7MB, GPU: 2553.8MB)
+❌ Stage 4: 最終手段 + 全機能 で失敗: No good character masks found (min YOLO score: 0.01)
+💔 全4段階のリトライが失敗しました
+❌ 失敗: 出力ファイル未作成
+
+📷 処理中 (7/32): kaname07_0016.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 9.5)
+📊 検出要素: high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+✅ 完了: YOLO Scoring (0.24秒, RAM: 2546.7MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2546.7MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0016.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 217.2, グレースケール
+✅ 完了: Image Preprocessing (0.05秒, RAM: 2546.7MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2546.7MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.15秒, RAM: 2539.8MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2539.8MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0016.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (2.91秒, RAM: 2539.8MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2539.8MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0016.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.114, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 203.8, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2539.8MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2539.8MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (11.52秒, RAM: 2538.8MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2538.8MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 2538.8MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 2538.8MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2538.8MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 2538.8MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2538.8MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 2538.8MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.10秒, RAM: 2538.8MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 2538.8MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2538.8MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 2538.8MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0016.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2538.8MB, GPU: 2553.8MB)
+✅ Stage 2: 低閾値 + エフェクト線除去 で成功!
+✅ 成功: kaname07_0016.jpg
+
+📷 処理中 (8/32): kaname07_0017.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 9.5)
+📊 検出要素: high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+🔄 開始: Image Preprocessing (RAM: 2538.8MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0017.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 198.8, グレースケール
+✅ 完了: Image Preprocessing (0.06秒, RAM: 2538.8MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2538.8MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.57秒, RAM: 2538.8MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2538.8MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0017.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.14秒, RAM: 2538.8MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2538.8MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0017.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.193, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 190.8, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2538.8MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2538.8MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (12.79秒, RAM: 2537.8MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2537.8MB, GPU: 2553.8MB)
+❌ Stage 2: 低閾値 + エフェクト線除去 で失敗: No good character masks found (min YOLO score: 0.05)
+
+🔄 Stage 3: 極低閾値 + マルチコマ分割 実行中...
+   YOLO閾値: 0.02
+   SAMポイント密度: 64
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0017.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.19秒, RAM: 2537.8MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2537.8MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0017.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.193, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 190.8, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2537.8MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2537.8MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (20.43秒, RAM: 2538.3MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2538.3MB, GPU: 2553.8MB)
+❌ Stage 3: 極低閾値 + マルチコマ分割 で失敗: No good character masks found (min YOLO score: 0.02)
+
+🔄 Stage 4: 最終手段 + 全機能 実行中...
+   YOLO閾値: 0.01
+   SAMポイント密度: 96
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0017.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.22秒, RAM: 2538.3MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2538.3MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0017.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.193, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 190.8, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2538.3MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2538.3MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (40.23秒, RAM: 2550.3MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2549.3MB, GPU: 2553.8MB)
+❌ Stage 4: 最終手段 + 全機能 で失敗: No good character masks found (min YOLO score: 0.01)
+💔 全4段階のリトライが失敗しました
+❌ 失敗: 出力ファイル未作成
+
+📷 処理中 (9/32): kaname07_0018.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 8.5)
+📊 検出要素: medium_edge_density, high_contrast, many_lines, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+✅ 完了: YOLO Scoring (0.32秒, RAM: 2549.3MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2549.3MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0018.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 222.3, グレースケール
+✅ 完了: Image Preprocessing (0.06秒, RAM: 2549.3MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2549.3MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.09秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 2546.3MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.09秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 2546.3MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0018.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2546.3MB, GPU: 2553.8MB)
+✅ Stage 1: 軽度緩和 で成功!
+✅ 成功: kaname07_0018.jpg
+
+📷 処理中 (10/32): kaname07_0019.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 9.5)
+📊 検出要素: high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+🔄 開始: Image Preprocessing (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0019.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 218.0, グレースケール
+✅ 完了: Image Preprocessing (0.05秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.34秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 2546.3MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.10秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 2546.3MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0019.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2546.3MB, GPU: 2553.8MB)
+✅ Stage 1: 軽度緩和 で成功!
+✅ 成功: kaname07_0019.jpg
+
+📷 処理中 (11/32): kaname07_0020.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 9.5)
+📊 検出要素: high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+🔄 開始: Image Preprocessing (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0020.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 202.0, グレースケール
+✅ 完了: Image Preprocessing (0.06秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.15秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 2546.3MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.11秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 2546.3MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0020.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2546.3MB, GPU: 2553.8MB)
+✅ Stage 1: 軽度緩和 で成功!
+✅ 成功: kaname07_0020.jpg
+
+📷 処理中 (12/32): kaname07_0021.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 7.5)
+📊 検出要素: high_contrast, many_lines, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+🔄 開始: Image Preprocessing (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0021.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 210.9, グレースケール
+✅ 完了: Image Preprocessing (0.06秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.13秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2546.3MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0021.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.04秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0021.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.120, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 202.2, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2546.3MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2546.3MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (11.29秒, RAM: 2545.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2545.9MB, GPU: 2553.8MB)
+❌ Stage 2: 低閾値 + エフェクト線除去 で失敗: No good character masks found (min YOLO score: 0.05)
+
+🔄 Stage 3: 極低閾値 + マルチコマ分割 実行中...
+   YOLO閾値: 0.02
+   SAMポイント密度: 64
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0021.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.07秒, RAM: 2545.9MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2545.9MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0021.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.120, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 202.2, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2545.9MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2545.9MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (18.51秒, RAM: 2545.0MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2545.0MB, GPU: 2553.8MB)
+❌ Stage 3: 極低閾値 + マルチコマ分割 で失敗: No good character masks found (min YOLO score: 0.02)
+
+🔄 Stage 4: 最終手段 + 全機能 実行中...
+   YOLO閾値: 0.01
+   SAMポイント密度: 96
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0021.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.20秒, RAM: 2545.0MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2545.0MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0021.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.120, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 202.2, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2545.0MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2545.0MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (39.23秒, RAM: 2552.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2550.1MB, GPU: 2553.8MB)
+❌ Stage 4: 最終手段 + 全機能 で失敗: No good character masks found (min YOLO score: 0.01)
+💔 全4段階のリトライが失敗しました
+❌ 失敗: 出力ファイル未作成
+
+📷 処理中 (13/32): kaname07_0022.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 10.5)
+📊 検出要素: medium_edge_density, high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+✅ 完了: YOLO Scoring (0.35秒, RAM: 2549.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2549.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0022.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 218.8, グレースケール
+✅ 完了: Image Preprocessing (0.06秒, RAM: 2549.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2549.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (7.15秒, RAM: 2547.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2547.1MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 2547.1MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 2547.1MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2547.1MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 2547.1MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2547.1MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 2547.1MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.17秒, RAM: 2547.1MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 2547.1MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2547.1MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 2547.1MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0022.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2547.1MB, GPU: 2553.8MB)
+✅ Stage 1: 軽度緩和 で成功!
+✅ 成功: kaname07_0022.jpg
+
+📷 処理中 (14/32): kaname07_0023.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 9.5)
+📊 検出要素: high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+🔄 開始: Image Preprocessing (RAM: 2547.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0023.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 218.3, グレースケール
+✅ 完了: Image Preprocessing (0.05秒, RAM: 2547.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2547.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.28秒, RAM: 2544.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2544.1MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 2544.1MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 2544.1MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2544.1MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 2544.1MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2544.1MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 2544.1MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.29秒, RAM: 2544.1MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 2544.1MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2544.1MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 2544.1MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0023.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2544.1MB, GPU: 2553.8MB)
+✅ Stage 1: 軽度緩和 で成功!
+✅ 成功: kaname07_0023.jpg
+
+📷 処理中 (15/32): kaname07_0024.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 7.5)
+📊 検出要素: high_contrast, many_lines, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+🔄 開始: Image Preprocessing (RAM: 2544.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0024.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 189.6, グレースケール
+✅ 完了: Image Preprocessing (0.05秒, RAM: 2544.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2544.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.61秒, RAM: 2543.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2543.1MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0024.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (2.95秒, RAM: 2543.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2543.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0024.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.202, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 188.2, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2543.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2543.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (11.90秒, RAM: 2542.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2542.1MB, GPU: 2553.8MB)
+❌ Stage 2: 低閾値 + エフェクト線除去 で失敗: No good character masks found (min YOLO score: 0.05)
+
+🔄 Stage 3: 極低閾値 + マルチコマ分割 実行中...
+   YOLO閾値: 0.02
+   SAMポイント密度: 64
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0024.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.00秒, RAM: 2542.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2542.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0024.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.202, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 188.2, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2542.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2542.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (19.23秒, RAM: 2542.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2542.1MB, GPU: 2553.8MB)
+❌ Stage 3: 極低閾値 + マルチコマ分割 で失敗: No good character masks found (min YOLO score: 0.02)
+
+🔄 Stage 4: 最終手段 + 全機能 実行中...
+   YOLO閾値: 0.01
+   SAMポイント密度: 96
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0024.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.04秒, RAM: 2542.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2542.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0024.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.202, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 188.2, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2542.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2542.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (39.32秒, RAM: 2548.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2548.1MB, GPU: 2553.8MB)
+❌ Stage 4: 最終手段 + 全機能 で失敗: No good character masks found (min YOLO score: 0.01)
+💔 全4段階のリトライが失敗しました
+❌ 失敗: 出力ファイル未作成
+
+📷 処理中 (16/32): kaname07_0025.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 8.5)
+📊 検出要素: medium_edge_density, high_contrast, many_lines, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+✅ 完了: YOLO Scoring (0.34秒, RAM: 2545.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2545.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0025.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 208.3, グレースケール
+✅ 完了: Image Preprocessing (0.05秒, RAM: 2545.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2545.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.89秒, RAM: 2544.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2544.1MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0025.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (2.99秒, RAM: 2544.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2544.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0025.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.128, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 200.9, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2544.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2544.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (11.23秒, RAM: 2544.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2544.1MB, GPU: 2553.8MB)
+❌ Stage 2: 低閾値 + エフェクト線除去 で失敗: No good character masks found (min YOLO score: 0.05)
+
+🔄 Stage 3: 極低閾値 + マルチコマ分割 実行中...
+   YOLO閾値: 0.02
+   SAMポイント密度: 64
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0025.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.01秒, RAM: 2544.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2544.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0025.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.128, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 200.9, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2544.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2544.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (17.46秒, RAM: 2543.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2543.1MB, GPU: 2553.8MB)
+❌ Stage 3: 極低閾値 + マルチコマ分割 で失敗: No good character masks found (min YOLO score: 0.02)
+
+🔄 Stage 4: 最終手段 + 全機能 実行中...
+   YOLO閾値: 0.01
+   SAMポイント密度: 96
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0025.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.03秒, RAM: 2543.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2543.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0025.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.128, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 200.9, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2543.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2543.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (37.67秒, RAM: 2554.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2553.1MB, GPU: 2553.8MB)
+❌ Stage 4: 最終手段 + 全機能 で失敗: No good character masks found (min YOLO score: 0.01)
+💔 全4段階のリトライが失敗しました
+❌ 失敗: 出力ファイル未作成
+
+📷 処理中 (17/32): kaname07_0026.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 9.5)
+📊 検出要素: high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+✅ 完了: YOLO Scoring (0.24秒, RAM: 2551.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2551.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0026.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 211.6, グレースケール
+✅ 完了: Image Preprocessing (0.06秒, RAM: 2551.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2551.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.27秒, RAM: 2549.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2549.1MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 2548.1MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 2548.1MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2548.1MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 2548.1MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2548.1MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 2548.1MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.05秒, RAM: 2548.1MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 2548.1MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2548.1MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 2548.1MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0026.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2548.1MB, GPU: 2553.8MB)
+✅ Stage 1: 軽度緩和 で成功!
+✅ 成功: kaname07_0026.jpg
+
+📷 処理中 (18/32): kaname07_0027.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 10.5)
+📊 検出要素: medium_edge_density, high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+🔄 開始: Image Preprocessing (RAM: 2548.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0027.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 205.6, グレースケール
+✅ 完了: Image Preprocessing (0.06秒, RAM: 2548.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2548.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.19秒, RAM: 2547.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2547.1MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0027.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.32秒, RAM: 2547.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2547.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0027.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.143, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 193.8, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2547.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2547.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (13.36秒, RAM: 2547.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2547.1MB, GPU: 2553.8MB)
+❌ Stage 2: 低閾値 + エフェクト線除去 で失敗: No good character masks found (min YOLO score: 0.05)
+
+🔄 Stage 3: 極低閾値 + マルチコマ分割 実行中...
+   YOLO閾値: 0.02
+   SAMポイント密度: 64
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0027.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.48秒, RAM: 2547.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2547.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0027.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.143, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 193.8, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2547.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2547.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (21.27秒, RAM: 2547.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2547.1MB, GPU: 2553.8MB)
+❌ Stage 3: 極低閾値 + マルチコマ分割 で失敗: No good character masks found (min YOLO score: 0.02)
+
+🔄 Stage 4: 最終手段 + 全機能 実行中...
+   YOLO閾値: 0.01
+   SAMポイント密度: 96
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0027.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.31秒, RAM: 2547.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2547.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0027.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.143, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 193.8, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2547.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2547.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (41.16秒, RAM: 2559.8MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2558.8MB, GPU: 2553.8MB)
+❌ Stage 4: 最終手段 + 全機能 で失敗: No good character masks found (min YOLO score: 0.01)
+💔 全4段階のリトライが失敗しました
+❌ 失敗: 出力ファイル未作成
+
+📷 処理中 (19/32): kaname07_0028.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 9.5)
+📊 検出要素: high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+✅ 完了: YOLO Scoring (0.31秒, RAM: 2555.8MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2555.8MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0028.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 207.7, グレースケール
+✅ 完了: Image Preprocessing (0.06秒, RAM: 2555.8MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2555.8MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.60秒, RAM: 2551.8MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2551.8MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0028.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (2.95秒, RAM: 2550.8MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2550.8MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0028.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.099, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 205.2, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2550.8MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2550.8MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (12.05秒, RAM: 2550.8MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2550.8MB, GPU: 2553.8MB)
+❌ Stage 2: 低閾値 + エフェクト線除去 で失敗: No good character masks found (min YOLO score: 0.05)
+
+🔄 Stage 3: 極低閾値 + マルチコマ分割 実行中...
+   YOLO閾値: 0.02
+   SAMポイント密度: 64
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0028.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.04秒, RAM: 2550.8MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2550.8MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0028.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.099, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 205.2, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2550.8MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2550.8MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (19.32秒, RAM: 2548.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2548.5MB, GPU: 2553.8MB)
+❌ Stage 3: 極低閾値 + マルチコマ分割 で失敗: No good character masks found (min YOLO score: 0.02)
+
+🔄 Stage 4: 最終手段 + 全機能 実行中...
+   YOLO閾値: 0.01
+   SAMポイント密度: 96
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0028.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.05秒, RAM: 2548.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2548.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0028.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.099, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 205.2, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2548.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2548.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (37.90秒, RAM: 2553.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2551.5MB, GPU: 2553.8MB)
+❌ Stage 4: 最終手段 + 全機能 で失敗: No good character masks found (min YOLO score: 0.01)
+💔 全4段階のリトライが失敗しました
+❌ 失敗: 出力ファイル未作成
+
+📷 処理中 (20/32): kaname07_0029.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 10.5)
+📊 検出要素: medium_edge_density, high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+✅ 完了: YOLO Scoring (0.32秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0029.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 216.0, グレースケール
+✅ 完了: Image Preprocessing (0.06秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.58秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2550.5MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0029.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.11秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0029.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.169, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 209.2, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (11.62秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2550.5MB, GPU: 2553.8MB)
+❌ Stage 2: 低閾値 + エフェクト線除去 で失敗: No good character masks found (min YOLO score: 0.05)
+
+🔄 Stage 3: 極低閾値 + マルチコマ分割 実行中...
+   YOLO閾値: 0.02
+   SAMポイント密度: 64
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 2
+   処理段階: effect_line_removal, panel_split
+   最大パネル選択: (0, 0, 798, 2112)
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0029.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 3
+   処理段階: panel_split
+   最大パネル選択: (0, 0, 788, 1605)
+✅ 完了: YOLO Scoring (2.46秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 788x1605, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0029.jpg
+🔄 画像リサイズ: 788x1605 → 502x1024 (scale=0.638)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.075, 閾値=0.01, 結果=カラー
+📊 画像統計: 502x1024, 平均輝度: 207.7, カラー
+✅ 完了: Image Preprocessing (0.02秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (16.99秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2550.5MB, GPU: 2553.8MB)
+❌ Stage 3: 極低閾値 + マルチコマ分割 で失敗: No good character masks found (min YOLO score: 0.02)
+
+🔄 Stage 4: 最終手段 + 全機能 実行中...
+   YOLO閾値: 0.01
+   SAMポイント密度: 96
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 2
+   処理段階: effect_line_removal, panel_split
+   最大パネル選択: (0, 0, 798, 2112)
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0029.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 3
+   処理段階: panel_split
+   最大パネル選択: (0, 0, 788, 1605)
+✅ 完了: YOLO Scoring (2.52秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 788x1605, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0029.jpg
+🔄 画像リサイズ: 788x1605 → 502x1024 (scale=0.638)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.075, 閾値=0.01, 結果=カラー
+📊 画像統計: 502x1024, 平均輝度: 207.7, カラー
+✅ 完了: Image Preprocessing (0.02秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (34.50秒, RAM: 2554.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2551.5MB, GPU: 2553.8MB)
+❌ Stage 4: 最終手段 + 全機能 で失敗: No good character masks found (min YOLO score: 0.01)
+💔 全4段階のリトライが失敗しました
+❌ 失敗: 出力ファイル未作成
+
+📷 処理中 (21/32): kaname07_0030.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 9.5)
+📊 検出要素: high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+✅ 完了: YOLO Scoring (0.28秒, RAM: 2551.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2551.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0030.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 215.8, グレースケール
+✅ 完了: Image Preprocessing (0.05秒, RAM: 2551.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2551.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.50秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2550.5MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0030.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.15秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0030.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.117, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 198.3, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (13.24秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2550.5MB, GPU: 2553.8MB)
+❌ Stage 2: 低閾値 + エフェクト線除去 で失敗: No good character masks found (min YOLO score: 0.05)
+
+🔄 Stage 3: 極低閾値 + マルチコマ分割 実行中...
+   YOLO閾値: 0.02
+   SAMポイント密度: 64
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0030.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.19秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0030.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.117, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 198.3, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (20.62秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2550.5MB, GPU: 2553.8MB)
+❌ Stage 3: 極低閾値 + マルチコマ分割 で失敗: No good character masks found (min YOLO score: 0.02)
+
+🔄 Stage 4: 最終手段 + 全機能 実行中...
+   YOLO閾値: 0.01
+   SAMポイント密度: 96
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0030.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.17秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0030.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.117, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 198.3, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (42.58秒, RAM: 2715.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2715.1MB, GPU: 2553.8MB)
+❌ Stage 4: 最終手段 + 全機能 で失敗: No good character masks found (min YOLO score: 0.01)
+💔 全4段階のリトライが失敗しました
+❌ 失敗: 出力ファイル未作成
+
+📷 処理中 (22/32): kaname07_0031.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 7.5)
+📊 検出要素: high_contrast, many_lines, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+✅ 完了: YOLO Scoring (0.29秒, RAM: 2713.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2713.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0031.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 191.2, グレースケール
+✅ 完了: Image Preprocessing (0.05秒, RAM: 2713.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2713.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.78秒, RAM: 2550.8MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2550.8MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 2550.8MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 2550.8MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2550.8MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 2550.8MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2550.8MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 2550.8MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.06秒, RAM: 2550.8MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 2550.8MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2550.8MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 2550.8MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0031.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2550.8MB, GPU: 2553.8MB)
+✅ Stage 1: 軽度緩和 で成功!
+✅ 成功: kaname07_0031.jpg
+
+📷 処理中 (23/32): kaname07_0032.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 9.5)
+📊 検出要素: high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+🔄 開始: Image Preprocessing (RAM: 2550.8MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0032.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 215.3, グレースケール
+✅ 完了: Image Preprocessing (0.05秒, RAM: 2550.8MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2550.8MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.17秒, RAM: 2550.8MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2550.8MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0032.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.05秒, RAM: 2550.8MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2550.8MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0032.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.090, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 200.6, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2550.8MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2550.8MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (13.69秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2550.5MB, GPU: 2553.8MB)
+❌ Stage 2: 低閾値 + エフェクト線除去 で失敗: No good character masks found (min YOLO score: 0.05)
+
+🔄 Stage 3: 極低閾値 + マルチコマ分割 実行中...
+   YOLO閾値: 0.02
+   SAMポイント密度: 64
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0032.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.06秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0032.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.090, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 200.6, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (20.69秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2550.5MB, GPU: 2553.8MB)
+❌ Stage 3: 極低閾値 + マルチコマ分割 で失敗: No good character masks found (min YOLO score: 0.02)
+
+🔄 Stage 4: 最終手段 + 全機能 実行中...
+   YOLO閾値: 0.01
+   SAMポイント密度: 96
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0032.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.16秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0032.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.090, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 200.6, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (41.39秒, RAM: 2645.6MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2641.6MB, GPU: 2553.8MB)
+❌ Stage 4: 最終手段 + 全機能 で失敗: No good character masks found (min YOLO score: 0.01)
+💔 全4段階のリトライが失敗しました
+❌ 失敗: 出力ファイル未作成
+
+📷 処理中 (24/32): kaname07_0033.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 9.5)
+📊 検出要素: high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+✅ 完了: YOLO Scoring (0.26秒, RAM: 2590.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2590.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0033.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 205.9, グレースケール
+✅ 完了: Image Preprocessing (0.05秒, RAM: 2590.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2590.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.44秒, RAM: 2590.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2590.5MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0033.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (2.99秒, RAM: 2590.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2590.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0033.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.159, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 198.4, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2590.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2590.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (11.86秒, RAM: 2590.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2590.5MB, GPU: 2553.8MB)
+❌ Stage 2: 低閾値 + エフェクト線除去 で失敗: No good character masks found (min YOLO score: 0.05)
+
+🔄 Stage 3: 極低閾値 + マルチコマ分割 実行中...
+   YOLO閾値: 0.02
+   SAMポイント密度: 64
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0033.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.04秒, RAM: 2590.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2590.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0033.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.159, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 198.4, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2590.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2590.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (18.91秒, RAM: 2590.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2590.9MB, GPU: 2553.8MB)
+❌ Stage 3: 極低閾値 + マルチコマ分割 で失敗: No good character masks found (min YOLO score: 0.02)
+
+🔄 Stage 4: 最終手段 + 全機能 実行中...
+   YOLO閾値: 0.01
+   SAMポイント密度: 96
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0033.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.08秒, RAM: 2590.9MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2590.9MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0033.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.159, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 198.4, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2590.9MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2590.9MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (40.39秒, RAM: 2593.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2590.9MB, GPU: 2553.8MB)
+❌ Stage 4: 最終手段 + 全機能 で失敗: No good character masks found (min YOLO score: 0.01)
+💔 全4段階のリトライが失敗しました
+❌ 失敗: 出力ファイル未作成
+
+📷 処理中 (25/32): kaname07_0034.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 9.5)
+📊 検出要素: high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+✅ 完了: YOLO Scoring (0.27秒, RAM: 2588.9MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2588.9MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0034.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 211.3, グレースケール
+✅ 完了: Image Preprocessing (0.05秒, RAM: 2588.9MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2588.9MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.68秒, RAM: 2588.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2588.9MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0034.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (2.99秒, RAM: 2588.9MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2588.9MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0034.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.107, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 196.0, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2588.9MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2588.9MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (12.86秒, RAM: 2588.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2588.9MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 2588.9MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 2588.9MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2588.9MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 2588.9MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2588.9MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 2588.9MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.07秒, RAM: 2588.9MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 2588.9MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2588.9MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 2588.9MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0034.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2588.9MB, GPU: 2553.8MB)
+✅ Stage 2: 低閾値 + エフェクト線除去 で成功!
+✅ 成功: kaname07_0034.jpg
+
+📷 処理中 (26/32): kaname07_0035.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 9.5)
+📊 検出要素: high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+🔄 開始: Image Preprocessing (RAM: 2588.9MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0035.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 211.8, グレースケール
+✅ 完了: Image Preprocessing (0.05秒, RAM: 2588.9MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2588.9MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.09秒, RAM: 2587.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2587.9MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0035.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.06秒, RAM: 2587.9MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2587.9MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0035.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.170, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 199.3, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2587.9MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2587.9MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (12.07秒, RAM: 2587.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2587.9MB, GPU: 2553.8MB)
+❌ Stage 2: 低閾値 + エフェクト線除去 で失敗: No good character masks found (min YOLO score: 0.05)
+
+🔄 Stage 3: 極低閾値 + マルチコマ分割 実行中...
+   YOLO閾値: 0.02
+   SAMポイント密度: 64
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0035.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.06秒, RAM: 2587.9MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2587.9MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0035.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.170, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 199.3, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2587.9MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2587.9MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (19.32秒, RAM: 2587.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2587.9MB, GPU: 2553.8MB)
+❌ Stage 3: 極低閾値 + マルチコマ分割 で失敗: No good character masks found (min YOLO score: 0.02)
+
+🔄 Stage 4: 最終手段 + 全機能 実行中...
+   YOLO閾値: 0.01
+   SAMポイント密度: 96
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0035.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.08秒, RAM: 2587.9MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2587.9MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0035.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.170, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 199.3, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2587.9MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2587.9MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (38.91秒, RAM: 2596.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2596.9MB, GPU: 2553.8MB)
+❌ Stage 4: 最終手段 + 全機能 で失敗: No good character masks found (min YOLO score: 0.01)
+💔 全4段階のリトライが失敗しました
+❌ 失敗: 出力ファイル未作成
+
+📷 処理中 (27/32): kaname07_0036.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 9.5)
+📊 検出要素: high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+✅ 完了: YOLO Scoring (0.28秒, RAM: 2593.9MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2593.9MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0036.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 215.4, グレースケール
+✅ 完了: Image Preprocessing (0.05秒, RAM: 2593.9MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2593.9MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.27秒, RAM: 2589.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2589.9MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0036.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.08秒, RAM: 2589.9MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2589.9MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0036.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.104, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 200.3, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2589.9MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2589.9MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (13.62秒, RAM: 2588.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2588.9MB, GPU: 2553.8MB)
+❌ Stage 2: 低閾値 + エフェクト線除去 で失敗: No good character masks found (min YOLO score: 0.05)
+
+🔄 Stage 3: 極低閾値 + マルチコマ分割 実行中...
+   YOLO閾値: 0.02
+   SAMポイント密度: 64
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0036.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.13秒, RAM: 2588.9MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2588.9MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0036.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.104, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 200.3, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2588.9MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2588.9MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (20.96秒, RAM: 2588.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2588.9MB, GPU: 2553.8MB)
+❌ Stage 3: 極低閾値 + マルチコマ分割 で失敗: No good character masks found (min YOLO score: 0.02)
+
+🔄 Stage 4: 最終手段 + 全機能 実行中...
+   YOLO閾値: 0.01
+   SAMポイント密度: 96
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0036.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.21秒, RAM: 2588.9MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2588.9MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0036.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.104, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 200.3, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2588.9MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2588.9MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (42.52秒, RAM: 2690.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2689.3MB, GPU: 2553.8MB)
+❌ Stage 4: 最終手段 + 全機能 で失敗: No good character masks found (min YOLO score: 0.01)
+💔 全4段階のリトライが失敗しました
+❌ 失敗: 出力ファイル未作成
+
+📷 処理中 (28/32): kaname07_0037.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 10.5)
+📊 検出要素: medium_edge_density, high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+✅ 完了: YOLO Scoring (0.45秒, RAM: 2549.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2549.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0037.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 180.1, グレースケール
+✅ 完了: Image Preprocessing (0.06秒, RAM: 2549.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2549.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.27秒, RAM: 2549.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2549.1MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 1
+   処理段階: effect_line_removal
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0037.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.40秒, RAM: 2549.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2549.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0037.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.193, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 182.9, カラー
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2549.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2549.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (12.13秒, RAM: 2548.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2548.1MB, GPU: 2553.8MB)
+❌ Stage 2: 低閾値 + エフェクト線除去 で失敗: No good character masks found (min YOLO score: 0.05)
+
+🔄 Stage 3: 極低閾値 + マルチコマ分割 実行中...
+   YOLO閾値: 0.02
+   SAMポイント密度: 64
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 2
+   処理段階: effect_line_removal, panel_split
+   最大パネル選択: (0, 0, 1496, 1601)
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0037.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.22秒, RAM: 2548.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2548.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x1601, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0037.jpg
+🔄 画像リサイズ: 1496x1601 → 956x1023 (scale=0.640)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.103, 閾値=0.01, 結果=カラー
+📊 画像統計: 956x1023, 平均輝度: 183.4, カラー
+✅ 完了: Image Preprocessing (0.03秒, RAM: 2548.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2548.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (19.25秒, RAM: 2547.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2547.5MB, GPU: 2553.8MB)
+❌ Stage 3: 極低閾値 + マルチコマ分割 で失敗: No good character masks found (min YOLO score: 0.02)
+
+🔄 Stage 4: 最終手段 + 全機能 実行中...
+   YOLO閾値: 0.01
+   SAMポイント密度: 96
+🎨 漫画前処理適用中...
+   エフェクト線検出: ✅
+   パネル数: 2
+   処理段階: effect_line_removal, panel_split
+   最大パネル選択: (0, 0, 1496, 1601)
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0037.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (3.25秒, RAM: 2547.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2547.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x1601, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0037.jpg
+🔄 画像リサイズ: 1496x1601 → 956x1023 (scale=0.640)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.103, 閾値=0.01, 結果=カラー
+📊 画像統計: 956x1023, 平均輝度: 183.4, カラー
+✅ 完了: Image Preprocessing (0.03秒, RAM: 2547.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2547.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (40.04秒, RAM: 2558.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2555.5MB, GPU: 2553.8MB)
+❌ Stage 4: 最終手段 + 全機能 で失敗: No good character masks found (min YOLO score: 0.01)
+💔 全4段階のリトライが失敗しました
+❌ 失敗: 出力ファイル未作成
+
+📷 処理中 (29/32): kaname07_0038.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 9.5)
+📊 検出要素: high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+✅ 完了: YOLO Scoring (0.28秒, RAM: 2553.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2553.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0038.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 211.5, グレースケール
+✅ 完了: Image Preprocessing (0.06秒, RAM: 2553.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2553.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (7.01秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 2550.5MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.09秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 2550.5MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0038.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2550.5MB, GPU: 2553.8MB)
+✅ Stage 1: 軽度緩和 で成功!
+✅ 成功: kaname07_0038.jpg
+
+📷 処理中 (30/32): kaname07_0039.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 9.5)
+📊 検出要素: high_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+🔄 開始: Image Preprocessing (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0039.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 217.2, グレースケール
+✅ 完了: Image Preprocessing (0.04秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (6.41秒, RAM: 2549.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2549.5MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 2549.5MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 2549.5MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2549.5MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 2549.5MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2549.5MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 2549.5MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.07秒, RAM: 2549.5MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 2549.5MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2549.5MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 2549.5MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0039.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2549.5MB, GPU: 2553.8MB)
+✅ Stage 1: 軽度緩和 で成功!
+✅ 成功: kaname07_0039.jpg
+
+📷 処理中 (31/32): kaname07_0040.jpg
+🔍 ポーズ複雑度判定: very_high (スコア: 8.5)
+📊 検出要素: medium_contrast, many_lines, radial_pattern, high_effect_lines, multi_panel_layout
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+🔄 開始: Image Preprocessing (RAM: 2549.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1496x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0040.jpg
+🔄 画像リサイズ: 1496x2112 → 725x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 214.1, グレースケール
+✅ 完了: Image Preprocessing (0.06秒, RAM: 2549.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2549.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (7.02秒, RAM: 2548.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2548.5MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 2548.5MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 2548.5MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 2548.5MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 2548.5MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 2548.5MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 2548.5MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.09秒, RAM: 2548.5MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 2548.5MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 2548.5MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 2548.5MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07/kaname07_0040.jpg
+✅ 完了: Saving Results (0.01秒, RAM: 2548.5MB, GPU: 2553.8MB)
+✅ Stage 1: 軽度緩和 で成功!
+✅ 成功: kaname07_0040.jpg
+
+📷 処理中 (32/32): kaname07_0041cover.jpg
+🔍 ポーズ複雑度判定: low (スコア: 0.0)
+📊 検出要素: 
+
+🔄 Stage 1: 軽度緩和 実行中...
+   YOLO閾値: 0.08
+   SAMポイント密度: 32
+🔄 開始: Image Preprocessing (RAM: 2548.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1520x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/kaname07_0041cover.jpg
+🔄 画像リサイズ: 1520x2112 → 736x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=3.858, 閾値=0.01, 結果=カラー
+📊 画像統計: 736x1024, 平均輝度: 254.2, カラー
+✅ 完了: Image Preprocessing (0.03秒, RAM: 2548.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2548.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (5.83秒, RAM: 2548.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2548.5MB, GPU: 2553.8MB)
+❌ Stage 1: 軽度緩和 で失敗: No good character masks found (min YOLO score: 0.08)
+
+🔄 Stage 2: 低閾値 + エフェクト線除去 実行中...
+   YOLO閾値: 0.05
+   SAMポイント密度: 48
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0041cover.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (1.35秒, RAM: 2548.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2548.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1520x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0041cover.jpg
+🔄 画像リサイズ: 1520x2112 → 736x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=4.510, 閾値=0.01, 結果=カラー
+📊 画像統計: 736x1024, 平均輝度: 253.7, カラー
+✅ 完了: Image Preprocessing (0.03秒, RAM: 2548.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2548.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (10.46秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2550.5MB, GPU: 2553.8MB)
+❌ Stage 2: 低閾値 + エフェクト線除去 で失敗: No good character masks found (min YOLO score: 0.05)
+
+🔄 Stage 3: 極低閾値 + マルチコマ分割 実行中...
+   YOLO閾値: 0.02
+   SAMポイント密度: 64
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0041cover.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (1.40秒, RAM: 2548.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2548.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1520x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0041cover.jpg
+🔄 画像リサイズ: 1520x2112 → 736x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=4.510, 閾値=0.01, 結果=カラー
+📊 画像統計: 736x1024, 平均輝度: 253.7, カラー
+✅ 完了: Image Preprocessing (0.03秒, RAM: 2548.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2548.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (17.40秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2550.5MB, GPU: 2553.8MB)
+❌ Stage 3: 極低閾値 + マルチコマ分割 で失敗: No good character masks found (min YOLO score: 0.02)
+
+🔄 Stage 4: 最終手段 + 全機能 実行中...
+   YOLO閾値: 0.01
+   SAMポイント密度: 96
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+   前処理適用: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_kaname07_0041cover.jpg
+🎨 漫画前処理適用中...
+   エフェクト線検出: ❌
+   パネル数: 1
+   処理段階: 
+✅ 完了: YOLO Scoring (1.39秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 1520x2112, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/preprocessed_manga_preprocessed_manga_kaname07_0041cover.jpg
+🔄 画像リサイズ: 1520x2112 → 736x1024 (scale=0.485)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=4.510, 閾値=0.01, 結果=カラー
+📊 画像統計: 736x1024, 平均輝度: 253.7, カラー
+✅ 完了: Image Preprocessing (0.03秒, RAM: 2550.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 2550.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (36.91秒, RAM: 2579.4MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 2570.6MB, GPU: 2553.8MB)
+❌ Stage 4: 最終手段 + 全機能 で失敗: No good character masks found (min YOLO score: 0.01)
+💔 全4段階のリトライが失敗しました
+❌ 失敗: 出力ファイル未作成
+
+📊 処理完了
+成功: 15個
+失敗: 17個
+成功率: 46.9%
+⚠️ 一部の画像で処理に失敗しました
