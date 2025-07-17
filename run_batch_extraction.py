@@ -16,8 +16,8 @@ def run_batch_extraction():
     """バッチ抽出実行"""
     
     # パス設定
-    input_path = "/mnt/c/AItools/lora/train/yadokugaeru/org/kaname06"
-    output_path = "/mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname06"
+    input_path = "/mnt/c/AItools/lora/train/yadokugaeru/org/kaname07"
+    output_path = "/mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07"
     
     print("🚀 最高品質キャラクター抽出バッチ実行開始")
     print(f"入力パス: {input_path}")
@@ -35,7 +35,8 @@ def run_batch_extraction():
         print(f"❌ エラー: 入力パスに画像ファイルがありません: {input_path}")
         sys.exit(1)
     
-    print(f"📊 処理対象: {len(image_files)}個の画像ファイル")
+    # 全画像を処理
+    print(f"📊 処理対象: {len(image_files)}個の画像ファイル（全画像）")
     
     # 出力ディレクトリ作成
     Path(output_path).mkdir(parents=True, exist_ok=True)
@@ -51,8 +52,8 @@ def run_batch_extraction():
             print(f"\n📷 処理中 ({i}/{len(image_files)}): {image_file.name}")
             
             try:
-                # 出力ファイル名生成
-                output_file = Path(output_path) / f"{image_file.stem}_character.jpg"
+                # 出力ファイル名生成（入力と同じファイル名）
+                output_file = Path(output_path) / image_file.name
                 
                 # 最高品質設定で抽出実行
                 extract_character_from_path(
@@ -86,6 +87,20 @@ def run_batch_extraction():
         print(f"成功: {success_count}個")
         print(f"失敗: {error_count}個")
         print(f"成功率: {success_count/(success_count+error_count)*100:.1f}%")
+        
+        # 一時ファイルのクリーンアップ
+        print("\n🧹 一時ファイルをクリーンアップ中...")
+        try:
+            import glob
+            temp_files = glob.glob("/tmp/preprocessed*")
+            cleaned_count = 0
+            for temp_file in temp_files:
+                if os.path.exists(temp_file):
+                    os.remove(temp_file)
+                    cleaned_count += 1
+            print(f"✅ {cleaned_count}個の一時ファイルを削除しました")
+        except Exception as e:
+            print(f"⚠️ 一時ファイルクリーンアップエラー: {e}")
         
         if error_count > 0:
             print("⚠️ 一部の画像で処理に失敗しました")

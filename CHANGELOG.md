@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.3.1] - 2025-07-17
+
+### Fixed
+- **Mosaic Detection Issue**: Disabled mosaic processing that was causing false positives in character extraction
+- **Lower Body Extraction**: Fixed issue where screentone patterns were being misidentified as background, causing lower body extraction failures
+- **Duplicate File Prefix**: Resolved issue where `preprocessed_manga_` prefix was being duplicated in temporary files
+
+### Changed
+- **Temporary File Management**: Moved preprocessing temporary files from input directory to `/tmp/` to prevent directory pollution
+- **Batch Processing**: Enhanced batch processing with automatic cleanup of temporary files after completion
+
+### Added
+- **Auto-cleanup**: Automatic removal of temporary files in `/tmp/` after batch processing completion
+- **File Prefix Protection**: Added logic to prevent duplicate prefix generation in preprocessing pipeline
+
 ## [v0.3.0] - 2025-07-17
 
 ### Added

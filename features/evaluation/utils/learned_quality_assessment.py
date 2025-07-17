@@ -226,12 +226,12 @@ class LearnedQualityAssessment:
             # 色の分散が小さい = モノクロ/漫画風
             manga_style_score = 1.0 - min(color_variance / 10000, 1.0)
             
-            # スクリーントーン・モザイク境界問題検出
+            # スクリーントーン境界問題検出（モザイク処理を無効化）
             has_screentone = self._detect_screentone_patterns(gray)
-            has_mosaic_patterns = self._detect_mosaic_patterns(image)
+            has_mosaic_patterns = False  # モザイク処理無効化
             
-            # 境界複雑度の計算
-            boundary_complexity = has_screentone or has_mosaic_patterns
+            # 境界複雑度の計算（スクリーントーンのみ）
+            boundary_complexity = has_screentone
             if boundary_complexity:
                 estimated_difficulty = min(estimated_difficulty + 0.3, 1.0)
             

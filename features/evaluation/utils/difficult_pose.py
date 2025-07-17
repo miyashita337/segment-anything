@@ -283,11 +283,16 @@ class DifficultPoseProcessor:
             # 3. エッジ保護ガウシアンフィルタ
             processed = cv2.edgePreservingFilter(processed, flags=1, sigma_s=50, sigma_r=0.4)
             
-            # 出力パス決定
+            # 出力パス決定（一時ファイルを/tmp/に作成）
             if output_path is None:
                 input_path = Path(image_path)
                 suffix = "_manga" if enable_manga_preprocessing else ""
-                output_path = str(input_path.parent / f"preprocessed{suffix}_{input_path.name}")
+                # 一時ファイルを/tmp/に作成し、重複プレフィックスを防ぐ
+                filename = input_path.name
+                if filename.startswith("preprocessed"):
+                    # 既に前処理済みの場合は元のファイル名を使用
+                    filename = filename.split("_", 2)[-1] if "_" in filename else filename
+                output_path = f"/tmp/preprocessed{suffix}_{filename}"
             
             # 保存
             cv2.imwrite(output_path, processed)
