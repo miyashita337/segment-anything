@@ -12,94 +12,28 @@ from pathlib import Path
 from typing import Optional, Dict, Any, List
 
 # Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import cv2
 import numpy as np
 
-from features.common.hooks.start import get_sam_model, get_yolo_model, get_performance_monitor
-from features.evaluation.utils.difficult_pose import (
+from hooks.start import get_sam_model, get_yolo_model, get_performance_monitor
+from utils.difficult_pose import (
     DifficultPoseProcessor, 
     detect_difficult_pose, 
     get_difficult_pose_config,
     process_with_retry
 )
-from features.processing.preprocessing.preprocessing import preprocess_image_pipeline
-from features.processing.postprocessing.postprocessing import (
+from utils.preprocessing import preprocess_image_pipeline
+from utils.postprocessing import (
     enhance_character_mask, 
     extract_character_from_image, 
     crop_to_content,
     save_character_result,
     calculate_mask_quality_metrics
 )
-from features.evaluation.utils.text_detection import TextDetector
-from features.evaluation.utils.learned_quality_assessment import assess_image_quality, LearnedQualityAssessment
-from features.evaluation.utils.partial_extraction_detector import PartialExtractionDetector, analyze_extraction_completeness
-
-
-class CharacterExtractor:
-    """
-    Character Extraction Wrapper Class
-    Provides class-based interface for character extraction functionality
-    Phase 0リファクタリング対応: 依存関係問題の解決
-    """
-    
-    def __init__(self):
-        """Initialize character extractor with default settings"""
-        self.default_settings = {
-            'enhance_contrast': False,
-            'filter_text': True,
-            'save_mask': False,
-            'save_transparent': False,
-            'min_yolo_score': 0.1,
-            'verbose': True,
-            'difficult_pose': False,
-            'low_threshold': False,
-            'auto_retry': False,
-            'high_quality': False
-        }
-    
-    def extract(self, image_path: str, output_path: str = None, **kwargs):
-        """
-        Extract character from image
-        
-        Args:
-            image_path: Path to input image
-            output_path: Path for output (optional)
-            **kwargs: Additional extraction parameters
-            
-        Returns:
-            Result dictionary with success status and paths
-        """
-        # Merge default settings with provided kwargs
-        settings = {**self.default_settings, **kwargs}
-        
-        # Call the main extraction function
-        return extract_character_from_path(
-            image_path=image_path,
-            output_path=output_path,
-            **settings
-        )
-    
-    def batch_extract(self, input_dir: str, output_dir: str, **kwargs):
-        """
-        Batch extract characters from directory
-        
-        Args:
-            input_dir: Input directory path
-            output_dir: Output directory path
-            **kwargs: Additional extraction parameters
-            
-        Returns:
-            Batch processing results
-        """
-        settings = {**self.default_settings, **kwargs}
-        
-        return batch_extract_characters(
-            input_dir=input_dir,
-            output_dir=output_dir,
-            **settings
-        )
+from utils.text_detection import TextDetector
+from utils.learned_quality_assessment import assess_image_quality, LearnedQualityAssessment
 
 
 def extract_character_from_path(image_path: str,
@@ -139,7 +73,7 @@ def extract_character_from_path(image_path: str,
         manga_mode: 漫画前処理モード (Phase 2)
         effect_removal: エフェクト線除去を有効化 (Phase 2)
         panel_split: マルチコマ分割を有効化 (Phase 2)
-        multi_character_criteria: 複数キャラクター選択基準 ('balanced', 'size_priority', 'fullbody_priority', 'fullbody_priority_enhanced', 'central_priority', 'confidence_priority')
+        multi_character_criteria: 複数キャラクター選択基準 ('balanced', 'size_priority', 'fullbody_priority', 'central_priority', 'confidence_priority')
         adaptive_learning: 適応学習モード（281評価データに基づく最適手法選択）
         
     Returns:
@@ -262,11 +196,10 @@ def extract_character_from_path(image_path: str,
             if verbose:
                 print("🔄 モデル未初期化、自動初期化を実行中...")
             
-            # 新構造対応の自動初期化
+            # 直接初期化関数を呼び出し
             try:
-                # Phase 0後の新パスでモデル初期化
-                from features.common.hooks.start import initialize_models
-                initialize_models()
+                from hooks.start import start
+                start()
                 
                 # 再度モデル取得を試行
                 sam_model = get_sam_model()
@@ -274,19 +207,15 @@ def extract_character_from_path(image_path: str,
                 performance_monitor = get_performance_monitor()
                 
                 if verbose:
-                    print("✅ モデル自動初期化完了（新構造対応）")
+                    print("✅ モデル自動初期化完了")
                 
                 if not sam_model or not yolo_model:
                     raise RuntimeError("Auto initialization failed. Models still not available.")
                     
-            except ImportError as e:
-                # Phase 0新構造でのフォールバック
-                if verbose:
-                    print(f"⚠️ 自動初期化失敗: {e}")
-                raise RuntimeError(f"Models not initialized. Please run: python3 features/common/hooks/start.py\nError: {e}")
+            except ImportError:
+                # start関数がない場合のフォールバック
+                raise RuntimeError("Models not initialized. Please run: python3 hooks/start.py")
             except Exception as e:
-                if verbose:
-                    print(f"⚠️ 初期化例外: {e}")
                 raise RuntimeError(f"Failed to auto-initialize models: {e}")
         
         # 複雑ポーズ判定と設定調整 (Phase 2対応版)
@@ -411,25 +340,11 @@ def extract_character_from_path(image_path: str,
         performance_monitor.start_stage("YOLO Scoring")
         scored_masks = yolo_model.score_masks_with_detections(character_masks, bgr_image)
         
-        # Phase 1 P1-003: 改良版全身検出の統合
-        if multi_character_criteria == 'fullbody_priority_enhanced':
-            selection_result = yolo_model.select_best_mask_with_criteria(
-                scored_masks, 
-                bgr_image,
-                criteria=multi_character_criteria
-            )
-            if selection_result is not None:
-                best_mask, quality_score = selection_result
-                if verbose:
-                    print(f"🔍 改良版全身検出使用: 品質スコア={quality_score:.3f}")
-            else:
-                best_mask = None
-        else:
-            best_mask = yolo_model.get_best_character_mask(
-                scored_masks, 
-                bgr_image, 
-                min_yolo_score=min_yolo_score
-            )
+        best_mask = yolo_model.get_best_character_mask(
+            scored_masks, 
+            bgr_image, 
+            min_yolo_score=min_yolo_score
+        )
         
         if best_mask is None:
             raise ValueError(f"No good character masks found (min YOLO score: {min_yolo_score})")
@@ -505,54 +420,11 @@ def extract_character_from_path(image_path: str,
         quality_metrics = calculate_mask_quality_metrics(enhanced_mask)
         result['mask_quality'] = quality_metrics
         
-        # Phase 1 P1-002: 部分抽出検出システムによる分析
-        performance_monitor.start_stage("Partial Extraction Analysis")
-        try:
-            partial_detector = PartialExtractionDetector()
-            extraction_analysis = partial_detector.analyze_extraction(bgr_image, enhanced_mask)
-            
-            result['extraction_analysis'] = {
-                'has_face': extraction_analysis.has_face,
-                'has_torso': extraction_analysis.has_torso,
-                'has_limbs': extraction_analysis.has_limbs,
-                'completeness_score': extraction_analysis.completeness_score,
-                'quality_assessment': extraction_analysis.quality_assessment,
-                'issues_count': len(extraction_analysis.issues),
-                'issues': [
-                    {
-                        'type': issue.issue_type,
-                        'confidence': issue.confidence,
-                        'severity': issue.severity,
-                        'description': issue.description
-                    } for issue in extraction_analysis.issues
-                ]
-            }
-            
-            if verbose:
-                print(f"🔍 抽出完全性分析: 完全性={extraction_analysis.completeness_score:.3f}, "
-                      f"品質={extraction_analysis.quality_assessment}, 問題={len(extraction_analysis.issues)}件")
-                
-                # 重要な問題を表示
-                high_severity_issues = [issue for issue in extraction_analysis.issues if issue.severity == 'high']
-                if high_severity_issues:
-                    for issue in high_severity_issues[:2]:  # 最大2件表示
-                        print(f"  ⚠️ {issue.issue_type}: {issue.description}")
-            
-        except Exception as e:
-            if verbose:
-                print(f"⚠️ 部分抽出分析でエラー: {e}")
-            result['extraction_analysis'] = {
-                'completeness_score': 0.5,  # デフォルト値
-                'quality_assessment': 'unknown',
-                'issues_count': 0,
-                'error': str(e)
-            }
-        
-        performance_monitor.end_stage()
-        
         if verbose:
             print(f"📐 マスク品質: coverage={quality_metrics['coverage_ratio']:.3f}, "
                   f"compactness={quality_metrics['compactness']:.3f}")
+        
+        performance_monitor.end_stage()
         
         # Step 6: Character extraction
         performance_monitor.start_stage("Character Extraction")
@@ -819,7 +691,7 @@ def main():
     
     # 複数キャラクター選択基準オプション
     parser.add_argument('--multi-character-criteria', 
-                       choices=['balanced', 'size_priority', 'fullbody_priority', 'fullbody_priority_enhanced', 'central_priority', 'confidence_priority'],
+                       choices=['balanced', 'size_priority', 'fullbody_priority', 'central_priority', 'confidence_priority'],
                        default='balanced',
                        help='Character selection criteria for multiple characters (default: balanced)')
     
