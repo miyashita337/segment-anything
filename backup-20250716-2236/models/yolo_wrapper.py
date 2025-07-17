@@ -250,16 +250,14 @@ class YOLOModelWrapper:
     def _select_best_character_with_criteria(self, 
                                            masks: List[Dict[str, Any]], 
                                            image_shape: tuple,
-                                           criteria: str = 'balanced',
-                                           original_image: Optional[np.ndarray] = None) -> Optional[Tuple[Dict[str, Any], float]]:
+                                           criteria: str = 'balanced') -> Optional[Tuple[Dict[str, Any], float]]:
         """
         複合スコアによる最適キャラクター選択 (Gemini提案実装)
         
         Args:
             masks: マスク候補リスト
             image_shape: 画像サイズ (height, width, channels)
-            criteria: 選択基準 ('balanced', 'size_priority', 'fullbody_priority', 'fullbody_priority_enhanced', 'central_priority', 'confidence_priority')
-            original_image: 元画像（改良版全身検出に必要）
+            criteria: 選択基準 ('balanced', 'size_priority', 'fullbody_priority', 'central_priority', 'confidence_priority')
             
         Returns:
             (最適マスク, 品質スコア) または None
@@ -284,39 +282,10 @@ class YOLOModelWrapper:
             # 2. アスペクト比スコア (25%): 全身キャラクターを優先
             bbox = mask_data['bbox']
             aspect_ratio = bbox[3] / max(bbox[2], 1)  # height / width
-            
-            # Phase 1 P1-003: 改良版全身判定の統合
-            if criteria == 'fullbody_priority_enhanced' and original_image is not None:
-                # 改良版全身検出システムを使用
-                try:
-                    from features.evaluation.utils.enhanced_fullbody_detector import evaluate_fullbody_enhanced
-                    # 実際の画像とマスクデータから詳細評価
-                    enhanced_score = evaluate_fullbody_enhanced(
-                        original_image,  # 実際の画像を使用
-                        mask_data
-                    )
-                    scores['fullbody'] = enhanced_score.total_score
-                    print(f"   Enhanced fullbody score: {enhanced_score.total_score:.3f} (reason: {enhanced_score.reasoning[:50]}...)")
-                except Exception as e:
-                    print(f"   Enhanced detector error: {e}, using fallback")
-                    # フォールバック: 従来手法
-                    if 1.2 <= aspect_ratio <= 2.5:
-                        scores['fullbody'] = min((aspect_ratio - 0.5) / 2.0, 1.0)
-                    else:
-                        scores['fullbody'] = max(0, 1.0 - abs(aspect_ratio - 1.8) / 1.0)
-            elif criteria == 'fullbody_priority_enhanced':
-                print("   Enhanced fullbody: no image provided, using fallback")
-                # 画像が提供されていない場合はフォールバック
-                if 1.2 <= aspect_ratio <= 2.5:
-                    scores['fullbody'] = min((aspect_ratio - 0.5) / 2.0, 1.0)
-                else:
-                    scores['fullbody'] = max(0, 1.0 - abs(aspect_ratio - 1.8) / 1.0)
+            if 1.2 <= aspect_ratio <= 2.5:  # 全身キャラクター範囲
+                scores['fullbody'] = min((aspect_ratio - 0.5) / 2.0, 1.0)
             else:
-                # 従来のアスペクト比ベース判定
-                if 1.2 <= aspect_ratio <= 2.5:  # 全身キャラクター範囲
-                    scores['fullbody'] = min((aspect_ratio - 0.5) / 2.0, 1.0)
-                else:
-                    scores['fullbody'] = max(0, 1.0 - abs(aspect_ratio - 1.8) / 1.0)
+                scores['fullbody'] = max(0, 1.0 - abs(aspect_ratio - 1.8) / 1.0)
             
             # 3. 中央位置スコア (20%): 画像中央に近いキャラクターを優先
             mask_center_x = bbox[0] + bbox[2] / 2
@@ -344,7 +313,6 @@ class YOLOModelWrapper:
             'balanced': {'area': 0.30, 'fullbody': 0.25, 'central': 0.20, 'grounded': 0.15, 'confidence': 0.10},
             'size_priority': {'area': 0.50, 'fullbody': 0.15, 'central': 0.15, 'grounded': 0.10, 'confidence': 0.10},
             'fullbody_priority': {'area': 0.20, 'fullbody': 0.40, 'central': 0.15, 'grounded': 0.15, 'confidence': 0.10},
-            'fullbody_priority_enhanced': {'area': 0.15, 'fullbody': 0.50, 'central': 0.15, 'grounded': 0.10, 'confidence': 0.10},  # Phase 1 P1-003
             'central_priority': {'area': 0.20, 'fullbody': 0.20, 'central': 0.35, 'grounded': 0.15, 'confidence': 0.10},
             'confidence_priority': {'area': 0.25, 'fullbody': 0.20, 'central': 0.15, 'grounded': 0.10, 'confidence': 0.30}
         }
@@ -377,27 +345,6 @@ class YOLOModelWrapper:
             return best_mask, best_score
         
         return None
-    
-    def select_best_mask_with_criteria(self, 
-                                     masks: List[Dict[str, Any]], 
-                                     image: np.ndarray,
-                                     criteria: str = 'balanced') -> Optional[Tuple[Dict[str, Any], float]]:
-        """
-        公開メソッド: 複合スコアによる最適マスク選択
-        
-        Args:
-            masks: マスク候補リスト
-            image: 元画像
-            criteria: 選択基準
-            
-        Returns:
-            (最適マスク, 品質スコア) または None
-        """
-        if not masks:
-            return None
-        
-        image_shape = image.shape
-        return self._select_best_character_with_criteria(masks, image_shape, criteria, image)
     
     def get_model_info(self) -> Dict[str, Any]:
         """
