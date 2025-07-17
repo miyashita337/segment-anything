@@ -13,11 +13,11 @@ import torch
 from pathlib import Path
 
 # Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
-from models.sam_wrapper import SAMModelWrapper
-from models.yolo_wrapper import YOLOModelWrapper
-from utils.performance import PerformanceMonitor
+from features.extraction.models.sam_wrapper import SAMModelWrapper
+from features.extraction.models.yolo_wrapper import YOLOModelWrapper
+from features.common.performance.performance import PerformanceMonitor
 
 # Global model instances
 sam_model = None
@@ -72,6 +72,36 @@ def get_yolo_model():
 def get_performance_monitor():
     """Get the performance monitor instance."""
     return performance_monitor
+
+def initialize_models():
+    """Initialize models for Phase 0 new structure compatibility."""
+    global sam_model, yolo_model, performance_monitor
+    
+    try:
+        print("🚀 Phase 0対応モデル初期化開始...")
+        
+        # SAM model initialization with load_model() call
+        sam_model = SAMModelWrapper()
+        if not sam_model.load_model():
+            raise RuntimeError("SAM model loading failed")
+        print("✅ SAM model initialized and loaded")
+        
+        # YOLO model initialization with load_model() call
+        yolo_model = YOLOModelWrapper()
+        if not yolo_model.load_model():
+            raise RuntimeError("YOLO model loading failed")
+        print("✅ YOLO model initialized and loaded")
+        
+        # Performance monitor initialization
+        performance_monitor = PerformanceMonitor()
+        print("✅ Performance monitor initialized")
+        
+        print("🎉 全モデル初期化完了（load_model()実行済み）")
+        return True
+        
+    except Exception as e:
+        print(f"❌ モデル初期化失敗: {e}")
+        return False
 
 if __name__ == "__main__":
     # For testing purposes

@@ -10,7 +10,7 @@ import numpy as np
 from typing import List, Tuple, Optional, Dict, Any
 from pathlib import Path
 
-from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
+from core.segment_anything import sam_model_registry, SamAutomaticMaskGenerator
 
 
 class SAMModelWrapper:

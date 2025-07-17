@@ -9,7 +9,7 @@ from typing import Dict, Any, Optional, Tuple, List
 from pathlib import Path
 import cv2
 from PIL import Image
-from .manga_preprocessing import MangaPreprocessor
+from features.processing.preprocessing.manga_preprocessing import MangaPreprocessor
 
 
 class DifficultPoseProcessor:

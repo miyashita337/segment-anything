@@ -12,28 +12,93 @@ from pathlib import Path
 from typing import Optional, Dict, Any, List
 
 # Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
 import cv2
 import numpy as np
 
-from hooks.start import get_sam_model, get_yolo_model, get_performance_monitor
-from utils.difficult_pose import (
+from features.common.hooks.start import get_sam_model, get_yolo_model, get_performance_monitor
+from features.evaluation.utils.difficult_pose import (
     DifficultPoseProcessor, 
     detect_difficult_pose, 
     get_difficult_pose_config,
     process_with_retry
 )
-from utils.preprocessing import preprocess_image_pipeline
-from utils.postprocessing import (
+from features.processing.preprocessing.preprocessing import preprocess_image_pipeline
+from features.processing.postprocessing.postprocessing import (
     enhance_character_mask, 
     extract_character_from_image, 
     crop_to_content,
     save_character_result,
     calculate_mask_quality_metrics
 )
-from utils.text_detection import TextDetector
-from utils.learned_quality_assessment import assess_image_quality, LearnedQualityAssessment
+from features.evaluation.utils.text_detection import TextDetector
+from features.evaluation.utils.learned_quality_assessment import assess_image_quality, LearnedQualityAssessment
+
+
+class CharacterExtractor:
+    """
+    Character Extraction Wrapper Class
+    Provides class-based interface for character extraction functionality
+    Phase 0リファクタリング対応: 依存関係問題の解決
+    """
+    
+    def __init__(self):
+        """Initialize character extractor with default settings"""
+        self.default_settings = {
+            'enhance_contrast': False,
+            'filter_text': True,
+            'save_mask': False,
+            'save_transparent': False,
+            'min_yolo_score': 0.1,
+            'verbose': True,
+            'difficult_pose': False,
+            'low_threshold': False,
+            'auto_retry': False,
+            'high_quality': False
+        }
+    
+    def extract(self, image_path: str, output_path: str = None, **kwargs):
+        """
+        Extract character from image
+        
+        Args:
+            image_path: Path to input image
+            output_path: Path for output (optional)
+            **kwargs: Additional extraction parameters
+            
+        Returns:
+            Result dictionary with success status and paths
+        """
+        # Merge default settings with provided kwargs
+        settings = {**self.default_settings, **kwargs}
+        
+        # Call the main extraction function
+        return extract_character_from_path(
+            image_path=image_path,
+            output_path=output_path,
+            **settings
+        )
+    
+    def batch_extract(self, input_dir: str, output_dir: str, **kwargs):
+        """
+        Batch extract characters from directory
+        
+        Args:
+            input_dir: Input directory path
+            output_dir: Output directory path
+            **kwargs: Additional extraction parameters
+            
+        Returns:
+            Batch processing results
+        """
+        settings = {**self.default_settings, **kwargs}
+        
+        return batch_extract_characters(
+            input_dir=input_dir,
+            output_dir=output_dir,
+            **settings
+        )
 
 
 def extract_character_from_path(image_path: str,
@@ -196,10 +261,11 @@ def extract_character_from_path(image_path: str,
             if verbose:
                 print("🔄 モデル未初期化、自動初期化を実行中...")
             
-            # 直接初期化関数を呼び出し
+            # 新構造対応の自動初期化
             try:
-                from hooks.start import start
-                start()
+                # Phase 0後の新パスでモデル初期化
+                from features.common.hooks.start import initialize_models
+                initialize_models()
                 
                 # 再度モデル取得を試行
                 sam_model = get_sam_model()
@@ -207,15 +273,19 @@ def extract_character_from_path(image_path: str,
                 performance_monitor = get_performance_monitor()
                 
                 if verbose:
-                    print("✅ モデル自動初期化完了")
+                    print("✅ モデル自動初期化完了（新構造対応）")
                 
                 if not sam_model or not yolo_model:
                     raise RuntimeError("Auto initialization failed. Models still not available.")
                     
-            except ImportError:
-                # start関数がない場合のフォールバック
-                raise RuntimeError("Models not initialized. Please run: python3 hooks/start.py")
+            except ImportError as e:
+                # Phase 0新構造でのフォールバック
+                if verbose:
+                    print(f"⚠️ 自動初期化失敗: {e}")
+                raise RuntimeError(f"Models not initialized. Please run: python3 features/common/hooks/start.py\nError: {e}")
             except Exception as e:
+                if verbose:
+                    print(f"⚠️ 初期化例外: {e}")
                 raise RuntimeError(f"Failed to auto-initialize models: {e}")
         
         # 複雑ポーズ判定と設定調整 (Phase 2対応版)
