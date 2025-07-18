@@ -1,0 +1,362 @@
+{
+  "version": "v0.3.5",
+  "timestamp": "2025-07-18T22:31:18.071557",
+  "input_path": "/mnt/c/AItools/lora/train/yadokugaeru/org/kaname09",
+  "output_path": "/mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5",
+  "total_images": 58,
+  "success_count": 27,
+  "error_count": 31,
+  "success_rate": 46.55172413793103,
+  "total_time": 1003.9540519714355,
+  "average_time_per_image": 17.309552620197163,
+  "results": [
+    {
+      "filename": "kaname09_000_cover.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 72.28797507286072
+    },
+    {
+      "filename": "kaname09_001.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 15.532771825790405
+    },
+    {
+      "filename": "kaname09_002.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 17.50698947906494
+    },
+    {
+      "filename": "kaname09_003.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 17.260270833969116
+    },
+    {
+      "filename": "kaname09_004.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 15.443135023117065
+    },
+    {
+      "filename": "kaname09_005.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 17.533024072647095
+    },
+    {
+      "filename": "kaname09_006.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 15.695865392684937
+    },
+    {
+      "filename": "kaname09_007.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 16.169464826583862
+    },
+    {
+      "filename": "kaname09_008.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 16.56945037841797
+    },
+    {
+      "filename": "kaname09_009.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 16.87212896347046
+    },
+    {
+      "filename": "kaname09_010.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 17.040825128555298
+    },
+    {
+      "filename": "kaname09_011.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 17.386615991592407
+    },
+    {
+      "filename": "kaname09_012.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 16.74923586845398
+    },
+    {
+      "filename": "kaname09_013.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 16.562447786331177
+    },
+    {
+      "filename": "kaname09_014.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 16.750129461288452
+    },
+    {
+      "filename": "kaname09_015.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 16.962979078292847
+    },
+    {
+      "filename": "kaname09_016.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 16.333706855773926
+    },
+    {
+      "filename": "kaname09_017.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 17.573310136795044
+    },
+    {
+      "filename": "kaname09_018.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 16.36927628517151
+    },
+    {
+      "filename": "kaname09_019.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 17.449244022369385
+    },
+    {
+      "filename": "kaname09_020.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 16.091846227645874
+    },
+    {
+      "filename": "kaname09_021.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 16.302475452423096
+    },
+    {
+      "filename": "kaname09_022.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 15.911160469055176
+    },
+    {
+      "filename": "kaname09_023.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 15.902491331100464
+    },
+    {
+      "filename": "kaname09_024.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 15.059692859649658
+    },
+    {
+      "filename": "kaname09_025.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 17.67950963973999
+    },
+    {
+      "filename": "kaname09_026.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 15.740359544754028
+    },
+    {
+      "filename": "kaname09_027.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 15.566864252090454
+    },
+    {
+      "filename": "kaname09_028.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 19.47825813293457
+    },
+    {
+      "filename": "kaname09_029.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 16.622456789016724
+    },
+    {
+      "filename": "kaname09_030.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 14.877829790115356
+    },
+    {
+      "filename": "kaname09_031.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 14.73338770866394
+    },
+    {
+      "filename": "kaname09_032.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 16.071662187576294
+    },
+    {
+      "filename": "kaname09_033.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 15.20057487487793
+    },
+    {
+      "filename": "kaname09_034.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 16.36125922203064
+    },
+    {
+      "filename": "kaname09_035.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 16.262009143829346
+    },
+    {
+      "filename": "kaname09_036.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 16.152941703796387
+    },
+    {
+      "filename": "kaname09_037.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 16.56717038154602
+    },
+    {
+      "filename": "kaname09_038.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 15.662613868713379
+    },
+    {
+      "filename": "kaname09_039.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 16.791699409484863
+    },
+    {
+      "filename": "kaname09_040.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 16.687903881072998
+    },
+    {
+      "filename": "kaname09_041.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 15.975017547607422
+    },
+    {
+      "filename": "kaname09_042.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 15.708154916763306
+    },
+    {
+      "filename": "kaname09_043.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 15.8629789352417
+    },
+    {
+      "filename": "kaname09_044.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 16.138489961624146
+    },
+    {
+      "filename": "kaname09_045.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 15.918283224105835
+    },
+    {
+      "filename": "kaname09_046.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 15.708069801330566
+    },
+    {
+      "filename": "kaname09_047.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 16.83705997467041
+    },
+    {
+      "filename": "kaname09_048.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 16.043518543243408
+    },
+    {
+      "filename": "kaname09_049.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 16.545117378234863
+    },
+    {
+      "filename": "kaname09_050.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 15.312220811843872
+    },
+    {
+      "filename": "kaname09_051.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 16.612027883529663
+    },
+    {
+      "filename": "kaname09_052.jpg",
+      "success": true,
+      "quality_score": 0.0,
+      "processing_time": 16.017703533172607
+    },
+    {
+      "filename": "kaname09_053.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 16.02864694595337
+    },
+    {
+      "filename": "kaname09_054.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 16.17194938659668
+    },
+    {
+      "filename": "kaname09_055.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 14.762480020523071
+    },
+    {
+      "filename": "kaname09_056.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 14.849694013595581
+    },
+    {
+      "filename": "kaname09_057_cover.jpg",
+      "success": false,
+      "error": "No good character masks found (min YOLO score: 0.01)",
+      "processing_time": 19.688221216201782
+    }
+  ]
+}

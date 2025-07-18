@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.3.6] - 2025-07-18
+
+### Added
+- **run_batch_v035.py**: Enhanced batch processing script with comprehensive JSON results output and detailed performance metrics
+- **batch_results_v035.json**: Detailed batch processing results documentation with individual image processing times and success rates
+- **Performance Benchmarking**: Comprehensive processing statistics for kaname09 dataset (58 images, 46.6% success rate)
+
+### Fixed
+- **Batch Processing Reliability**: Improved error handling and progress tracking for large-scale image processing
+- **Results Documentation**: Enhanced logging with detailed JSON output for processing analysis
+- **Performance Monitoring**: Better tracking of processing time per image and overall batch performance
+
+### Performance Metrics
+- **Processing Speed**: Average 17.3 seconds per image on kaname09 dataset
+- **Success Rate**: 46.6% (27/58 images) with detailed failure analysis
+- **Memory Usage**: Stable memory consumption during batch processing
+- **Error Classification**: Detailed categorization of processing failures for improvement targeting
+
+### Technical Improvements
+- **Batch Processing**: Enhanced batch script with real-time progress reporting and comprehensive result logging
+- **Error Analysis**: Detailed failure categorization with specific error messages for each processing stage
+- **Performance Tracking**: Individual image processing time recording for optimization analysis
+
 ## [v0.3.5] - 2025-07-18
 
 ### Added
