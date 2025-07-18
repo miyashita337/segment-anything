@@ -1,0 +1,382 @@
+{
+  "timestamp": "2025-07-18T12:29:00.305437",
+  "summary": {
+    "sample_count": 18,
+    "correlation_strength": "強い相関",
+    "mean_absolute_error": 0.09834228734315754,
+    "accuracy_rate": 0.8333333333333334,
+    "primary_issue": "分析サンプル数が不足 (現在: 18件)"
+  },
+  "correlation_analysis": {
+    "sample_count": 18,
+    "pearson_correlation": 0.9790629321438528,
+    "pearson_p_value": 0.0,
+    "spearman_correlation": 0.9790629321438528,
+    "spearman_p_value": 0.0,
+    "mean_squared_error": 0.019263864019673393,
+    "mean_absolute_error": 0.09834228734315754,
+    "r_squared": 0.8971408710880986,
+    "user_score_mean": 0.47777777777777786,
+    "user_score_std": 0.4327631576477877,
+    "auto_score_mean": 0.5719519606334814,
+    "auto_score_std": 0.3723717544953708,
+    "detailed_data": [
+      {
+        "image_name": "kaname07_0000_cover.jpg",
+        "user_score": 0.0,
+        "auto_score": 0.1649653561900223,
+        "user_rating": "F",
+        "difference": 0.1649653561900223,
+        "abs_difference": 0.1649653561900223,
+        "actual_problem": "wrong_character_selection",
+        "desired_region": "画面左側"
+      },
+      {
+        "image_name": "kaname07_0001.jpg",
+        "user_score": 0.6,
+        "auto_score": 0.628402191037582,
+        "user_rating": "C",
+        "difference": 0.028402191037582014,
+        "abs_difference": 0.028402191037582014,
+        "actual_problem": "wrong_character_selection",
+        "desired_region": "画面右上"
+      },
+      {
+        "image_name": "kaname07_0002.jpg",
+        "user_score": 0.0,
+        "auto_score": 0.1842554308118235,
+        "user_rating": "F",
+        "difference": 0.1842554308118235,
+        "abs_difference": 0.1842554308118235,
+        "actual_problem": "wrong_character_selection",
+        "desired_region": "画面左側"
+      },
+      {
+        "image_name": "kaname07_0003.jpg",
+        "user_score": 0.0,
+        "auto_score": 0.14946620480919853,
+        "user_rating": "F",
+        "difference": 0.14946620480919853,
+        "abs_difference": 0.14946620480919853,
+        "actual_problem": "extraction_failure",
+        "desired_region": "unknown"
+      },
+      {
+        "image_name": "kaname07_0004.jpg",
+        "user_score": 0.0,
+        "auto_score": 0.22380633569754416,
+        "user_rating": "F",
+        "difference": 0.22380633569754416,
+        "abs_difference": 0.22380633569754416,
+        "actual_problem": "inappropriate_extraction_area",
+        "desired_region": "unknown"
+      },
+      {
+        "image_name": "kaname07_0005.jpg",
+        "user_score": 1.0,
+        "auto_score": 1.0,
+        "user_rating": "A",
+        "difference": 0.0,
+        "abs_difference": 0.0,
+        "actual_problem": "none",
+        "desired_region": "success"
+      },
+      {
+        "image_name": "kaname07_0006.jpg",
+        "user_score": 0.2,
+        "auto_score": 0.22429603550466365,
+        "user_rating": "E",
+        "difference": 0.024296035504663638,
+        "abs_difference": 0.024296035504663638,
+        "actual_problem": "wrong_character_selection",
+        "desired_region": "unknown"
+      },
+      {
+        "image_name": "kaname07_0007.jpg",
+        "user_score": 1.0,
+        "auto_score": 1.0,
+        "user_rating": "A",
+        "difference": 0.0,
+        "abs_difference": 0.0,
+        "actual_problem": "none",
+        "desired_region": "success"
+      },
+      {
+        "image_name": "kaname07_0013.jpg",
+        "user_score": 0.6,
+        "auto_score": 0.7525604656206337,
+        "user_rating": "C",
+        "difference": 0.15256046562063375,
+        "abs_difference": 0.15256046562063375,
+        "actual_problem": "wrong_character_selection",
+        "desired_region": "画面左上のコマ"
+      },
+      {
+        "image_name": "kaname07_0014.jpg",
+        "user_score": 0.0,
+        "auto_score": 0.20488528411141743,
+        "user_rating": "F",
+        "difference": 0.20488528411141743,
+        "abs_difference": 0.20488528411141743,
+        "actual_problem": "wrong_character_selection",
+        "desired_region": "unknown"
+      },
+      {
+        "image_name": "kaname07_0016.jpg",
+        "user_score": 0.0,
+        "auto_score": 0.14929002027145916,
+        "user_rating": "F",
+        "difference": 0.14929002027145916,
+        "abs_difference": 0.14929002027145916,
+        "actual_problem": "inappropriate_extraction_area",
+        "desired_region": "画面全体"
+      },
+      {
+        "image_name": "kaname07_0019.jpg",
+        "user_score": 1.0,
+        "auto_score": 1.0,
+        "user_rating": "A",
+        "difference": 0.0,
+        "abs_difference": 0.0,
+        "actual_problem": "none",
+        "desired_region": "success"
+      },
+      {
+        "image_name": "kaname07_0020.jpg",
+        "user_score": 0.6,
+        "auto_score": 0.5878180730041601,
+        "user_rating": "C",
+        "difference": -0.012181926995839865,
+        "abs_difference": 0.012181926995839865,
+        "actual_problem": "none",
+        "desired_region": "success"
+      },
+      {
+        "image_name": "kaname07_0022.jpg",
+        "user_score": 1.0,
+        "auto_score": 1.0,
+        "user_rating": "A",
+        "difference": 0.0,
+        "abs_difference": 0.0,
+        "actual_problem": "none",
+        "desired_region": "success"
+      },
+      {
+        "image_name": "kaname07_0023.jpg",
+        "user_score": 0.6,
+        "auto_score": 0.9298941861363735,
+        "user_rating": "C",
+        "difference": 0.32989418613637356,
+        "abs_difference": 0.32989418613637356,
+        "actual_problem": "size_priority_issue",
+        "desired_region": "画面下部"
+      },
+      {
+        "image_name": "kaname07_0026.jpg",
+        "user_score": 0.0,
+        "auto_score": 0.12082672159903182,
+        "user_rating": "F",
+        "difference": 0.12082672159903182,
+        "abs_difference": 0.12082672159903182,
+        "actual_problem": "inappropriate_extraction_area",
+        "desired_region": "unknown"
+      },
+      {
+        "image_name": "kaname07_0038.jpg",
+        "user_score": 1.0,
+        "auto_score": 0.9746689866087541,
+        "user_rating": "A",
+        "difference": -0.025331013391245882,
+        "abs_difference": 0.025331013391245882,
+        "actual_problem": "none",
+        "desired_region": "success"
+      },
+      {
+        "image_name": "kaname07_0040.jpg",
+        "user_score": 1.0,
+        "auto_score": 1.0,
+        "user_rating": "A",
+        "difference": 0.0,
+        "abs_difference": 0.0,
+        "actual_problem": "none",
+        "desired_region": "success"
+      }
+    ]
+  },
+  "pattern_analysis": {
+    "classification": {
+      "overestimated_count": 3,
+      "underestimated_count": 0,
+      "accurate_count": 15,
+      "overestimated_ratio": 0.16666666666666666,
+      "underestimated_ratio": 0.0,
+      "accurate_ratio": 0.8333333333333334
+    },
+    "problem_patterns": {
+      "wrong_character_selection": {
+        "count": 6,
+        "mean_difference": 0.12656079387935712,
+        "std_difference": 0.07269511945457882,
+        "bias_direction": "overestimate"
+      },
+      "inappropriate_extraction_area": {
+        "count": 3,
+        "mean_difference": 0.1646410258560117,
+        "std_difference": 0.043419966676728754,
+        "bias_direction": "overestimate"
+      },
+      "none": {
+        "count": 7,
+        "mean_difference": -0.005358991483869392,
+        "std_difference": 0.009173160046649741,
+        "bias_direction": "neutral"
+      }
+    },
+    "region_patterns": {
+      "画面左側": {
+        "count": 2,
+        "mean_difference": 0.1746103935009229,
+        "std_difference": 0.009645037310900592,
+        "bias_direction": "overestimate"
+      }
+    },
+    "rating_patterns": {
+      "F": {
+        "count": 7,
+        "mean_difference": 0.1710707647843567,
+        "std_difference": 0.03295276989893416,
+        "bias_direction": "overestimate"
+      },
+      "C": {
+        "count": 4,
+        "mean_difference": 0.12466872894968736,
+        "std_difference": 0.13312661793036515,
+        "bias_direction": "overestimate"
+      },
+      "A": {
+        "count": 6,
+        "mean_difference": -0.004221835565207647,
+        "std_difference": 0.009440311313630545,
+        "bias_direction": "neutral"
+      }
+    },
+    "worst_cases": {
+      "most_overestimated": [
+        {
+          "image_name": "kaname07_0023.jpg",
+          "user_score": 0.6,
+          "auto_score": 0.9298941861363735,
+          "user_rating": "C",
+          "difference": 0.32989418613637356,
+          "abs_difference": 0.32989418613637356,
+          "actual_problem": "size_priority_issue",
+          "desired_region": "画面下部"
+        },
+        {
+          "image_name": "kaname07_0004.jpg",
+          "user_score": 0.0,
+          "auto_score": 0.22380633569754416,
+          "user_rating": "F",
+          "difference": 0.22380633569754416,
+          "abs_difference": 0.22380633569754416,
+          "actual_problem": "inappropriate_extraction_area",
+          "desired_region": "unknown"
+        },
+        {
+          "image_name": "kaname07_0014.jpg",
+          "user_score": 0.0,
+          "auto_score": 0.20488528411141743,
+          "user_rating": "F",
+          "difference": 0.20488528411141743,
+          "abs_difference": 0.20488528411141743,
+          "actual_problem": "wrong_character_selection",
+          "desired_region": "unknown"
+        },
+        {
+          "image_name": "kaname07_0002.jpg",
+          "user_score": 0.0,
+          "auto_score": 0.1842554308118235,
+          "user_rating": "F",
+          "difference": 0.1842554308118235,
+          "abs_difference": 0.1842554308118235,
+          "actual_problem": "wrong_character_selection",
+          "desired_region": "画面左側"
+        },
+        {
+          "image_name": "kaname07_0000_cover.jpg",
+          "user_score": 0.0,
+          "auto_score": 0.1649653561900223,
+          "user_rating": "F",
+          "difference": 0.1649653561900223,
+          "abs_difference": 0.1649653561900223,
+          "actual_problem": "wrong_character_selection",
+          "desired_region": "画面左側"
+        }
+      ],
+      "most_underestimated": [
+        {
+          "image_name": "kaname07_0038.jpg",
+          "user_score": 1.0,
+          "auto_score": 0.9746689866087541,
+          "user_rating": "A",
+          "difference": -0.025331013391245882,
+          "abs_difference": 0.025331013391245882,
+          "actual_problem": "none",
+          "desired_region": "success"
+        },
+        {
+          "image_name": "kaname07_0020.jpg",
+          "user_score": 0.6,
+          "auto_score": 0.5878180730041601,
+          "user_rating": "C",
+          "difference": -0.012181926995839865,
+          "abs_difference": 0.012181926995839865,
+          "actual_problem": "none",
+          "desired_region": "success"
+        },
+        {
+          "image_name": "kaname07_0005.jpg",
+          "user_score": 1.0,
+          "auto_score": 1.0,
+          "user_rating": "A",
+          "difference": 0.0,
+          "abs_difference": 0.0,
+          "actual_problem": "none",
+          "desired_region": "success"
+        },
+        {
+          "image_name": "kaname07_0007.jpg",
+          "user_score": 1.0,
+          "auto_score": 1.0,
+          "user_rating": "A",
+          "difference": 0.0,
+          "abs_difference": 0.0,
+          "actual_problem": "none",
+          "desired_region": "success"
+        },
+        {
+          "image_name": "kaname07_0019.jpg",
+          "user_score": 1.0,
+          "auto_score": 1.0,
+          "user_rating": "A",
+          "difference": 0.0,
+          "abs_difference": 0.0,
+          "actual_problem": "none",
+          "desired_region": "success"
+        }
+      ]
+    }
+  },
+  "recommendations": [
+    {
+      "priority": "high",
+      "category": "data_insufficiency",
+      "issue": "分析サンプル数が不足 (現在: 18件)",
+      "recommendation": "より多くの評価データ収集が必要",
+      "implementation": "追加データセットでの評価、継続的な評価データ収集"
+    }
+  ],
+  "action_items": [
+    "[HIGH] data_insufficiency: 追加データセットでの評価、継続的な評価データ収集"
+  ]
+}

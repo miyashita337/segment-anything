@@ -1,0 +1,390 @@
+{
+  "timestamp": "2025-07-18T12:27:01.999164",
+  "analysis_results": {
+    "basic_stats": {
+      "total_count": 41,
+      "success_count": 23,
+      "success_rate": 0.5609756097560976,
+      "failure_count": 18
+    },
+    "distributions": {
+      "rating": {
+        "F": 7,
+        "C": 4,
+        "A": 6,
+        "E": 1
+      },
+      "problems": {
+        "wrong_character_selection": 9,
+        "extraction_failure": 18,
+        "inappropriate_extraction_area": 6,
+        "none": 7,
+        "size_priority_issue": 1
+      },
+      "regions": {
+        "画面左側": 2,
+        "画面右上": 1,
+        "画面右のコマ": 2,
+        "画面上部のコマ": 3,
+        "画面左上のコマ": 1,
+        "左下のコマ": 1,
+        "画面全体": 1,
+        "画面右下": 2,
+        "画面上部": 1,
+        "画面下部": 2,
+        "画面半分上部": 4,
+        "画面半分下部": 2,
+        "画面左半分": 1,
+        "画面右上上部": 1
+      }
+    },
+    "patterns": {
+      "success_patterns": [
+        {
+          "user_rating": "A",
+          "desired_region": "success",
+          "actual_problem": "none",
+          "extraction_success": true
+        },
+        {
+          "user_rating": "A",
+          "desired_region": "success",
+          "actual_problem": "none",
+          "extraction_success": true
+        },
+        {
+          "user_rating": "A",
+          "desired_region": "success",
+          "actual_problem": "none",
+          "extraction_success": true
+        },
+        {
+          "user_rating": "A",
+          "desired_region": "success",
+          "actual_problem": "none",
+          "extraction_success": true
+        },
+        {
+          "user_rating": "A",
+          "desired_region": "success",
+          "actual_problem": "none",
+          "extraction_success": true
+        },
+        {
+          "user_rating": "A",
+          "desired_region": "success",
+          "actual_problem": "none",
+          "extraction_success": true
+        }
+      ],
+      "failure_patterns": [
+        {
+          "user_rating": "F",
+          "desired_region": "画面左側",
+          "actual_problem": "wrong_character_selection",
+          "extraction_success": true
+        },
+        {
+          "user_rating": "C",
+          "desired_region": "画面右上",
+          "actual_problem": "wrong_character_selection",
+          "extraction_success": true
+        },
+        {
+          "user_rating": "F",
+          "desired_region": "画面左側",
+          "actual_problem": "wrong_character_selection",
+          "extraction_success": true
+        },
+        {
+          "user_rating": "F",
+          "desired_region": "unknown",
+          "actual_problem": "extraction_failure",
+          "extraction_success": false
+        },
+        {
+          "user_rating": "F",
+          "desired_region": "unknown",
+          "actual_problem": "inappropriate_extraction_area",
+          "extraction_success": true
+        },
+        {
+          "user_rating": "E",
+          "desired_region": "unknown",
+          "actual_problem": "wrong_character_selection",
+          "extraction_success": true
+        },
+        {
+          "user_rating": null,
+          "desired_region": "unknown",
+          "actual_problem": "extraction_failure",
+          "extraction_success": false
+        },
+        {
+          "user_rating": null,
+          "desired_region": "画面右のコマ",
+          "actual_problem": "wrong_character_selection",
+          "extraction_success": true
+        },
+        {
+          "user_rating": null,
+          "desired_region": "画面上部のコマ",
+          "actual_problem": "wrong_character_selection",
+          "extraction_success": true
+        },
+        {
+          "user_rating": null,
+          "desired_region": "画面右のコマ",
+          "actual_problem": "extraction_failure",
+          "extraction_success": false
+        },
+        {
+          "user_rating": null,
+          "desired_region": "画面上部のコマ",
+          "actual_problem": "extraction_failure",
+          "extraction_success": false
+        },
+        {
+          "user_rating": "C",
+          "desired_region": "画面左上のコマ",
+          "actual_problem": "wrong_character_selection",
+          "extraction_success": true
+        },
+        {
+          "user_rating": "F",
+          "desired_region": "unknown",
+          "actual_problem": "wrong_character_selection",
+          "extraction_success": true
+        },
+        {
+          "user_rating": null,
+          "desired_region": "左下のコマ",
+          "actual_problem": "extraction_failure",
+          "extraction_success": false
+        },
+        {
+          "user_rating": "F",
+          "desired_region": "画面全体",
+          "actual_problem": "inappropriate_extraction_area",
+          "extraction_success": true
+        },
+        {
+          "user_rating": null,
+          "desired_region": "画面上部のコマ",
+          "actual_problem": "extraction_failure",
+          "extraction_success": false
+        },
+        {
+          "user_rating": null,
+          "desired_region": "画面右下",
+          "actual_problem": "wrong_character_selection",
+          "extraction_success": true
+        },
+        {
+          "user_rating": "C",
+          "desired_region": "success",
+          "actual_problem": "none",
+          "extraction_success": true
+        },
+        {
+          "user_rating": null,
+          "desired_region": "画面上部",
+          "actual_problem": "extraction_failure",
+          "extraction_success": false
+        },
+        {
+          "user_rating": "C",
+          "desired_region": "画面下部",
+          "actual_problem": "size_priority_issue",
+          "extraction_success": true
+        },
+        {
+          "user_rating": null,
+          "desired_region": "画面下部",
+          "actual_problem": "extraction_failure",
+          "extraction_success": false
+        },
+        {
+          "user_rating": null,
+          "desired_region": "画面右下",
+          "actual_problem": "extraction_failure",
+          "extraction_success": false
+        },
+        {
+          "user_rating": "F",
+          "desired_region": "unknown",
+          "actual_problem": "inappropriate_extraction_area",
+          "extraction_success": true
+        },
+        {
+          "user_rating": null,
+          "desired_region": "unknown",
+          "actual_problem": "extraction_failure",
+          "extraction_success": false
+        },
+        {
+          "user_rating": null,
+          "desired_region": "unknown",
+          "actual_problem": "extraction_failure",
+          "extraction_success": false
+        },
+        {
+          "user_rating": null,
+          "desired_region": "unknown",
+          "actual_problem": "extraction_failure",
+          "extraction_success": false
+        },
+        {
+          "user_rating": null,
+          "desired_region": "unknown",
+          "actual_problem": "extraction_failure",
+          "extraction_success": false
+        },
+        {
+          "user_rating": null,
+          "desired_region": "画面半分上部",
+          "actual_problem": "inappropriate_extraction_area",
+          "extraction_success": true
+        },
+        {
+          "user_rating": null,
+          "desired_region": "画面半分上部",
+          "actual_problem": "extraction_failure",
+          "extraction_success": false
+        },
+        {
+          "user_rating": null,
+          "desired_region": "画面半分下部",
+          "actual_problem": "extraction_failure",
+          "extraction_success": false
+        },
+        {
+          "user_rating": null,
+          "desired_region": "画面左半分",
+          "actual_problem": "inappropriate_extraction_area",
+          "extraction_success": true
+        },
+        {
+          "user_rating": null,
+          "desired_region": "画面半分下部",
+          "actual_problem": "extraction_failure",
+          "extraction_success": false
+        },
+        {
+          "user_rating": null,
+          "desired_region": "画面半分上部",
+          "actual_problem": "extraction_failure",
+          "extraction_success": false
+        },
+        {
+          "user_rating": null,
+          "desired_region": "画面半分上部",
+          "actual_problem": "extraction_failure",
+          "extraction_success": false
+        },
+        {
+          "user_rating": null,
+          "desired_region": "画面右上上部",
+          "actual_problem": "inappropriate_extraction_area",
+          "extraction_success": true
+        }
+      ],
+      "success_pattern_count": 6,
+      "failure_pattern_count": 35
+    }
+  },
+  "data_gaps": {
+    "underrepresented_problems": [
+      "size_priority_issue (1件, 2.4%)"
+    ],
+    "missing_regions": [
+      "画面右側",
+      "画面中央",
+      "画面左下"
+    ],
+    "rating_imbalance": [],
+    "success_case_shortage": [
+      "B評価 (0件, 0.0%)"
+    ]
+  },
+  "collection_strategy": {
+    "high_priority": [
+      "A・B評価獲得事例の収集強化",
+      "成功パターンの詳細分析",
+      "高品質抽出の再現条件特定"
+    ],
+    "medium_priority": [
+      "不足地域の収集: 画面右側, 画面中央, 画面左下",
+      "地域別キャラクター配置パターンの収集",
+      "少数問題パターンの集中収集",
+      "境界例・難しいケースの特定"
+    ],
+    "low_priority": [],
+    "sampling_strategy": {
+      "target_total_samples": 100,
+      "success_case_ratio": 0.4,
+      "failure_case_ratio": 0.6,
+      "regional_balance": true,
+      "problem_type_balance": true
+    },
+    "target_metrics": {
+      "success_rate_improvement": 0.7109756097560976,
+      "A_rating_ratio": 0.25,
+      "regional_coverage": 1.0,
+      "problem_type_coverage": 0.9
+    }
+  },
+  "collection_plan": {
+    "dataset_name": "learning_data_20250718",
+    "collection_phases": [
+      {
+        "phase": 1,
+        "name": "成功事例収集強化",
+        "target_samples": 33,
+        "focus": "A・B評価獲得可能な画像の特定と収集",
+        "methods": [
+          "既存成功パターンの類似画像検索",
+          "高品質データセットからの選別収集",
+          "複数品質手法での事前スクリーニング"
+        ]
+      },
+      {
+        "phase": 2,
+        "name": "地域バランス改善",
+        "target_samples": 33,
+        "focus": "不足地域のキャラクター配置パターン収集",
+        "methods": [
+          "地域別キャラクター配置の意図的収集",
+          "複数キャラクターシーンでの主人公特定",
+          "背景・前景関係の多様化"
+        ]
+      },
+      {
+        "phase": 3,
+        "name": "困難事例・境界例収集",
+        "target_samples": 33,
+        "focus": "改善対象となる難しいケースの収集",
+        "methods": [
+          "複雑な姿勢・構図の収集",
+          "部分隠蔽・重複キャラクターの収集",
+          "エフェクト・背景が複雑な画像の収集"
+        ]
+      }
+    ],
+    "execution_steps": [
+      "1. 候補データセットの特定（kaname08, kaname09等）",
+      "2. 事前品質評価による優先度付け",
+      "3. Phase別データ収集の実行",
+      "4. 収集データの品質検証",
+      "5. 学習データセットへの統合",
+      "6. 効果測定とフィードバック"
+    ],
+    "success_criteria": {
+      "minimum_sample_count": 100,
+      "target_success_rate": 0.7109756097560976,
+      "regional_coverage_ratio": 1.0,
+      "quality_distribution_balance": "A:B:C = 25:25:25, D:E:F = 8:8:9"
+    },
+    "timeline": {}
+  }
+}
