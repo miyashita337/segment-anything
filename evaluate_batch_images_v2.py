@@ -6,10 +6,10 @@ v0.3.5成功画像バッチ評価スクリプト v2
 27枚の成功画像を新しい評価基準で自動評価
 """
 
-import sys
 import json
-from pathlib import Path
+import sys
 from datetime import datetime
+from pathlib import Path
 
 # Add project root to Python path
 sys.path.insert(0, str(Path(__file__).parent))

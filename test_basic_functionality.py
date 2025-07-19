@@ -4,8 +4,8 @@ Basic functionality test after Phase 0 refactoring
 Tests core functionality without requiring GPU or large models
 """
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Add project root to Python path

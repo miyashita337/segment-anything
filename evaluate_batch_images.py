@@ -6,10 +6,10 @@ GPT-4O + Gemini フォールバック評価システム使用
 27枚の成功画像を自動評価し、品質分析を行う
 """
 
-import sys
 import json
-from pathlib import Path
+import sys
 from datetime import datetime
+from pathlib import Path
 
 # Add project root to Python path
 sys.path.insert(0, str(Path(__file__).parent))

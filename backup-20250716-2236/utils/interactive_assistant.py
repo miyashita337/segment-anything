@@ -4,15 +4,16 @@ Phase 3: インタラクティブ補助機能
 手動介入によるキャラクター抽出支援システム
 """
 
-import cv2
 import numpy as np
-from typing import List, Tuple, Dict, Any, Optional, Callable
-import tkinter as tk
-from tkinter import ttk, filedialog, messagebox
-from PIL import Image, ImageTk
+import cv2
+
 import threading
 import time
+import tkinter as tk
 from pathlib import Path
+from PIL import Image, ImageTk
+from tkinter import filedialog, messagebox, ttk
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 
 class InteractiveAssistant:
@@ -201,7 +202,11 @@ class InteractiveAssistant:
                 return result
             
             # キャラクター抽出
-            from utils.postprocessing import extract_character_from_image, crop_to_content, save_character_result
+            from utils.postprocessing import (
+                crop_to_content,
+                extract_character_from_image,
+                save_character_result,
+            )
             
             character_image = extract_character_from_image(
                 self.current_image,

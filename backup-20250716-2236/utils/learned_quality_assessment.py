@@ -10,13 +10,14 @@
 - リアルタイム学習更新
 """
 
-import json
-import os
-import logging
-from typing import Dict, List, Optional, Tuple, Any
-from dataclasses import dataclass
 import numpy as np
+
+import json
+import logging
+import os
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 # 基本的な画像処理（SAMプロジェクト内での利用を想定）
 try:

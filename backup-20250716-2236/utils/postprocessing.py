@@ -4,10 +4,11 @@ Post-processing Utilities
 Mask refinement and character extraction post-processing
 """
 
-import cv2
 import numpy as np
-from typing import Tuple, Optional, List, Dict, Any
+import cv2
+
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 
 def refine_mask_edges(mask: np.ndarray, 

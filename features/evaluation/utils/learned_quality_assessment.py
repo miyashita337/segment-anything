@@ -10,13 +10,15 @@
 - リアルタイム学習更新
 """
 
-import json
-import os
-import logging
-from typing import Dict, List, Optional, Tuple, Any
-from dataclasses import dataclass
 import numpy as np
+
+import json
+import logging
+import os
+from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 # 基本的な画像処理（SAMプロジェクト内での利用を想定）
 try:
@@ -468,7 +470,7 @@ class LearnedQualityAssessment:
             return obj
         
         log_entry = {
-            'timestamp': str(pd.Timestamp.now() if 'pd' in globals() else 'timestamp'),
+            'timestamp': str(datetime.now()),
             'image_path': image_path,
             'predicted_quality': prediction.predicted_quality,
             'predicted_method': prediction.recommended_method,

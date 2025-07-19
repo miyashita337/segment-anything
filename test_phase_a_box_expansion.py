@@ -4,10 +4,11 @@ Phase A: GPT-4O推奨ボックス拡張機能のテスト
 顔検出ボックスを2.5-3倍水平、4倍垂直に拡張してからSAM処理
 """
 
+import numpy as np
+import cv2
+
 import os
 import sys
-import cv2
-import numpy as np
 from pathlib import Path
 
 # プロジェクトのルートディレクトリをパスに追加
@@ -19,10 +20,10 @@ def test_box_expansion_utilities():
     
     try:
         from features.extraction.utils.box_expansion import (
-            BoxExpansionProcessor, 
-            apply_gpt4o_expansion_strategy
+            BoxExpansionProcessor,
+            apply_gpt4o_expansion_strategy,
         )
-        
+
         # テスト用ダミーデータ
         test_detections = [
             {'bbox': [100, 150, 80, 120], 'confidence': 0.85, 'class_name': 'person'},
@@ -75,7 +76,7 @@ def test_yolo_wrapper_integration():
     
     try:
         from features.extraction.models.yolo_wrapper import YOLOModelWrapper
-        
+
         # YOLOラッパーの初期化テスト
         wrapper = YOLOModelWrapper()
         info = wrapper.get_model_info()
@@ -120,10 +121,9 @@ def test_extract_character_integration():
     print("\n🧪 extract_character統合テスト開始")
     
     try:
-        from features.extraction.commands.extract_character import extract_character_from_path
-        
         # 新しいパラメータの確認
         import inspect
+        from features.extraction.commands.extract_character import extract_character_from_path
         signature = inspect.signature(extract_character_from_path)
         
         print(f"🔍 extract_character_from_path シグネチャ:")
@@ -164,7 +164,7 @@ def test_command_line_interface():
     try:
         import subprocess
         import sys
-        
+
         # ヘルプ表示でオプションが追加されているかチェック
         result = subprocess.run([
             sys.executable, 

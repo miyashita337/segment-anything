@@ -37,13 +37,15 @@ jobs:
     - name: Run flake8
       run: |
         echo "🔍 Running flake8 linter..."
-        flake8 segment_anything/ features/ --count --select=E9,F63,F7,F82 --show-source --statistics
-        flake8 segment_anything/ features/ --count --exit-zero --max-complexity=10 --max-line-length=100 --statistics
+        # 実際に存在するPythonファイルのあるディレクトリのみチェック
+        flake8 features/ core/ --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 features/ core/ --count --exit-zero --max-complexity=10 --max-line-length=100 --statistics
     
     - name: Check Python imports
       run: |
         echo "📦 Checking if Python modules can be imported..."
-        python -c "import segment_anything; print('✅ segment_anything imported successfully')"
+        # segment_anythingディレクトリは__init__.pyがないため、core/segment_anythingを確認
+        python -c "import sys; sys.path.insert(0, '.'); from core.segment_anything.modeling import sam_model_registry; print('✅ core.segment_anything imported successfully')"
         python -c "import sys; sys.path.insert(0, '.'); from features.extraction.commands import extract_character; print('✅ features modules imported successfully')"
       continue-on-error: true
     

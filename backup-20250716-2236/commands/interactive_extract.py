@@ -4,8 +4,8 @@ Phase 3: インタラクティブ抽出コマンド
 コマンドラインからGUIアプリケーションを起動
 """
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Add parent directory to path for imports

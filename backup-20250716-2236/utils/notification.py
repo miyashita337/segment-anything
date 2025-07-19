@@ -3,10 +3,10 @@
 """
 
 import json
-import requests
 import os
+import requests
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
 
 class PushoverNotifier:

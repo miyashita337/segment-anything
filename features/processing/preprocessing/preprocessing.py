@@ -4,10 +4,11 @@ Image Preprocessing Utilities
 Extracted and modularized from original sam_yolo_character_segment.py
 """
 
-import cv2
 import numpy as np
-from typing import Tuple, Optional, List
+import cv2
+
 from pathlib import Path
+from typing import List, Optional, Tuple
 
 
 def load_and_validate_image(image_path: str) -> Optional[np.ndarray]:

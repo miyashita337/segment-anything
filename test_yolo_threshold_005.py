@@ -7,11 +7,11 @@ Phase A: 失敗画像5枚での小規模テスト
 対象: v0.3.5で失敗した画像から5枚選定
 """
 
+import json
 import sys
 import time
-import json
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 # Add project root to Python path
 sys.path.insert(0, str(Path(__file__).parent))

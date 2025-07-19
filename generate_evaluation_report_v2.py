@@ -10,11 +10,11 @@ A-F判定評価結果をビジュアルなHTMLレポートに変換
 - インタラクティブなHTMLレポート生成
 """
 
+import base64
 import json
 import os
-from pathlib import Path
 from datetime import datetime
-import base64
+from pathlib import Path
 
 
 class EvaluationReportGeneratorV2:

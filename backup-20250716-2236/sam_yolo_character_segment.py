@@ -23,26 +23,26 @@ SAM + YOLOv8 漫画キャラクター切り出しパイプライン v0.0.1
     python sam_yolo_character_segment.py --mode batch --input_dir ./manga_images/ --output_dir ./results/
 """
 
-import os
-import sys
-import argparse
-import cv2
 import numpy as np
-import torch
-from pathlib import Path
-from typing import List, Tuple, Optional, Dict
-import matplotlib.pyplot as plt
+import cv2
 import matplotlib.font_manager as fm
-import time
-import glob
-import urllib.request
-import psutil
-import gc
+import matplotlib.pyplot as plt
+import torch
 
 # SAM関連インポート
-from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
+from segment_anything import SamAutomaticMaskGenerator, sam_model_registry
 from segment_anything.utils.amg import batched_mask_to_box
 
+import argparse
+import gc
+import glob
+import os
+import psutil
+import sys
+import time
+import urllib.request
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
 # YOLOv8関連インポート
 from ultralytics import YOLO
 
@@ -56,7 +56,7 @@ except ImportError:
 
 # 背景除去関連インポート
 try:
-    from rembg import remove, new_session
+    from rembg import new_session, remove
     REMBG_AVAILABLE = True
 except ImportError:
     REMBG_AVAILABLE = False
@@ -780,6 +780,7 @@ class ClickHandler:
                 
                 # マスクの境界線を抽出
                 import cv2
+
                 # 表示サイズにリサイズ
                 resized_mask = cv2.resize(mask.astype(np.uint8), 
                                         (self.display_shape[1], self.display_shape[0]))

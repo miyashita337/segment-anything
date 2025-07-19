@@ -6,7 +6,8 @@ GPT-4O推奨のYOLO検出ボックス拡張機能
 """
 
 import numpy as np
-from typing import List, Dict, Any, Tuple
+
+from typing import Any, Dict, List, Tuple
 
 
 class BoxExpansionProcessor:

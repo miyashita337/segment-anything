@@ -4,8 +4,8 @@ kaname07最高品質キャラクター抽出バッチ実行
 Phase 0リファクタリング後の新構造対応版
 """
 
-import sys
 import os
+import sys
 import time
 from pathlib import Path
 

@@ -4,11 +4,12 @@ Phase A ボックス拡張効果の可視化デモ
 GPT-4O推奨のボックス拡張が実際に動作しているか確認
 """
 
-import sys
-import cv2
 import numpy as np
-from pathlib import Path
+import cv2
+
+import sys
 from datetime import datetime
+from pathlib import Path
 
 # Add project root to Python path
 sys.path.insert(0, str(Path(__file__).parent))

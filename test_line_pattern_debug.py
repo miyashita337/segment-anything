@@ -3,9 +3,10 @@
 線パターン分類のデバッグスクリプト
 """
 
-import sys
 import numpy as np
 import cv2
+
+import sys
 from pathlib import Path
 
 # Add project root to path
@@ -17,8 +18,9 @@ from utils.enhanced_screentone_detector import (
     EnhancedScreentoneDetector,
     ScreentoneFeatureExtractor,
     ScreentonePatternClassifier,
-    ScreentoneType
+    ScreentoneType,
 )
+
 
 def create_line_pattern(height: int, width: int, line_width: int, spacing: int) -> np.ndarray:
     """線パターン画像の生成"""

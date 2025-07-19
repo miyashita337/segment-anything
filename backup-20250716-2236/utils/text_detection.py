@@ -4,9 +4,10 @@ Text Detection Utilities
 Text region detection and filtering for character extraction
 """
 
-import cv2
 import numpy as np
-from typing import List, Tuple, Optional, Dict, Any
+import cv2
+
+from typing import Any, Dict, List, Optional, Tuple
 
 # Optional dependencies
 try:

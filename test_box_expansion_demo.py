@@ -54,7 +54,7 @@ def demo_box_expansion():
     
     try:
         from features.extraction.commands.extract_character import extract_character_from_path
-        
+
         # 通常の処理（ボックス拡張なし）
         print("\n📊 通常処理（ボックス拡張なし）")
         print("-" * 30)

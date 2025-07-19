@@ -4,13 +4,13 @@ SAM Model Wrapper
 Segment Anything Model wrapper for character extraction
 """
 
-import os
-import torch
 import numpy as np
-from typing import List, Tuple, Optional, Dict, Any
-from pathlib import Path
+import torch
 
-from core.segment_anything import sam_model_registry, SamAutomaticMaskGenerator
+import os
+from core.segment_anything import SamAutomaticMaskGenerator, sam_model_registry
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 
 class SAMModelWrapper:

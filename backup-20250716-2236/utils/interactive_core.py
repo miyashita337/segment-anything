@@ -4,10 +4,11 @@ Phase 3: インタラクティブ補助機能（コア部分）
 GUI部分を除いたコア機能のみ
 """
 
-import cv2
 import numpy as np
-from typing import List, Tuple, Dict, Any, Optional, Callable
+import cv2
+
 from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 
 class InteractiveAssistant:
@@ -195,7 +196,11 @@ class InteractiveAssistant:
                 return result
             
             # キャラクター抽出
-            from utils.postprocessing import extract_character_from_image, crop_to_content, save_character_result
+            from utils.postprocessing import (
+                crop_to_content,
+                extract_character_from_image,
+                save_character_result,
+            )
             
             character_image = extract_character_from_image(
                 self.current_image,

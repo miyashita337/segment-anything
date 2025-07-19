@@ -7,15 +7,16 @@ Phase 1 P1-003: 全身判定基準の改善
 P1-001分析結果とP1-002部分抽出検出を統合した改良システム
 """
 
-import cv2
 import numpy as np
-from typing import Dict, List, Tuple, Optional, Any
-from pathlib import Path
+import cv2
+
 import logging
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 # 部分抽出検出システムとの統合
-from .partial_extraction_detector import PartialExtractionDetector, ExtractionAnalysis
+from .partial_extraction_detector import ExtractionAnalysis, PartialExtractionDetector
 
 
 @dataclass
