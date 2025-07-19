@@ -171,13 +171,17 @@ class YOLOModelWrapper:
     
     def score_masks_with_detections(self, 
                                    masks: List[Dict[str, Any]], 
-                                   image: np.ndarray) -> List[Dict[str, Any]]:
+                                   image: np.ndarray,
+                                   use_expanded_boxes: bool = False,
+                                   expansion_strategy: str = 'balanced') -> List[Dict[str, Any]]:
         """
         Score SAM masks based on YOLO person detections
         
         Args:
             masks: List of SAM mask dictionaries
             image: Input image for person detection
+            use_expanded_boxes: GPT-4O推奨のボックス拡張を使用
+            expansion_strategy: 拡張戦略 ('conservative', 'balanced', 'aggressive')
             
         Returns:
             List of masks with added YOLO scores
@@ -187,6 +191,27 @@ class YOLOModelWrapper:
         
         # Get person detections
         persons = self.detect_persons(image)
+        
+        # GPT-4O推奨: ボックス拡張オプション
+        if use_expanded_boxes and persons:
+            try:
+                from features.extraction.utils.box_expansion import apply_gpt4o_expansion_strategy
+                image_shape = image.shape[:2]  # (height, width)
+                expanded_persons = apply_gpt4o_expansion_strategy(persons, image_shape, expansion_strategy)
+                
+                if expanded_persons:
+                    print(f"🎯 GPT-4O推奨ボックス拡張適用: {len(persons)}→{len(expanded_persons)} (戦略: {expansion_strategy})")
+                    for i, person in enumerate(expanded_persons[:3]):  # 最大3件表示
+                        exp_info = person.get('expansion_info', {})
+                        print(f"   検出{i+1}: H{exp_info.get('horizontal_factor', 0):.1f}x V{exp_info.get('vertical_factor', 0):.1f}x "
+                              f"({'境界制限' if exp_info.get('clipped_to_bounds') else '制限なし'})")
+                    persons = expanded_persons
+                    
+            except ImportError as e:
+                print(f"⚠️ ボックス拡張モジュール未利用可能: {e}")
+            except Exception as e:
+                print(f"⚠️ ボックス拡張エラー: {e}")
+                # エラー時は元の検出結果を使用
         
         # Score each mask
         scored_masks = []

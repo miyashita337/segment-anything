@@ -1,0 +1,1291 @@
+WARNING:root:dlib not available. Face detection will use OpenCV only.
+🚀 v0.3.5最高品質バッチ処理開始
+📋 PROJECT_SETTINGS.md準拠の命名規則で実行
+🚀 v0.3.5最高品質キャラクター抽出バッチ実行開始
+入力パス: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09
+出力パス: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5
+バージョン: v0.3.5 (命名規則改善版)
+✨ 改善点: ファイル命名規則統一、評価システム完全互換
+✨ Phase 1機能: 滑らかさ評価、切断検出、混入定量化、フィードバック学習、効率サンプリング
+📊 処理対象: 58個の画像ファイル
+
+🔄 [1/58] 処理中: kaname09_000_cover.jpg
+🚀 Phase 0対応モデル初期化開始...
+✅ SAM vit_h loaded on cuda
+✅ SAM model initialized and loaded
+✅ YOLO yolov8n.pt loaded on cuda
+✅ YOLO model initialized and loaded
+✅ Performance monitor initialized
+🎉 全モデル初期化完了（load_model()実行済み）
+🔄 開始: Image Preprocessing (RAM: 756.2MB, GPU: 2522.0MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_000_cover.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=58.106, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 203.0, カラー
+✅ 完了: Image Preprocessing (0.19秒, RAM: 766.7MB, GPU: 2522.0MB)
+🔄 開始: SAM Mask Generation (RAM: 766.7MB, GPU: 2522.0MB)
+✅ 完了: SAM Mask Generation (18.12秒, RAM: 1650.4MB, GPU: 2554.0MB)
+🔄 開始: YOLO Scoring (RAM: 1646.4MB, GPU: 2554.0MB)
+✅ 完了: YOLO Scoring (0.18秒, RAM: 1664.6MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1664.6MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.02秒, RAM: 1673.0MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1673.5MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.01秒, RAM: 1672.3MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1672.3MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.09秒, RAM: 1712.8MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1712.8MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.02秒, RAM: 1748.0MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1748.0MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_000_cover.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_000_cover_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_000_cover_transparent.png
+✅ 完了: Saving Results (0.02秒, RAM: 1748.0MB, GPU: 2553.8MB)
+✅ 成功: kaname09_000_cover.jpg
+   品質スコア: 0.000
+   処理時間: 72.29秒
+
+🔄 [2/58] 処理中: kaname09_001.jpg
+🔄 開始: Image Preprocessing (RAM: 1666.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_001.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 222.4, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1666.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1661.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.31秒, RAM: 1752.8MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1752.8MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_001.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [3/58] 処理中: kaname09_002.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1752.8MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1752.8MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_002.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 230.6, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1752.8MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1752.8MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (16.66秒, RAM: 1776.4MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1772.4MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1772.4MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1772.4MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 1772.4MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1772.5MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1772.5MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1772.5MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.07秒, RAM: 1792.7MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1792.7MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1826.5MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1826.5MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_002.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_002_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_002_transparent.png
+✅ 完了: Saving Results (0.01秒, RAM: 1826.5MB, GPU: 2553.8MB)
+✅ 成功: kaname09_002.jpg
+   品質スコア: 0.000
+   処理時間: 17.51秒
+
+🔄 [4/58] 処理中: kaname09_003.jpg
+🔄 開始: Image Preprocessing (RAM: 1765.9MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_003.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 241.4, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1765.9MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1765.9MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (16.32秒, RAM: 1778.7MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1771.7MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1771.7MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1770.7MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 1770.7MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1770.7MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1770.7MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1770.7MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.08秒, RAM: 1770.7MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1770.7MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1786.0MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1786.0MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_003.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_003_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_003_transparent.png
+✅ 完了: Saving Results (0.02秒, RAM: 1786.0MB, GPU: 2553.8MB)
+✅ 成功: kaname09_003.jpg
+   品質スコア: 0.000
+   処理時間: 17.26秒
+
+🔄 [5/58] 処理中: kaname09_004.jpg
+🔄 開始: Image Preprocessing (RAM: 1786.0MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_004.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 218.4, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1785.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1782.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (14.63秒, RAM: 1784.7MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1783.7MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1783.7MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1783.7MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+⚠️ テキスト密度計算エラー: slice indices must be integers or None or have an __index__ method
+✅ 完了: Text Filtering (0.00秒, RAM: 1783.7MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1783.7MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1783.7MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1783.7MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.09秒, RAM: 1783.7MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1783.7MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.02秒, RAM: 1794.1MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1794.1MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_004.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_004_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_004_transparent.png
+✅ 完了: Saving Results (0.01秒, RAM: 1794.1MB, GPU: 2553.8MB)
+✅ 成功: kaname09_004.jpg
+   品質スコア: 0.000
+   処理時間: 15.44秒
+
+🔄 [6/58] 処理中: kaname09_005.jpg
+🔄 開始: Image Preprocessing (RAM: 1793.4MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_005.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 246.6, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1793.4MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1793.4MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (16.40秒, RAM: 1804.3MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1803.2MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1803.2MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1803.2MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+⚠️ テキスト密度計算エラー: slice indices must be integers or None or have an __index__ method
+✅ 完了: Text Filtering (0.00秒, RAM: 1803.2MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1803.2MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1803.2MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1803.2MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.27秒, RAM: 1803.2MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1803.2MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1803.2MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1803.2MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_005.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_005_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_005_transparent.png
+✅ 完了: Saving Results (0.01秒, RAM: 1803.2MB, GPU: 2553.8MB)
+✅ 成功: kaname09_005.jpg
+   品質スコア: 0.000
+   処理時間: 17.53秒
+
+🔄 [7/58] 処理中: kaname09_006.jpg
+🔄 開始: Image Preprocessing (RAM: 1802.2MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_006.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 245.9, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1801.2MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1801.2MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.46秒, RAM: 1802.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1801.1MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_006.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [8/58] 処理中: kaname09_007.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1800.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1800.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_007.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 229.4, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1800.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1800.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.07秒, RAM: 1806.3MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1805.3MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1805.3MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1805.3MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 1805.3MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1805.3MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1805.3MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1805.3MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.26秒, RAM: 1805.3MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1805.3MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1805.3MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1805.3MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_007.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_007_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_007_transparent.png
+✅ 完了: Saving Results (0.01秒, RAM: 1805.3MB, GPU: 2553.8MB)
+✅ 成功: kaname09_007.jpg
+   品質スコア: 0.000
+   処理時間: 16.17秒
+
+🔄 [9/58] 処理中: kaname09_008.jpg
+🔄 開始: Image Preprocessing (RAM: 1804.3MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_008.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 182.4, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1804.3MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1803.3MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.74秒, RAM: 1800.4MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1799.4MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1799.4MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1799.4MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 1799.4MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1799.4MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1799.4MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1799.4MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.07秒, RAM: 1799.4MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1799.4MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1822.6MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1822.6MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_008.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_008_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_008_transparent.png
+✅ 完了: Saving Results (0.01秒, RAM: 1822.6MB, GPU: 2553.8MB)
+✅ 成功: kaname09_008.jpg
+   品質スコア: 0.000
+   処理時間: 16.57秒
+
+🔄 [10/58] 処理中: kaname09_009.jpg
+🔄 開始: Image Preprocessing (RAM: 1772.0MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_009.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 244.0, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1772.0MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1772.0MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (16.02秒, RAM: 1776.2MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1774.3MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1774.3MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1774.3MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+⚠️ テキスト密度計算エラー: slice indices must be integers or None or have an __index__ method
+✅ 完了: Text Filtering (0.00秒, RAM: 1774.3MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1774.3MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1774.3MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1774.3MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.06秒, RAM: 1774.3MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1774.3MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1791.1MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1791.1MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_009.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_009_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_009_transparent.png
+✅ 完了: Saving Results (0.02秒, RAM: 1791.1MB, GPU: 2553.8MB)
+✅ 成功: kaname09_009.jpg
+   品質スコア: 0.000
+   処理時間: 16.87秒
+
+🔄 [11/58] 処理中: kaname09_010.jpg
+🔄 開始: Image Preprocessing (RAM: 1790.2MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_010.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 243.2, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1790.2MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1790.2MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (16.08秒, RAM: 1798.2MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1794.2MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1793.2MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1793.2MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 1793.2MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1793.2MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1793.2MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1793.2MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.20秒, RAM: 1793.2MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1793.2MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1793.2MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1793.2MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_010.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_010_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_010_transparent.png
+✅ 完了: Saving Results (0.02秒, RAM: 1793.2MB, GPU: 2553.8MB)
+✅ 成功: kaname09_010.jpg
+   品質スコア: 0.000
+   処理時間: 17.04秒
+
+🔄 [12/58] 処理中: kaname09_011.jpg
+🔄 開始: Image Preprocessing (RAM: 1793.2MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_011.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 232.3, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1792.2MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1792.2MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (16.33秒, RAM: 1832.6MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1832.6MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1832.6MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1832.6MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+⚠️ テキスト密度計算エラー: slice indices must be integers or None or have an __index__ method
+✅ 完了: Text Filtering (0.00秒, RAM: 1832.6MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1832.6MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1832.6MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1832.6MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.29秒, RAM: 1855.1MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1855.1MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.02秒, RAM: 1872.2MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1872.2MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_011.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_011_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_011_transparent.png
+✅ 完了: Saving Results (0.01秒, RAM: 1872.2MB, GPU: 2553.8MB)
+✅ 成功: kaname09_011.jpg
+   品質スコア: 0.000
+   処理時間: 17.39秒
+
+🔄 [13/58] 処理中: kaname09_012.jpg
+🔄 開始: Image Preprocessing (RAM: 1822.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_012.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 233.4, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1822.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1822.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.78秒, RAM: 1823.0MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1820.1MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1820.1MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1820.1MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+⚠️ テキスト密度計算エラー: slice indices must be integers or None or have an __index__ method
+✅ 完了: Text Filtering (0.00秒, RAM: 1820.1MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1820.1MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1820.1MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1820.1MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.29秒, RAM: 1820.1MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1820.1MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1820.1MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1820.1MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_012.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_012_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_012_transparent.png
+✅ 完了: Saving Results (0.02秒, RAM: 1820.1MB, GPU: 2553.8MB)
+✅ 成功: kaname09_012.jpg
+   品質スコア: 0.000
+   処理時間: 16.75秒
+
+🔄 [14/58] 処理中: kaname09_013.jpg
+🔄 開始: Image Preprocessing (RAM: 1820.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_013.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 240.6, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1820.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1820.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (16.34秒, RAM: 1831.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1830.1MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_013.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [15/58] 処理中: kaname09_014.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1830.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1830.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_014.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 227.9, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1830.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1830.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.90秒, RAM: 1830.2MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1827.2MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1826.2MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1826.2MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 1826.2MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1826.2MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1826.2MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1826.2MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.10秒, RAM: 1826.2MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1826.2MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1826.2MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1826.2MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_014.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_014_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_014_transparent.png
+✅ 完了: Saving Results (0.02秒, RAM: 1826.2MB, GPU: 2553.8MB)
+✅ 成功: kaname09_014.jpg
+   品質スコア: 0.000
+   処理時間: 16.75秒
+
+🔄 [16/58] 処理中: kaname09_015.jpg
+🔄 開始: Image Preprocessing (RAM: 1826.2MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_015.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 219.6, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1826.2MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1826.2MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (16.01秒, RAM: 1830.2MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1828.2MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.03秒, RAM: 1828.2MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1828.2MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 1828.2MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1828.2MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1828.2MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1828.2MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.12秒, RAM: 1828.2MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1828.2MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1828.2MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1828.2MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_015.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_015_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_015_transparent.png
+✅ 完了: Saving Results (0.02秒, RAM: 1828.2MB, GPU: 2553.8MB)
+✅ 成功: kaname09_015.jpg
+   品質スコア: 0.000
+   処理時間: 16.96秒
+
+🔄 [17/58] 処理中: kaname09_016.jpg
+🔄 開始: Image Preprocessing (RAM: 1828.2MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_016.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 227.2, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1828.2MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1828.2MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.61秒, RAM: 1837.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1836.5MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1836.5MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1836.5MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 1836.5MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1836.5MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1836.5MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1836.5MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.08秒, RAM: 1836.5MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1836.5MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1847.1MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1847.1MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_016.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_016_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_016_transparent.png
+✅ 完了: Saving Results (0.02秒, RAM: 1847.1MB, GPU: 2553.8MB)
+✅ 成功: kaname09_016.jpg
+   品質スコア: 0.000
+   処理時間: 16.33秒
+
+🔄 [18/58] 処理中: kaname09_017.jpg
+🔄 開始: Image Preprocessing (RAM: 1789.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_017.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 206.1, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1789.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1789.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (17.38秒, RAM: 1855.0MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1850.0MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_017.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [19/58] 処理中: kaname09_018.jpg
+✅ 完了: YOLO Scoring (0.01秒, RAM: 1850.0MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1849.0MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_018.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 209.5, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1849.0MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1849.0MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.31秒, RAM: 1846.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1846.9MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1846.9MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1846.9MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 1846.9MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1846.9MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1846.9MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1846.9MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.17秒, RAM: 1861.4MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1861.4MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1886.8MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1886.8MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_018.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_018_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_018_transparent.png
+✅ 完了: Saving Results (0.05秒, RAM: 1886.8MB, GPU: 2553.8MB)
+✅ 成功: kaname09_018.jpg
+   品質スコア: 0.000
+   処理時間: 16.37秒
+
+🔄 [20/58] 処理中: kaname09_019.jpg
+🔄 開始: Image Preprocessing (RAM: 1819.4MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_019.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 212.8, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1819.4MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1819.4MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (16.70秒, RAM: 1837.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1836.5MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1836.5MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1836.5MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 1836.5MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1836.5MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1836.5MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1836.5MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.07秒, RAM: 1836.5MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1836.5MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1855.4MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1855.4MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_019.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_019_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_019_transparent.png
+✅ 完了: Saving Results (0.02秒, RAM: 1855.4MB, GPU: 2553.8MB)
+✅ 成功: kaname09_019.jpg
+   品質スコア: 0.000
+   処理時間: 17.45秒
+
+🔄 [21/58] 処理中: kaname09_020.jpg
+🔄 開始: Image Preprocessing (RAM: 1855.4MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_020.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 225.0, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1855.4MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1855.4MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.30秒, RAM: 1852.7MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1852.7MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1850.7MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1850.7MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 1850.7MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1850.7MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1850.7MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1850.7MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.06秒, RAM: 1850.7MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1849.7MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1858.0MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1858.0MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_020.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_020_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_020_transparent.png
+✅ 完了: Saving Results (0.01秒, RAM: 1858.0MB, GPU: 2553.8MB)
+✅ 成功: kaname09_020.jpg
+   品質スコア: 0.000
+   処理時間: 16.09秒
+
+🔄 [22/58] 処理中: kaname09_021.jpg
+🔄 開始: Image Preprocessing (RAM: 1807.4MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_021.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 232.2, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1807.4MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1807.4MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.54秒, RAM: 1814.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1814.9MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1814.9MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1814.9MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 1814.9MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1814.9MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1814.9MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1814.9MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.09秒, RAM: 1839.4MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1839.4MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1870.7MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1870.7MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_021.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_021_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_021_transparent.png
+✅ 完了: Saving Results (0.01秒, RAM: 1870.7MB, GPU: 2553.8MB)
+✅ 成功: kaname09_021.jpg
+   品質スコア: 0.000
+   処理時間: 16.30秒
+
+🔄 [23/58] 処理中: kaname09_022.jpg
+🔄 開始: Image Preprocessing (RAM: 1812.6MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_022.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 223.4, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1812.6MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1812.6MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.70秒, RAM: 1818.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1815.5MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_022.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [24/58] 処理中: kaname09_023.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1815.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1815.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_023.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 213.1, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1815.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1815.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (14.96秒, RAM: 1814.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1814.9MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1814.9MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1814.9MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 1814.9MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1814.9MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1814.9MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1814.9MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.11秒, RAM: 1820.2MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1820.2MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1854.4MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1854.4MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_023.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_023_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_023_transparent.png
+✅ 完了: Saving Results (0.02秒, RAM: 1854.4MB, GPU: 2553.8MB)
+✅ 成功: kaname09_023.jpg
+   品質スコア: 0.000
+   処理時間: 15.90秒
+
+🔄 [25/58] 処理中: kaname09_024.jpg
+🔄 開始: Image Preprocessing (RAM: 1803.7MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_024.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 212.6, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1803.7MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1803.7MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (14.85秒, RAM: 1803.4MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1803.4MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_024.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [26/58] 処理中: kaname09_025.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1803.4MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1803.4MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_025.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 197.5, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1803.4MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1803.4MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (16.85秒, RAM: 1818.6MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1815.6MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1815.6MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1815.6MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+⚠️ テキスト密度計算エラー: slice indices must be integers or None or have an __index__ method
+✅ 完了: Text Filtering (0.00秒, RAM: 1815.6MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1815.6MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1815.6MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1815.6MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.06秒, RAM: 1815.6MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1815.6MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1832.4MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1832.4MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_025.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_025_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_025_transparent.png
+✅ 完了: Saving Results (0.01秒, RAM: 1832.4MB, GPU: 2553.8MB)
+✅ 成功: kaname09_025.jpg
+   品質スコア: 0.000
+   処理時間: 17.68秒
+
+🔄 [27/58] 処理中: kaname09_026.jpg
+🔄 開始: Image Preprocessing (RAM: 1831.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_026.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 223.3, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1831.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1831.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.52秒, RAM: 1825.3MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1824.3MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_026.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [28/58] 処理中: kaname09_027.jpg
+✅ 完了: YOLO Scoring (0.03秒, RAM: 1824.3MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1824.3MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_027.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 211.1, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1824.3MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1824.3MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.29秒, RAM: 1820.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1820.5MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_027.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [29/58] 処理中: kaname09_028.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1820.5MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1820.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_028.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 224.6, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1820.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1820.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (18.57秒, RAM: 1846.4MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1843.4MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1839.4MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1839.4MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 1839.4MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1839.4MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1839.4MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1839.4MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.16秒, RAM: 1839.4MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1839.4MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1839.4MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1839.4MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_028.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_028_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_028_transparent.png
+✅ 完了: Saving Results (0.02秒, RAM: 1839.4MB, GPU: 2553.8MB)
+✅ 成功: kaname09_028.jpg
+   品質スコア: 0.000
+   処理時間: 19.48秒
+
+🔄 [30/58] 処理中: kaname09_029.jpg
+🔄 開始: Image Preprocessing (RAM: 1839.4MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_029.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 234.2, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1839.4MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1838.4MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.79秒, RAM: 1829.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1829.5MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1829.5MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1829.5MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 1829.5MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1829.5MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1829.5MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1829.5MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.11秒, RAM: 1837.6MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1837.6MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1872.9MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1872.9MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_029.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_029_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_029_transparent.png
+✅ 完了: Saving Results (0.02秒, RAM: 1872.9MB, GPU: 2553.8MB)
+✅ 成功: kaname09_029.jpg
+   品質スコア: 0.000
+   処理時間: 16.62秒
+
+🔄 [31/58] 処理中: kaname09_030.jpg
+🔄 開始: Image Preprocessing (RAM: 1812.7MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_030.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 226.4, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1812.7MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1812.7MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (14.08秒, RAM: 1810.4MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1810.4MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1809.4MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1809.4MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+⚠️ テキスト密度計算エラー: slice indices must be integers or None or have an __index__ method
+✅ 完了: Text Filtering (0.00秒, RAM: 1809.4MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1809.4MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1809.4MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1809.4MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.08秒, RAM: 1826.2MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1826.2MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1843.1MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1843.1MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_030.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_030_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_030_transparent.png
+✅ 完了: Saving Results (0.01秒, RAM: 1843.1MB, GPU: 2553.8MB)
+✅ 成功: kaname09_030.jpg
+   品質スコア: 0.000
+   処理時間: 14.88秒
+
+🔄 [32/58] 処理中: kaname09_031.jpg
+🔄 開始: Image Preprocessing (RAM: 1843.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_031.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 216.0, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1843.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1843.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (14.52秒, RAM: 1841.3MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1841.3MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_031.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [33/58] 処理中: kaname09_032.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1841.3MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1841.3MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_032.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 225.0, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1841.3MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1841.3MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.11秒, RAM: 1840.4MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1840.4MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.03秒, RAM: 1840.4MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1840.4MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 1840.4MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1840.4MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1840.4MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1840.4MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.11秒, RAM: 1848.7MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1848.7MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1880.2MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1880.2MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_032.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_032_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_032_transparent.png
+✅ 完了: Saving Results (0.02秒, RAM: 1880.2MB, GPU: 2553.8MB)
+✅ 成功: kaname09_032.jpg
+   品質スコア: 0.000
+   処理時間: 16.07秒
+
+🔄 [34/58] 処理中: kaname09_033.jpg
+🔄 開始: Image Preprocessing (RAM: 1822.2MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_033.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 225.7, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1822.2MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1822.2MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (14.98秒, RAM: 1821.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1821.1MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_033.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [35/58] 処理中: kaname09_034.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1821.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1821.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_034.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 207.4, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1821.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1821.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.49秒, RAM: 1820.2MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1820.1MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1820.1MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1820.1MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 1820.1MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1820.1MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1820.1MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1820.1MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.05秒, RAM: 1820.1MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1820.1MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1829.7MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1829.7MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_034.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_034_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_034_transparent.png
+✅ 完了: Saving Results (0.02秒, RAM: 1829.7MB, GPU: 2553.8MB)
+✅ 成功: kaname09_034.jpg
+   品質スコア: 0.000
+   処理時間: 16.36秒
+
+🔄 [36/58] 処理中: kaname09_035.jpg
+🔄 開始: Image Preprocessing (RAM: 1829.7MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_035.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 207.7, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1829.7MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1829.7MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (16.04秒, RAM: 1834.3MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1834.3MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_035.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [37/58] 処理中: kaname09_036.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1834.3MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1834.3MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_036.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 214.6, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1834.3MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1834.3MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.78秒, RAM: 1854.0MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1854.0MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_036.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [38/58] 処理中: kaname09_037.jpg
+✅ 完了: YOLO Scoring (0.04秒, RAM: 1803.8MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1803.8MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_037.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 219.4, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1803.8MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1803.8MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (16.22秒, RAM: 1869.7MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1869.7MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_037.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [39/58] 処理中: kaname09_038.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1804.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1804.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_038.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 219.5, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1804.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1804.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.36秒, RAM: 1847.6MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1847.6MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_038.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [40/58] 処理中: kaname09_039.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1847.6MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1847.6MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_039.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 204.1, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1847.6MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1847.6MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (16.49秒, RAM: 1846.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1846.9MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_039.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [41/58] 処理中: kaname09_040.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1846.9MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1846.9MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_040.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 203.1, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1846.9MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1846.9MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (16.37秒, RAM: 1883.9MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1883.9MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_040.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [42/58] 処理中: kaname09_041.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1883.9MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1883.9MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_041.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 211.3, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1883.9MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1883.9MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.68秒, RAM: 1884.4MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1884.4MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_041.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [43/58] 処理中: kaname09_042.jpg
+✅ 完了: YOLO Scoring (0.03秒, RAM: 1803.7MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1803.7MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_042.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 205.3, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1803.7MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1803.7MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.41秒, RAM: 1850.0MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1850.0MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_042.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [44/58] 処理中: kaname09_043.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1850.0MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1850.0MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_043.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 218.8, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1850.0MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1850.0MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.55秒, RAM: 1865.6MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1865.6MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_043.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [45/58] 処理中: kaname09_044.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1802.0MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1802.0MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_044.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 216.2, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1802.0MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1802.0MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.84秒, RAM: 1873.8MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1873.8MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_044.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [46/58] 処理中: kaname09_045.jpg
+✅ 完了: YOLO Scoring (0.03秒, RAM: 1811.9MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1811.9MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_045.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 205.0, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1811.9MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1811.9MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.62秒, RAM: 1821.0MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1821.0MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_045.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [47/58] 処理中: kaname09_046.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1821.0MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1821.0MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_046.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 222.5, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1821.0MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1821.0MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.41秒, RAM: 1859.0MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1859.0MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_046.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [48/58] 処理中: kaname09_047.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1801.0MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1801.0MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_047.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 214.1, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1801.0MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1801.0MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (16.53秒, RAM: 1866.6MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1866.6MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_047.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [49/58] 処理中: kaname09_048.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1866.6MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1866.6MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_048.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 204.1, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1866.6MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1866.6MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.70秒, RAM: 1867.1MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1867.1MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_048.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [50/58] 処理中: kaname09_049.jpg
+✅ 完了: YOLO Scoring (0.03秒, RAM: 1867.1MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1867.1MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_049.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 222.3, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1867.1MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1867.1MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.63秒, RAM: 1867.0MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1867.0MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1867.0MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1867.0MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+✅ 完了: Text Filtering (0.00秒, RAM: 1867.0MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1867.0MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1867.0MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1867.0MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.05秒, RAM: 1872.6MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1872.6MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1900.2MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1900.2MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_049.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_049_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_049_transparent.png
+✅ 完了: Saving Results (0.01秒, RAM: 1900.2MB, GPU: 2553.8MB)
+✅ 成功: kaname09_049.jpg
+   品質スコア: 0.000
+   処理時間: 16.55秒
+
+🔄 [51/58] 処理中: kaname09_050.jpg
+🔄 開始: Image Preprocessing (RAM: 1900.2MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_050.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 208.0, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1900.2MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1900.2MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.06秒, RAM: 1900.4MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1900.4MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_050.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [52/58] 処理中: kaname09_051.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1900.4MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1900.4MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_051.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 209.2, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1900.4MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1900.4MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (16.30秒, RAM: 1900.4MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1900.4MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_051.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [53/58] 処理中: kaname09_052.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1900.4MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1900.4MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_052.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 239.7, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1900.4MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1900.4MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.18秒, RAM: 1900.5MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1900.5MB, GPU: 2553.8MB)
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1900.5MB, GPU: 2553.8MB)
+🔄 開始: Text Filtering (RAM: 1900.5MB, GPU: 2553.8MB)
+📝 Text detector initialized (EasyOCR: False)
+⚠️ テキスト密度計算エラー: slice indices must be integers or None or have an __index__ method
+✅ 完了: Text Filtering (0.00秒, RAM: 1900.5MB, GPU: 2553.8MB)
+🔄 開始: Mask Refinement (RAM: 1900.5MB, GPU: 2553.8MB)
+✅ 完了: Mask Refinement (0.00秒, RAM: 1900.5MB, GPU: 2553.8MB)
+🔄 開始: Partial Extraction Analysis (RAM: 1900.5MB, GPU: 2553.8MB)
+✅ 完了: Partial Extraction Analysis (0.06秒, RAM: 1900.5MB, GPU: 2553.8MB)
+🔄 開始: Character Extraction (RAM: 1900.5MB, GPU: 2553.8MB)
+✅ 完了: Character Extraction (0.01秒, RAM: 1900.5MB, GPU: 2553.8MB)
+🔄 開始: Saving Results (RAM: 1900.5MB, GPU: 2553.8MB)
+💾 キャラクター画像保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_052.jpg
+💾 マスク保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_052_mask.png
+💾 透明背景版保存: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/kaname09_052_transparent.png
+✅ 完了: Saving Results (0.01秒, RAM: 1900.5MB, GPU: 2553.8MB)
+✅ 成功: kaname09_052.jpg
+   品質スコア: 0.000
+   処理時間: 16.02秒
+
+🔄 [54/58] 処理中: kaname09_053.jpg
+🔄 開始: Image Preprocessing (RAM: 1900.5MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_053.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 223.7, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1900.5MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1900.5MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.81秒, RAM: 1906.8MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1904.2MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_053.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [55/58] 処理中: kaname09_054.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1904.2MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1904.2MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_054.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 226.7, グレースケール
+✅ 完了: Image Preprocessing (0.03秒, RAM: 1904.2MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1904.2MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (15.83秒, RAM: 1908.3MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1906.3MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_054.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [56/58] 処理中: kaname09_055.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1905.3MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1905.3MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_055.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 215.1, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1905.3MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1905.3MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (14.41秒, RAM: 1905.3MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1904.3MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_055.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [57/58] 処理中: kaname09_056.jpg
+✅ 完了: YOLO Scoring (0.03秒, RAM: 1904.3MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1904.3MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_056.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 243.4, グレースケール
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1904.3MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1904.3MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (14.54秒, RAM: 1904.4MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1904.4MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_056.jpg - No good character masks found (min YOLO score: 0.01)
+
+🔄 [58/58] 処理中: kaname09_057_cover.jpg
+✅ 完了: YOLO Scoring (0.02秒, RAM: 1904.4MB, GPU: 2553.8MB)
+🔄 開始: Image Preprocessing (RAM: 1904.4MB, GPU: 2553.8MB)
+✅ 画像読み込み成功: 800x1129, /mnt/c/AItools/lora/train/yadokugaeru/org/kaname09/kaname09_057_cover.jpg
+🔄 画像リサイズ: 800x1129 → 725x1024 (scale=0.907)
+✨ コントラスト強化適用
+カラー判定: 最大チャンネル差分=54.874, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 124.6, カラー
+✅ 完了: Image Preprocessing (0.02秒, RAM: 1904.4MB, GPU: 2553.8MB)
+🔄 開始: SAM Mask Generation (RAM: 1904.4MB, GPU: 2553.8MB)
+✅ 完了: SAM Mask Generation (19.35秒, RAM: 1920.4MB, GPU: 2553.8MB)
+🔄 開始: YOLO Scoring (RAM: 1920.4MB, GPU: 2553.8MB)
+❌ 失敗: kaname09_057_cover.jpg - No good character masks found (min YOLO score: 0.01)
+
+================================================================================
+📊 v0.3.5バッチ処理完了レポート
+================================================================================
+
+📈 処理結果:
+  総処理数: 58枚
+  成功: 27枚
+  失敗: 31枚
+  成功率: 46.6%
+  総処理時間: 1004.0秒
+  平均処理時間: 17.3秒/枚
+
+📊 品質スコア統計:
+  平均品質スコア: 0.000
+  最低品質スコア: 0.000
+  最高品質スコア: 0.000
+
+💾 詳細結果保存先: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/batch_results_v035.json
+
+✅ v0.3.5バッチ処理完了!
+
+❌ バッチ処理失敗
