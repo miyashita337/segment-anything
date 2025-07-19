@@ -44,16 +44,7 @@ def start():
         sam_model.load_model()
         performance_monitor.end_stage()
         
-        # Initialize YOLO model (yolov8x.pt for high precision testing)
-        performance_monitor.start_stage("YOLO Model Loading")
-        yolo_model = YOLOModelWrapper(model_path="yolov8x.pt")
-        yolo_model.load_model()
-        performance_monitor.end_stage()
-        
-        print("✅ モデル初期化完了")
-        print(f"   - SAM: {sam_model.model_type}")
-        print(f"   - YOLO: {yolo_model.model_path}")
-        print(f"   - Device: {torch.device('cuda' if torch.cuda.is_available() else 'cpu')}")
+        print("✅ start()関数による初期化完了（SAMのみ）")
         
         return True
         
@@ -86,8 +77,8 @@ def initialize_models():
             raise RuntimeError("SAM model loading failed")
         print("✅ SAM model initialized and loaded")
         
-        # YOLO model initialization with load_model() call
-        yolo_model = YOLOModelWrapper()
+        # YOLO model initialization with load_model() call (anime model)
+        yolo_model = YOLOModelWrapper(model_path="yolov8x6_animeface.pt")
         if not yolo_model.load_model():
             raise RuntimeError("YOLO model loading failed")
         print("✅ YOLO model initialized and loaded")

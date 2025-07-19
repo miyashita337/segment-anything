@@ -180,8 +180,17 @@ class EnhancedFullBodyDetector:
                 # bboxからマスク生成
                 bbox = mask_data.get('bbox', [0, 0, image.shape[1], image.shape[0]])
                 mask = np.zeros(image.shape[:2], dtype=np.uint8)
-                x, y, w, h = bbox
-                mask[y:y+h, x:x+w] = 255
+                # 座標を整数に変換（slice操作のため）
+                x = int(bbox[0])
+                y = int(bbox[1])
+                w = int(bbox[2])
+                h = int(bbox[3])
+                # 境界チェック
+                x = max(0, x)
+                y = max(0, y)
+                x_end = min(x + w, image.shape[1])
+                y_end = min(y + h, image.shape[0])
+                mask[y:y_end, x:x_end] = 255
             
             # 人体構造分析
             structure_analysis = self._analyze_body_structure(image, mask)
@@ -316,8 +325,17 @@ class EnhancedFullBodyDetector:
             else:
                 bbox = mask_data.get('bbox', [0, 0, w, h])
                 mask = np.zeros((h, w), dtype=np.uint8)
-                x, y, mask_w, mask_h = bbox
-                mask[y:y+mask_h, x:x+mask_w] = 255
+                # 座標を整数に変換
+                x = int(bbox[0])
+                y = int(bbox[1])
+                mask_w = int(bbox[2])
+                mask_h = int(bbox[3])
+                # 境界チェック
+                x = max(0, x)
+                y = max(0, y)
+                x_end = min(x + mask_w, mask.shape[1])
+                y_end = min(y + mask_h, mask.shape[0])
+                mask[y:y_end, x:x_end] = 255
             
             # エッジ検出
             edges = cv2.Canny(mask, 50, 150)
@@ -369,8 +387,17 @@ class EnhancedFullBodyDetector:
             else:
                 bbox = mask_data.get('bbox', [0, 0, image.shape[1], image.shape[0]])
                 mask = np.zeros(image.shape[:2], dtype=np.uint8)
-                x, y, w, h = bbox
-                mask[y:y+h, x:x+w] = 255
+                # 座標を整数に変換
+                x = int(bbox[0])
+                y = int(bbox[1])
+                w = int(bbox[2])
+                h = int(bbox[3])
+                # 境界チェック
+                x = max(0, x)
+                y = max(0, y)
+                x_end = min(x + w, image.shape[1])
+                y_end = min(y + h, image.shape[0])
+                mask[y:y_end, x:x_end] = 255
             
             # マスク領域の色抽出
             masked_image = cv2.bitwise_and(image, image, mask=mask)
@@ -471,8 +498,17 @@ class EnhancedFullBodyDetector:
             else:
                 bbox = mask_data.get('bbox', [0, 0, image.shape[1], image.shape[0]])
                 mask = np.zeros(image.shape[:2], dtype=np.uint8)
-                x, y, w, h = bbox
-                mask[y:y+h, x:x+w] = 255
+                # 座標を整数に変換
+                x = int(bbox[0])
+                y = int(bbox[1])
+                w = int(bbox[2])
+                h = int(bbox[3])
+                # 境界チェック
+                x = max(0, x)
+                y = max(0, y)
+                x_end = min(x + w, image.shape[1])
+                y_end = min(y + h, image.shape[0])
+                mask[y:y_end, x:x_end] = 255
             
             # 部分抽出検出システムによる分析
             extraction_analysis = self.partial_detector.analyze_extraction(image, mask)

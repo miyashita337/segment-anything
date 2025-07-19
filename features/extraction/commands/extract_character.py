@@ -119,9 +119,11 @@ def extract_character_from_path(image_path: str,
                                panel_split: bool = False,
                                multi_character_criteria: str = 'balanced',
                                adaptive_learning: bool = False,
+                               use_box_expansion: bool = False,
+                               expansion_strategy: str = 'balanced',
                                **kwargs) -> Dict[str, Any]:
     """
-    画像パスからキャラクターを抽出 (Phase 2対応版)
+    画像パスからキャラクターを抽出 (Phase A対応版)
     
     Args:
         image_path: 入力画像パス
@@ -141,6 +143,8 @@ def extract_character_from_path(image_path: str,
         panel_split: マルチコマ分割を有効化 (Phase 2)
         multi_character_criteria: 複数キャラクター選択基準 ('balanced', 'size_priority', 'fullbody_priority', 'fullbody_priority_enhanced', 'central_priority', 'confidence_priority')
         adaptive_learning: 適応学習モード（281評価データに基づく最適手法選択）
+        use_box_expansion: GPT-4O推奨ボックス拡張を有効化 (Phase A)
+        expansion_strategy: 拡張戦略 ('conservative', 'balanced', 'aggressive') (Phase A)
         
     Returns:
         抽出結果の辞書
@@ -175,6 +179,8 @@ def extract_character_from_path(image_path: str,
                 panel_split=config.get('enable_panel_split', panel_split),
                 multi_character_criteria=multi_character_criteria,
                 adaptive_learning=adaptive_learning,
+                use_box_expansion=use_box_expansion,  # Phase A
+                expansion_strategy=expansion_strategy,  # Phase A
                 **{k: v for k, v in config.items() if k not in [
                     'min_yolo_score', 'enable_enhanced_processing', 'enable_manga_preprocessing',
                     'enable_effect_removal', 'enable_panel_split'
@@ -407,9 +413,24 @@ def extract_character_from_path(image_path: str,
         
         performance_monitor.end_stage()
         
-        # Step 3: YOLO scoring
+        # Step 3: YOLO scoring (GPT-4O推奨ボックス拡張対応)
         performance_monitor.start_stage("YOLO Scoring")
-        scored_masks = yolo_model.score_masks_with_detections(character_masks, bgr_image)
+        
+        # GPT-4O推奨ボックス拡張オプション
+        use_box_expansion = kwargs.get('use_box_expansion', False)
+        expansion_strategy = kwargs.get('expansion_strategy', 'balanced')
+        
+        if use_box_expansion:
+            if verbose:
+                print(f"🎯 GPT-4O推奨ボックス拡張を有効化: 戦略={expansion_strategy}")
+                print(f"   水平拡張: 2.5-3倍、垂直拡張: 4倍")
+        
+        scored_masks = yolo_model.score_masks_with_detections(
+            character_masks, 
+            bgr_image,
+            use_expanded_boxes=use_box_expansion,
+            expansion_strategy=expansion_strategy
+        )
         
         # Phase 1 P1-003: 改良版全身検出の統合
         if multi_character_criteria == 'fullbody_priority_enhanced':
@@ -827,9 +848,17 @@ def main():
     parser.add_argument('--adaptive-learning', action='store_true', 
                        help='Enable adaptive learning mode based on 281 evaluation records (Phase 3)')
     
+    # Phase A: GPT-4O推奨ボックス拡張（顔検出ボックスを2.5-3倍水平、4倍垂直に拡張）
+    parser.add_argument('--use-box-expansion', action='store_true', 
+                       help='Enable GPT-4O recommended box expansion (2.5-3x horizontal, 4x vertical) (Phase A)')
+    parser.add_argument('--expansion-strategy', 
+                       choices=['conservative', 'balanced', 'aggressive'],
+                       default='balanced',
+                       help='Box expansion strategy: conservative(2.5x3.5), balanced(2.75x4.0), aggressive(3.0x4.5) (default: balanced)')
+    
     args = parser.parse_args()
     
-    # Extract common arguments (Phase 3対応版)
+    # Extract common arguments (Phase A対応版)
     extract_args = {
         'enhance_contrast': args.enhance_contrast,
         'filter_text': args.filter_text,
@@ -845,7 +874,9 @@ def main():
         'effect_removal': args.effect_removal,
         'panel_split': args.panel_split,
         'multi_character_criteria': args.multi_character_criteria,
-        'adaptive_learning': args.adaptive_learning
+        'adaptive_learning': args.adaptive_learning,
+        'use_box_expansion': args.use_box_expansion,      # Phase A
+        'expansion_strategy': args.expansion_strategy     # Phase A
     }
     
     # 複雑ポーズモード用の設定調整
@@ -870,6 +901,18 @@ def main():
         print("   📊 281評価データに基づく最適手法自動選択")
         print("   🎯 境界問題自動検出・対応")
         print("   ⚙️  パラメータ最適化")
+    
+    # Phase A: GPT-4O推奨ボックス拡張
+    if args.use_box_expansion:
+        print("🎯 Phase A: GPT-4O推奨ボックス拡張有効")
+        print(f"   📏 拡張戦略: {args.expansion_strategy}")
+        strategy_details = {
+            'conservative': "水平2.5倍 × 垂直3.5倍",
+            'balanced': "水平2.75倍 × 垂直4.0倍 (推奨)",
+            'aggressive': "水平3.0倍 × 垂直4.5倍"
+        }
+        print(f"   📐 拡張倍率: {strategy_details.get(args.expansion_strategy, '不明')}")
+        print("   🎪 顔検出ボックスから全身キャラクター抽出を強化")
     
     if args.batch:
         # Batch processing
