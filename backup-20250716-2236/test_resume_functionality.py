@@ -10,6 +10,7 @@ import sys
 import time
 from pathlib import Path
 
+
 def test_resume_functionality():
     """Resume機能のテストを実行"""
     print("🔄 Resume機能テスト開始...")

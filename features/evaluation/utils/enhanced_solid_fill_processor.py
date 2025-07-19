@@ -5,12 +5,13 @@ P1-006: 高度なベタ塗り領域処理システム
 ベタ塗り領域の検出精度を向上し、キャラクター抽出の品質を改善
 """
 
-import cv2
 import numpy as np
-from typing import Dict, List, Tuple, Optional, Any
-from dataclasses import dataclass
+import cv2
+
 import logging
 import warnings
+from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple
 
 # オプションインポート
 try:
@@ -691,8 +692,9 @@ def evaluate_solid_fill_processing(image_path: str,
                                  save_results: bool = True) -> Dict[str, Any]:
     """ベタ塗り処理の評価関数"""
     import cv2
+
     from pathlib import Path
-    
+
     # 画像読み込み
     image = cv2.imread(image_path)
     if image is None:

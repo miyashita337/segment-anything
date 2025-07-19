@@ -6,11 +6,11 @@ yolov8x6_animeface.ptでの抽出効果を検証
 目的: v0.3.5失敗画像でのアニメYOLO性能測定
 """
 
+import json
 import sys
 import time
-import json
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 # Add project root to Python path
 sys.path.insert(0, str(Path(__file__).parent))

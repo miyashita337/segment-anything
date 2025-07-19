@@ -5,11 +5,12 @@ Phase 2: エフェクト線除去・マルチコマ分割対応
 """
 
 import numpy as np
-from typing import Dict, Any, Optional, Tuple, List
-from pathlib import Path
 import cv2
-from PIL import Image
+
 from features.processing.preprocessing.manga_preprocessing import MangaPreprocessor
+from pathlib import Path
+from PIL import Image
+from typing import Any, Dict, List, Optional, Tuple
 
 
 class DifficultPoseProcessor:

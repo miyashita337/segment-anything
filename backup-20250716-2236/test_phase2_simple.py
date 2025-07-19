@@ -4,8 +4,9 @@ Phase 2機能の簡単テスト
 失敗していた2画像に対してエフェクト線除去・マルチコマ分割を試行
 """
 
-import sys
 import os
+import sys
+
 sys.path.append('.')
 
 def test_phase2_on_failed_images():
@@ -18,7 +19,7 @@ def test_phase2_on_failed_images():
     print("✅ モデル初期化完了\n")
     
     from commands.extract_character import extract_character_from_path
-    
+
     # 失敗していた画像2枚
     failed_images = [
         {

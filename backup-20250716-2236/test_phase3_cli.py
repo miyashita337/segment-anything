@@ -4,8 +4,9 @@ Phase 3: インタラクティブ機能のCLIテスト
 GUIなしでのインタラクティブ機能テスト
 """
 
-import sys
 import os
+import sys
+
 sys.path.append('.')
 
 def test_interactive_features():
@@ -17,9 +18,9 @@ def test_interactive_features():
     start()
     print("✅ モデル初期化完了\n")
     
-    from utils.interactive_core import InteractiveAssistant
     from hooks.start import get_sam_model, get_yolo_model
-    
+    from utils.interactive_core import InteractiveAssistant
+
     # アシスタント初期化
     assistant = InteractiveAssistant()
     sam_model = get_sam_model()

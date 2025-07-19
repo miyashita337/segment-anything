@@ -4,37 +4,43 @@ Character Extraction Command
 Main command for extracting characters from manga images using SAM + YOLO
 """
 
+import argparse
 import os
 import sys
-import argparse
 import time
 from pathlib import Path
-from typing import Optional, Dict, Any, List
+from typing import Any, Dict, List, Optional
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
-import cv2
 import numpy as np
+import cv2
 
-from features.common.hooks.start import get_sam_model, get_yolo_model, get_performance_monitor
+from features.common.hooks.start import get_performance_monitor, get_sam_model, get_yolo_model
 from features.evaluation.utils.difficult_pose import (
-    DifficultPoseProcessor, 
-    detect_difficult_pose, 
+    DifficultPoseProcessor,
+    detect_difficult_pose,
     get_difficult_pose_config,
-    process_with_retry
+    process_with_retry,
 )
-from features.processing.preprocessing.preprocessing import preprocess_image_pipeline
-from features.processing.postprocessing.postprocessing import (
-    enhance_character_mask, 
-    extract_character_from_image, 
-    crop_to_content,
-    save_character_result,
-    calculate_mask_quality_metrics
+from features.evaluation.utils.learned_quality_assessment import (
+    LearnedQualityAssessment,
+    assess_image_quality,
+)
+from features.evaluation.utils.partial_extraction_detector import (
+    PartialExtractionDetector,
+    analyze_extraction_completeness,
 )
 from features.evaluation.utils.text_detection import TextDetector
-from features.evaluation.utils.learned_quality_assessment import assess_image_quality, LearnedQualityAssessment
-from features.evaluation.utils.partial_extraction_detector import PartialExtractionDetector, analyze_extraction_completeness
+from features.processing.postprocessing.postprocessing import (
+    calculate_mask_quality_metrics,
+    crop_to_content,
+    enhance_character_mask,
+    extract_character_from_image,
+    save_character_result,
+)
+from features.processing.preprocessing.preprocessing import preprocess_image_pipeline
 
 
 class CharacterExtractor:
@@ -684,6 +690,7 @@ def batch_extract_characters(input_dir: str,
         バッチ処理結果
     """
     import torch
+
     import gc
     
     def gpu_memory_cleanup():

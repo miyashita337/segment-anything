@@ -4,8 +4,8 @@ Phase 3: クイックインタラクティブ抽出コマンド
 コマンドラインからシードポイントやバウンディングボックスを指定して抽出
 """
 
-import sys
 import argparse
+import sys
 from pathlib import Path
 
 # Add parent directory to path for imports
@@ -66,7 +66,7 @@ def main():
 def extract_with_points(image_path: str, points_args: list, output_path: str = None, verbose: bool = True) -> dict:
     """シードポイントでの抽出"""
     from utils.interactive_core import quick_extract_with_points
-    
+
     # ポイント引数を解析
     points = []
     for point_arg in points_args:
@@ -98,7 +98,7 @@ def extract_with_points(image_path: str, points_args: list, output_path: str = N
 def extract_with_region(image_path: str, region_arg: str, output_path: str = None, verbose: bool = True) -> dict:
     """バウンディングボックスでの抽出"""
     from utils.interactive_core import quick_extract_with_region
-    
+
     # 領域引数を解析
     parts = region_arg.split(',')
     if len(parts) != 4:

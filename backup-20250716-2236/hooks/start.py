@@ -7,9 +7,10 @@ This hook initializes both SAM and YOLO models for character extraction tasks.
 It sets up the global model instances that will be used by commands.
 """
 
+import torch
+
 import os
 import sys
-import torch
 from pathlib import Path
 
 # Add parent directory to path for imports

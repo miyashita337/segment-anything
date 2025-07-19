@@ -7,11 +7,11 @@ Phase A完全実装テスト：GPT-4O推奨ボックス拡張 + fullbody基準
 GPT-4O推奨: 水平2.75倍 × 垂直4.0倍の拡張適用
 """
 
+import json
 import sys
 import time
-import json
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 # Add project root to Python path
 sys.path.insert(0, str(Path(__file__).parent))

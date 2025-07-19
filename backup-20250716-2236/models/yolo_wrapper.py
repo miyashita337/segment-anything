@@ -4,12 +4,13 @@ YOLO Model Wrapper
 YOLOv8 wrapper for character detection and scoring
 """
 
-import os
-import torch
 import numpy as np
 import cv2
-from typing import List, Tuple, Optional, Dict, Any
+import torch
+
+import os
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 try:
     from ultralytics import YOLO

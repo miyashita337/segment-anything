@@ -10,12 +10,12 @@ GPT-4O評価結果をビジュアルなHTMLレポートに変換
 - インタラクティブなHTMLレポート生成
 """
 
+import base64
 import json
 import os
-from pathlib import Path
-from datetime import datetime
-import base64
 import re
+from datetime import datetime
+from pathlib import Path
 
 
 class EvaluationReportGenerator:

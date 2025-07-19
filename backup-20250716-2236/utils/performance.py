@@ -4,10 +4,11 @@ Performance Monitoring Utilities
 Extracted from original sam_yolo_character_segment.py
 """
 
-import time
-import psutil
 import torch
+
 import gc
+import psutil
+import time
 from typing import Dict, Optional
 
 

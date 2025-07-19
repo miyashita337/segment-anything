@@ -8,8 +8,8 @@ v0.3.5バッチ処理の失敗パターンを詳細分析
 
 import json
 import sys
-from pathlib import Path
 from collections import Counter
+from pathlib import Path
 
 
 def analyze_batch_failures():

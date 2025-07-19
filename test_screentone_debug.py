@@ -3,9 +3,10 @@
 スクリーントーン検出のデバッグスクリプト
 """
 
-import sys
 import numpy as np
 import cv2
+
+import sys
 from pathlib import Path
 
 # Add project root to path
@@ -17,8 +18,9 @@ from utils.enhanced_screentone_detector import (
     EnhancedScreentoneDetector,
     ScreentoneFeatureExtractor,
     ScreentonePatternClassifier,
-    detect_screentone_enhanced
+    detect_screentone_enhanced,
 )
+
 
 def create_dot_pattern(height: int, width: int, dot_size: int, spacing: int) -> np.ndarray:
     """ドットパターン画像の生成"""

@@ -9,14 +9,14 @@ Phase 1品質評価システム完全統合版 - 命名規則改善版
 - 評価システムとの完全互換性確保
 """
 
-import sys
-import os
-import time
 import json
-from pathlib import Path
+import os
+import sys
+import time
 import traceback
 from datetime import datetime
-from typing import Dict, List, Any
+from pathlib import Path
+from typing import Any, Dict, List
 
 # Add project root to Python path
 sys.path.insert(0, str(Path(__file__).parent))

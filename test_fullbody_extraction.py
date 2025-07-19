@@ -7,11 +7,11 @@ GPT-4O推奨の段階的強化戦略に基づく実装
 アプローチ: yolov8x6_animeface.pt + fullbody_priority_enhanced
 """
 
+import json
 import sys
 import time
-import json
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 # Add project root to Python path
 sys.path.insert(0, str(Path(__file__).parent))

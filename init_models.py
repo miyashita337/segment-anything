@@ -17,9 +17,9 @@ Phase 0リファクタリング後の新構造対応版
     --test    : テストモード（モデル動作確認）
 """
 
-import sys
-import os
 import argparse
+import os
+import sys
 from pathlib import Path
 
 # Phase 0新構造対応のパス設定
@@ -98,7 +98,11 @@ def main():
 def run_test_mode(verbose=False):
     """テストモード実行"""
     try:
-        from features.common.hooks.start import get_sam_model, get_yolo_model, get_performance_monitor
+        from features.common.hooks.start import (
+            get_performance_monitor,
+            get_sam_model,
+            get_yolo_model,
+        )
         
         print("🔍 初期化されたモデルの確認...")
         

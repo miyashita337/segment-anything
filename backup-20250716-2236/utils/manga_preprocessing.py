@@ -4,10 +4,11 @@ Manga-specific preprocessing utilities for handling effect lines and multi-panel
 漫画特有の前処理：エフェクト線除去とマルチコマ分割
 """
 
-import cv2
 import numpy as np
-from typing import List, Tuple, Dict, Any, Optional
+import cv2
+
 import math
+from typing import Any, Dict, List, Optional, Tuple
 
 
 class EffectLineRemover:

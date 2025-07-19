@@ -3,8 +3,9 @@
 複雑ポーズ処理機能のテストスクリプト
 """
 
-import sys
 import os
+import sys
+
 sys.path.append('.')
 
 def test_difficult_poses():
@@ -17,7 +18,7 @@ def test_difficult_poses():
     print("✅ モデル初期化完了\n")
     
     from commands.extract_character import extract_character_from_path
-    
+
     # テスト対象画像（失敗していた4枚）
     test_images = [
         {

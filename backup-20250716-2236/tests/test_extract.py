@@ -5,36 +5,36 @@ Comprehensive tests for the refactored character extraction system
 """
 
 import os
-import sys
-import unittest
-import tempfile
 import shutil
+import sys
+import tempfile
+import unittest
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import cv2
 import numpy as np
+import cv2
 
+from commands.extract_character import extract_character_from_path
 # Import modules to test
 from models.sam_wrapper import SAMModelWrapper
 from models.yolo_wrapper import YOLOModelWrapper
-from utils.preprocessing import (
-    load_and_validate_image,
-    resize_image_if_needed,
-    is_color_image,
-    preprocess_image_pipeline
-)
+from utils.performance import PerformanceMonitor
 from utils.postprocessing import (
+    calculate_mask_quality_metrics,
     enhance_character_mask,
     extract_character_from_image,
-    calculate_mask_quality_metrics
+)
+from utils.preprocessing import (
+    is_color_image,
+    load_and_validate_image,
+    preprocess_image_pipeline,
+    resize_image_if_needed,
 )
 from utils.text_detection import TextDetector
-from utils.performance import PerformanceMonitor
-from commands.extract_character import extract_character_from_path
 
 
 class TestImagePreprocessing(unittest.TestCase):

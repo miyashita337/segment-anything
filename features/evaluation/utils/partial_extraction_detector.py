@@ -6,12 +6,13 @@ Partial Extraction Detector
 Phase 1 P1-002: 部分抽出検出システム実装
 """
 
-import cv2
 import numpy as np
-from typing import Dict, List, Tuple, Optional, Any
-from pathlib import Path
+import cv2
+
 import logging
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 # Face detection support
 try:

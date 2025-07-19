@@ -3,9 +3,10 @@
 実画像でのスクリーントーン検出テスト
 """
 
-import sys
 import numpy as np
 import cv2
+
+import sys
 from pathlib import Path
 
 # Add project root to path
@@ -14,6 +15,7 @@ sys.path.insert(0, str(project_root))
 sys.path.append(str(project_root / 'features/evaluation'))
 
 from utils.enhanced_screentone_detector import detect_screentone_enhanced
+
 
 def test_real_image_screentone():
     """実画像でのスクリーントーン検出テスト"""

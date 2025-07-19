@@ -4,14 +4,14 @@ v0.3.4小規模テスト
 最初の10枚で v0.3.4 の動作確認
 """
 
-import sys
-import os
-import time
 import json
-from pathlib import Path
+import os
+import sys
+import time
 import traceback
 from datetime import datetime
-from typing import Dict, List, Any
+from pathlib import Path
+from typing import Any, Dict, List
 
 # Add project root to Python path
 sys.path.insert(0, str(Path(__file__).parent))

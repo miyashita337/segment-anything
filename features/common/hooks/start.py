@@ -7,17 +7,18 @@ This hook initializes both SAM and YOLO models for character extraction tasks.
 It sets up the global model instances that will be used by commands.
 """
 
+import torch
+
 import os
 import sys
-import torch
 from pathlib import Path
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
+from features.common.performance.performance import PerformanceMonitor
 from features.extraction.models.sam_wrapper import SAMModelWrapper
 from features.extraction.models.yolo_wrapper import YOLOModelWrapper
-from features.common.performance.performance import PerformanceMonitor
 
 # Global model instances
 sam_model = None
