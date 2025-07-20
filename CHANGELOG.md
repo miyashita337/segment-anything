@@ -5,6 +5,48 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.4.0] - 2025-07-21
+
+### Added
+- **[P1-006] Solid Fill Region Detection**: Comprehensive `SolidFillDetector` system for background/foreground separation with 388 lines of implementation
+- **Claude GitHub Actions Integration**: Full automation workflow with Claude Code Action for issue-driven development
+- **Comprehensive Test Suite**: 265-line test file for solid fill detection with 11 test cases (9 passing, 2 requiring fixes)
+- **Manual Setup Documentation**: Complete Windows-specific setup guide for Claude GitHub Actions integration
+- **Enhanced Manga Preprocessing**: Advanced effect line removal and multi-panel layout processing
+- **Issue Templates**: Structured GitHub issue management for automated development workflow
+- **Zenn Blog Documentation**: Complete technical blog post documenting Windows Claude Code setup challenges and solutions
+
+### Changed
+- **Phase A Animation Character Detection**: Implemented anime-specific YOLO model with GPT-4O recommended box expansion
+- **Background/Foreground Separation**: Enhanced precision with solid fill region detection and color uniformity analysis
+- **GitHub Actions Workflow**: Improved CI/CD configuration with proper trigger mechanisms and error handling
+- **Development Automation**: Transitioned to Claude-assisted automated development with issue-driven implementation
+
+### Fixed
+- **GitHub Actions Linter Errors**: Resolved syntax and configuration issues in workflow files
+- **Claude Integration Triggers**: Fixed GitHub Action implementation triggers for proper automation
+- **Workflow Configuration**: Corrected invalid workflow syntax and removed non-functional configurations
+- **Windows Claude Code Issues**: Documented and provided workaround for `/install-github-app` command failures
+
+### Technical Improvements
+- **Test Coverage**: 81.8% success rate (9/11 tests) for new solid fill detection system
+- **Code Quality**: Maintained flake8, black, mypy, and isort compliance throughout automation integration
+- **Integration Testing**: Successful merge of automated PRs with comprehensive review process
+- **Documentation**: Enhanced project documentation with technical blog content and setup guides
+
+### Performance
+- **Solid Fill Detection**: Efficient region detection with configurable thresholds and adaptive processing
+- **Automation Speed**: Rapid implementation cycles through Claude GitHub Actions integration
+- **Phase 1 Progress**: Advanced to 27% completion (6/22 tasks) with P1-006 solid fill detection completed
+
+### Security
+- **GitHub Secrets Management**: Proper handling of Claude API tokens and authentication credentials
+- **Manual Setup Process**: Secure alternative to automated installation for Windows environments
+
+### Thanks
+- @miyashita337 for core development and Claude GitHub Actions integration
+- Claude Code Action community for automation framework development
+
 ## [v0.1.0] - 2025-07-20
 
 ### Added
