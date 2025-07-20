@@ -9,7 +9,7 @@ import os
 import argparse
 sys.path.append('.')
 
-def test_phase2_on_failed_images(score_threshold=0.07):
+def test_phase2_on_failed_images(score_threshold=0.07, test_solid_fill=False):
     """失敗画像2枚でPhase 2機能をテスト"""
     
     # モデル初期化
@@ -53,6 +53,19 @@ def test_phase2_on_failed_images(score_threshold=0.07):
             'params': {'manga_mode': True, 'effect_removal': True, 'panel_split': True, 'low_threshold': True}
         }
     ]
+    
+    # ソリッドフィル検出テストを追加
+    if test_solid_fill:
+        test_configs.extend([
+            {
+                'name': 'Phase 2: ソリッドフィル検出',
+                'params': {'manga_mode': True, 'solid_fill_detection': True, 'low_threshold': True}
+            },
+            {
+                'name': 'Phase 2: 全機能 + ソリッドフィル',
+                'params': {'manga_mode': True, 'effect_removal': True, 'panel_split': True, 'solid_fill_detection': True, 'low_threshold': True}
+            }
+        ])
     
     results = []
     
@@ -170,7 +183,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Phase 2機能テスト with YOLO閾値調整')
     parser.add_argument('--score_threshold', type=float, default=0.07, 
                         help='YOLO人物検出スコア閾値 (default: 0.07)')
+    parser.add_argument('--test_solid_fill', action='store_true',
+                        help='ソリッドフィル検出機能をテスト')
     args = parser.parse_args()
     
     print(f"🎯 YOLO閾値設定: {args.score_threshold}")
-    test_phase2_on_failed_images(args.score_threshold)
+    if args.test_solid_fill:
+        print("🎨 ソリッドフィル検出機能を含めてテスト")
+    test_phase2_on_failed_images(args.score_threshold, args.test_solid_fill)

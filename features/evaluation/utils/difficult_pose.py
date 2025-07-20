@@ -223,7 +223,8 @@ class DifficultPoseProcessor:
     def preprocess_for_difficult_pose(self, image_path: str, output_path: Optional[str] = None, 
                                       enable_manga_preprocessing: bool = False,
                                       enable_effect_removal: bool = False,
-                                      enable_panel_split: bool = False) -> str:
+                                      enable_panel_split: bool = False,
+                                      enable_solid_fill_detection: bool = False) -> str:
         """
         複雑ポーズ用の前処理 (Phase 2対応版)
         
@@ -233,6 +234,7 @@ class DifficultPoseProcessor:
             enable_manga_preprocessing: 漫画前処理を有効化
             enable_effect_removal: エフェクト線除去を有効化
             enable_panel_split: マルチコマ分割を有効化
+            enable_solid_fill_detection: ソリッドフィル領域検出を有効化
             
         Returns:
             str: 前処理済み画像パス
@@ -252,7 +254,8 @@ class DifficultPoseProcessor:
                 manga_result = self.manga_processor.preprocess_manga_image(
                     processed,
                     enable_effect_removal=enable_effect_removal,
-                    enable_panel_split=enable_panel_split
+                    enable_panel_split=enable_panel_split,
+                    enable_solid_fill_detection=enable_solid_fill_detection
                 )
                 
                 print(f"   エフェクト線検出: {'✅' if manga_result['effect_lines_detected'] else '❌'}")

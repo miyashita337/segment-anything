@@ -507,6 +507,309 @@ class ScreentoneBoundaryProcessor:
         return result.astype(np.uint8)
 
 
+class SolidFillDetector:
+    """ソリッドフィル（ベタ塗り）領域検出器"""
+    
+    def __init__(self):
+        self.min_region_size = 100  # 最小領域サイズ
+        self.uniformity_threshold = 0.85  # 均一性閾値
+        self.adaptive_threshold_window = 31  # 適応的閾値のウィンドウサイズ
+        
+    def detect_solid_regions(self, image: np.ndarray) -> Dict[str, Any]:
+        """
+        適応的閾値処理によるソリッドフィル領域の検出
+        
+        Args:
+            image: 入力画像
+            
+        Returns:
+            検出結果の辞書：
+            - regions: 検出された領域のリスト
+            - masks: 各領域のマスク
+            - colors: 各領域の代表色
+            - confidence: 検出信頼度
+        """
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) if len(image.shape) == 3 else image
+        h, w = gray.shape
+        
+        # 1. 適応的閾値処理
+        adaptive_thresh = cv2.adaptiveThreshold(
+            gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+            cv2.THRESH_BINARY, self.adaptive_threshold_window, 5
+        )
+        
+        # 反転版も作成（白背景・黒背景両対応）
+        adaptive_thresh_inv = cv2.bitwise_not(adaptive_thresh)
+        
+        # 2. 連結成分分析
+        regions = []
+        masks = []
+        colors = []
+        
+        # 両方の閾値結果を処理
+        for thresh_img in [adaptive_thresh, adaptive_thresh_inv]:
+            num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(
+                thresh_img, connectivity=8
+            )
+            
+            for label in range(1, num_labels):  # 0は背景
+                area = stats[label, cv2.CC_STAT_AREA]
+                
+                # 最小サイズフィルタリング
+                if area < self.min_region_size:
+                    continue
+                
+                # 領域マスク作成
+                mask = (labels == label).astype(np.uint8) * 255
+                
+                # 元画像での平均色を計算
+                if len(image.shape) == 3:
+                    masked_pixels = image[mask > 0]
+                    mean_color = tuple(map(int, np.mean(masked_pixels, axis=0)))
+                else:
+                    mean_value = int(np.mean(gray[mask > 0]))
+                    mean_color = (mean_value, mean_value, mean_value)
+                
+                # 色の均一性を評価
+                uniformity = self._evaluate_color_uniformity(image, mask)
+                
+                if uniformity > self.uniformity_threshold:
+                    regions.append({
+                        'mask': mask,
+                        'area': area,
+                        'centroid': tuple(centroids[label]),
+                        'bbox': (
+                            stats[label, cv2.CC_STAT_LEFT],
+                            stats[label, cv2.CC_STAT_TOP],
+                            stats[label, cv2.CC_STAT_WIDTH],
+                            stats[label, cv2.CC_STAT_HEIGHT]
+                        ),
+                        'uniformity': uniformity,
+                        'color': mean_color
+                    })
+                    masks.append(mask)
+                    colors.append(mean_color)
+        
+        # 3. 領域の重複を除去
+        unique_regions = self._remove_duplicate_regions(regions)
+        
+        # 4. 検出信頼度の計算
+        total_solid_area = sum(r['area'] for r in unique_regions)
+        confidence = min(1.0, total_solid_area / (h * w))
+        
+        return {
+            'regions': unique_regions,
+            'masks': [r['mask'] for r in unique_regions],
+            'colors': [r['color'] for r in unique_regions],
+            'confidence': confidence,
+            'total_regions': len(unique_regions),
+            'total_solid_area': total_solid_area
+        }
+    
+    def _evaluate_color_uniformity(self, image: np.ndarray, mask: np.ndarray) -> float:
+        """
+        マスク領域内の色の均一性を評価
+        
+        Args:
+            image: 元画像
+            mask: 評価する領域のマスク
+            
+        Returns:
+            均一性スコア (0.0-1.0)
+        """
+        if len(image.shape) == 2:
+            image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+        
+        # マスク領域のピクセルを抽出
+        masked_pixels = image[mask > 0]
+        
+        if len(masked_pixels) == 0:
+            return 0.0
+        
+        # 各チャンネルの標準偏差を計算
+        std_per_channel = np.std(masked_pixels, axis=0)
+        mean_per_channel = np.mean(masked_pixels, axis=0) + 1e-6
+        
+        # 変動係数（標準偏差/平均）による評価
+        cv_per_channel = std_per_channel / mean_per_channel
+        
+        # 均一性スコア（変動係数が小さいほど高い）
+        uniformity = 1.0 - np.mean(cv_per_channel)
+        
+        return max(0.0, min(1.0, uniformity))
+    
+    def _remove_duplicate_regions(self, regions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """
+        重複する領域を除去
+        
+        Args:
+            regions: 領域のリスト
+            
+        Returns:
+            重複を除去した領域のリスト
+        """
+        if len(regions) <= 1:
+            return regions
+        
+        # 面積でソート（大きい順）
+        sorted_regions = sorted(regions, key=lambda r: r['area'], reverse=True)
+        unique_regions = []
+        
+        for region in sorted_regions:
+            # 既存の領域と重複チェック
+            is_duplicate = False
+            
+            for unique_region in unique_regions:
+                # IoU（Intersection over Union）を計算
+                intersection = cv2.bitwise_and(region['mask'], unique_region['mask'])
+                intersection_area = np.sum(intersection > 0)
+                
+                union_area = region['area'] + unique_region['area'] - intersection_area
+                iou = intersection_area / (union_area + 1e-6)
+                
+                if iou > 0.5:  # 50%以上重複
+                    is_duplicate = True
+                    break
+            
+            if not is_duplicate:
+                unique_regions.append(region)
+        
+        return unique_regions
+    
+    def separate_background_foreground(self, image: np.ndarray, 
+                                     solid_regions: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        ソリッドフィル領域を背景と前景に分離
+        
+        Args:
+            image: 入力画像
+            solid_regions: 検出されたソリッド領域
+            
+        Returns:
+            分離結果の辞書：
+            - background_mask: 背景マスク
+            - foreground_mask: 前景マスク
+            - background_regions: 背景と判定された領域
+            - foreground_regions: 前景と判定された領域
+        """
+        h, w = image.shape[:2]
+        background_mask = np.zeros((h, w), dtype=np.uint8)
+        foreground_mask = np.zeros((h, w), dtype=np.uint8)
+        
+        background_regions = []
+        foreground_regions = []
+        
+        for region in solid_regions:
+            # 領域の特徴を分析
+            is_background = self._is_background_region(region, image)
+            
+            if is_background:
+                background_mask = cv2.bitwise_or(background_mask, region['mask'])
+                background_regions.append(region)
+            else:
+                foreground_mask = cv2.bitwise_or(foreground_mask, region['mask'])
+                foreground_regions.append(region)
+        
+        # エッジ領域の精密化
+        background_mask = self._refine_mask_edges(background_mask)
+        foreground_mask = self._refine_mask_edges(foreground_mask)
+        
+        return {
+            'background_mask': background_mask,
+            'foreground_mask': foreground_mask,
+            'background_regions': background_regions,
+            'foreground_regions': foreground_regions,
+            'num_background': len(background_regions),
+            'num_foreground': len(foreground_regions)
+        }
+    
+    def _is_background_region(self, region: Dict[str, Any], image: np.ndarray) -> bool:
+        """
+        領域が背景かどうかを判定
+        
+        Args:
+            region: 領域情報
+            image: 元画像
+            
+        Returns:
+            背景ならTrue
+        """
+        h, w = image.shape[:2]
+        centroid_x, centroid_y = region['centroid']
+        
+        # 1. 位置による判定（画像端に近い）
+        edge_threshold = 0.1
+        is_near_edge = (
+            centroid_x < w * edge_threshold or 
+            centroid_x > w * (1 - edge_threshold) or
+            centroid_y < h * edge_threshold or 
+            centroid_y > h * (1 - edge_threshold)
+        )
+        
+        # 2. サイズによる判定（大きすぎる）
+        area_ratio = region['area'] / (h * w)
+        is_large = area_ratio > 0.3
+        
+        # 3. 色による判定（単調な色）
+        color = region['color']
+        color_variance = np.var(color)
+        is_monotone = color_variance < 100
+        
+        # 4. 形状による判定
+        mask = region['mask']
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        
+        if contours:
+            # 凸包との面積比
+            hull = cv2.convexHull(contours[0])
+            hull_area = cv2.contourArea(hull)
+            contour_area = cv2.contourArea(contours[0])
+            
+            if hull_area > 0:
+                solidity = contour_area / hull_area
+            else:
+                solidity = 0
+            
+            # 背景は通常、単純な形状
+            is_simple_shape = solidity > 0.9
+        else:
+            is_simple_shape = True
+        
+        # 総合判定
+        score = 0
+        if is_near_edge:
+            score += 2
+        if is_large:
+            score += 2
+        if is_monotone:
+            score += 1
+        if is_simple_shape:
+            score += 1
+        
+        return score >= 3
+    
+    def _refine_mask_edges(self, mask: np.ndarray) -> np.ndarray:
+        """
+        マスクのエッジを精密化
+        
+        Args:
+            mask: 入力マスク
+            
+        Returns:
+            精密化されたマスク
+        """
+        # モルフォロジー処理でノイズ除去とエッジ平滑化
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+        
+        # クロージング（小さな穴を埋める）
+        refined = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+        
+        # オープニング（小さなノイズを除去）
+        refined = cv2.morphologyEx(refined, cv2.MORPH_OPEN, kernel)
+        
+        return refined
+
+
 class MangaPreprocessor:
     """漫画前処理の統合クラス"""
     
@@ -514,9 +817,11 @@ class MangaPreprocessor:
         self.effect_remover = EffectLineRemover()
         self.panel_splitter = MultiPanelSplitter()
         self.boundary_processor = ScreentoneBoundaryProcessor()
+        self.solid_fill_detector = SolidFillDetector()
     
     def preprocess_manga_image(self, image: np.ndarray, enable_effect_removal: bool = True, 
-                              enable_panel_split: bool = True, enable_boundary_processing: bool = True) -> Dict[str, Any]:
+                              enable_panel_split: bool = True, enable_boundary_processing: bool = True,
+                              enable_solid_fill_detection: bool = False) -> Dict[str, Any]:
         """
         漫画画像の総合前処理（境界問題対応強化版）
         
@@ -525,6 +830,7 @@ class MangaPreprocessor:
             enable_effect_removal: エフェクト線除去を有効化
             enable_panel_split: パネル分割を有効化
             enable_boundary_processing: 境界問題処理を有効化
+            enable_solid_fill_detection: ソリッドフィル領域検出を有効化
             
         Returns:
             処理結果の辞書
@@ -536,6 +842,7 @@ class MangaPreprocessor:
             'effect_lines_detected': False,
             'effect_line_density': 0.0,
             'boundary_issues': {},
+            'solid_fill_regions': {},
             'processing_stages': []
         }
         
@@ -580,7 +887,75 @@ class MangaPreprocessor:
             h, w = result['processed_image'].shape[:2]
             result['panels'] = [(result['processed_image'], (0, 0, w, h))]
         
+        # ソリッドフィル領域検出
+        if enable_solid_fill_detection:
+            solid_fill_info = self.solid_fill_detector.detect_solid_regions(result['processed_image'])
+            result['solid_fill_regions'] = solid_fill_info
+            
+            if solid_fill_info['total_regions'] > 0:
+                result['processing_stages'].append('solid_fill_detection')
+                
+                # 背景/前景分離
+                separation_info = self.solid_fill_detector.separate_background_foreground(
+                    result['processed_image'], solid_fill_info['regions']
+                )
+                result['solid_fill_regions']['separation'] = separation_info
+                
+                # ソリッドフィル領域の処理で画像を改善
+                if separation_info['num_background'] > 0:
+                    # 背景領域を単純化
+                    background_mask = separation_info['background_mask']
+                    result['processed_image'] = self._apply_solid_fill_enhancement(
+                        result['processed_image'], background_mask, is_background=True
+                    )
+                    result['processing_stages'].append('solid_fill_background_enhancement')
+        
         return result
+    
+    def _apply_solid_fill_enhancement(self, image: np.ndarray, mask: np.ndarray, 
+                                    is_background: bool = True) -> np.ndarray:
+        """
+        ソリッドフィル領域に対する画像強化処理
+        
+        Args:
+            image: 入力画像
+            mask: 適用するマスク
+            is_background: 背景領域かどうか
+            
+        Returns:
+            強化された画像
+        """
+        enhanced = image.copy()
+        
+        if is_background:
+            # 背景領域の単純化
+            # ガウシアンブラーで滑らかに
+            blurred = cv2.GaussianBlur(image, (7, 7), 1.5)
+            
+            # マスク領域のみブラー適用
+            mask_3ch = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+            mask_normalized = mask_3ch.astype(np.float32) / 255.0
+            
+            enhanced = enhanced.astype(np.float32)
+            blurred = blurred.astype(np.float32)
+            
+            enhanced = enhanced * (1 - mask_normalized) + blurred * mask_normalized
+            enhanced = enhanced.astype(np.uint8)
+        else:
+            # 前景領域の強化
+            # エッジ保持フィルタリング
+            enhanced_region = cv2.bilateralFilter(image, 9, 75, 75)
+            
+            mask_3ch = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+            mask_normalized = mask_3ch.astype(np.float32) / 255.0
+            
+            enhanced = enhanced.astype(np.float32)
+            enhanced_region = enhanced_region.astype(np.float32)
+            
+            enhanced = enhanced * (1 - mask_normalized) + enhanced_region * mask_normalized
+            enhanced = enhanced.astype(np.uint8)
+        
+        return enhanced
     
     def get_preprocessing_recommendations(self, image: np.ndarray) -> Dict[str, Any]:
         """
@@ -601,6 +976,9 @@ class MangaPreprocessor:
         # パネル分割の必要性チェック
         borders = self.panel_splitter.detect_panel_borders(image)
         
+        # ソリッドフィル領域の分析
+        solid_fill_info = self.solid_fill_detector.detect_solid_regions(image)
+        
         recommendations = {
             'boundary_processing': {
                 'recommended': boundary_info['has_boundary_issues'],
@@ -618,6 +996,12 @@ class MangaPreprocessor:
                 'detected_borders': len(borders),
                 'priority': 'high' if len(borders) > 2 else 'low'
             },
+            'solid_fill_detection': {
+                'recommended': solid_fill_info['confidence'] > 0.1,
+                'num_regions': solid_fill_info['total_regions'],
+                'confidence': solid_fill_info['confidence'],
+                'priority': 'medium' if solid_fill_info['confidence'] > 0.3 else 'low'
+            },
             'processing_order': []
         }
         
@@ -628,5 +1012,7 @@ class MangaPreprocessor:
             recommendations['processing_order'].append('effect_removal')
         if recommendations['panel_split']['recommended']:
             recommendations['processing_order'].append('panel_split')
+        if recommendations['solid_fill_detection']['recommended']:
+            recommendations['processing_order'].append('solid_fill_detection')
         
         return recommendations
