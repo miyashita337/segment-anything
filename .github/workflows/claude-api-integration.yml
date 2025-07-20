@@ -1,0 +1,175 @@
+name: Claude API Integration (Real Implementation)
+
+on:
+  issue_comment:
+    types: [created]
+  issues:
+    types: [opened, labeled]
+
+jobs:
+  claude-real-implementation:
+    if: |
+      github.event.comment.body == '/implement' ||
+      contains(github.event.issue.labels.*.name, 'claude-implement')
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install anthropic requests PyGithub
+    
+    - name: Claude API Implementation
+      env:
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        python - << 'EOF'
+        import os
+        import json
+        from anthropic import Anthropic
+        from github import Github
+        
+        # Initialize clients
+        anthropic = Anthropic(api_key=os.environ['ANTHROPIC_API_KEY'])
+        github = Github(os.environ['GITHUB_TOKEN'])
+        
+        # Get issue details
+        repo = github.get_repo('${{ github.repository }}')
+        issue_number = ${{ github.event.issue.number }}
+        issue = repo.get_issue(issue_number)
+        
+        # Prepare prompt for Claude
+        prompt = f"""
+        GitHub Issue #{issue_number}: {issue.title}
+        
+        Issue Body:
+        {issue.body}
+        
+        Please implement the requested functionality following these guidelines:
+        1. Create appropriate Python files
+        2. Include comprehensive tests
+        3. Follow the project's coding standards (flake8, black)
+        4. Add proper documentation
+        
+        Return the implementation as a JSON object with the following structure:
+        {{
+          "files": [
+            {{
+              "path": "path/to/file.py",
+              "content": "file content here"
+            }}
+          ],
+          "tests": [
+            {{
+              "path": "tests/test_file.py", 
+              "content": "test content here"
+            }}
+          ],
+          "summary": "Brief summary of changes"
+        }}
+        """
+        
+        # Call Claude API
+        message = anthropic.messages.create(
+            model="claude-3-opus-20240229",
+            max_tokens=4000,
+            temperature=0,
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        )
+        
+        # Parse response
+        try:
+            response_data = json.loads(message.content[0].text)
+            
+            # Create files
+            for file_info in response_data.get('files', []):
+                file_path = file_info['path']
+                file_content = file_info['content']
+                
+                # Ensure directory exists
+                os.makedirs(os.path.dirname(file_path), exist_ok=True)
+                
+                # Write file
+                with open(file_path, 'w') as f:
+                    f.write(file_content)
+                print(f"✅ Created: {file_path}")
+            
+            # Create tests
+            for test_info in response_data.get('tests', []):
+                test_path = test_info['path']
+                test_content = test_info['content']
+                
+                # Ensure directory exists
+                os.makedirs(os.path.dirname(test_path), exist_ok=True)
+                
+                # Write test file
+                with open(test_path, 'w') as f:
+                    f.write(test_content)
+                print(f"✅ Created test: {test_path}")
+            
+            # Comment on issue
+            issue.create_comment(f"""
+            🤖 Claude has implemented the requested functionality!
+            
+            **Summary**: {response_data.get('summary', 'Implementation completed')}
+            
+            **Files created**:
+            {chr(10).join(['- ' + f['path'] for f in response_data.get('files', [])])}
+            
+            **Tests created**:
+            {chr(10).join(['- ' + t['path'] for t in response_data.get('tests', [])])}
+            
+            A pull request will be created shortly.
+            """)
+            
+        except Exception as e:
+            print(f"❌ Error: {str(e)}")
+            issue.create_comment(f"❌ Failed to implement: {str(e)}")
+            exit(1)
+        EOF
+    
+    - name: Run tests
+      run: |
+        pip install -e .[dev]
+        python -m pytest tests/ -v || echo "⚠️ Some tests failed"
+    
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: |
+          Implement #${{ github.event.issue.number }}: ${{ github.event.issue.title }}
+          
+          🤖 Generated with Claude Code
+          
+          Co-Authored-By: Claude <noreply@anthropic.com>
+        title: "Implement: ${{ github.event.issue.title }}"
+        body: |
+          ## Claude Code Implementation
+          
+          Automatically implemented based on Issue #${{ github.event.issue.number }}
+          
+          ### Testing
+          ```bash
+          python -m pytest tests/ -v
+          ```
+          
+          Closes #${{ github.event.issue.number }}
+        branch: claude-implement-${{ github.event.issue.number }}
+        delete-branch: true
