@@ -141,7 +141,7 @@ def extract_character_from_path(image_path: str,
         min_yolo_score: YOLO最小スコア
         verbose: 詳細出力
         difficult_pose: 複雑ポーズモード
-        low_threshold: 低閾値モード（YOLO 0.02）
+        low_threshold: 低閾値モード（YOLO 0.005）
         auto_retry: 自動リトライモード
         high_quality: 高品質SAM処理
         manga_mode: 漫画前処理モード (Phase 2)
@@ -325,7 +325,7 @@ def extract_character_from_path(image_path: str,
                     })
             
             if low_threshold:
-                min_yolo_score = 0.02
+                min_yolo_score = 0.005
                 if verbose:
                     print(f"🔧 低閾値モード: YOLO閾値を{min_yolo_score}に設定")
             
@@ -836,7 +836,7 @@ def main():
     
     # 複雑ポーズ・ダイナミック構図対応オプション
     parser.add_argument('--difficult-pose', action='store_true', help='Enable difficult pose processing mode')
-    parser.add_argument('--low-threshold', action='store_true', help='Use low threshold settings (YOLO score 0.02)')
+    parser.add_argument('--low-threshold', action='store_true', help='Use low threshold settings (YOLO score 0.005)')
     parser.add_argument('--auto-retry', action='store_true', help='Enable automatic retry with progressive settings')
     parser.add_argument('--high-quality', action='store_true', help='Enable high-quality SAM processing')
     
@@ -888,8 +888,8 @@ def main():
     
     # 複雑ポーズモード用の設定調整
     if args.low_threshold:
-        extract_args['min_yolo_score'] = 0.02
-        print("🔧 低閾値モード: YOLO閾値を0.02に設定")
+        extract_args['min_yolo_score'] = 0.005
+        print("🔧 低閾値モード: YOLO閾値を0.005に設定")
     
     if args.high_quality:
         print("🔧 高品質モード: SAM高密度処理を有効化")

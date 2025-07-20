@@ -1,0 +1,100 @@
+{
+  "pipeline_status": {
+    "start_time": "2025-07-20 11:20:22.024805",
+    "end_time": null,
+    "tasks": [],
+    "results": {
+      "model_search": {
+        "models_found": [
+          {
+            "name": "yolov8x6_animeface.pt",
+            "type": "anime_specialized",
+            "url": "local",
+            "description": "アニメ顔特化モデル"
+          },
+          {
+            "name": "yolov8x.pt",
+            "type": "general",
+            "url": "https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8x.pt",
+            "description": "汎用高精度モデル"
+          }
+        ],
+        "best_model": "yolov8x6_animeface.pt",
+        "test_results": {
+          "yolov8x6_animeface.pt": {
+            "model_path": "yolov8x6_animeface.pt",
+            "tests": [],
+            "fullbody_count": 0,
+            "total_detections": 1,
+            "fullbody_score": 0.0
+          },
+          "yolov8x.pt": {
+            "model_path": "yolov8x.pt",
+            "tests": [],
+            "fullbody_count": 0,
+            "total_detections": 6,
+            "fullbody_score": 0.0
+          }
+        }
+      },
+      "batch_processing": null
+    },
+    "errors": []
+  },
+  "execution_time": "Running",
+  "output_images": {
+    "count": 15,
+    "paths": [
+      "/tmp/phase2_test_16_kaname03_0015_Phase_1_自動リトライ（参考）.jpg",
+      "/tmp/phase2_test_21_kaname03_0020_Phase_1_自動リトライ（参考）.jpg",
+      "/tmp/phase2_test_21_kaname03_0020_Phase_2_マルチコマ分割.jpg",
+      "results_batch/img001.jpg",
+      "results_batch/img001_character.jpg",
+      "results_batch/img002_character.jpg",
+      "results_batch/img003_character.jpg",
+      "results_batch/img004_character.jpg",
+      "results_batch/img005_character.jpg",
+      "results_batch/img006_character.jpg",
+      "results_batch/img007_character.jpg",
+      "results_batch/img008_character.jpg",
+      "results_batch/img009_character.jpg",
+      "results_batch/img010_character.jpg",
+      "results_batch/img011_character.jpg"
+    ]
+  },
+  "model_search_results": {
+    "models_found": [
+      {
+        "name": "yolov8x6_animeface.pt",
+        "type": "anime_specialized",
+        "url": "local",
+        "description": "アニメ顔特化モデル"
+      },
+      {
+        "name": "yolov8x.pt",
+        "type": "general",
+        "url": "https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8x.pt",
+        "description": "汎用高精度モデル"
+      }
+    ],
+    "best_model": "yolov8x6_animeface.pt",
+    "test_results": {
+      "yolov8x6_animeface.pt": {
+        "model_path": "yolov8x6_animeface.pt",
+        "tests": [],
+        "fullbody_count": 0,
+        "total_detections": 1,
+        "fullbody_score": 0.0
+      },
+      "yolov8x.pt": {
+        "model_path": "yolov8x.pt",
+        "tests": [],
+        "fullbody_count": 0,
+        "total_detections": 6,
+        "fullbody_score": 0.0
+      }
+    }
+  },
+  "batch_results": null,
+  "errors": []
+}

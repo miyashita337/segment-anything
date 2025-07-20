@@ -6,18 +6,19 @@ Phase 2機能の簡単テスト
 
 import sys
 import os
+import argparse
 sys.path.append('.')
 
-def test_phase2_on_failed_images():
+def test_phase2_on_failed_images(score_threshold=0.07):
     """失敗画像2枚でPhase 2機能をテスト"""
     
     # モデル初期化
     print("🔄 モデル初期化中...")
-    from hooks.start import start
+    from features.common.hooks.start import start
     start()
     print("✅ モデル初期化完了\n")
     
-    from commands.extract_character import extract_character_from_path
+    from features.extraction.commands.extract_character import extract_character_from_path
     
     # 失敗していた画像2枚
     failed_images = [
@@ -72,11 +73,17 @@ def test_phase2_on_failed_images():
             try:
                 output_path = f"/tmp/phase2_test_{image['name'].replace('.jpg', '')}_{config['name'].replace(' ', '_').replace(':', '')}"
                 
+                # 閾値パラメータを動的に設定
+                params = config['params'].copy()
+                if 'yolo_params' not in params:
+                    params['yolo_params'] = {}
+                params['yolo_params']['conf'] = score_threshold
+                
                 result = extract_character_from_path(
                     image['path'],
                     output_path=output_path,
                     verbose=False,
-                    **config['params']
+                    **params
                 )
                 
                 success = result.get('success', False)
@@ -160,4 +167,10 @@ def test_phase2_on_failed_images():
 
 
 if __name__ == "__main__":
-    test_phase2_on_failed_images()
+    parser = argparse.ArgumentParser(description='Phase 2機能テスト with YOLO閾値調整')
+    parser.add_argument('--score_threshold', type=float, default=0.07, 
+                        help='YOLO人物検出スコア閾値 (default: 0.07)')
+    args = parser.parse_args()
+    
+    print(f"🎯 YOLO閾値設定: {args.score_threshold}")
+    test_phase2_on_failed_images(args.score_threshold)
