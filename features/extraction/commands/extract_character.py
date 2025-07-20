@@ -123,6 +123,7 @@ def extract_character_from_path(image_path: str,
                                manga_mode: bool = False,
                                effect_removal: bool = False,
                                panel_split: bool = False,
+                               solid_fill_detection: bool = False,
                                multi_character_criteria: str = 'balanced',
                                adaptive_learning: bool = False,
                                use_box_expansion: bool = False,
@@ -147,6 +148,7 @@ def extract_character_from_path(image_path: str,
         manga_mode: 漫画前処理モード (Phase 2)
         effect_removal: エフェクト線除去を有効化 (Phase 2)
         panel_split: マルチコマ分割を有効化 (Phase 2)
+        solid_fill_detection: ソリッドフィル領域検出を有効化 (P1-006)
         multi_character_criteria: 複数キャラクター選択基準 ('balanced', 'size_priority', 'fullbody_priority', 'fullbody_priority_enhanced', 'central_priority', 'confidence_priority')
         adaptive_learning: 適応学習モード（281評価データに基づく最適手法選択）
         use_box_expansion: GPT-4O推奨ボックス拡張を有効化 (Phase A)
@@ -183,13 +185,14 @@ def extract_character_from_path(image_path: str,
                 manga_mode=config.get('enable_manga_preprocessing', manga_mode),
                 effect_removal=config.get('enable_effect_removal', effect_removal),
                 panel_split=config.get('enable_panel_split', panel_split),
+                solid_fill_detection=config.get('solid_fill_detection', solid_fill_detection),
                 multi_character_criteria=multi_character_criteria,
                 adaptive_learning=adaptive_learning,
                 use_box_expansion=use_box_expansion,  # Phase A
                 expansion_strategy=expansion_strategy,  # Phase A
                 **{k: v for k, v in config.items() if k not in [
                     'min_yolo_score', 'enable_enhanced_processing', 'enable_manga_preprocessing',
-                    'enable_effect_removal', 'enable_panel_split'
+                    'enable_effect_removal', 'enable_panel_split', 'solid_fill_detection'
                 ]}
             )
         
@@ -330,18 +333,20 @@ def extract_character_from_path(image_path: str,
                     print(f"🔧 低閾値モード: YOLO閾値を{min_yolo_score}に設定")
             
             # Phase 2: 漫画前処理モード
-            if manga_mode or effect_removal or panel_split:
+            if manga_mode or effect_removal or panel_split or solid_fill_detection:
                 if verbose:
                     print(f"🎨 漫画前処理モード有効")
                     print(f"   エフェクト線除去: {'✅' if effect_removal else '❌'}")
                     print(f"   マルチコマ分割: {'✅' if panel_split else '❌'}")
+                    print(f"   ソリッドフィル検出: {'✅' if solid_fill_detection else '❌'}")
                 
                 # 前処理を適用
                 processed_image_path = processor.preprocess_for_difficult_pose(
                     image_path,
                     enable_manga_preprocessing=True,
                     enable_effect_removal=effect_removal,
-                    enable_panel_split=panel_split
+                    enable_panel_split=panel_split,
+                    solid_fill_detection=solid_fill_detection
                 )
                 
                 # 処理済み画像を使用
@@ -844,6 +849,7 @@ def main():
     parser.add_argument('--manga-mode', action='store_true', help='Enable manga-specific preprocessing (Phase 2)')
     parser.add_argument('--effect-removal', action='store_true', help='Enable effect line removal (Phase 2)')
     parser.add_argument('--panel-split', action='store_true', help='Enable multi-panel splitting (Phase 2)')
+    parser.add_argument('--solid-fill-detection', action='store_true', help='Enable solid fill area detection (P1-006)')
     
     # 複数キャラクター選択基準オプション
     parser.add_argument('--multi-character-criteria', 
@@ -880,6 +886,7 @@ def main():
         'manga_mode': args.manga_mode,
         'effect_removal': args.effect_removal,
         'panel_split': args.panel_split,
+        'solid_fill_detection': args.solid_fill_detection,
         'multi_character_criteria': args.multi_character_criteria,
         'adaptive_learning': args.adaptive_learning,
         'use_box_expansion': args.use_box_expansion,      # Phase A
@@ -895,12 +902,14 @@ def main():
         print("🔧 高品質モード: SAM高密度処理を有効化")
     
     # Phase 2: 漫画前処理モードの設定
-    if args.manga_mode or args.effect_removal or args.panel_split:
+    if args.manga_mode or args.effect_removal or args.panel_split or args.solid_fill_detection:
         print("🎨 Phase 2: 漫画前処理モード有効")
         if args.effect_removal:
             print("   📝 エフェクト線除去: 有効")
         if args.panel_split:
             print("   📊 マルチコマ分割: 有効")
+        if args.solid_fill_detection:
+            print("   🔲 ソリッドフィル検出: 有効")
     
     # Phase 3: 適応学習モード
     if args.adaptive_learning:
