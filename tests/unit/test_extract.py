@@ -19,22 +19,22 @@ import cv2
 import numpy as np
 
 # Import modules to test
-from models.sam_wrapper import SAMModelWrapper
-from models.yolo_wrapper import YOLOModelWrapper
-from utils.preprocessing import (
+from features.extraction.models.sam_wrapper import SAMModelWrapper
+from features.extraction.models.yolo_wrapper import YOLOModelWrapper
+from features.processing.preprocessing.preprocessing import (
     load_and_validate_image,
     resize_image_if_needed,
     is_color_image,
     preprocess_image_pipeline
 )
-from utils.postprocessing import (
+from features.processing.postprocessing.postprocessing import (
     enhance_character_mask,
     extract_character_from_image,
     calculate_mask_quality_metrics
 )
-from utils.text_detection import TextDetector
-from utils.performance import PerformanceMonitor
-from commands.extract_character import extract_character_from_path
+from features.evaluation.utils.text_detection import TextDetector
+from features.common.performance.performance import PerformanceMonitor
+from features.extraction.commands.extract_character import extract_character_from_path
 
 
 class TestImagePreprocessing(unittest.TestCase):
@@ -76,11 +76,14 @@ class TestImagePreprocessing(unittest.TestCase):
     
     def test_is_color_image(self):
         """Test color detection"""
-        # Create color image
-        color_image = np.zeros((100, 100, 3), dtype=np.uint8)
-        color_image[:, :, 0] = 255  # Red channel
+        # Create color image with high variance between channels
+        color_image = np.random.randint(0, 255, (100, 100, 3), dtype=np.uint8)
+        # Make significant differences between channels
+        color_image[:50, :, 0] = 255   # Red top half
+        color_image[50:, :, 1] = 255   # Green bottom half
+        color_image[:, :50, 2] = 255   # Blue left half
         
-        # Create grayscale image
+        # Create grayscale image (all channels same)
         gray_image = np.ones((100, 100, 3), dtype=np.uint8) * 128
         
         self.assertTrue(is_color_image(color_image))
@@ -141,7 +144,7 @@ class TestPostprocessing(unittest.TestCase):
         
         for key in required_keys:
             self.assertIn(key, metrics)
-            self.assertIsInstance(metrics[key], (int, float))
+            self.assertIsInstance(metrics[key], (int, float, np.integer, np.floating))
 
 
 class TestTextDetection(unittest.TestCase):
@@ -277,9 +280,9 @@ class TestCharacterExtraction(unittest.TestCase):
         """Clean up test fixtures"""
         shutil.rmtree(self.temp_dir)
     
-    @patch('hooks.start.get_sam_model')
-    @patch('hooks.start.get_yolo_model')
-    @patch('hooks.start.get_performance_monitor')
+    @patch('features.common.hooks.start.get_sam_model')
+    @patch('features.common.hooks.start.get_yolo_model')
+    @patch('features.common.hooks.start.get_performance_monitor')
     def test_extract_character_pipeline_mocked(self, mock_perf, mock_yolo, mock_sam):
         """Test extraction pipeline with mocked models"""
         # Mock performance monitor

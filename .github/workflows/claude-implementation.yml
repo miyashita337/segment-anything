@@ -1,0 +1,75 @@
+name: Claude Code Implementation
+
+# IssueベースのClaude Code自動実装
+on:
+  issues:
+    types: [opened, labeled]
+  issue_comment:
+    types: [created]
+
+jobs:
+  claude-implementation:
+    if: |
+      (github.event.action == 'opened' && contains(github.event.issue.title, 'P1-')) ||
+      (github.event.action == 'labeled' && github.event.label.name == 'claude-implement') ||
+      (github.event.action == 'created' && contains(github.event.comment.body, '@claude implement'))
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.CLAUDE_TOKEN }}
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 black mypy isort
+        pip install -e .[dev]
+    
+    - name: Claude Code Implementation
+      uses: anthropics/claude-github-action@v1
+      with:
+        anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+        issue-number: ${{ github.event.issue.number }}
+        implementation-mode: 'auto'
+        test-commands: |
+          python -m pytest tests/unit/ -v
+          python tools/test_phase2_simple.py
+        max-iterations: 3
+    
+    - name: Create Pull Request
+      if: success()
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.CLAUDE_TOKEN }}
+        commit-message: |
+          Implement ${{ github.event.issue.title }}
+          
+          🤖 Generated with Claude Code
+          
+          Co-Authored-By: Claude <noreply@anthropic.com>
+        title: "Implement: ${{ github.event.issue.title }}"
+        body: |
+          ## Claude Code Implementation
+          
+          Automatically implemented based on Issue #${{ github.event.issue.number }}
+          
+          ### Changes Made
+          - Implemented requested functionality
+          - Added comprehensive tests
+          - Updated documentation
+          
+          ### Testing
+          ```bash
+          python -m pytest tests/unit/ -v
+          python tools/test_phase2_simple.py
+          ```
+          
+          Closes #${{ github.event.issue.number }}
+        branch: claude-implement-${{ github.event.issue.number }}
