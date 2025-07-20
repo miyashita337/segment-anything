@@ -5,6 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.1.0] - 2025-07-20
+
+### Added
+- **CI/CD Infrastructure**: GitHub Actions workflow for automated linting and testing (`basic-ci.yml`)
+- **Issue Templates**: Structured feature request templates for better project management
+- **Phase 2 Character Extraction**: Enhanced manga preprocessing with effect line removal and panel splitting
+- **Test Infrastructure**: Comprehensive pytest-based testing suite with 18 test cases
+- **Development Tools**: Enhanced linter integration with virtual environment support
+- **Project Documentation**: Improved GitHub Actions integration guides and usage documentation
+
+### Changed
+- **YOLO Threshold Optimization**: Lowered detection threshold from 0.02 to 0.005 for improved character detection
+- **Module Architecture**: Updated import paths for Phase 0 refactoring compatibility
+- **File Organization**: Reorganized scripts into `tools/` directory structure for better maintainability
+- **Test Coverage**: Enhanced test reliability with fixed color detection and numerical type checking
+
+### Fixed
+- **Import Errors**: Resolved module import issues after Phase 0 refactoring 
+- **Test Suite**: Fixed failing tests in character extraction pipeline
+- **Dependency Issues**: Resolved dlib dependency with OpenCV-only fallback implementation
+- **Code Quality**: Applied flake8, black, mypy, and isort standards throughout codebase
+
+### Removed
+- **Temporary Files**: Cleaned up development artifacts, backup files, and Jupyter checkpoints
+- **Duplicate Scripts**: Consolidated evaluation scripts into organized directory structure
+
+### Performance
+- **Phase 2 Success Rate**: Improved from 0% to 37.5% success rate on difficult test cases
+- **Processing Stability**: Enhanced memory management and error recovery in batch processing
+- **Test Execution**: Optimized test performance with proper mocking and fixture management
+
+### Thanks
+- @miyashita337 for core development and GitHub Actions integration
+- @harieshokunin for issue template contributions
+
 ## [v0.3.6] - 2025-07-18
 
 ### Added
