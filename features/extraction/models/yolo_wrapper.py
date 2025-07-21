@@ -17,7 +17,7 @@ try:
     YOLO_AVAILABLE = True
 except ImportError:
     YOLO_AVAILABLE = False
-    print("⚠️ ultralytics not available, YOLO functionality disabled")
+    print("WARNING: ultralytics not available, YOLO functionality disabled")
 
 
 class YOLOModelWrapper:

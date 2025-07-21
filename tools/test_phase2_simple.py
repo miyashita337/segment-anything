@@ -9,50 +9,73 @@ import os
 import argparse
 sys.path.append('.')
 
-def test_phase2_on_failed_images(score_threshold=0.07, test_solid_fill=False):
-    """失敗画像2枚でPhase 2機能をテスト"""
+def test_phase2_on_failed_images(input_dir=None, output_dir=None, score_threshold=0.07, test_solid_fill=False):
+    """Phase 2機能をバッチ処理"""
     
     # モデル初期化
-    print("🔄 モデル初期化中...")
+    print("Initializing models...")
     from features.common.hooks.start import start
     start()
-    print("✅ モデル初期化完了\n")
+    print("Model initialization completed\n")
     
     from features.extraction.commands.extract_character import extract_character_from_path
+    from pathlib import Path
     
-    # 失敗していた画像2枚
-    failed_images = [
-        {
-            'path': '/mnt/c/AItools/lora/train/yadokugaeru/org/kaname03/21_kaname03_0020.jpg',
-            'name': '21_kaname03_0020.jpg',
-            'description': 'ダイナミックなポーズ + エフェクト線'
-        },
-        {
-            'path': '/mnt/c/AItools/lora/train/yadokugaeru/org/kaname03/16_kaname03_0015.jpg',
-            'name': '16_kaname03_0015.jpg', 
-            'description': 'マルチコマ構成'
-        }
-    ]
+    # 画像リスト作成
+    if input_dir:
+        input_path = Path(input_dir)
+        image_files = list(input_path.glob("*.jpg")) + list(input_path.glob("*.png"))
+        failed_images = [
+            {
+                'path': str(img),
+                'name': img.name,
+                'description': f'Image {i+1}/{len(image_files)}'
+            }
+            for i, img in enumerate(image_files)
+        ]
+    else:
+        # デフォルトのテスト画像
+        failed_images = [
+            {
+                'path': '/mnt/c/AItools/lora/train/yadokugaeru/org/kaname03/21_kaname03_0020.jpg',
+                'name': '21_kaname03_0020.jpg',
+                'description': 'ダイナミックなポーズ + エフェクト線'
+            },
+            {
+                'path': '/mnt/c/AItools/lora/train/yadokugaeru/org/kaname03/16_kaname03_0015.jpg',
+                'name': '16_kaname03_0015.jpg', 
+                'description': 'マルチコマ構成'
+            }
+        ]
     
-    # Phase 2テスト設定
-    test_configs = [
-        {
-            'name': 'Phase 1: 自動リトライ（参考）',
-            'params': {'auto_retry': True}
-        },
-        {
-            'name': 'Phase 2: エフェクト線除去',
-            'params': {'manga_mode': True, 'effect_removal': True, 'low_threshold': True}
-        },
-        {
-            'name': 'Phase 2: マルチコマ分割',
-            'params': {'manga_mode': True, 'panel_split': True, 'low_threshold': True}
-        },
-        {
-            'name': 'Phase 2: 全機能',
-            'params': {'manga_mode': True, 'effect_removal': True, 'panel_split': True, 'low_threshold': True}
-        }
-    ]
+    # バッチ処理用設定（最適設定のみ使用）
+    if input_dir and output_dir:
+        test_configs = [
+            {
+                'name': 'balanced',
+                'params': {'auto_retry': True, 'low_threshold': True, 'manga_mode': True}
+            }
+        ]
+    else:
+        # デフォルトのテスト設定
+        test_configs = [
+            {
+                'name': 'Phase 1: 自動リトライ（参考）',
+                'params': {'auto_retry': True}
+            },
+            {
+                'name': 'Phase 2: エフェクト線除去',
+                'params': {'manga_mode': True, 'effect_removal': True, 'low_threshold': True}
+            },
+            {
+                'name': 'Phase 2: マルチコマ分割',
+                'params': {'manga_mode': True, 'panel_split': True, 'low_threshold': True}
+            },
+            {
+                'name': 'Phase 2: 全機能',
+                'params': {'manga_mode': True, 'effect_removal': True, 'panel_split': True, 'low_threshold': True}
+            }
+        ]
     
     # ソリッドフィル検出テストを追加
     if test_solid_fill:
@@ -69,11 +92,11 @@ def test_phase2_on_failed_images(score_threshold=0.07, test_solid_fill=False):
     
     results = []
     
-    print("🧪 Phase 2機能テスト開始")
+    print("Starting Phase 2 batch processing")
     print("=" * 60)
     
     for i, image in enumerate(failed_images, 1):
-        print(f"\n📸 失敗画像 {i}/2: {image['name']}")
+        print(f"\nProcessing {i}/{len(failed_images)}: {image['name']}")
         print(f"   説明: {image['description']}")
         print("-" * 40)
         
@@ -81,10 +104,13 @@ def test_phase2_on_failed_images(score_threshold=0.07, test_solid_fill=False):
         
         # 各設定でテスト
         for config in test_configs:
-            print(f"\n🔧 {config['name']} でテスト中...")
+            print(f"\nTesting with {config['name']}...")
             
             try:
-                output_path = f"/tmp/phase2_test_{image['name'].replace('.jpg', '')}_{config['name'].replace(' ', '_').replace(':', '')}"
+                if output_dir:
+                    output_path = os.path.join(output_dir, image['name'])
+                else:
+                    output_path = f"/tmp/phase2_test_{image['name'].replace('.jpg', '')}_{config['name'].replace(' ', '_').replace(':', '')}"
                 
                 # 閾値パラメータを動的に設定
                 params = config['params'].copy()
@@ -104,14 +130,14 @@ def test_phase2_on_failed_images(score_threshold=0.07, test_solid_fill=False):
                 error = result.get('error', '')
                 
                 if success:
-                    print(f"   ✅ 成功! ({processing_time:.1f}秒)")
+                    print(f"   SUCCESS! ({processing_time:.1f}s)")
                     if 'retry_stage' in result:
                         print(f"      リトライ段階: {result['retry_stage']}")
                     if 'complexity_info' in result:
                         complexity = result['complexity_info'].get('complexity', 'unknown')
                         print(f"      複雑度: {complexity}")
                 else:
-                    print(f"   ❌ 失敗: {error}")
+                    print(f"   FAILED: {error}")
                 
                 image_results['configs'][config['name']] = {
                     'success': success,
@@ -120,7 +146,7 @@ def test_phase2_on_failed_images(score_threshold=0.07, test_solid_fill=False):
                 }
                 
             except Exception as e:
-                print(f"   💥 例外発生: {e}")
+                print(f"   EXCEPTION: {e}")
                 image_results['configs'][config['name']] = {
                     'success': False,
                     'time': 0,
@@ -185,9 +211,20 @@ if __name__ == "__main__":
                         help='YOLO人物検出スコア閾値 (default: 0.07)')
     parser.add_argument('--test_solid_fill', action='store_true',
                         help='ソリッドフィル検出機能をテスト')
+    parser.add_argument('--input_dir', type=str, help='Input directory for batch processing')
+    parser.add_argument('--output_dir', type=str, help='Output directory for batch processing')
     args = parser.parse_args()
     
-    print(f"🎯 YOLO閾値設定: {args.score_threshold}")
+    if args.input_dir:
+        print(f"Input directory: {args.input_dir}")
+    if args.output_dir:
+        print(f"Output directory: {args.output_dir}")
+    print(f"YOLO threshold: {args.score_threshold}")
     if args.test_solid_fill:
-        print("🎨 ソリッドフィル検出機能を含めてテスト")
-    test_phase2_on_failed_images(args.score_threshold, args.test_solid_fill)
+        print("Including solid fill detection")
+    test_phase2_on_failed_images(
+        input_dir=args.input_dir,
+        output_dir=args.output_dir,
+        score_threshold=args.score_threshold,
+        test_solid_fill=args.test_solid_fill
+    )
