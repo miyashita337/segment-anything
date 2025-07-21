@@ -221,7 +221,7 @@ jobs:
         - Complexity: {analysis['complexity']}
         - Keywords: {', '.join(analysis['keywords'])}
 
-        Generate implementation as JSON with this exact structure:
+        Generate implementation as valid JSON (no comments, no trailing commas) with this exact structure:
         {{
           "analysis_summary": "Brief analysis of the request",
           "implementation_plan": "Step-by-step implementation plan",
@@ -256,6 +256,9 @@ jobs:
         - Include proper error handling
         - Use meaningful variable names and comments
         - Ensure all code passes flake8 and black formatting
+        - Return ONLY the JSON object - no explanatory text before or after
+        - Ensure all JSON strings are properly escaped
+        - Do not include comments in JSON
         """
 
         print("🧠 Calling Claude API for implementation...")
@@ -275,12 +278,40 @@ jobs:
             response_text = message.content[0].text
             print("✅ Claude API response received")
             
-            # Extract JSON from response
-            json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
-            if json_match:
-                response_data = json.loads(json_match.group())
-            else:
-                raise ValueError("No JSON found in Claude response")
+            # Extract JSON from response with better parsing
+            response_data = None
+            
+            # Try to find JSON block in response
+            json_start = response_text.find('{')
+            if json_start >= 0:
+                # Find matching closing brace
+                brace_count = 0
+                json_end = json_start
+                for i in range(json_start, len(response_text)):
+                    if response_text[i] == '{':
+                        brace_count += 1
+                    elif response_text[i] == '}':
+                        brace_count -= 1
+                        if brace_count == 0:
+                            json_end = i + 1
+                            break
+                
+                if json_end > json_start:
+                    try:
+                        json_str = response_text[json_start:json_end]
+                        response_data = json.loads(json_str)
+                        print("✅ JSON extracted successfully")
+                    except json.JSONDecodeError as je:
+                        print(f"❌ JSON parse error: {je}")
+                        print(f"JSON string preview: {json_str[:200]}...")
+                        raise ValueError(f"Invalid JSON in Claude response: {je}")
+            
+            if not response_data:
+                # Fallback: Try to parse the entire response as JSON
+                try:
+                    response_data = json.loads(response_text.strip())
+                except:
+                    raise ValueError("No valid JSON found in Claude response")
                 
         except Exception as e:
             print(f"❌ Claude API error: {e}")
