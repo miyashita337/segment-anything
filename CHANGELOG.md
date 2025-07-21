@@ -5,6 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.5.0] - 2025-07-21
+
+### Added
+- **[P1-007] Enhanced Aspect Ratio Judgment System**: Dynamic aspect ratio analysis system replacing fixed thresholds (1.2-2.5) with intelligent character style detection
+  - **Character Style Detection**: Automatic detection of anime, chibi, realistic, and deformed character styles using edge density and color saturation analysis
+  - **Adaptive Threshold Calculation**: Dynamic threshold computation based on character type and image characteristics
+  - **Multi-Factor Quality Assessment**: Integrated aspect ratio with confidence, size, position, and edge quality metrics
+  - **Confidence-Based Blending**: Automatic fallback to P1-003 system when P1-007 confidence is low, ensuring robust evaluation
+  - **Protocol-Based Architecture**: Implemented using SOLID principles with dependency injection for extensibility
+
+### Changed
+- **YOLO Wrapper Integration**: Enhanced `yolo_wrapper.py` with 'aspect_ratio_enhanced' evaluation criteria
+- **Backward Compatibility**: Maintained compatibility with all existing P1-001 through P1-006 systems
+- **Quality Evaluation Pipeline**: Improved character extraction quality through intelligent aspect ratio assessment
+
+### Fixed
+- **Import Errors**: Resolved encoding issues and import problems in batch processing pipeline
+- **Character Style Misclassification**: Eliminated fixed aspect ratio assumptions that failed on diverse character types
+
+### Technical Improvements
+- **Comprehensive Test Suite**: Added 42 new tests (28 unit + 14 integration tests) with 100% pass rate
+- **Performance Validation**: Ensured no regression in processing speed (within 50x performance threshold)
+- **Code Quality**: Maintained flake8, black, mypy, and isort compliance throughout implementation
+- **Zero Dependencies**: Implementation uses only NumPy, OpenCV, and PyTorch - no additional dependencies required
+
+### Architecture
+- **Enhanced Aspect Ratio Analyzer**: Core `EnhancedAspectRatioAnalyzer` class with configurable threshold calculators
+- **Style Detection System**: `HeuristicStyleDetector` for automatic character type classification
+- **Confidence Blending**: Seamless integration between P1-007 and P1-003 evaluation systems
+- **Extensible Design**: Protocol-based interfaces allow easy addition of new threshold calculation strategies
+
+### Performance
+- **Dynamic Adaptation**: Intelligent threshold adjustment based on character style improves extraction accuracy
+- **Processing Efficiency**: Maintained target processing speeds while adding sophisticated analysis
+- **Quality Metrics**: Enhanced quality assessment through multi-dimensional evaluation criteria
+
+### Documentation
+- **Implementation Guide**: Detailed documentation of P1-007 system architecture and usage
+- **Integration Examples**: Comprehensive test cases demonstrating real-world usage scenarios
+- **API Documentation**: Complete docstrings and type hints for all new functionality
+
+### Thanks
+- @miyashita337 for P1-007 Enhanced Aspect Ratio Judgment System implementation and comprehensive testing
+
 ## [v0.4.0] - 2025-07-21
 
 ### Added
