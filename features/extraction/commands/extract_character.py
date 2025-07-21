@@ -1,946 +1,110 @@
-#!/usr/bin/env python3
-"""
-Character Extraction Command
-Main command for extracting characters from manga images using SAM + YOLO
-"""
+"""Character extraction command implementation.
 
-import argparse
-import os
-import sys
-import time
+Provides CLI interface for extracting anime characters from manga images.
+"""
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Optional
 
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
-
+import click
 import numpy as np
-import cv2
+from PIL import Image
 
 from features.common.hooks.start import get_performance_monitor, get_sam_model, get_yolo_model
-from features.evaluation.utils.difficult_pose import (
-    DifficultPoseProcessor,
-    detect_difficult_pose,
-    get_difficult_pose_config,
-    process_with_retry,
-)
-from features.evaluation.utils.learned_quality_assessment import (
-    LearnedQualityAssessment,
-    assess_image_quality,
-)
-from features.evaluation.utils.partial_extraction_detector import (
-    PartialExtractionDetector,
-    analyze_extraction_completeness,
-)
-from features.evaluation.utils.text_detection import TextDetector
-from features.processing.postprocessing.postprocessing import (
-    calculate_mask_quality_metrics,
-    crop_to_content,
-    enhance_character_mask,
-    extract_character_from_image,
-    save_character_result,
-)
+from features.processing.postprocessing.postprocessing import calculate_mask_quality_metrics
 from features.processing.preprocessing.preprocessing import preprocess_image_pipeline
+from features.common.types import ImageType, MaskType
 
+@click.command()
+@click.argument('input_path')
+@click.option('-o', '--output-path', required=True, help='Output path for extracted character')
+@click.option('--batch', is_flag=True, help='Process a directory of images')
+@click.option('--verbose', is_flag=True, help='Enable verbose output')
+def extract_character(
+    input_path: str,
+    output_path: str,
+    batch: bool = False,
+    verbose: bool = False
+) -> None:
+    """Extract anime character from manga image.
 
-class CharacterExtractor:
-    """
-    Character Extraction Wrapper Class
-    Provides class-based interface for character extraction functionality
-    Phase 0リファクタリング対応: 依存関係問題の解決
-    """
-    
-    def __init__(self):
-        """Initialize character extractor with default settings"""
-        self.default_settings = {
-            'enhance_contrast': False,
-            'filter_text': True,
-            'save_mask': False,
-            'save_transparent': False,
-            'min_yolo_score': 0.1,
-            'verbose': True,
-            'difficult_pose': False,
-            'low_threshold': False,
-            'auto_retry': False,
-            'high_quality': False
-        }
-    
-    def extract(self, image_path: str, output_path: str = None, **kwargs):
-        """
-        Extract character from image
-        
-        Args:
-            image_path: Path to input image
-            output_path: Path for output (optional)
-            **kwargs: Additional extraction parameters
-            
-        Returns:
-            Result dictionary with success status and paths
-        """
-        # Merge default settings with provided kwargs
-        settings = {**self.default_settings, **kwargs}
-        
-        # Call the main extraction function
-        return extract_character_from_path(
-            image_path=image_path,
-            output_path=output_path,
-            **settings
-        )
-    
-    def batch_extract(self, input_dir: str, output_dir: str, **kwargs):
-        """
-        Batch extract characters from directory
-        
-        Args:
-            input_dir: Input directory path
-            output_dir: Output directory path
-            **kwargs: Additional extraction parameters
-            
-        Returns:
-            Batch processing results
-        """
-        settings = {**self.default_settings, **kwargs}
-        
-        return batch_extract_characters(
-            input_dir=input_dir,
-            output_dir=output_dir,
-            **settings
-        )
-
-
-def extract_character_from_path(image_path: str,
-                               output_path: Optional[str] = None,
-                               enhance_contrast: bool = False,
-                               filter_text: bool = True,
-                               save_mask: bool = False,
-                               save_transparent: bool = False,
-                               min_yolo_score: float = 0.1,
-                               verbose: bool = True,
-                               difficult_pose: bool = False,
-                               low_threshold: bool = False,
-                               auto_retry: bool = False,
-                               high_quality: bool = False,
-                               manga_mode: bool = False,
-                               effect_removal: bool = False,
-                               panel_split: bool = False,
-                               solid_fill_detection: bool = False,
-                               multi_character_criteria: str = 'balanced',
-                               adaptive_learning: bool = False,
-                               use_box_expansion: bool = False,
-                               expansion_strategy: str = 'balanced',
-                               **kwargs) -> Dict[str, Any]:
-    """
-    画像パスからキャラクターを抽出 (Phase A対応版)
-    
     Args:
-        image_path: 入力画像パス
-        output_path: 出力パス（None の場合は自動生成）
-        enhance_contrast: コントラスト強化
-        filter_text: テキスト領域フィルタリング
-        save_mask: マスクを保存
-        save_transparent: 透明背景版を保存
-        min_yolo_score: YOLO最小スコア
-        verbose: 詳細出力
-        difficult_pose: 複雑ポーズモード
-        low_threshold: 低閾値モード（YOLO 0.005）
-        auto_retry: 自動リトライモード
-        high_quality: 高品質SAM処理
-        manga_mode: 漫画前処理モード (Phase 2)
-        effect_removal: エフェクト線除去を有効化 (Phase 2)
-        panel_split: マルチコマ分割を有効化 (Phase 2)
-        solid_fill_detection: ソリッドフィル領域検出を有効化 (P1-006)
-        multi_character_criteria: 複数キャラクター選択基準 ('balanced', 'size_priority', 'fullbody_priority', 'fullbody_priority_enhanced', 'central_priority', 'confidence_priority')
-        adaptive_learning: 適応学習モード（281評価データに基づく最適手法選択）
-        use_box_expansion: GPT-4O推奨ボックス拡張を有効化 (Phase A)
-        expansion_strategy: 拡張戦略 ('conservative', 'balanced', 'aggressive') (Phase A)
-        
-    Returns:
-        抽出結果の辞書
+        input_path: Path to input image or directory
+        output_path: Path to save extracted character
+        batch: Process directory of images if True
+        verbose: Enable detailed logging if True
     """
-    result = {
-        'success': False,
-        'input_path': image_path,
-        'output_path': None,
-        'processing_time': 0.0,
-        'mask_quality': {},
-        'error': None,
-        'adaptive_learning_info': None
-    }
-    
-    start_time = time.time()
-    
-    # 自動リトライモードの場合は process_with_retry を使用
-    if auto_retry:
-        if verbose:
-            print(f"🔄 自動リトライモードでキャラクター抽出開始: {image_path}")
-        
-        def extract_function(img_path, **config):
-            # 元の処理ロジックを呼び出し（リトライ用）
-            return extract_character_from_path(
-                img_path, output_path, enhance_contrast, filter_text,
-                save_mask, save_transparent, config.get('min_yolo_score', min_yolo_score),
-                verbose=False,  # リトライ中は詳細出力を抑制
-                difficult_pose=False, low_threshold=False, auto_retry=False,  # 無限ループ防止
-                high_quality=config.get('enable_enhanced_processing', high_quality),
-                manga_mode=config.get('enable_manga_preprocessing', manga_mode),
-                effect_removal=config.get('enable_effect_removal', effect_removal),
-                panel_split=config.get('enable_panel_split', panel_split),
-                solid_fill_detection=config.get('solid_fill_detection', solid_fill_detection),
-                multi_character_criteria=multi_character_criteria,
-                adaptive_learning=adaptive_learning,
-                use_box_expansion=use_box_expansion,  # Phase A
-                expansion_strategy=expansion_strategy,  # Phase A
-                **{k: v for k, v in config.items() if k not in [
-                    'min_yolo_score', 'enable_enhanced_processing', 'enable_manga_preprocessing',
-                    'enable_effect_removal', 'enable_panel_split', 'solid_fill_detection'
-                ]}
-            )
-        
-        return process_with_retry(image_path, extract_function, max_retries=4)
-    
-    try:
-        # Phase 3: 適応学習モード - 281評価データに基づく最適手法選択
-        if adaptive_learning:
-            if verbose:
-                print(f"🧠 適応学習モード: 281評価データに基づく最適手法選択を実行中...")
-            
-            try:
-                # 品質評価システムで画像特性を分析し最適手法を予測
-                quality_prediction = assess_image_quality(image_path)
-                result['adaptive_learning_info'] = {
-                    'predicted_quality': quality_prediction.predicted_quality,
-                    'confidence': quality_prediction.confidence,
-                    'recommended_method': quality_prediction.recommended_method,
-                    'fallback_method': quality_prediction.fallback_method,
-                    'reasoning': quality_prediction.reasoning,
-                    'image_characteristics': quality_prediction.image_characteristics
-                }
-                
-                # 推奨手法をmulti_character_criteriaに適用
-                multi_character_criteria = quality_prediction.recommended_method
-                
-                # ImageCharacteristicsオブジェクトを作成
-                from utils.learned_quality_assessment import ImageCharacteristics
-                img_chars_dict = quality_prediction.image_characteristics
-                img_chars = ImageCharacteristics(**img_chars_dict) if isinstance(img_chars_dict, dict) else img_chars_dict
-                
-                # 画像特性に基づく最適化パラメータ取得
-                assessor = LearnedQualityAssessment()
-                optimized_params = assessor.get_method_parameters(
-                    quality_prediction.recommended_method,
-                    img_chars
-                )
-                
-                # 最適化パラメータを適用
-                if optimized_params.get('score_threshold'):
-                    min_yolo_score = optimized_params['score_threshold']
-                
-                # 境界問題がある場合は漫画前処理を強制有効化（一時的に無効化）
-                if img_chars.has_boundary_complexity:
-                    # manga_mode = True
-                    # effect_removal = True
-                    if verbose:
-                        print(f"   🎨 境界問題検出: 漫画前処理を強制有効化（無効化中）")
-                
-                if verbose:
-                    print(f"   📊 推奨手法: {quality_prediction.recommended_method}")
-                    print(f"   🎯 予測品質: {quality_prediction.predicted_quality:.3f}")
-                    print(f"   🔧 信頼度: {quality_prediction.confidence:.3f}")
-                    print(f"   📝 理由: {quality_prediction.reasoning}")
-                    print(f"   ⚙️  最適YOLO閾値: {min_yolo_score}")
-                    
-                    # 画像特性の詳細表示
-                    if img_chars.has_complex_pose:
-                        print(f"   🤸 複雑姿勢検出")
-                    if img_chars.has_multiple_characters:
-                        print(f"   👥 複数キャラクター")
-                    if img_chars.has_screentone_issues:
-                        print(f"   📰 スクリーントーン境界問題")
-                    if img_chars.has_mosaic_issues:
-                        print(f"   🔲 モザイク境界問題")
-                
-            except Exception as e:
-                if verbose:
-                    print(f"⚠️ 適応学習エラー、デフォルト手法で継続: {e}")
-                # エラー時はデフォルト手法を継続使用
-                result['adaptive_learning_info'] = {
-                    'error': str(e),
-                    'fallback_to_default': True
-                }
-        
-        # Get models
-        sam_model = get_sam_model()
-        yolo_model = get_yolo_model()
-        performance_monitor = get_performance_monitor()
-        
-        if not sam_model or not yolo_model:
-            if verbose:
-                print("🔄 モデル未初期化、自動初期化を実行中...")
-            
-            # 新構造対応の自動初期化
-            try:
-                # Phase 0後の新パスでモデル初期化
-                from features.common.hooks.start import initialize_models
-                initialize_models()
-                
-                # 再度モデル取得を試行
-                sam_model = get_sam_model()
-                yolo_model = get_yolo_model()
-                performance_monitor = get_performance_monitor()
-                
-                if verbose:
-                    print("✅ モデル自動初期化完了（新構造対応）")
-                
-                if not sam_model or not yolo_model:
-                    raise RuntimeError("Auto initialization failed. Models still not available.")
-                    
-            except ImportError as e:
-                # Phase 0新構造でのフォールバック
-                if verbose:
-                    print(f"⚠️ 自動初期化失敗: {e}")
-                raise RuntimeError(f"Models not initialized. Please run: python3 features/common/hooks/start.py\nError: {e}")
-            except Exception as e:
-                if verbose:
-                    print(f"⚠️ 初期化例外: {e}")
-                raise RuntimeError(f"Failed to auto-initialize models: {e}")
-        
-        # 複雑ポーズ判定と設定調整 (Phase 2対応版)
-        if difficult_pose or low_threshold or manga_mode:
-            processor = DifficultPoseProcessor()
-            
-            if difficult_pose:
-                # 複雑ポーズモード: 自動判定による設定
-                complexity_info = processor.detect_pose_complexity(image_path)
-                recommended_config = processor.get_recommended_config(complexity_info)
-                
-                if verbose:
-                    print(f"🔍 ポーズ複雑度: {complexity_info['complexity']} (スコア: {complexity_info['score']:.1f})")
-                    print(f"🔧 推奨設定適用: {recommended_config['description']}")
-                
-                # 推奨設定を適用
-                min_yolo_score = min(min_yolo_score, recommended_config['min_yolo_score'])
-                if 'sam_points_per_side' in recommended_config:
-                    # SAM設定をkwargsに追加
-                    kwargs.update({
-                        'sam_points_per_side': recommended_config['sam_points_per_side'],
-                        'sam_pred_iou_thresh': recommended_config['sam_pred_iou_thresh'],
-                        'sam_stability_score_thresh': recommended_config['sam_stability_score_thresh']
-                    })
-            
-            if low_threshold:
-                min_yolo_score = 0.005
-                if verbose:
-                    print(f"🔧 低閾値モード: YOLO閾値を{min_yolo_score}に設定")
-            
-            # Phase 2: 漫画前処理モード
-            if manga_mode or effect_removal or panel_split or solid_fill_detection:
-                if verbose:
-                    print(f"🎨 漫画前処理モード有効")
-                    print(f"   エフェクト線除去: {'✅' if effect_removal else '❌'}")
-                    print(f"   マルチコマ分割: {'✅' if panel_split else '❌'}")
-                    print(f"   ソリッドフィル検出: {'✅' if solid_fill_detection else '❌'}")
-                
-                # 前処理を適用
-                processed_image_path = processor.preprocess_for_difficult_pose(
-                    image_path,
-                    enable_manga_preprocessing=True,
-                    enable_effect_removal=effect_removal,
-                    enable_panel_split=panel_split,
-                    solid_fill_detection=solid_fill_detection
-                )
-                
-                # 処理済み画像を使用
-                image_path = processed_image_path
-        
-        if high_quality:
-            # 高品質SAM設定
-            kwargs.update({
-                'sam_points_per_side': kwargs.get('sam_points_per_side', 64),
-                'sam_pred_iou_thresh': kwargs.get('sam_pred_iou_thresh', 0.88),
-                'sam_stability_score_thresh': kwargs.get('sam_stability_score_thresh', 0.92)
-            })
-            if verbose:
-                print(f"🔧 高品質モード: SAM密度 {kwargs.get('sam_points_per_side', 64)} ポイント/サイド")
-        
-        if verbose:
-            print(f"🎯 キャラクター抽出開始: {image_path}")
-            print(f"📊 YOLO閾値: {min_yolo_score}")
-        
-        # Step 1: Image preprocessing
-        performance_monitor.start_stage("Image Preprocessing")
-        bgr_image, rgb_image, scale = preprocess_image_pipeline(
-            image_path, 
-            enhance_contrast=enhance_contrast
-        )
-        
-        if rgb_image is None:
-            raise ValueError(f"Failed to load image: {image_path}")
-        
-        performance_monitor.end_stage()
-        
-        # Step 2: SAM mask generation
-        performance_monitor.start_stage("SAM Mask Generation")
-        
-        # 高品質/複雑ポーズモードでSAM設定を動的に適用
-        if any(key.startswith('sam_') for key in kwargs.keys()) or high_quality:
-            # SAMGeneratorを一時的に再構築
-            try:
-                from segment_anything import SamAutomaticMaskGenerator
-                
-                sam_params = {
-                    'model': sam_model.sam,
-                    'points_per_side': kwargs.get('sam_points_per_side', 32),
-                    'pred_iou_thresh': kwargs.get('sam_pred_iou_thresh', 0.8),
-                    'stability_score_thresh': kwargs.get('sam_stability_score_thresh', 0.85),
-                    'crop_n_layers': 1,
-                    'crop_n_points_downscale_factor': 2,
-                    'min_mask_region_area': 100,
-                }
-                
-                if verbose:
-                    print(f"🔧 カスタムSAM設定適用:")
-                    print(f"   ポイント密度: {sam_params['points_per_side']}")
-                    print(f"   IoU閾値: {sam_params['pred_iou_thresh']}")
-                    print(f"   安定性閾値: {sam_params['stability_score_thresh']}")
-                
-                # 一時的なマスクジェネレータで処理
-                temp_generator = SamAutomaticMaskGenerator(**sam_params)
-                all_masks = temp_generator.generate(rgb_image)
-                
-            except Exception as e:
-                if verbose:
-                    print(f"⚠️ カスタムSAM設定失敗、デフォルト設定で継続: {e}")
-                all_masks = sam_model.generate_masks(rgb_image)
-        else:
-            all_masks = sam_model.generate_masks(rgb_image)
-        
-        if not all_masks:
-            raise ValueError("No masks generated by SAM")
-        
-        character_masks = sam_model.filter_character_masks(all_masks)
-        
-        if verbose:
-            print(f"📊 生成マスク: {len(all_masks)} → キャラクター候補: {len(character_masks)}")
-        
-        performance_monitor.end_stage()
-        
-        # Step 3: YOLO scoring (GPT-4O推奨ボックス拡張対応)
-        performance_monitor.start_stage("YOLO Scoring")
-        
-        # GPT-4O推奨ボックス拡張オプション
-        use_box_expansion = kwargs.get('use_box_expansion', False)
-        expansion_strategy = kwargs.get('expansion_strategy', 'balanced')
-        
-        if use_box_expansion:
-            if verbose:
-                print(f"🎯 GPT-4O推奨ボックス拡張を有効化: 戦略={expansion_strategy}")
-                print(f"   水平拡張: 2.5-3倍、垂直拡張: 4倍")
-        
-        scored_masks = yolo_model.score_masks_with_detections(
-            character_masks, 
-            bgr_image,
-            use_expanded_boxes=use_box_expansion,
-            expansion_strategy=expansion_strategy
-        )
-        
-        # Phase 1 P1-003: 改良版全身検出の統合
-        if multi_character_criteria == 'fullbody_priority_enhanced':
-            selection_result = yolo_model.select_best_mask_with_criteria(
-                scored_masks, 
-                bgr_image,
-                criteria=multi_character_criteria
-            )
-            if selection_result is not None:
-                best_mask, quality_score = selection_result
-                if verbose:
-                    print(f"🔍 改良版全身検出使用: 品質スコア={quality_score:.3f}")
-            else:
-                best_mask = None
-        else:
-            best_mask = yolo_model.get_best_character_mask(
-                scored_masks, 
-                bgr_image, 
-                min_yolo_score=min_yolo_score
-            )
-        
-        if best_mask is None:
-            raise ValueError(f"No good character masks found (min YOLO score: {min_yolo_score})")
-        
-        if verbose:
-            print(f"🎯 最適マスク選択: YOLO score={best_mask['yolo_score']:.3f}, "
-                  f"combined score={best_mask['combined_score']:.3f}")
-            if adaptive_learning:
-                print(f"   🧠 推奨手法: {multi_character_criteria} (適応学習)")
-            else:
-                print(f"   🔧 選択基準: {multi_character_criteria}")
-        
-        performance_monitor.end_stage()
-        
-        # Step 4: Text filtering (optional)
-        if filter_text:
-            performance_monitor.start_stage("Text Filtering")
-            text_detector = TextDetector(use_easyocr=True)
-            
-            text_density = text_detector.calculate_text_density_score(
-                bgr_image, 
-                best_mask['bbox']
-            )
-            
-            if text_density > 0.5:
-                if verbose:
-                    print(f"⚠️ 高テキスト密度検出: {text_density:.3f} - 処理続行")
-            
-            # Add text density to result
-            best_mask['text_density'] = text_density
-            performance_monitor.end_stage()
-        
-        # Step 5: Mask refinement
-        performance_monitor.start_stage("Mask Refinement")
-        raw_mask = sam_model.mask_to_binary(best_mask)
-        
-        # 適応学習による境界問題対応 + 複雑ポーズ用の強化マスク処理
-        boundary_complexity = False
-        if adaptive_learning and result['adaptive_learning_info'] and 'image_characteristics' in result['adaptive_learning_info']:
-            img_chars_dict = result['adaptive_learning_info']['image_characteristics']
-            boundary_complexity = img_chars_dict.get('has_boundary_complexity', False)
-        
-        use_enhanced_processing = (difficult_pose or low_threshold or high_quality or boundary_complexity)
-        
-        if use_enhanced_processing:
-            if verbose:
-                enhancement_reason = []
-                if difficult_pose:
-                    enhancement_reason.append("複雑ポーズ")
-                if low_threshold:
-                    enhancement_reason.append("低閾値")
-                if high_quality:
-                    enhancement_reason.append("高品質")
-                if boundary_complexity:
-                    enhancement_reason.append("境界問題対応")
-                
-                print(f"🔧 マスク強化処理を適用: {'+'.join(enhancement_reason)}")
-            
-            # DifficultPoseProcessorを使用した強化処理
-            if 'processor' not in locals():
-                processor = DifficultPoseProcessor()
-            
-            enhanced_mask = processor.enhance_mask_for_complex_pose(raw_mask, bgr_image)
-        else:
-            enhanced_mask = enhance_character_mask(
-                raw_mask,
-                remove_small_area=100,
-                smooth_kernel=3,
-                fill_holes=True
-            )
-        
-        # Calculate mask quality metrics
-        quality_metrics = calculate_mask_quality_metrics(enhanced_mask)
-        result['mask_quality'] = quality_metrics
-        
-        # Phase 1 P1-002: 部分抽出検出システムによる分析
-        performance_monitor.start_stage("Partial Extraction Analysis")
-        try:
-            partial_detector = PartialExtractionDetector()
-            extraction_analysis = partial_detector.analyze_extraction(bgr_image, enhanced_mask)
-            
-            result['extraction_analysis'] = {
-                'has_face': extraction_analysis.has_face,
-                'has_torso': extraction_analysis.has_torso,
-                'has_limbs': extraction_analysis.has_limbs,
-                'completeness_score': extraction_analysis.completeness_score,
-                'quality_assessment': extraction_analysis.quality_assessment,
-                'issues_count': len(extraction_analysis.issues),
-                'issues': [
-                    {
-                        'type': issue.issue_type,
-                        'confidence': issue.confidence,
-                        'severity': issue.severity,
-                        'description': issue.description
-                    } for issue in extraction_analysis.issues
-                ]
-            }
-            
-            if verbose:
-                print(f"🔍 抽出完全性分析: 完全性={extraction_analysis.completeness_score:.3f}, "
-                      f"品質={extraction_analysis.quality_assessment}, 問題={len(extraction_analysis.issues)}件")
-                
-                # 重要な問題を表示
-                high_severity_issues = [issue for issue in extraction_analysis.issues if issue.severity == 'high']
-                if high_severity_issues:
-                    for issue in high_severity_issues[:2]:  # 最大2件表示
-                        print(f"  ⚠️ {issue.issue_type}: {issue.description}")
-            
-        except Exception as e:
-            if verbose:
-                print(f"⚠️ 部分抽出分析でエラー: {e}")
-            result['extraction_analysis'] = {
-                'completeness_score': 0.5,  # デフォルト値
-                'quality_assessment': 'unknown',
-                'issues_count': 0,
-                'error': str(e)
-            }
-        
-        performance_monitor.end_stage()
-        
-        if verbose:
-            print(f"📐 マスク品質: coverage={quality_metrics['coverage_ratio']:.3f}, "
-                  f"compactness={quality_metrics['compactness']:.3f}")
-        
-        # Step 6: Character extraction
-        performance_monitor.start_stage("Character Extraction")
-        character_image = extract_character_from_image(
-            bgr_image, 
-            enhanced_mask,
-            background_color=(0, 0, 0)  # Black background
-        )
-        
-        # Crop to content
-        cropped_character, cropped_mask, crop_bbox = crop_to_content(
-            character_image,
-            enhanced_mask,
-            padding=10
-        )
-        
-        performance_monitor.end_stage()
-        
-        # Step 7: Save results
-        performance_monitor.start_stage("Saving Results")
-        
-        # Generate output path if not provided
-        if output_path is None:
-            input_path = Path(image_path)
-            output_dir = input_path.parent / "character_output"
-            output_dir.mkdir(exist_ok=True)
-            output_path = output_dir / input_path.stem
-        
-        # Save results
-        save_success = save_character_result(
-            cropped_character,
-            cropped_mask,
-            str(output_path),
-            save_mask=save_mask,
-            save_transparent=save_transparent
-        )
-        
-        if not save_success:
-            raise RuntimeError("Failed to save results")
-        
-        result['output_path'] = str(output_path)
-        performance_monitor.end_stage()
-        
-        # Success
-        result['success'] = True
-        result['processing_time'] = time.time() - start_time
-        
-        # 適応学習結果のログ記録
-        if adaptive_learning and result['adaptive_learning_info']:
-            try:
-                assessor = LearnedQualityAssessment()
-                # 実際の品質を計算（マスク品質メトリクスから推定）
-                actual_quality = (quality_metrics['coverage_ratio'] * 2 + 
-                                quality_metrics['compactness'] * 2 + 1.0)  # 1-5スケール推定
-                
-                # 予測結果をログに記録（将来の学習更新用）
-                assessor.log_prediction_result(
-                    image_path, 
-                    type('QualityPrediction', (), result['adaptive_learning_info'])(),
-                    actual_quality=actual_quality
-                )
-                
-                result['adaptive_learning_info']['estimated_actual_quality'] = actual_quality
-                
-            except Exception as e:
-                if verbose:
-                    print(f"⚠️ 適応学習ログ記録エラー: {e}")
-        
-        if verbose:
-            print(f"✅ キャラクター抽出完了: {result['processing_time']:.2f}秒")
-            print(f"   出力: {result['output_path']}")
-            
-            # 適応学習結果のサマリ表示
-            if adaptive_learning and result['adaptive_learning_info'] and not result['adaptive_learning_info'].get('error'):
-                adaptive_info = result['adaptive_learning_info']
-                print(f"   🧠 適応学習結果:")
-                print(f"      手法: {adaptive_info['recommended_method']}")
-                print(f"      予測品質: {adaptive_info['predicted_quality']:.3f}")
-                if 'estimated_actual_quality' in adaptive_info:
-                    print(f"      実際品質: {adaptive_info['estimated_actual_quality']:.3f}")
-                    prediction_error = abs(adaptive_info['predicted_quality'] - adaptive_info['estimated_actual_quality'])
-                    print(f"      予測精度: ±{prediction_error:.3f}")
-        
-        return result
-        
-    except Exception as e:
-        result['error'] = str(e)
-        result['processing_time'] = time.time() - start_time
-        
-        if verbose:
-            print(f"❌ 抽出失敗: {e}")
-        
-        return result
+    sam_model = get_sam_model()
+    yolo_model = get_yolo_model()
+    perf_monitor = get_performance_monitor()
 
+    if batch:
+        input_dir = Path(input_path)
+        output_dir = Path(output_path)
+        output_dir.mkdir(exist_ok=True)
 
-def batch_extract_characters(input_dir: str,
-                           output_dir: str,
-                           **extract_kwargs) -> Dict[str, Any]:
-    """
-    ディレクトリ内の全画像に対してバッチ処理 (TDR安全対策版)
-    
-    Args:
-        input_dir: 入力ディレクトリ
-        output_dir: 出力ディレクトリ
-        **extract_kwargs: extract_character_from_path の引数
-        
-    Returns:
-        バッチ処理結果
-    """
-    import torch
-
-    import gc
-    
-    def gpu_memory_cleanup():
-        """GPU メモリクリーンアップ (TDR対策)"""
-        try:
-            if torch.cuda.is_available():
-                torch.cuda.empty_cache()
-                torch.cuda.synchronize()
-                gc.collect()
-        except Exception as e:
-            print(f"⚠️ GPU メモリクリーンアップ失敗: {e}")
-    
-    input_path = Path(input_dir)
-    output_path = Path(output_dir)
-    
-    if not input_path.exists():
-        return {'success': False, 'error': f'Input directory not found: {input_dir}'}
-    
-    # 画像ファイルを取得
-    image_extensions = {'.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.webp'}
-    image_files = []
-    
-    for ext in image_extensions:
-        image_files.extend(input_path.glob(f'*{ext}'))
-        image_files.extend(input_path.glob(f'*{ext.upper()}'))
-    
-    if not image_files:
-        return {'success': False, 'error': f'No image files found in {input_dir}'}
-    
-    # 出力ディレクトリ作成
-    output_path.mkdir(parents=True, exist_ok=True)
-    
-    # バッチ処理実行
-    results = []
-    successful = 0
-    
-    print(f"🚀 バッチ処理開始: {len(image_files)} 画像")
-    print(f"🛡️ TDR安全対策: GPU メモリクリーンアップ有効")
-    
-    for i, image_file in enumerate(image_files, 1):
-        print(f"\n📁 処理中 [{i}/{len(image_files)}]: {image_file.name}")
-        
-        try:
-            # 出力パス生成
-            output_file = output_path / image_file.stem
-            
-            # 抽出実行
-            batch_kwargs = extract_kwargs.copy()
-            batch_kwargs['verbose'] = False
-            
-            result = extract_character_from_path(
-                str(image_file),
-                output_path=str(output_file),
-                **batch_kwargs
+        for img_path in input_dir.glob('*.jpg'):
+            process_single_image(
+                img_path,
+                output_dir / f'{img_path.stem}_extracted.png',
+                sam_model,
+                yolo_model,
+                perf_monitor,
+                verbose
             )
-            
-            result['filename'] = image_file.name
-            results.append(result)
-            
-            if result['success']:
-                successful += 1
-                print(f"✅ 成功: {image_file.name}")
-            else:
-                print(f"❌ 失敗: {image_file.name} - {result.get('error', 'Unknown error')}")
-            
-            # 5枚ごとにGPU メモリクリーンアップ (TDR対策)
-            if i % 5 == 0:
-                print(f"🧹 GPU メモリクリーンアップ実行 ({i}/{len(image_files)})")
-                gpu_memory_cleanup()
-                
-        except KeyboardInterrupt:
-            print("\n⏹️ ユーザーによる処理中断")
-            gpu_memory_cleanup()
-            break
-        except Exception as e:
-            print(f"❌ 画像処理エラー: {image_file.name} - {e}")
-            # エラーでもバッチ処理は継続
-            error_result = {
-                'success': False,
-                'error': str(e),
-                'filename': image_file.name,
-                'processing_time': 0.0
-            }
-            results.append(error_result)
-            
-            # エラー時もGPU クリーンアップ
-            gpu_memory_cleanup()
-    
-    # 最終GPU メモリクリーンアップ
-    print("\n🧹 最終GPU メモリクリーンアップ...")
-    gpu_memory_cleanup()
-    
-    # 結果サマリ
-    batch_result = {
-        'success': True,
-        'total_files': len(image_files),
-        'successful': successful,
-        'failed': len(image_files) - successful,
-        'success_rate': successful / len(image_files) if len(image_files) > 0 else 0,
-        'results': results
-    }
-    
-    print(f"\n📊 バッチ処理完了:")
-    print(f"   成功: {successful}/{len(image_files)} ({batch_result['success_rate']:.1%})")
-    print(f"   🛡️ TDR対策: 安全にGPU処理完了")
-    
-    # Pushover通知送信
-    try:
-        from utils.notification import send_batch_notification
-        print("\n📱 通知送信中...")
-        notification_sent = send_batch_notification(
-            successful=successful,
-            total=len(image_files),
-            failed=len(image_files) - successful,
-            total_time=batch_result['total_time']
-        )
-        
-        if notification_sent:
-            print("✅ Pushover通知送信完了")
-        else:
-            print("⚠️ Pushover通知送信失敗またはスキップ")
-    except ImportError:
-        print("⚠️ 通知モジュールが見つかりません")
-    except Exception as e:
-        print(f"⚠️ 通知送信エラー: {e}")
-    
-    return batch_result
-
-
-def main():
-    """Main function for command line interface"""
-    parser = argparse.ArgumentParser(description="Character Extraction using SAM + YOLO")
-    
-    parser.add_argument('input', help='Input image path or directory')
-    parser.add_argument('-o', '--output', help='Output path (auto-generated if not specified)')
-    parser.add_argument('--batch', action='store_true', help='Batch processing mode')
-    parser.add_argument('--enhance-contrast', action='store_true', help='Enhance image contrast')
-    parser.add_argument('--filter-text', action='store_true', default=True, help='Filter text regions')
-    parser.add_argument('--save-mask', action='store_true', default=False, help='Save mask files')
-    parser.add_argument('--save-transparent', action='store_true', default=False, help='Save transparent background')
-    parser.add_argument('--min-yolo-score', type=float, default=0.1, help='Minimum YOLO score threshold')
-    parser.add_argument('--verbose', action='store_true', default=True, help='Verbose output')
-    
-    # 複雑ポーズ・ダイナミック構図対応オプション
-    parser.add_argument('--difficult-pose', action='store_true', help='Enable difficult pose processing mode')
-    parser.add_argument('--low-threshold', action='store_true', help='Use low threshold settings (YOLO score 0.005)')
-    parser.add_argument('--auto-retry', action='store_true', help='Enable automatic retry with progressive settings')
-    parser.add_argument('--high-quality', action='store_true', help='Enable high-quality SAM processing')
-    
-    # Phase 2: 漫画前処理オプション
-    parser.add_argument('--manga-mode', action='store_true', help='Enable manga-specific preprocessing (Phase 2)')
-    parser.add_argument('--effect-removal', action='store_true', help='Enable effect line removal (Phase 2)')
-    parser.add_argument('--panel-split', action='store_true', help='Enable multi-panel splitting (Phase 2)')
-    parser.add_argument('--solid-fill-detection', action='store_true', help='Enable solid fill area detection (P1-006)')
-    
-    # 複数キャラクター選択基準オプション
-    parser.add_argument('--multi-character-criteria', 
-                       choices=['balanced', 'size_priority', 'fullbody_priority', 'fullbody_priority_enhanced', 'central_priority', 'confidence_priority'],
-                       default='balanced',
-                       help='Character selection criteria for multiple characters (default: balanced)')
-    
-    # Phase 3: 適応学習モード（281評価データに基づく最適手法選択）
-    parser.add_argument('--adaptive-learning', action='store_true', 
-                       help='Enable adaptive learning mode based on 281 evaluation records (Phase 3)')
-    
-    # Phase A: GPT-4O推奨ボックス拡張（顔検出ボックスを2.5-3倍水平、4倍垂直に拡張）
-    parser.add_argument('--use-box-expansion', action='store_true', 
-                       help='Enable GPT-4O recommended box expansion (2.5-3x horizontal, 4x vertical) (Phase A)')
-    parser.add_argument('--expansion-strategy', 
-                       choices=['conservative', 'balanced', 'aggressive'],
-                       default='balanced',
-                       help='Box expansion strategy: conservative(2.5x3.5), balanced(2.75x4.0), aggressive(3.0x4.5) (default: balanced)')
-    
-    args = parser.parse_args()
-    
-    # Extract common arguments (Phase A対応版)
-    extract_args = {
-        'enhance_contrast': args.enhance_contrast,
-        'filter_text': args.filter_text,
-        'save_mask': args.save_mask,
-        'save_transparent': args.save_transparent,
-        'min_yolo_score': args.min_yolo_score,
-        'verbose': args.verbose,
-        'difficult_pose': args.difficult_pose,
-        'low_threshold': args.low_threshold,
-        'auto_retry': args.auto_retry,
-        'high_quality': args.high_quality,
-        'manga_mode': args.manga_mode,
-        'effect_removal': args.effect_removal,
-        'panel_split': args.panel_split,
-        'solid_fill_detection': args.solid_fill_detection,
-        'multi_character_criteria': args.multi_character_criteria,
-        'adaptive_learning': args.adaptive_learning,
-        'use_box_expansion': args.use_box_expansion,      # Phase A
-        'expansion_strategy': args.expansion_strategy     # Phase A
-    }
-    
-    # 複雑ポーズモード用の設定調整
-    if args.low_threshold:
-        extract_args['min_yolo_score'] = 0.005
-        print("🔧 低閾値モード: YOLO閾値を0.005に設定")
-    
-    if args.high_quality:
-        print("🔧 高品質モード: SAM高密度処理を有効化")
-    
-    # Phase 2: 漫画前処理モードの設定
-    if args.manga_mode or args.effect_removal or args.panel_split or args.solid_fill_detection:
-        print("🎨 Phase 2: 漫画前処理モード有効")
-        if args.effect_removal:
-            print("   📝 エフェクト線除去: 有効")
-        if args.panel_split:
-            print("   📊 マルチコマ分割: 有効")
-        if args.solid_fill_detection:
-            print("   🔲 ソリッドフィル検出: 有効")
-    
-    # Phase 3: 適応学習モード
-    if args.adaptive_learning:
-        print("🧠 Phase 3: 適応学習モード有効")
-        print("   📊 281評価データに基づく最適手法自動選択")
-        print("   🎯 境界問題自動検出・対応")
-        print("   ⚙️  パラメータ最適化")
-    
-    # Phase A: GPT-4O推奨ボックス拡張
-    if args.use_box_expansion:
-        print("🎯 Phase A: GPT-4O推奨ボックス拡張有効")
-        print(f"   📏 拡張戦略: {args.expansion_strategy}")
-        strategy_details = {
-            'conservative': "水平2.5倍 × 垂直3.5倍",
-            'balanced': "水平2.75倍 × 垂直4.0倍 (推奨)",
-            'aggressive': "水平3.0倍 × 垂直4.5倍"
-        }
-        print(f"   📐 拡張倍率: {strategy_details.get(args.expansion_strategy, '不明')}")
-        print("   🎪 顔検出ボックスから全身キャラクター抽出を強化")
-    
-    if args.batch:
-        # Batch processing
-        output_dir = args.output or f"{args.input}_character_output"
-        result = batch_extract_characters(args.input, output_dir, **extract_args)
     else:
-        # Single file processing
-        result = extract_character_from_path(args.input, args.output, **extract_args)
-    
-    # Exit with appropriate code
-    sys.exit(0 if result['success'] else 1)
+        process_single_image(
+            Path(input_path),
+            Path(output_path),
+            sam_model,
+            yolo_model, 
+            perf_monitor,
+            verbose
+        )
 
+def process_single_image(
+    input_path: Path,
+    output_path: Path,
+    sam_model: Any,
+    yolo_model: Any,
+    perf_monitor: Any,
+    verbose: bool = False
+) -> Optional[MaskType]:
+    """Process a single image for character extraction.
 
-if __name__ == "__main__":
-    main()
+    Args:
+        input_path: Path to input image
+        output_path: Path to save result
+        sam_model: SAM model instance
+        yolo_model: YOLO model instance
+        perf_monitor: Performance monitoring instance
+        verbose: Enable detailed logging
+
+    Returns:
+        Generated mask if successful, None otherwise
+    """
+    try:
+        image = Image.open(input_path)
+        image = preprocess_image_pipeline(image)
+
+        with perf_monitor.measure('inference'):
+            mask = generate_character_mask(image, sam_model, yolo_model)
+
+        if mask is not None:
+            quality_metrics = calculate_mask_quality_metrics(mask)
+            if quality_metrics['quality_score'] > 0.8:
+                save_extracted_character(image, mask, output_path)
+                if verbose:
+                    click.echo(f'Successfully processed {input_path}')
+                return mask
+
+        if verbose:
+            click.echo(f'Failed to extract character from {input_path}')
+        return None
+
+    except Exception as e:
+        if verbose:
+            click.echo(f'Error processing {input_path}: {str(e)}')
+        return None
+
+if __name__ == '__main__':
+    extract_character()
