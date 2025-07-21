@@ -311,35 +311,68 @@ class YOLOModelWrapper:
             bbox = mask_data['bbox']
             aspect_ratio = bbox[3] / max(bbox[2], 1)  # height / width
             
-            # Phase 1 P1-003: 改良版全身判定の統合
-            if criteria == 'fullbody_priority_enhanced' and original_image is not None:
-                # 改良版全身検出システムを使用
+            # Phase 1 P1-007: Enhanced Aspect Ratio Analyzer統合
+            if criteria in ['fullbody_priority_enhanced', 'aspect_ratio_enhanced'] and original_image is not None:
+                try:
+                    # P1-007: Enhanced Aspect Ratio Analysis
+                    from features.evaluation.utils.enhanced_aspect_ratio_analyzer import (
+                        evaluate_enhanced_aspect_ratio,
+                    )
+
+                    # Enhanced aspect ratio analysis
+                    enhanced_fullbody_score, aspect_analysis = evaluate_enhanced_aspect_ratio(
+                        original_image, mask_data, aspect_ratio
+                    )
+                    
+                    scores['fullbody'] = enhanced_fullbody_score
+                    print(f"   P1-007 Enhanced aspect ratio: {enhanced_fullbody_score:.3f} "
+                          f"(style: {aspect_analysis.style_category.value}, "
+                          f"ratio: {aspect_analysis.adjusted_ratio:.2f})")
+                    
+                    # Fallback to P1-003 if P1-007 gives low confidence
+                    if aspect_analysis.confidence_score < 0.4:
+                        try:
+                            from features.evaluation.utils.enhanced_fullbody_detector import (
+                                evaluate_fullbody_enhanced,
+                            )
+                            
+                            fullbody_result = evaluate_fullbody_enhanced(original_image, mask_data)
+                            # Blend P1-007 and P1-003 results based on confidence
+                            blend_factor = aspect_analysis.confidence_score
+                            scores['fullbody'] = (
+                                enhanced_fullbody_score * blend_factor + 
+                                fullbody_result.total_score * (1 - blend_factor)
+                            )
+                            print(f"   Blended with P1-003: {scores['fullbody']:.3f}")
+                        except Exception as e:
+                            print(f"   P1-003 fallback failed: {e}")
+                
+                except Exception as e:
+                    print(f"   P1-007 Enhanced aspect ratio error: {e}, using traditional fallback")
+                    # 従来のアスペクト比ベース判定にフォールバック
+                    if 1.2 <= aspect_ratio <= 2.5:
+                        scores['fullbody'] = min((aspect_ratio - 0.5) / 2.0, 1.0)
+                    else:
+                        scores['fullbody'] = max(0, 1.0 - abs(aspect_ratio - 1.8) / 1.0)
+            
+            elif criteria == 'fullbody_priority_enhanced' and original_image is None:
+                print("   Enhanced fullbody: no image provided, using P1-003 fallback")
+                # P1-003システムの使用を試行
                 try:
                     from features.evaluation.utils.enhanced_fullbody_detector import (
                         evaluate_fullbody_enhanced,
                     )
 
-                    # 実際の画像とマスクデータから詳細評価
-                    enhanced_score = evaluate_fullbody_enhanced(
-                        original_image,  # 実際の画像を使用
-                        mask_data
-                    )
+                    # 画像なしでも使用可能な場合
+                    enhanced_score = evaluate_fullbody_enhanced(None, mask_data)
                     scores['fullbody'] = enhanced_score.total_score
-                    print(f"   Enhanced fullbody score: {enhanced_score.total_score:.3f} (reason: {enhanced_score.reasoning[:50]}...)")
-                except Exception as e:
-                    print(f"   Enhanced detector error: {e}, using fallback")
-                    # フォールバック: 従来手法
+                except Exception:
+                    # 完全なフォールバック
                     if 1.2 <= aspect_ratio <= 2.5:
                         scores['fullbody'] = min((aspect_ratio - 0.5) / 2.0, 1.0)
                     else:
                         scores['fullbody'] = max(0, 1.0 - abs(aspect_ratio - 1.8) / 1.0)
-            elif criteria == 'fullbody_priority_enhanced':
-                print("   Enhanced fullbody: no image provided, using fallback")
-                # 画像が提供されていない場合はフォールバック
-                if 1.2 <= aspect_ratio <= 2.5:
-                    scores['fullbody'] = min((aspect_ratio - 0.5) / 2.0, 1.0)
-                else:
-                    scores['fullbody'] = max(0, 1.0 - abs(aspect_ratio - 1.8) / 1.0)
+            
             else:
                 # 従来のアスペクト比ベース判定
                 if 1.2 <= aspect_ratio <= 2.5:  # 全身キャラクター範囲
@@ -374,6 +407,7 @@ class YOLOModelWrapper:
             'size_priority': {'area': 0.50, 'fullbody': 0.15, 'central': 0.15, 'grounded': 0.10, 'confidence': 0.10},
             'fullbody_priority': {'area': 0.20, 'fullbody': 0.40, 'central': 0.15, 'grounded': 0.15, 'confidence': 0.10},
             'fullbody_priority_enhanced': {'area': 0.15, 'fullbody': 0.50, 'central': 0.15, 'grounded': 0.10, 'confidence': 0.10},  # Phase 1 P1-003
+            'aspect_ratio_enhanced': {'area': 0.10, 'fullbody': 0.60, 'central': 0.15, 'grounded': 0.10, 'confidence': 0.05},  # Phase 1 P1-007
             'central_priority': {'area': 0.20, 'fullbody': 0.20, 'central': 0.35, 'grounded': 0.15, 'confidence': 0.10},
             'confidence_priority': {'area': 0.25, 'fullbody': 0.20, 'central': 0.15, 'grounded': 0.10, 'confidence': 0.30}
         }
