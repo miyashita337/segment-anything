@@ -1,0 +1,358 @@
+name: Specification Update and Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'spec.md'
+      - 'requirements.txt'
+      - 'setup.py'
+      - 'core/**'
+      - 'features/**'
+      - 'tools/**'
+  push:
+    branches: [main]
+    paths:
+      - 'spec.md'
+      - 'requirements.txt'
+      - 'setup.py'
+      - 'core/**'
+      - 'features/**'
+      - 'tools/**'
+  workflow_dispatch:
+
+jobs:
+  spec-validation:
+    name: Validate Environment Specifications
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install Base Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyyaml requests
+        
+    - name: Validate spec.md Format
+      run: |
+        python3 -c "
+        import yaml
+        import re
+        import sys
+        
+        # Read spec.md
+        with open('spec.md', 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        print('🔍 Validating spec.md format...')
+        
+        # Check required sections
+        required_sections = [
+            'ハードウェア要件',
+            'ソフトウェア要件', 
+            'モデルファイル要件',
+            '対応画像形式'
+        ]
+        
+        for section in required_sections:
+            if section not in content:
+                print(f'❌ Missing required section: {section}')
+                sys.exit(1)
+            else:
+                print(f'✅ Found section: {section}')
+        
+        # Check version patterns
+        if 'python_version:' in content and 'recommended_version:' in content:
+            print('✅ Python version specifications found')
+        else:
+            print('❌ Python version specifications missing')
+            sys.exit(1)
+            
+        print('✅ spec.md format validation passed')
+        "
+        
+    - name: Check Python Version Compatibility
+      run: |
+        python3 -c "
+        import sys
+        import re
+        
+        # Read spec.md for Python version requirements
+        with open('spec.md', 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        print('🐍 Checking Python version compatibility...')
+        
+        # Extract version requirement
+        version_match = re.search(r'python_version:\s*\"([^\"]+)\"', content)
+        if version_match:
+            version_spec = version_match.group(1)
+            print(f'📋 Spec requires Python: {version_spec}')
+            
+            current_version = f'{sys.version_info.major}.{sys.version_info.minor}'
+            print(f'🔍 Current Python version: {current_version}')
+            
+            # Basic compatibility check (simplified)
+            if '3.8' in version_spec and sys.version_info >= (3, 8):
+                print('✅ Python version compatibility check passed')
+            else:
+                print('⚠️ Python version compatibility unclear')
+        else:
+            print('❌ Could not extract Python version from spec.md')
+            exit(1)
+        "
+        
+    - name: Validate Image Format Specifications
+      run: |
+        python3 -c "
+        import re
+        
+        with open('spec.md', 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        print('🖼️ Checking image format specifications...')
+        
+        # Check for supported formats
+        supported_formats = ['.jpg', '.jpeg', '.png', '.webp']
+        format_section_found = False
+        
+        for format_type in supported_formats:
+            if format_type in content:
+                print(f'✅ Found format support: {format_type}')
+                format_section_found = True
+        
+        if not format_section_found:
+            print('❌ No image format specifications found')
+            exit(1)
+        else:
+            print('✅ Image format specifications validated')
+        "
+        
+    - name: Check Model File Requirements
+      run: |
+        python3 -c "
+        import re
+        
+        with open('spec.md', 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        print('🤖 Checking model file specifications...')
+        
+        # Check for required model files
+        required_models = [
+            'sam_vit_h_4b8939.pth',
+            'yolov8'  # Various YOLO models
+        ]
+        
+        models_found = []
+        for model in required_models:
+            if model in content:
+                print(f'✅ Found model specification: {model}')
+                models_found.append(model)
+        
+        if len(models_found) < len(required_models):
+            print('❌ Some required model specifications missing')
+            exit(1)
+        else:
+            print('✅ Model file specifications validated')
+        "
+
+  dependency-check:
+    name: Dependency Consistency Check
+    runs-on: ubuntu-latest
+    needs: spec-validation
+    
+    steps:
+    - name: Checkout Repository  
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Check Requirements Consistency
+      run: |
+        python3 -c "
+        import os
+        import re
+        
+        print('📦 Checking dependency consistency...')
+        
+        # Check if requirements.txt exists
+        if os.path.exists('requirements.txt'):
+            with open('requirements.txt', 'r') as f:
+                requirements = f.read()
+            print('✅ requirements.txt found')
+            
+            # Check for core dependencies mentioned in spec.md
+            with open('spec.md', 'r', encoding='utf-8') as f:
+                spec_content = f.read()
+                
+            core_deps = ['torch', 'opencv', 'numpy', 'pillow']
+            
+            for dep in core_deps:
+                if dep.lower() in requirements.lower():
+                    print(f'✅ Found {dep} in requirements.txt')
+                else:
+                    print(f'⚠️ {dep} not explicitly found in requirements.txt')
+        else:
+            print('⚠️ requirements.txt not found, checking setup.py...')
+            
+            if os.path.exists('setup.py'):
+                print('✅ setup.py found for dependency management')
+            else:
+                print('❌ No dependency management file found')
+                exit(1)
+        "
+
+  workflow-template-check:
+    name: Workflow Template Consistency
+    runs-on: ubuntu-latest
+    needs: spec-validation
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Check Template References
+      run: |
+        python3 -c "
+        import os
+        import glob
+        import re
+        
+        print('📋 Checking workflow template references...')
+        
+        # Find all workflow template files
+        template_files = glob.glob('docs/workflows/*.md')
+        
+        spec_reference_pattern = r'\[.*spec\.md.*\]'
+        outdated_version_pattern = r'v\d+\.\d+\.\d+'
+        
+        issues_found = False
+        
+        for template_file in template_files:
+            print(f'🔍 Checking {template_file}...')
+            
+            with open(template_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # Check for spec.md references
+            if 'spec.md' in content:
+                print(f'✅ {template_file} references spec.md')
+            else:
+                print(f'⚠️ {template_file} does not reference spec.md')
+                issues_found = True
+            
+            # Check for hardcoded version numbers
+            version_matches = re.findall(outdated_version_pattern, content)
+            if version_matches:
+                print(f'⚠️ {template_file} contains hardcoded versions: {version_matches}')
+                issues_found = True
+            
+            # Check for specific dataset names (should be variables)
+            dataset_names = ['kaname', 'test_dataset']
+            for dataset_name in dataset_names:
+                if dataset_name in content.lower() and '[dataset_name]' not in content:
+                    print(f'⚠️ {template_file} may contain hardcoded dataset name: {dataset_name}')
+        
+        if issues_found:
+            print('⚠️ Template consistency issues found (non-blocking)')
+        else:
+            print('✅ All workflow templates are consistent')
+        "
+
+  update-notification:
+    name: Specification Update Notification
+    runs-on: ubuntu-latest
+    needs: [spec-validation, dependency-check, workflow-template-check]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Check for Spec Changes
+      run: |
+        # Check if spec.md was modified in this push
+        if git diff --name-only HEAD~1 HEAD | grep -q "spec.md"; then
+          echo "📋 spec.md was updated in this push"
+          
+          # Extract version information
+          if grep -q "バージョン" spec.md; then
+            echo "ℹ️ Version information found in spec.md"
+          fi
+          
+          # Create summary of changes
+          echo "📝 Recent spec.md changes:"
+          git diff HEAD~1 HEAD --name-only | grep "spec.md" || echo "No spec.md changes detected"
+          
+          echo "✅ Specification update notification completed"
+        else
+          echo "ℹ️ No spec.md changes in this push"
+        fi
+
+  environment-test:
+    name: Environment Compatibility Test
+    runs-on: ubuntu-latest
+    needs: spec-validation
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11']
+        
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: Test Python Version Compatibility
+      run: |
+        python3 -c "
+        import sys
+        
+        print(f'🐍 Testing Python {sys.version}')
+        
+        # Read spec requirements
+        with open('spec.md', 'r', encoding='utf-8') as f:
+            spec_content = f.read()
+        
+        # Basic compatibility test
+        if sys.version_info >= (3, 8):
+            print('✅ Python version meets minimum requirements')
+        else:
+            print('❌ Python version below minimum requirements')
+            exit(1)
+        
+        # Test core imports that should be available
+        try:
+            import json
+            import pathlib
+            import subprocess
+            print('✅ Core Python modules available')
+        except ImportError as e:
+            print(f'❌ Core module import failed: {e}')
+            exit(1)
+        "
+        
+    - name: Validate Basic Dependencies
+      run: |
+        # Test that pip can resolve basic dependencies
+        python3 -m pip install --upgrade pip
+        
+        # Try to install numpy as a basic test
+        pip install numpy
+        python3 -c "import numpy; print(f'✅ NumPy {numpy.__version__} installed successfully')"
