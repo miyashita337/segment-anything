@@ -45,6 +45,8 @@ jobs:
       env:
         ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        ISSUE_BODY: ${{ github.event.issue.body }}
+        COMMENT_BODY: ${{ github.event.comment.body }}
       run: |
         python - << 'EOF'
         import os
@@ -74,17 +76,17 @@ jobs:
         
         # Determine trigger source
         if '${{ github.event_name }}' == 'issue_comment':
-            trigger_text = '${{ github.event.comment.body }}'
+            trigger_text = os.environ.get('COMMENT_BODY', '').replace('\r', '')
             trigger_source = "comment"
         else:
-            trigger_text = issue.body
+            trigger_text = os.environ.get('ISSUE_BODY', '') or issue.body or ""
             trigger_source = "issue"
         
         print(f"🎯 Trigger: {trigger_source}")
         print(f"📋 Issue #{issue_number}: {issue.title}")
 
         # Extract Claude request from trigger text
-        claude_match = re.search(r'@claude\s+(.+?)(?:\n|$)', trigger_text, re.DOTALL | re.IGNORECASE)
+        claude_match = re.search(r'@claude\s+(.+)', trigger_text, re.DOTALL | re.IGNORECASE)
         if claude_match:
             claude_request = claude_match.group(1).strip()
             print(f"💬 Claude request: {claude_request[:100]}...")
