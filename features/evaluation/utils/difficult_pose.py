@@ -460,7 +460,7 @@ def process_with_retry(image_path: str, extract_function, max_retries: int = 4) 
 # 使用例とテスト関数
 if __name__ == "__main__":
     # テスト用
-    test_image = "/mnt/c/AItools/lora/train/yadokugaeru/org/kaname03/25_kaname03_0024.jpg"
+    test_image = "/mnt/c/AItools/lora/train/yado/org/kana03/25_kana03_0024.jpg"
     
     processor = DifficultPoseProcessor()
     complexity_info = processor.detect_pose_complexity(test_image)

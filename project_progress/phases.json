@@ -1,0 +1,127 @@
+{
+  "phase0": {
+    "phase_id": "phase0",
+    "phase_name": "ルールベースベンチマーク",
+    "description": "現状性能の定量化と改善基準の確立",
+    "total_tasks": 3,
+    "completed_tasks": 3,
+    "in_progress_tasks": 0,
+    "pending_tasks": 0,
+    "progress_percentage": 100.0,
+    "estimated_completion": null,
+    "key_milestones": [
+      {
+        "name": "ベースライン精度測定完了",
+        "completed": false
+      },
+      {
+        "name": "評価指標システム構築",
+        "completed": false
+      },
+      {
+        "name": "101ファイル性能測定完了",
+        "completed": false
+      }
+    ]
+  },
+  "phase1": {
+    "phase_id": "phase1",
+    "phase_name": "コマ検出ネット構築",
+    "description": "「一番大きいコマ」の自動判別システム構築",
+    "total_tasks": 3,
+    "completed_tasks": 1,
+    "in_progress_tasks": 0,
+    "pending_tasks": 2,
+    "progress_percentage": 33.33333333333333,
+    "estimated_completion": null,
+    "key_milestones": [
+      {
+        "name": "Mask R-CNN転移学習完了",
+        "completed": false
+      },
+      {
+        "name": "コマ検出mIoU 80%達成",
+        "completed": false
+      },
+      {
+        "name": "推論速度2秒/画像達成",
+        "completed": false
+      }
+    ]
+  },
+  "phase2": {
+    "phase_id": "phase2",
+    "phase_name": "キャラ検出+サイズランキング",
+    "description": "コマ内での高精度キャラクター検出",
+    "total_tasks": 0,
+    "completed_tasks": 0,
+    "in_progress_tasks": 0,
+    "pending_tasks": 0,
+    "progress_percentage": 0.0,
+    "estimated_completion": null,
+    "key_milestones": [
+      {
+        "name": "Detectron2+YOLOv8アンサンブル完了",
+        "completed": false
+      },
+      {
+        "name": "mAP@0.5: 85%達成",
+        "completed": false
+      },
+      {
+        "name": "Largest-Character Accuracy 75%達成",
+        "completed": false
+      }
+    ]
+  },
+  "phase3": {
+    "phase_id": "phase3",
+    "phase_name": "主人公判定ヘッド（オプション）",
+    "description": "複数キャラクター中の主人公自動識別",
+    "total_tasks": 0,
+    "completed_tasks": 0,
+    "in_progress_tasks": 0,
+    "pending_tasks": 0,
+    "progress_percentage": 0.0,
+    "estimated_completion": null,
+    "key_milestones": [
+      {
+        "name": "CLIP-ViT特徴抽出システム完了",
+        "completed": false
+      },
+      {
+        "name": "主人公識別精度80%達成",
+        "completed": false
+      },
+      {
+        "name": "処理時間増加1秒以下達成",
+        "completed": false
+      }
+    ]
+  },
+  "phase4": {
+    "phase_id": "phase4",
+    "phase_name": "End-to-End微調整",
+    "description": "全体最適化による最終精度向上",
+    "total_tasks": 0,
+    "completed_tasks": 0,
+    "in_progress_tasks": 0,
+    "pending_tasks": 0,
+    "progress_percentage": 0.0,
+    "estimated_completion": null,
+    "key_milestones": [
+      {
+        "name": "DETR-type Transformer構築完了",
+        "completed": false
+      },
+      {
+        "name": "Largest-Character Accuracy 85%達成",
+        "completed": false
+      },
+      {
+        "name": "A/B評価率75%達成",
+        "completed": false
+      }
+    ]
+  }
+}

@@ -16,7 +16,7 @@ def analyze_batch_failures():
     """バッチ処理失敗の詳細分析"""
     
     # バッチ結果ファイルの読み込み
-    results_path = Path("/mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/batch_results_v035.json")
+    results_path = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kaname09_0_3_5/batch_results_v035.json")
     
     if not results_path.exists():
         print(f"❌ バッチ結果ファイルが見つかりません: {results_path}")

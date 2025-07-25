@@ -1,0 +1,89 @@
+[
+  {
+    "id": "phase0-benchmark",
+    "content": "既存YOLO/SAM+面積最大選択でベースライン測定",
+    "status": "completed",
+    "priority": "high",
+    "phase": "phase0",
+    "created_at": "2025-07-23T23:41:42.452011",
+    "updated_at": "2025-07-23T23:51:40.790601",
+    "completion_date": "2025-07-23T23:51:40.790601",
+    "estimated_hours": 8.0,
+    "actual_hours": null,
+    "dependencies": []
+  },
+  {
+    "id": "phase0-metrics",
+    "content": "Largest-Character Accuracy指標の確立",
+    "status": "completed",
+    "priority": "high",
+    "phase": "phase0",
+    "created_at": "2025-07-23T23:41:42.455245",
+    "updated_at": "2025-07-23T23:51:40.794189",
+    "completion_date": "2025-07-23T23:51:40.794189",
+    "estimated_hours": 4.0,
+    "actual_hours": null,
+    "dependencies": [
+      "phase0-benchmark"
+    ]
+  },
+  {
+    "id": "phase0-evaluation",
+    "content": "101ファイルでの性能測定システム構築",
+    "status": "completed",
+    "priority": "high",
+    "phase": "phase0",
+    "created_at": "2025-07-23T23:41:42.462278",
+    "updated_at": "2025-07-23T23:51:40.800401",
+    "completion_date": "2025-07-23T23:51:40.800401",
+    "estimated_hours": 6.0,
+    "actual_hours": null,
+    "dependencies": [
+      "phase0-metrics"
+    ]
+  },
+  {
+    "id": "phase1-data-prep",
+    "content": "疑似ラベル+人手修正によるデータ拡張",
+    "status": "completed",
+    "priority": "high",
+    "phase": "phase1",
+    "created_at": "2025-07-23T23:41:42.465942",
+    "updated_at": "2025-07-24T01:12:01.880881",
+    "completion_date": "2025-07-24T01:12:01.880881",
+    "estimated_hours": 16.0,
+    "actual_hours": null,
+    "dependencies": []
+  },
+  {
+    "id": "phase1-model-setup",
+    "content": "Mask R-CNN/YOLOv8-seg転移学習環境構築",
+    "status": "pending",
+    "priority": "high",
+    "phase": "phase1",
+    "created_at": "2025-07-23T23:41:42.469583",
+    "updated_at": "2025-07-23T23:41:42.469583",
+    "completion_date": null,
+    "estimated_hours": 12.0,
+    "actual_hours": null,
+    "dependencies": [
+      "phase0-evaluation"
+    ]
+  },
+  {
+    "id": "phase1-training",
+    "content": "COCO→Manga109→自前データの3段階学習",
+    "status": "pending",
+    "priority": "high",
+    "phase": "phase1",
+    "created_at": "2025-07-23T23:41:42.473446",
+    "updated_at": "2025-07-23T23:41:42.473446",
+    "completion_date": null,
+    "estimated_hours": 24.0,
+    "actual_hours": null,
+    "dependencies": [
+      "phase1-data-prep",
+      "phase1-model-setup"
+    ]
+  }
+]

@@ -20,8 +20,8 @@ def run_small_test_v034():
     """v0.3.4小規模テスト実行（最初の10枚）"""
     
     # パス設定
-    input_path = "/mnt/c/AItools/lora/train/yadokugaeru/org/kaname09"
-    output_path = "/mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_4_test"
+    input_path = "/mnt/c/AItools/lora/train/yado/org/kaname09"
+    output_path = "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kaname09_0_3_4_test"
     
     print("🚀 v0.3.4小規模テスト実行開始")
     print(f"入力パス: {input_path}")

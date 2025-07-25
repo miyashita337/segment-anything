@@ -16,8 +16,8 @@ def run_kaname07_batch_extraction():
     """kaname07バッチ抽出実行"""
     
     # パス設定（ユーザー指定）
-    input_path = "/mnt/c/AItools/lora/train/yadokugaeru/org/kaname07"
-    output_path = "/mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname07"
+    input_path = "/mnt/c/AItools/lora/train/yado/org/kaname07"
+    output_path = "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kaname07"
     
     print("🚀 kaname07最高品質キャラクター抽出バッチ実行開始")
     print(f"入力パス: {input_path}")

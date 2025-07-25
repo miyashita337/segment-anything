@@ -37,8 +37,8 @@ def test_fullbody_with_expansion():
     ]
     
     # 標準パス構成
-    input_dir = Path("/mnt/c/AItools/lora/train/yadokugaeru/org/kaname09")
-    output_dir = Path("/mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_gpt4o_fullbody")
+    input_dir = Path("/mnt/c/AItools/lora/train/yado/org/kaname09")
+    output_dir = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kaname09_gpt4o_fullbody")
     output_dir.mkdir(parents=True, exist_ok=True)
     
     print(f"📂 入力ディレクトリ: {input_dir}")

@@ -5,25 +5,25 @@
 ### 📋 **必須命名規則**
 
 #### **1. Pythonファイル名規則**
-- **❌ 禁止**: 固有名詞（kaname等）をファイル名に含める
+- **❌ 禁止**: 固有名詞（kana等）をファイル名に含める
 - **✅ 正しい例**: 
   - `run_batch_v034.py`
   - `run_small_test_v034.py`
   - `extract_character.py`
   - `batch_processor.py`
 - **❌ 間違い例**:
-  - `run_kaname09_v034_batch.py`
-  - `extract_kaname03.py`
-  - `batch_kaname07_10images.py`
+  - `run_kana09_v034_batch.py`
+  - `extract_kana03.py`
+  - `batch_kana07_10images.py`
 
 #### **2. 出力ファイル名規則**
 - **✅ 原則**: 出力ファイル名は入力ファイル名と**完全同一**にする
 - **理由**: 評価システムとの互換性確保
 - **✅ 正しい例**:
-  - 入力: `kaname09_000_cover.jpg` → 出力: `kaname09_000_cover.jpg`
+  - 入力: `kana09_000_cover.jpg` → 出力: `kana09_000_cover.jpg`
   - 入力: `test_image.png` → 出力: `test_image.png`
 - **❌ 間違い例**:
-  - 入力: `kaname09_000_cover.jpg` → 出力: `test_001_kaname09_000_cover.jpg`
+  - 入力: `kana09_000_cover.jpg` → 出力: `test_001_kana09_000_cover.jpg`
   - 入力: `image.jpg` → 出力: `processed_image.jpg`
 
 #### **3. 関数・クラス名規則**
@@ -33,8 +33,8 @@
   - `process_batch_images()`
   - `CharacterExtractor`
 - **❌ 間違い例**:
-  - `extract_kaname_character()`
-  - `process_kaname_batch()`
+  - `extract_kana_character()`
+  - `process_kana_batch()`
 
 ---
 
@@ -74,7 +74,7 @@
 ### **標準的なファイル名パターン**
 ```python
 # 正しい出力ファイル名生成
-input_file = Path("kaname09_000_cover.jpg")
+input_file = Path("kana09_000_cover.jpg")
 output_file = Path(output_dir) / input_file.name  # 同じ名前を使用
 
 # マスクファイル名

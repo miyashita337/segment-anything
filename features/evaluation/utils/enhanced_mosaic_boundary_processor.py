@@ -687,7 +687,7 @@ def evaluate_mosaic_boundary_enhancement(image_path: str,
 
 if __name__ == "__main__":
     # テスト実行
-    test_image = "/mnt/c/AItools/lora/train/yadokugaeru/org/kaname07/test_single.jpg"
+    test_image = "/mnt/c/AItools/lora/train/yado/org/kana07/test_single.jpg"
     
     try:
         results = evaluate_mosaic_boundary_enhancement(test_image, save_results=True)

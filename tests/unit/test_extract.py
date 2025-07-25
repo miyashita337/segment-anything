@@ -34,7 +34,7 @@ from features.processing.postprocessing.postprocessing import (
 )
 from features.evaluation.utils.text_detection import TextDetector
 from features.common.performance.performance import PerformanceMonitor
-from features.extraction.commands.extract_character import extract_character_from_path
+from features.extraction.commands.extract_character import extract_character_from_image
 
 
 class TestImagePreprocessing(unittest.TestCase):

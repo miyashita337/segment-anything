@@ -15,23 +15,22 @@ sys.path.append(str(project_root / 'features/extraction'))
 sys.path.append(str(project_root / 'features/evaluation'))
 sys.path.append(str(project_root / 'features/common'))
 
-from commands.extract_character import CharacterExtractor
+from features.extraction.commands.extract_character import extract_character_from_image
 
 
 class TestCharacterExtractor(unittest.TestCase):
-    """Test cases for CharacterExtractor class"""
+    """Test cases for character extraction functions"""
     
     def setUp(self):
         """Set up test fixtures"""
-        self.extractor = CharacterExtractor()
+        pass
     
-    def test_class_instantiation(self):
-        """Test CharacterExtractor can be instantiated"""
-        self.assertIsInstance(self.extractor, CharacterExtractor)
-        self.assertIsNotNone(self.extractor.default_settings)
+    def test_extract_character_function_exists(self):
+        """Test extract_character_from_image function exists"""
+        self.assertTrue(callable(extract_character_from_image))
     
-    def test_default_settings(self):
-        """Test default settings are properly initialized"""
+    def test_basic_functionality(self):
+        """Test basic functionality is accessible"""
         expected_keys = [
             'enhance_contrast', 'filter_text', 'save_mask', 'save_transparent',
             'min_yolo_score', 'verbose', 'difficult_pose', 'low_threshold',

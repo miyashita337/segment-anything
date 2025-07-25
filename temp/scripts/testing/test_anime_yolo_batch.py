@@ -39,8 +39,8 @@ def test_anime_yolo_batch():
     
     # テスト画像取得
     test_images = get_failed_images()
-    input_dir = Path("/mnt/c/AItools/lora/train/yadokugaeru/org/kaname09")
-    output_dir = Path("/mnt/c/AItools/lora/train/yadokugaeru/test_anime_yolo_batch")
+    input_dir = Path("/mnt/c/AItools/lora/train/yado/org/kaname09")
+    output_dir = Path("/mnt/c/AItools/lora/train/yado/test_anime_yolo_batch")
     output_dir.mkdir(exist_ok=True)
     
     print(f"📋 テスト画像数: {len(test_images)}枚")

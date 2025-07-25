@@ -13,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 def test_input_path_validation():
     """入力パス検証テスト"""
-    input_path = "/mnt/c/AItools/lora/train/yadokugaeru/org/kaname06"
+    input_path = "/mnt/c/AItools/lora/train/yado/org/kaname06"
     
     if not Path(input_path).exists():
         print(f"❌ 入力パスが存在しません: {input_path}")
@@ -31,7 +31,7 @@ def test_input_path_validation():
 
 def test_output_path_preparation():
     """出力パス準備テスト"""
-    output_path = "/mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname06"
+    output_path = "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kaname06"
     
     # 出力ディレクトリの作成
     Path(output_path).mkdir(parents=True, exist_ok=True)

@@ -431,9 +431,9 @@ class LearnedQualityAssessment:
     
     def get_method_parameters(self, method: str, image_characteristics: ImageCharacteristics) -> Dict[str, Any]:
         """手法別の最適化パラメータ取得（実用的な閾値に修正）"""
-        # 実用的な低閾値を使用（kaname05検証結果に基づく）
+        # 実用的な低閾値を使用（kana05検証結果に基づく）
         base_params = {
-            'score_threshold': 0.005,  # 0.02 → 0.005 に修正（kaname05で動作確認済み）
+            'score_threshold': 0.005,  # 0.02 → 0.005 に修正（kana05で動作確認済み）
             'multi_character_criteria': method,
             'anime_yolo': True
         }
@@ -533,7 +533,7 @@ def assess_image_quality(image_path: str,
 
 if __name__ == "__main__":
     # テスト実行
-    test_image = "/mnt/c/AItools/lora/train/yadokugaeru/org/kaname05/kaname05_0001.jpg"
+    test_image = "/mnt/c/AItools/lora/train/yado/org/kana05/kana05_0001.jpg"
     
     if os.path.exists(test_image):
         print("🧪 品質評価システムテスト実行中...")

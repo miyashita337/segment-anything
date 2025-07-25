@@ -27,8 +27,8 @@ def test_anime_yolo_model():
     
     # テスト画像: v0.3.5失敗の代表例
     test_image = "kaname09_001.jpg"
-    input_dir = Path("/mnt/c/AItools/lora/train/yadokugaeru/org/kaname09")
-    output_dir = Path("/mnt/c/AItools/lora/train/yadokugaeru/test_anime_yolo")
+    input_dir = Path("/mnt/c/AItools/lora/train/yado/org/kaname09")
+    output_dir = Path("/mnt/c/AItools/lora/train/yado/test_anime_yolo")
     output_dir.mkdir(exist_ok=True)
     
     input_path = input_dir / test_image

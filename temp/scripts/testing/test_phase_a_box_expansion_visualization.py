@@ -26,7 +26,7 @@ def visualize_box_expansion():
     
     # テスト画像
     test_image = "kaname09_001.jpg"
-    input_path = Path("/mnt/c/AItools/lora/train/yadokugaeru/org/kaname09") / test_image
+    input_path = Path("/mnt/c/AItools/lora/train/yado/org/kaname09") / test_image
     
     print(f"📂 テスト画像: {input_path}")
     
@@ -101,7 +101,7 @@ def visualize_box_expansion():
                                (x, y+h+20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
     
     # 保存
-    output_dir = Path("/mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_box_expansion_demo")
+    output_dir = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kaname09_box_expansion_demo")
     output_dir.mkdir(parents=True, exist_ok=True)
     output_path = output_dir / f"box_expansion_demo_{test_image}"
     

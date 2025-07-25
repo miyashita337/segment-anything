@@ -37,12 +37,12 @@ def test_phase2_on_failed_images(input_dir=None, output_dir=None, score_threshol
         # デフォルトのテスト画像
         failed_images = [
             {
-                'path': '/mnt/c/AItools/lora/train/yadokugaeru/org/kaname03/21_kaname03_0020.jpg',
+                'path': '/mnt/c/AItools/lora/train/yado/org/kaname03/21_kaname03_0020.jpg',
                 'name': '21_kaname03_0020.jpg',
                 'description': 'ダイナミックなポーズ + エフェクト線'
             },
             {
-                'path': '/mnt/c/AItools/lora/train/yadokugaeru/org/kaname03/16_kaname03_0015.jpg',
+                'path': '/mnt/c/AItools/lora/train/yado/org/kaname03/16_kaname03_0015.jpg',
                 'name': '16_kaname03_0015.jpg', 
                 'description': 'マルチコマ構成'
             }

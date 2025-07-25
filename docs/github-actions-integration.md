@@ -37,7 +37,7 @@ Push/PR → 自動構文チェック → フィードバック
 cat PROGRESS_TRACKER.md
 
 # ローカルで開発・テスト
-python extract_kaname03.py --quality_method balanced
+python extract_kana03.py --quality_method balanced
 
 # コミット・プッシュ
 git add -A

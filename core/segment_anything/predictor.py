@@ -7,10 +7,9 @@
 import numpy as np
 import torch
 
-from .modeling import Sam
-
 from typing import Optional, Tuple
 
+from .modeling import Sam
 from .utils.transforms import ResizeLongestSide
 
 

@@ -1,0 +1,23 @@
+[
+  {
+    "timestamp": "2025-07-24 01:09:58",
+    "phase": "phase1",
+    "task": "データ拡張",
+    "status": "開始",
+    "details": ""
+  },
+  {
+    "timestamp": "2025-07-24 01:12:01",
+    "phase": "phase1",
+    "task": "データ拡張",
+    "status": "成功",
+    "details": "303件生成、拡張倍率4.0倍"
+  },
+  {
+    "timestamp": "2025-07-24 01:12:01",
+    "phase": "auto",
+    "task": "タスク実行",
+    "status": "成功",
+    "details": "phase1-data-prep: 疑似ラベル+人手修正によるデータ拡張"
+  }
+]
