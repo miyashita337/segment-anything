@@ -1,0 +1,40 @@
+{
+  "timestamp": "2025-07-26T00:34:56.668166",
+  "total_evaluated": 8,
+  "pla_statistics": {
+    "count": 0,
+    "mean": 0.0,
+    "std": 0.0,
+    "min": 0.0,
+    "max": 0.0
+  },
+  "sci_statistics": {
+    "count": 8,
+    "mean": 0.0375,
+    "std": 0.09921567416492215,
+    "min": 0.0,
+    "max": 0.3
+  },
+  "metadata_statistics": {
+    "count": 8,
+    "yolo_confidence": {
+      "mean": 0.8462228647657768,
+      "std": 0.06819566421102964
+    },
+    "sam_iou": {
+      "mean": 0.8243565114477569,
+      "std": 0.05094068398774353
+    },
+    "balanced_score": {
+      "mean": 0.8270782348738905,
+      "std": 0.06617565434001381
+    },
+    "character_type_distribution": {
+      "upper_body": 2,
+      "full_body": 5,
+      "portrait": 1
+    },
+    "face_detection_rate": 0.75
+  },
+  "phase": "A2_integrated_evaluation"
+}

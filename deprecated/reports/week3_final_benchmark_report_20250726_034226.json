@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-07-26T03:42:26.721397",
+  "total_images": 20,
+  "face_detection_rate": 0.0,
+  "pose_detection_rate": 0.0,
+  "sci_average": 0.0,
+  "sci_anime_average": 0.0,
+  "target_achievement": {
+    "face_detection_rate": false,
+    "pose_detection_rate": false,
+    "sci_score": 

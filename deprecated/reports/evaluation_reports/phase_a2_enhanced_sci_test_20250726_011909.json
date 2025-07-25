@@ -1,0 +1,34 @@
+{
+  "timestamp": "2025-07-26T01:19:09.803161",
+  "phase": "A2_enhanced_sci_integration_test",
+  "total_evaluated": 36,
+  "face_detection_rate": 0.5555555555555556,
+  "pose_detection_rate": 0.6388888888888888,
+  "sci_statistics": {
+    "mean": 0.5612060383911487,
+    "std": 0.2846262819422898,
+    "min": 0.16000000000000003,
+    "max": 0.9390864187103793,
+    "count": 36
+  },
+  "target_achievements": {
+    "face_detection": {
+      "target": 0.9,
+      "actual": 0.5555555555555556,
+      "achievement_rate": 0.6172839506172839,
+      "achieved": false
+    },
+    "pose_detection": {
+      "target": 0.8,
+      "actual": 0.6388888888888888,
+      "achievement_rate": 0.798611111111111,
+      "achieved": false
+    },
+    "sci_mean": {
+      "target": 0.7,
+      "actual": 0.5612060383911487,
+      "achievement_rate": 0.8017229119873553,
+      "achieved": false
+    }
+  }
+}

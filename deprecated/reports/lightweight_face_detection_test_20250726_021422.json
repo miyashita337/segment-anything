@@ -1,0 +1,456 @@
+{
+  "dataset_results": {
+    "kana05": {
+      "dataset_name": "kana05",
+      "image_count": 8,
+      "detection_results": [
+        {
+          "image_file": "kana05_0000_cover.jpg",
+          "faces_detected": 7,
+          "processing_time": 0.869155,
+          "preprocessing_time": 0.566121,
+          "detection_time": 0.302992,
+          "methods_used": [
+            "anime_cascade: 7件"
+          ]
+        },
+        {
+          "image_file": "kana05_0000_cover_gt.backup.png",
+          "faces_detected": 0,
+          "processing_time": 1.334158,
+          "preprocessing_time": 0.511213,
+          "detection_time": 0.822903,
+          "methods_used": []
+        },
+        {
+          "image_file": "kana05_0022.jpg",
+          "faces_detected": 1,
+          "processing_time": 0.647635,
+          "preprocessing_time": 0.47807,
+          "detection_time": 0.169529,
+          "methods_used": [
+            "anime_cascade: 1件"
+          ]
+        },
+        {
+          "image_file": "kana05_0022_gt.backup.png",
+          "faces_detected": 1,
+          "processing_time": 0.629894,
+          "preprocessing_time": 0.462685,
+          "detection_time": 0.167173,
+          "methods_used": [
+            "frontal_cascade: 1件"
+          ]
+        },
+        {
+          "image_file": "kana05_0028.jpg",
+          "faces_detected": 11,
+          "processing_time": 0.977896,
+          "preprocessing_time": 0.477811,
+          "detection_time": 0.500047,
+          "methods_used": [
+            "frontal_cascade: 11件"
+          ]
+        },
+        {
+          "image_file": "kana05_0028_gt.backup.png",
+          "faces_detected": 0,
+          "processing_time": 1.075812,
+          "preprocessing_time": 0.478752,
+          "detection_time": 0.597025,
+          "methods_used": []
+        },
+        {
+          "image_file": "kana05_0034.jpg",
+          "faces_detected": 6,
+          "processing_time": 0.843258,
+          "preprocessing_time": 0.474397,
+          "detection_time": 0.368828,
+          "methods_used": [
+            "frontal_cascade: 6件"
+          ]
+        },
+        {
+          "image_file": "kana05_0034_gt.backup.png",
+          "faces_detected": 0,
+          "processing_time": 1.01505,
+          "preprocessing_time": 0.473411,
+          "detection_time": 0.541604,
+          "methods_used": []
+        }
+      ],
+      "total_faces_detected": 26,
+      "total_processing_time": 7.392858,
+      "processing_times": [
+        0.869155,
+        1.334158,
+        0.647635,
+        0.629894,
+        0.977896,
+        1.075812,
+        0.843258,
+        1.01505
+      ],
+      "method_counts": {
+        "anime_cascade": 2,
+        "frontal_cascade": 3
+      }
+    },
+    "kana07": {
+      "dataset_name": "kana07",
+      "image_count": 14,
+      "detection_results": [
+        {
+          "image_file": "kana07_0000_cover.jpg",
+          "faces_detected": 2,
+          "processing_time": 0.653829,
+          "preprocessing_time": 0.504847,
+          "detection_time": 0.148945,
+          "methods_used": [
+            "anime_cascade: 2件"
+          ]
+        },
+        {
+          "image_file": "kana07_0000_cover_gt.backup.png",
+          "faces_detected": 0,
+          "processing_time": 1.107705,
+          "preprocessing_time": 0.483108,
+          "detection_time": 0.624558,
+          "methods_used": []
+        },
+        {
+          "image_file": "kana07_0003.jpg",
+          "faces_detected": 18,
+          "processing_time": 0.951203,
+          "preprocessing_time": 0.501922,
+          "detection_time": 0.44925,
+          "methods_used": [
+            "frontal_cascade: 18件"
+          ]
+        },
+        {
+          "image_file": "kana07_0003_gt.backup.png",
+          "faces_detected": 0,
+          "processing_time": 1.05529,
+          "preprocessing_time": 0.501596,
+          "detection_time": 0.553656,
+          "methods_used": []
+        },
+        {
+          "image_file": "kana07_0011.jpg",
+          "faces_detected": 6,
+          "processing_time": 0.700878,
+          "preprocessing_time": 0.516201,
+          "detection_time": 0.184637,
+          "methods_used": [
+            "anime_cascade: 6件"
+          ]
+        },
+        {
+          "image_file": "kana07_0011_gt.backup.png",
+          "faces_detected": 1,
+          "processing_time": 0.651905,
+          "preprocessing_time": 0.485925,
+          "detection_time": 0.165946,
+          "methods_used": [
+            "frontal_cascade: 1件"
+          ]
+        },
+        {
+          "image_file": "kana07_0013.jpg",
+          "faces_detected": 1,
+          "processing_time": 0.63982,
+          "preprocessing_time": 0.480081,
+          "detection_time": 0.159701,
+          "methods_used": [
+            "anime_cascade: 1件"
+          ]
+        },
+        {
+          "image_file": "kana07_0013_gt.backup.png",
+          "faces_detected": 0,
+          "processing_time": 1.177037,
+          "preprocessing_time": 0.507172,
+          "detection_time": 0.669815,
+          "methods_used": []
+        },
+        {
+          "image_file": "kana07_0026.jpg",
+          "faces_detected": 2,
+          "processing_time": 0.66033,
+          "preprocessing_time": 0.516888,
+          "detection_time": 0.143406,
+          "methods_used": [
+            "anime_cascade: 2件"
+          ]
+        },
+        {
+          "image_file": "kana07_0026_gt.backup.png",
+          "faces_detected": 0,
+          "processing_time": 1.064833,
+          "preprocessing_time": 0.509365,
+          "detection_time": 0.555429,
+          "methods_used": []
+        },
+        {
+          "image_file": "kana07_0030.jpg",
+          "faces_detected": 1,
+          "processing_time": 0.706279,
+          "preprocessing_time": 0.502773,
+          "detection_time": 0.203466,
+          "methods_used": [
+            "anime_cascade: 1件"
+          ]
+        },
+        {
+          "image_file": "kana07_0030_gt.backup.png",
+          "faces_detected": 0,
+          "processing_time": 1.042997,
+          "preprocessing_time": 0.479783,
+          "detection_time": 0.563175,
+          "methods_used": []
+        },
+        {
+          "image_file": "kana07_0031.jpg",
+          "faces_detected": 23,
+          "processing_time": 1.000167,
+          "preprocessing_time": 0.483209,
+          "detection_time": 0.51692,
+          "methods_used": [
+            "frontal_cascade: 23件"
+          ]
+        },
+        {
+          "image_file": "kana07_0031_gt.backup.png",
+          "faces_detected": 0,
+          "processing_time": 1.096656,
+          "preprocessing_time": 0.523594,
+          "detection_time": 0.573028,
+          "methods_used": []
+        }
+      ],
+      "total_faces_detected": 54,
+      "total_processing_time": 12.508929,
+      "processing_times": [
+        0.653829,
+        1.107705,
+        0.951203,
+        1.05529,
+        0.700878,
+        0.651905,
+        0.63982,
+        1.177037,
+        0.66033,
+        1.064833,
+        0.706279,
+        1.042997,
+        1.000167,
+        1.096656
+      ],
+      "method_counts": {
+        "anime_cascade": 5,
+        "frontal_cascade": 3
+      }
+    },
+    "kana08": {
+      "dataset_name": "kana08",
+      "image_count": 14,
+      "detection_results": [
+        {
+          "image_file": "kana08_0000_cover.jpg",
+          "faces_detected": 1,
+          "processing_time": 1.338477,
+          "preprocessing_time": 1.016004,
+          "detection_time": 0.322437,
+          "methods_used": [
+            "anime_cascade: 1件"
+          ]
+        },
+        {
+          "image_file": "kana08_0000_cover_gt.backup.png",
+          "faces_detected": 0,
+          "processing_time": 2.470102,
+          "preprocessing_time": 1.007733,
+          "detection_time": 1.462331,
+          "methods_used": []
+        },
+        {
+          "image_file": "kana08_0001.jpg",
+          "faces_detected": 6,
+          "processing_time": 0.943139,
+          "preprocessing_time": 0.509292,
+          "detection_time": 0.433796,
+          "methods_used": [
+            "frontal_cascade: 6件"
+          ]
+        },
+        {
+          "image_file": "kana08_0001_gt.backup.png",
+          "faces_detected": 0,
+          "processing_time": 1.045651,
+          "preprocessing_time": 0.489827,
+          "detection_time": 0.555788,
+          "methods_used": []
+        },
+        {
+          "image_file": "kana08_0002.jpg",
+          "faces_detected": 1,
+          "processing_time": 0.624831,
+          "preprocessing_time": 0.496574,
+          "detection_time": 0.128218,
+          "methods_used": [
+            "anime_cascade: 1件"
+          ]
+        },
+        {
+          "image_file": "kana08_0002_gt.backup.png",
+          "faces_detected": 0,
+          "processing_time": 1.096012,
+          "preprocessing_time": 0.515922,
+          "detection_time": 0.580054,
+          "methods_used": []
+        },
+        {
+          "image_file": "kana08_0010.jpg",
+          "faces_detected": 6,
+          "processing_time": 0.836671,
+          "preprocessing_time": 0.4876,
+          "detection_time": 0.349013,
+          "methods_used": [
+            "frontal_cascade: 6件"
+          ]
+        },
+        {
+          "image_file": "kana08_0010_gt.backup.png",
+          "faces_detected": 0,
+          "processing_time": 1.066112,
+          "preprocessing_time": 0.502986,
+          "detection_time": 0.563086,
+          "methods_used": []
+        },
+        {
+          "image_file": "kana08_0015.jpg",
+          "faces_detected": 8,
+          "processing_time": 0.888488,
+          "preprocessing_time": 0.49497,
+          "detection_time": 0.393477,
+          "methods_used": [
+            "frontal_cascade: 8件"
+          ]
+        },
+        {
+          "image_file": "kana08_0015_gt.backup.png",
+          "faces_detected": 0,
+          "processing_time": 1.081058,
+          "preprocessing_time": 0.505115,
+          "detection_time": 0.575889,
+          "methods_used": []
+        },
+        {
+          "image_file": "kana08_0022.jpg",
+          "faces_detected": 22,
+          "processing_time": 0.961369,
+          "preprocessing_time": 0.492357,
+          "detection_time": 0.468978,
+          "methods_used": [
+            "frontal_cascade: 22件"
+          ]
+        },
+        {
+          "image_file": "kana08_0022_gt.backup.png",
+          "faces_detected": 0,
+          "processing_time": 1.100213,
+          "preprocessing_time": 0.509438,
+          "detection_time": 0.59073,
+          "methods_used": []
+        },
+        {
+          "image_file": "kana08_0023.jpg",
+          "faces_detected": 13,
+          "processing_time": 0.955492,
+          "preprocessing_time": 0.493991,
+          "detection_time": 0.461469,
+          "methods_used": [
+            "frontal_cascade: 13件"
+          ]
+        },
+        {
+          "image_file": "kana08_0023_gt.backup.png",
+          "faces_detected": 0,
+          "processing_time": 1.074917,
+          "preprocessing_time": 0.506544,
+          "detection_time": 0.568334,
+          "methods_used": []
+        }
+      ],
+      "total_faces_detected": 57,
+      "total_processing_time": 15.482532,
+      "processing_times": [
+        1.338477,
+        2.470102,
+        0.943139,
+        1.045651,
+        0.624831,
+        1.096012,
+        0.836671,
+        1.066112,
+        0.888488,
+        1.081058,
+        0.961369,
+        1.100213,
+        0.955492,
+        1.074917
+      ],
+      "method_counts": {
+        "anime_cascade": 2,
+        "frontal_cascade": 5
+      }
+    }
+  },
+  "overall_statistics": {
+    "total_images_processed": 36,
+    "total_faces_detected": 137,
+    "overall_detection_rate": 3.8055555555555554,
+    "total_processing_time": 35.384319,
+    "average_processing_time": 0.9828977499999999,
+    "processing_times": [
+      0.869155,
+      1.334158,
+      0.647635,
+      0.629894,
+      0.977896,
+      1.075812,
+      0.843258,
+      1.01505,
+      0.653829,
+      1.107705,
+      0.951203,
+      1.05529,
+      0.700878,
+      0.651905,
+      0.63982,
+      1.177037,
+      0.66033,
+      1.064833,
+      0.706279,
+      1.042997,
+      1.000167,
+      1.096656,
+      1.338477,
+      2.470102,
+      0.943139,
+      1.045651,
+      0.624831,
+      1.096012,
+      0.836671,
+      1.066112,
+      0.888488,
+      1.081058,
+      0.961369,
+      1.100213,
+      0.955492,
+      1.074917
+    ]
+  },
+  "test_completion_time": "2025-07-26T02:14:22.417376"
+}

@@ -1,0 +1,2 @@
+timestamp,batch_size,pla_mean,pla_std,sci_mean,sci_std,ple_score,overall_quality,phase_a1_progress,phase_a2_progress,alerts_count
+2025-07-25T21:35:15.805277,40,0.0,0.0,0.1877,0.2092,0.0,0.0751,0.0,0.2682,2

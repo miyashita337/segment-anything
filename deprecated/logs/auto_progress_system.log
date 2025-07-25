@@ -1,0 +1,357 @@
+2025-07-24 00:05:11,407 - __main__ - INFO - 自動進捗システム初期化完了
+2025-07-24 00:05:11,407 - __main__ - INFO - 手動テストバッチ生成: Phase phase0
+2025-07-24 00:05:11,413 - features.evaluation.test_batch_generator - INFO - テストバッチ生成開始
+2025-07-24 00:05:11,413 - features.evaluation.test_batch_generator - ERROR - テストバッチ生成エラー: 'list' object has no attribute 'get'
+2025-07-24 00:05:11,414 - __main__ - ERROR - 手動テストバッチ生成エラー: 'list' object has no attribute 'get'
+2025-07-24 00:05:30,027 - __main__ - INFO - 自動進捗システム初期化完了
+2025-07-24 00:05:30,027 - __main__ - INFO - 手動テストバッチ生成: Phase phase0
+2025-07-24 00:05:30,033 - features.evaluation.test_batch_generator - INFO - テストバッチ生成開始
+2025-07-24 00:05:30,033 - features.evaluation.test_batch_generator - ERROR - テストバッチ生成エラー: 'list' object has no attribute 'get'
+2025-07-24 00:05:30,033 - __main__ - ERROR - 手動テストバッチ生成エラー: 'list' object has no attribute 'get'
+2025-07-24 00:05:45,315 - __main__ - INFO - 自動進捗システム初期化完了
+2025-07-24 00:05:45,315 - __main__ - INFO - 手動テストバッチ生成: Phase phase0
+2025-07-24 00:05:45,320 - features.evaluation.test_batch_generator - INFO - テストバッチ生成開始
+2025-07-24 00:05:45,320 - features.evaluation.test_batch_generator - INFO - 結果データ型: <class 'dict'>, 内容サンプル: {'image_id': 'kaname08_0000', 'image_path': '/test_small/kaname08_0000.png', 'largest_char_predicted': False, 'iou_score': 0.8789878571663235, 'confidence_score': 0.4197800124809946, 'processing_time'
+2025-07-24 00:05:45,321 - features.evaluation.test_batch_generator - ERROR - テストバッチ生成エラー: 'list' object has no attribute 'get'
+2025-07-24 00:05:45,321 - __main__ - ERROR - 手動テストバッチ生成エラー: 'list' object has no attribute 'get'
+2025-07-24 00:06:40,044 - __main__ - INFO - 自動進捗システム初期化完了
+2025-07-24 00:06:40,044 - __main__ - INFO - 手動テストバッチ生成: Phase phase0
+2025-07-24 00:06:40,049 - features.evaluation.test_batch_generator - INFO - テストバッチ生成開始
+2025-07-24 00:06:40,049 - features.evaluation.test_batch_generator - INFO - 結果データ型: <class 'dict'>, 内容サンプル: {'image_id': 'kaname08_0000', 'image_path': '/test_small/kaname08_0000.png', 'largest_char_predicted': True, 'iou_score': 0.9948799203609487, 'confidence_score': 0.5585765242736905, 'processing_time':
+2025-07-24 00:06:40,063 - features.evaluation.test_batch_generator - INFO - テストバッチJSON保存: /mnt/c/AItools/segment-anything/test_batches/test_batch_phase0_20250724_000640.json
+2025-07-24 00:06:40,067 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0000
+2025-07-24 00:06:40,068 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0040
+2025-07-24 00:06:40,069 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0086
+2025-07-24 00:06:40,071 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0054
+2025-07-24 00:06:40,072 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0005
+2025-07-24 00:06:40,074 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0068
+2025-07-24 00:06:40,076 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0001
+2025-07-24 00:06:40,077 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0059
+2025-07-24 00:06:40,079 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0025
+2025-07-24 00:06:40,080 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0030
+2025-07-24 00:06:40,450 - features.evaluation.test_batch_generator - INFO - サマリー画像作成: /mnt/c/AItools/segment-anything/test_batches/visual_batch_phase0_20250724_000640/test_batch_summary.png
+2025-07-24 00:06:40,453 - features.evaluation.test_batch_generator - INFO - README作成: /mnt/c/AItools/segment-anything/test_batches/visual_batch_phase0_20250724_000640/README.md
+2025-07-24 00:06:40,453 - features.evaluation.test_batch_generator - INFO - 可視化テストバッチ作成: /mnt/c/AItools/segment-anything/test_batches/visual_batch_phase0_20250724_000640
+2025-07-24 00:06:40,453 - features.evaluation.test_batch_generator - INFO - テストバッチ生成完了
+2025-07-24 00:07:04,527 - __main__ - INFO - 自動進捗システム初期化完了
+2025-07-24 00:07:04,527 - __main__ - INFO - 自動進捗システム開始
+2025-07-24 00:07:04,527 - __main__ - INFO - 
+=== 自動進捗ループ 1/3 ===
+2025-07-24 00:07:04,528 - __main__ - INFO - 全体進捗: 50.0%
+2025-07-24 00:07:04,528 - __main__ - INFO - 現在Phase: phase1
+2025-07-24 00:07:04,528 - __main__ - INFO - 次のタスク実行: phase1-data-prep - 疑似ラベル+人手修正によるデータ拡張
+2025-07-24 00:07:04,531 - features.common.project_tracker - INFO - タスクステータス更新: phase1-data-prep pending → in_progress
+2025-07-24 00:07:04,532 - __main__ - WARNING - 未実装のタスク: phase1-data-prep
+2025-07-24 00:07:04,539 - features.common.project_tracker - INFO - タスクステータス更新: phase1-data-prep in_progress → pending
+2025-07-24 00:07:04,539 - __main__ - INFO - [auto] タスク実行: 失敗 - phase1-data-prep: 疑似ラベル+人手修正によるデータ拡張
+2025-07-24 00:07:04,539 - __main__ - INFO - 実行可能なタスクがありません。待機中...
+2025-07-24 00:07:09,544 - __main__ - INFO - 
+=== 自動進捗ループ 2/3 ===
+2025-07-24 00:07:09,545 - __main__ - INFO - 全体進捗: 50.0%
+2025-07-24 00:07:09,545 - __main__ - INFO - 現在Phase: phase1
+2025-07-24 00:07:09,545 - __main__ - INFO - 次のタスク実行: phase1-data-prep - 疑似ラベル+人手修正によるデータ拡張
+2025-07-24 00:07:09,549 - features.common.project_tracker - INFO - タスクステータス更新: phase1-data-prep pending → in_progress
+2025-07-24 00:07:09,550 - __main__ - WARNING - 未実装のタスク: phase1-data-prep
+2025-07-24 00:07:09,557 - features.common.project_tracker - INFO - タスクステータス更新: phase1-data-prep in_progress → pending
+2025-07-24 00:07:09,557 - __main__ - INFO - [auto] タスク実行: 失敗 - phase1-data-prep: 疑似ラベル+人手修正によるデータ拡張
+2025-07-24 00:07:09,557 - __main__ - INFO - 実行可能なタスクがありません。待機中...
+2025-07-24 00:07:14,563 - __main__ - INFO - 
+=== 自動進捗ループ 3/3 ===
+2025-07-24 00:07:14,563 - __main__ - INFO - 全体進捗: 50.0%
+2025-07-24 00:07:14,564 - __main__ - INFO - 現在Phase: phase1
+2025-07-24 00:07:14,564 - __main__ - INFO - 次のタスク実行: phase1-data-prep - 疑似ラベル+人手修正によるデータ拡張
+2025-07-24 00:07:14,568 - features.common.project_tracker - INFO - タスクステータス更新: phase1-data-prep pending → in_progress
+2025-07-24 00:07:14,568 - __main__ - WARNING - 未実装のタスク: phase1-data-prep
+2025-07-24 00:07:14,575 - features.common.project_tracker - INFO - タスクステータス更新: phase1-data-prep in_progress → pending
+2025-07-24 00:07:14,575 - __main__ - INFO - [auto] タスク実行: 失敗 - phase1-data-prep: 疑似ラベル+人手修正によるデータ拡張
+2025-07-24 00:07:14,575 - __main__ - INFO - 実行可能なタスクがありません。待機中...
+2025-07-24 00:07:19,582 - __main__ - INFO - 実行ログ保存: /mnt/c/AItools/segment-anything/auto_execution_log.json
+2025-07-24 00:07:19,583 - __main__ - INFO - 自動進捗システム完了
+2025-07-24 00:07:30,670 - __main__ - INFO - 自動進捗システム初期化完了
+2025-07-24 00:07:30,671 - __main__ - INFO - Phase 1 データ拡張開始
+2025-07-24 00:07:30,671 - __main__ - INFO - [phase1] データ拡張: 開始 - 
+2025-07-24 00:07:30,677 - features.phase1.data_expansion_system - INFO - 元ラベルデータ読み込み: 101ファイル
+2025-07-24 00:07:30,677 - features.phase1.data_expansion_system - INFO - データ拡張開始
+2025-07-24 00:07:30,678 - features.phase1.data_expansion_system - ERROR - データ拡張エラー: 'list' object has no attribute 'items'
+2025-07-24 00:07:30,678 - __main__ - ERROR - Phase 1 データ拡張エラー: 'list' object has no attribute 'items'
+2025-07-24 00:07:30,678 - __main__ - INFO - [phase1] データ拡張: 失敗 - 'list' object has no attribute 'items'
+2025-07-24 00:07:49,585 - __main__ - INFO - 自動進捗システム初期化完了
+2025-07-24 00:07:49,586 - __main__ - INFO - Phase 1 データ拡張開始
+2025-07-24 00:07:49,586 - __main__ - INFO - [phase1] データ拡張: 開始 - 
+2025-07-24 00:07:49,593 - features.phase1.data_expansion_system - INFO - 元ラベルデータ読み込み: 101ファイル
+2025-07-24 00:07:49,593 - features.phase1.data_expansion_system - INFO - データ拡張開始
+2025-07-24 00:07:49,595 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0001
+2025-07-24 00:07:49,597 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0002
+2025-07-24 00:07:49,598 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0003
+2025-07-24 00:07:49,600 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0004
+2025-07-24 00:07:49,601 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0005
+2025-07-24 00:07:49,603 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0006
+2025-07-24 00:07:49,605 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0007
+2025-07-24 00:07:49,606 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0008
+2025-07-24 00:07:49,608 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0009
+2025-07-24 00:07:49,610 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0010
+2025-07-24 00:07:49,611 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0011
+2025-07-24 00:07:49,613 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0012
+2025-07-24 00:07:49,614 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0013
+2025-07-24 00:07:49,616 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0014
+2025-07-24 00:07:49,618 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0015
+2025-07-24 00:07:49,619 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0016
+2025-07-24 00:07:49,621 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0017
+2025-07-24 00:07:49,623 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0018
+2025-07-24 00:07:49,624 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0019
+2025-07-24 00:07:49,626 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0020
+2025-07-24 00:07:49,627 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0021
+2025-07-24 00:07:49,629 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0022
+2025-07-24 00:07:49,631 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0023
+2025-07-24 00:07:49,632 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0024
+2025-07-24 00:07:49,634 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0025
+2025-07-24 00:07:49,636 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0026
+2025-07-24 00:07:49,637 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0027
+2025-07-24 00:07:49,639 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0028
+2025-07-24 00:07:49,640 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0029
+2025-07-24 00:07:49,642 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0030
+2025-07-24 00:07:49,644 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0031
+2025-07-24 00:07:49,645 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0032
+2025-07-24 00:07:49,647 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0033
+2025-07-24 00:07:49,648 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0034
+2025-07-24 00:07:49,650 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0035
+2025-07-24 00:07:49,652 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_cover
+2025-07-24 00:07:49,653 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0000_cover
+2025-07-24 00:07:49,655 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0001
+2025-07-24 00:07:49,657 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0002
+2025-07-24 00:07:49,658 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0003
+2025-07-24 00:07:49,660 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0004
+2025-07-24 00:07:49,661 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0005
+2025-07-24 00:07:49,663 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0006
+2025-07-24 00:07:49,664 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0007
+2025-07-24 00:07:49,666 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0008
+2025-07-24 00:07:49,667 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0009
+2025-07-24 00:07:49,669 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0010
+2025-07-24 00:07:49,671 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0011
+2025-07-24 00:07:49,672 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0012
+2025-07-24 00:07:49,674 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0013
+2025-07-24 00:07:49,676 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0014
+2025-07-24 00:07:49,677 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0015
+2025-07-24 00:07:49,679 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0016
+2025-07-24 00:07:49,680 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0017
+2025-07-24 00:07:49,682 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0018
+2025-07-24 00:07:49,684 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0019
+2025-07-24 00:07:49,685 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0020
+2025-07-24 00:07:49,687 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0021
+2025-07-24 00:07:49,688 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0022
+2025-07-24 00:07:49,690 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0023
+2025-07-24 00:07:49,692 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0024
+2025-07-24 00:07:49,693 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0025
+2025-07-24 00:07:49,695 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0026
+2025-07-24 00:07:49,696 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0027
+2025-07-24 00:07:49,698 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0028
+2025-07-24 00:07:49,700 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0029
+2025-07-24 00:07:49,701 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0030
+2025-07-24 00:07:49,703 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0031
+2025-07-24 00:07:49,704 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0032
+2025-07-24 00:07:49,706 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0033
+2025-07-24 00:07:49,708 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0034
+2025-07-24 00:07:49,709 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0035
+2025-07-24 00:07:49,711 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0036
+2025-07-24 00:07:49,712 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0037
+2025-07-24 00:07:49,714 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0038
+2025-07-24 00:07:49,716 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0039
+2025-07-24 00:07:49,718 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0000_cover
+2025-07-24 00:07:49,719 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0001
+2025-07-24 00:07:49,721 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0002
+2025-07-24 00:07:49,722 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0003
+2025-07-24 00:07:49,724 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0004
+2025-07-24 00:07:49,726 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0005
+2025-07-24 00:07:49,727 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0006
+2025-07-24 00:07:49,729 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0007
+2025-07-24 00:07:49,730 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0008
+2025-07-24 00:07:49,732 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0009
+2025-07-24 00:07:49,734 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0010
+2025-07-24 00:07:49,735 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0011
+2025-07-24 00:07:49,737 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0012
+2025-07-24 00:07:49,738 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0013
+2025-07-24 00:07:49,740 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0014
+2025-07-24 00:07:49,742 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0015
+2025-07-24 00:07:49,744 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0016
+2025-07-24 00:07:49,745 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0017
+2025-07-24 00:07:49,747 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0018
+2025-07-24 00:07:49,748 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0019
+2025-07-24 00:07:49,750 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0020
+2025-07-24 00:07:49,752 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0021
+2025-07-24 00:07:49,753 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0022
+2025-07-24 00:07:49,755 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0023
+2025-07-24 00:07:49,756 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0024
+2025-07-24 00:07:49,762 - features.phase1.data_expansion_system - INFO - 疑似ラベル保存: 0件
+2025-07-24 00:07:49,762 - features.phase1.data_expansion_system - INFO - データ拡張完了: 0件生成 (0.2秒)
+2025-07-24 00:07:49,762 - __main__ - ERROR - Phase 1 データ拡張エラー: division by zero
+2025-07-24 00:07:49,763 - __main__ - INFO - [phase1] データ拡張: 失敗 - division by zero
+2025-07-24 00:12:04,779 - __main__ - INFO - 自動進捗システム初期化完了
+2025-07-24 00:12:04,779 - __main__ - INFO - 手動テストバッチ生成: Phase phase1
+2025-07-24 00:12:04,785 - features.evaluation.test_batch_generator - INFO - テストバッチ生成開始
+2025-07-24 00:12:04,785 - features.evaluation.test_batch_generator - INFO - 結果データ型: <class 'dict'>, 内容サンプル: {'image_id': 'kaname08_0000', 'image_path': '/test_small/kaname08_0000.png', 'largest_char_predicted': False, 'iou_score': 0.8238505805470496, 'confidence_score': 0.5032934995804133, 'processing_time'
+2025-07-24 00:12:04,801 - features.evaluation.test_batch_generator - INFO - テストバッチJSON保存: /mnt/c/AItools/segment-anything/test_batches/test_batch_phase1_20250724_001204.json
+2025-07-24 00:12:04,804 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0069
+2025-07-24 00:12:04,805 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0068
+2025-07-24 00:12:04,807 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0044
+2025-07-24 00:12:04,808 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0033
+2025-07-24 00:12:04,809 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0015
+2025-07-24 00:12:04,812 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0074
+2025-07-24 00:12:04,814 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0098
+2025-07-24 00:12:04,815 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0004
+2025-07-24 00:12:04,816 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0089
+2025-07-24 00:12:04,818 - features.evaluation.test_batch_generator - WARNING - 画像ファイルが見つかりません: kaname08_0024
+2025-07-24 00:12:05,206 - features.evaluation.test_batch_generator - INFO - サマリー画像作成: /mnt/c/AItools/segment-anything/test_batches/visual_batch_phase1_20250724_001204/test_batch_summary.png
+2025-07-24 00:12:05,208 - features.evaluation.test_batch_generator - INFO - README作成: /mnt/c/AItools/segment-anything/test_batches/visual_batch_phase1_20250724_001204/README.md
+2025-07-24 00:12:05,208 - features.evaluation.test_batch_generator - INFO - 可視化テストバッチ作成: /mnt/c/AItools/segment-anything/test_batches/visual_batch_phase1_20250724_001204
+2025-07-24 00:12:05,209 - features.evaluation.test_batch_generator - INFO - テストバッチ生成完了
+2025-07-24 00:12:19,141 - __main__ - INFO - 自動進捗システム初期化完了
+2025-07-24 00:12:19,141 - __main__ - INFO - 自動進捗システム開始
+2025-07-24 00:12:19,142 - __main__ - INFO - 
+=== 自動進捗ループ 1/1 ===
+2025-07-24 00:12:19,142 - __main__ - INFO - 全体進捗: 50.0%
+2025-07-24 00:12:19,142 - __main__ - INFO - 現在Phase: phase1
+2025-07-24 00:12:19,142 - __main__ - INFO - 次のタスク実行: phase1-data-prep - 疑似ラベル+人手修正によるデータ拡張
+2025-07-24 00:12:19,146 - features.common.project_tracker - INFO - タスクステータス更新: phase1-data-prep pending → in_progress
+2025-07-24 00:12:19,146 - __main__ - INFO - Phase 1 データ拡張開始
+2025-07-24 00:12:19,146 - __main__ - INFO - [phase1] データ拡張: 開始 - 
+2025-07-24 00:12:19,154 - features.phase1.data_expansion_system - INFO - 元ラベルデータ読み込み: 101ファイル
+2025-07-24 00:12:19,154 - features.phase1.data_expansion_system - INFO - データ拡張開始
+2025-07-24 00:12:19,156 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0001
+2025-07-24 00:12:19,157 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0002
+2025-07-24 00:12:19,159 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0003
+2025-07-24 00:12:19,161 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0004
+2025-07-24 00:12:19,163 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0005
+2025-07-24 00:12:19,164 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0006
+2025-07-24 00:12:19,166 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0007
+2025-07-24 00:12:19,168 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0008
+2025-07-24 00:12:19,170 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0009
+2025-07-24 00:12:19,171 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0010
+2025-07-24 00:12:19,173 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0011
+2025-07-24 00:12:19,175 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0012
+2025-07-24 00:12:19,176 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0013
+2025-07-24 00:12:19,178 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0014
+2025-07-24 00:12:19,180 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0015
+2025-07-24 00:12:19,182 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0016
+2025-07-24 00:12:19,184 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0017
+2025-07-24 00:12:19,185 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0018
+2025-07-24 00:12:19,187 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0019
+2025-07-24 00:12:19,189 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0020
+2025-07-24 00:12:19,190 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0021
+2025-07-24 00:12:19,192 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0022
+2025-07-24 00:12:19,194 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0023
+2025-07-24 00:12:19,195 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0024
+2025-07-24 00:12:19,197 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0025
+2025-07-24 00:12:19,199 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0026
+2025-07-24 00:12:19,201 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0027
+2025-07-24 00:12:19,202 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0028
+2025-07-24 00:12:19,204 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0029
+2025-07-24 00:12:19,206 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0030
+2025-07-24 00:12:19,207 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0031
+2025-07-24 00:12:19,209 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0032
+2025-07-24 00:12:19,211 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0033
+2025-07-24 00:12:19,213 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0034
+2025-07-24 00:12:19,215 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_0035
+2025-07-24 00:12:19,216 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname05_cover
+2025-07-24 00:12:19,218 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0000_cover
+2025-07-24 00:12:19,219 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0001
+2025-07-24 00:12:19,221 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0002
+2025-07-24 00:12:19,223 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0003
+2025-07-24 00:12:19,225 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0004
+2025-07-24 00:12:19,227 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0005
+2025-07-24 00:12:19,228 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0006
+2025-07-24 00:12:19,230 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0007
+2025-07-24 00:12:19,232 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0008
+2025-07-24 00:12:19,233 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0009
+2025-07-24 00:12:19,235 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0010
+2025-07-24 00:12:19,237 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0011
+2025-07-24 00:12:19,239 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0012
+2025-07-24 00:12:19,241 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0013
+2025-07-24 00:12:19,242 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0014
+2025-07-24 00:12:19,244 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0015
+2025-07-24 00:12:19,246 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0016
+2025-07-24 00:12:19,247 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0017
+2025-07-24 00:12:19,249 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0018
+2025-07-24 00:12:19,251 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0019
+2025-07-24 00:12:19,252 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0020
+2025-07-24 00:12:19,254 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0021
+2025-07-24 00:12:19,256 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0022
+2025-07-24 00:12:19,257 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0023
+2025-07-24 00:12:19,259 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0024
+2025-07-24 00:12:19,261 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0025
+2025-07-24 00:12:19,262 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0026
+2025-07-24 00:12:19,264 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0027
+2025-07-24 00:12:19,266 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0028
+2025-07-24 00:12:19,267 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0029
+2025-07-24 00:12:19,269 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0030
+2025-07-24 00:12:19,271 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0031
+2025-07-24 00:12:19,273 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0032
+2025-07-24 00:12:19,274 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0033
+2025-07-24 00:12:19,276 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0034
+2025-07-24 00:12:19,278 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0035
+2025-07-24 00:12:19,279 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0036
+2025-07-24 00:12:19,281 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0037
+2025-07-24 00:12:19,283 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0038
+2025-07-24 00:12:19,285 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname07_0039
+2025-07-24 00:12:19,287 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0000_cover
+2025-07-24 00:12:19,288 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0001
+2025-07-24 00:12:19,290 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0002
+2025-07-24 00:12:19,292 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0003
+2025-07-24 00:12:19,293 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0004
+2025-07-24 00:12:19,295 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0005
+2025-07-24 00:12:19,297 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0006
+2025-07-24 00:12:19,298 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0007
+2025-07-24 00:12:19,300 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0008
+2025-07-24 00:12:19,302 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0009
+2025-07-24 00:12:19,303 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0010
+2025-07-24 00:12:19,305 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0011
+2025-07-24 00:12:19,307 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0012
+2025-07-24 00:12:19,309 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0013
+2025-07-24 00:12:19,310 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0014
+2025-07-24 00:12:19,312 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0015
+2025-07-24 00:12:19,314 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0016
+2025-07-24 00:12:19,315 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0017
+2025-07-24 00:12:19,317 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0018
+2025-07-24 00:12:19,319 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0019
+2025-07-24 00:12:19,321 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0020
+2025-07-24 00:12:19,322 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0021
+2025-07-24 00:12:19,324 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0022
+2025-07-24 00:12:19,326 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0023
+2025-07-24 00:12:19,327 - features.phase1.data_expansion_system - WARNING - 画像ファイルが見つかりません: kaname08_0024
+2025-07-24 00:12:19,334 - features.phase1.data_expansion_system - INFO - 疑似ラベル保存: 0件
+2025-07-24 00:12:19,334 - features.phase1.data_expansion_system - INFO - データ拡張完了: 0件生成 (0.2秒)
+2025-07-24 00:12:19,334 - __main__ - ERROR - Phase 1 データ拡張エラー: division by zero
+2025-07-24 00:12:19,334 - __main__ - INFO - [phase1] データ拡張: 失敗 - division by zero
+2025-07-24 00:12:19,338 - features.common.project_tracker - INFO - タスクステータス更新: phase1-data-prep in_progress → pending
+2025-07-24 00:12:19,338 - __main__ - INFO - [auto] タスク実行: 失敗 - phase1-data-prep: 疑似ラベル+人手修正によるデータ拡張
+2025-07-24 00:12:19,338 - __main__ - INFO - 実行可能なタスクがありません。待機中...
+2025-07-24 00:12:24,345 - __main__ - INFO - 実行ログ保存: /mnt/c/AItools/segment-anything/auto_execution_log.json
+2025-07-24 00:12:24,346 - __main__ - INFO - 自動進捗システム完了
+2025-07-24 01:09:58,134 - __main__ - INFO - 自動進捗システム初期化完了
+2025-07-24 01:09:58,135 - __main__ - INFO - 自動進捗システム開始
+2025-07-24 01:09:58,135 - __main__ - INFO - 
+=== 自動進捗ループ 1/1 ===
+2025-07-24 01:09:58,135 - __main__ - INFO - 全体進捗: 50.0%
+2025-07-24 01:09:58,136 - __main__ - INFO - 現在Phase: phase1
+2025-07-24 01:09:58,136 - __main__ - INFO - 次のタスク実行: phase1-data-prep - 疑似ラベル+人手修正によるデータ拡張
+2025-07-24 01:09:58,140 - features.common.project_tracker - INFO - タスクステータス更新: phase1-data-prep pending → in_progress
+2025-07-24 01:09:58,140 - __main__ - INFO - Phase 1 データ拡張開始
+2025-07-24 01:09:58,140 - __main__ - INFO - [phase1] データ拡張: 開始 - 
+2025-07-24 01:09:58,148 - features.phase1.data_expansion_system - INFO - 元ラベルデータ読み込み: 101ファイル
+2025-07-24 01:09:58,149 - features.phase1.data_expansion_system - INFO - データ拡張開始
+2025-07-24 01:10:59,834 - features.phase1.data_expansion_system - INFO - データ拡張進行中: 150/303 生成済み
+2025-07-24 01:12:00,541 - features.phase1.data_expansion_system - INFO - データ拡張進行中: 300/303 生成済み
+2025-07-24 01:12:01,873 - features.phase1.data_expansion_system - ERROR - 疑似ラベル保存エラー: Object of type bool is not JSON serializable
+2025-07-24 01:12:01,873 - features.phase1.data_expansion_system - INFO - データ拡張完了: 303件生成 (123.7秒)
+2025-07-24 01:12:01,876 - features.common.project_tracker - WARNING - タスクが見つかりません: phase1-data-expansion
+2025-07-24 01:12:01,877 - __main__ - INFO - [phase1] データ拡張: 成功 - 303件生成、拡張倍率4.0倍
+2025-07-24 01:12:01,877 - __main__ - INFO - Phase phase0 テストバッチ生成開始
+2025-07-24 01:12:01,880 - __main__ - WARNING - Phase phase0の結果ファイルが見つかりません
+2025-07-24 01:12:01,884 - features.common.project_tracker - INFO - タスクステータス更新: phase1-data-prep in_progress → completed
+2025-07-24 01:12:01,884 - __main__ - INFO - [auto] タスク実行: 成功 - phase1-data-prep: 疑似ラベル+人手修正によるデータ拡張
+2025-07-24 01:12:01,884 - __main__ - INFO - Phase phase1 テストバッチ生成開始
+2025-07-24 01:12:01,885 - __main__ - WARNING - Phase phase1の結果ファイルが見つかりません
+2025-07-24 01:12:02,089 - features.common.progress_reporter - INFO - 進捗可視化チャート作成完了
+2025-07-24 01:12:02,089 - features.common.progress_reporter - INFO - 完全進捗レポート生成完了: /mnt/c/AItools/segment-anything/project_progress/reports/progress_report_20250724_0112.md
+2025-07-24 01:12:07,097 - __main__ - INFO - 実行ログ保存: /mnt/c/AItools/segment-anything/auto_execution_log.json
+2025-07-24 01:12:07,097 - __main__ - INFO - 自動進捗システム完了
+2025-07-24 02:07:24,002 - __main__ - INFO - 自動進捗システム初期化完了

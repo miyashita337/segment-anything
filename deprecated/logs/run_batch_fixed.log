@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/mnt/c/AItools/segment-anything/run_batch_fixed.py", line 14, in <module>
+    from features.extraction.commands.extract_character import extract_character_from_path
+ImportError: cannot import name 'extract_character_from_path' from 'features.extraction.commands.extract_character' (/mnt/c/AItools/segment-anything/features/extraction/commands/extract_character.py)

@@ -1,0 +1,224 @@
+🚀 Enhanced Filtering System - 最終バッチテスト
+📁 入力: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08
+📁 出力: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_enhanced_system_final
+📊 総数: 26枚
+🔧 システム: Phase1(非キャラクター除外) + Phase3(品質向上)
+
+============================================================
+📸 処理中 [1/26]: kaname08_0000_cover.jpg
+✅ 成功: kaname08_0000_cover.jpg
+   🔧 フィルタ後マスク数: 68
+   👤  faces=0, character_confidence=0.000
+   📊  good, Face complete: True, Needs improvement: False
+   📏 サイズ: 172x416
+
+============================================================
+📸 処理中 [2/26]: kaname08_0001.jpg
+✅ 成功: kaname08_0001.jpg
+   🔧 フィルタ後マスク数: 5
+   👤  faces=1, character_confidence=0.311
+   📊  fair, Face complete: False, Needs improvement: True
+   📏 サイズ: 451x694
+
+============================================================
+📸 処理中 [3/26]: kaname08_0002.jpg
+✅ 成功: kaname08_0002.jpg
+   🔧 フィルタ後マスク数: 89
+   👤  faces=0, character_confidence=0.000
+   📊  good, Face complete: True, Needs improvement: False
+   📏 サイズ: 107x250
+
+============================================================
+📸 処理中 [4/26]: kaname08_0003.jpg
+✅ 成功: kaname08_0003.jpg
+   🔧 フィルタ後マスク数: 4
+   👤  faces=1, character_confidence=0.615
+   📊  good, Face complete: True, Needs improvement: False
+   📏 サイズ: 306x663
+
+============================================================
+📸 処理中 [5/26]: kaname08_0004.jpg
+✅ 成功: kaname08_0004.jpg
+   🔧 フィルタ後マスク数: 4
+   👤  faces=1, character_confidence=0.656
+   📊  good, Face complete: True, Needs improvement: False
+   📏 サイズ: 132x280
+
+============================================================
+📸 処理中 [6/26]: kaname08_0005.jpg
+✅ 成功: kaname08_0005.jpg
+   🔧 フィルタ後マスク数: 158
+   👤  faces=0, character_confidence=0.000
+   📊  good, Face complete: True, Needs improvement: False
+   📏 サイズ: 324x561
+
+============================================================
+📸 処理中 [7/26]: kaname08_0006.jpg
+✅ 成功: kaname08_0006.jpg
+   🔧 フィルタ後マスク数: 5
+   👤  faces=1, character_confidence=0.843
+   📊  fair, Face complete: False, Needs improvement: True
+   📏 サイズ: 142x175
+
+============================================================
+📸 処理中 [8/26]: kaname08_0007.jpg
+✅ 成功: kaname08_0007.jpg
+   🔧 フィルタ後マスク数: 4
+   👤  faces=1, character_confidence=0.418
+   📊  fair, Face complete: False, Needs improvement: True
+   📏 サイズ: 295x466
+
+============================================================
+📸 処理中 [9/26]: kaname08_0008.jpg
+✅ 成功: kaname08_0008.jpg
+   🔧 フィルタ後マスク数: 2
+   👤  faces=2, character_confidence=0.616
+   📊  fair, Face complete: False, Needs improvement: True
+   📏 サイズ: 230x292
+
+============================================================
+📸 処理中 [10/26]: kaname08_0009.jpg
+✅ 成功: kaname08_0009.jpg
+   🔧 フィルタ後マスク数: 3
+   👤  faces=4, character_confidence=0.304
+   📊  fair, Face complete: True, Needs improvement: True
+   📏 サイズ: 673x515
+
+============================================================
+📸 処理中 [11/26]: kaname08_0010.jpg
+✅ 成功: kaname08_0010.jpg
+   🔧 フィルタ後マスク数: 108
+   👤  faces=0, character_confidence=0.000
+   📊  good, Face complete: True, Needs improvement: False
+   📏 サイズ: 244x469
+
+============================================================
+📸 処理中 [12/26]: kaname08_0011.jpg
+✅ 成功: kaname08_0011.jpg
+   🔧 フィルタ後マスク数: 159
+   👤  faces=0, character_confidence=0.000
+   📊  good, Face complete: True, Needs improvement: False
+   📏 サイズ: 120x268
+
+============================================================
+📸 処理中 [13/26]: kaname08_0012.jpg
+✅ 成功: kaname08_0012.jpg
+   🔧 フィルタ後マスク数: 1
+   👤  faces=1, character_confidence=0.521
+   📊  fair, Face complete: False, Needs improvement: True
+   📏 サイズ: 199x245
+
+============================================================
+📸 処理中 [14/26]: kaname08_0013.jpg
+❌ 失敗: kaname08_0013.jpg
+
+============================================================
+📸 処理中 [15/26]: kaname08_0014.jpg
+✅ 成功: kaname08_0014.jpg
+   🔧 フィルタ後マスク数: 2
+   👤  faces=1, character_confidence=0.806
+   📊  good, Face complete: True, Needs improvement: False
+   📏 サイズ: 127x205
+
+============================================================
+📸 処理中 [16/26]: kaname08_0015.jpg
+✅ 成功: kaname08_0015.jpg
+   🔧 フィルタ後マスク数: 2
+   👤  faces=1, character_confidence=0.321
+   📊  good, Face complete: True, Needs improvement: False
+   📏 サイズ: 116x170
+
+============================================================
+📸 処理中 [17/26]: kaname08_0016.jpg
+✅ 成功: kaname08_0016.jpg
+   🔧 フィルタ後マスク数: 1
+   👤  faces=2, character_confidence=0.578
+   📊  good, Face complete: True, Needs improvement: False
+   📏 サイズ: 244x306
+
+============================================================
+📸 処理中 [18/26]: kaname08_0017.jpg
+✅ 成功: kaname08_0017.jpg
+   🔧 フィルタ後マスク数: 2
+   👤  faces=1, character_confidence=0.679
+   📊  good, Face complete: True, Needs improvement: False
+   📏 サイズ: 179x336
+
+============================================================
+📸 処理中 [19/26]: kaname08_0018.jpg
+✅ 成功: kaname08_0018.jpg
+   🔧 フィルタ後マスク数: 1
+   👤  faces=1, character_confidence=0.716
+   📊  good, Face complete: True, Needs improvement: False
+   📏 サイズ: 163x240
+
+============================================================
+📸 処理中 [20/26]: kaname08_0019.jpg
+✅ 成功: kaname08_0019.jpg
+   🔧 フィルタ後マスク数: 108
+   👤  faces=1, character_confidence=0.563
+   📊  good, Face complete: True, Needs improvement: False
+   📏 サイズ: 402x467
+
+============================================================
+📸 処理中 [21/26]: kaname08_0020.jpg
+✅ 成功: kaname08_0020.jpg
+   🔧 フィルタ後マスク数: 3
+   👤  faces=1, character_confidence=0.698
+   📊  good, Face complete: True, Needs improvement: False
+   📏 サイズ: 218x365
+
+============================================================
+📸 処理中 [22/26]: kaname08_0021.jpg
+✅ 成功: kaname08_0021.jpg
+   🔧 フィルタ後マスク数: 141
+   👤  faces=0, character_confidence=0.000
+   📊  good, Face complete: True, Needs improvement: False
+   📏 サイズ: 115x217
+
+============================================================
+📸 処理中 [23/26]: kaname08_0022.jpg
+✅ 成功: kaname08_0022.jpg
+   🔧 フィルタ後マスク数: 2
+   👤  faces=1, character_confidence=0.636
+   📊  fair, Face complete: False, Needs improvement: True
+   📏 サイズ: 190x364
+
+============================================================
+📸 処理中 [24/26]: kaname08_0023.jpg
+✅ 成功: kaname08_0023.jpg
+   🔧 フィルタ後マスク数: 2
+   👤  faces=1, character_confidence=0.644
+   📊  good, Face complete: True, Needs improvement: False
+   📏 サイズ: 157x342
+
+============================================================
+📸 処理中 [25/26]: kaname08_0024.jpg
+✅ 成功: kaname08_0024.jpg
+   🔧 フィルタ後マスク数: 107
+   👤  faces=0, character_confidence=0.000
+   📊  fair, Face complete: True, Needs improvement: True
+   📏 サイズ: 356x165
+
+============================================================
+📸 処理中 [26/26]: kaname08_0025_cover.jpg
+✅ 成功: kaname08_0025_cover.jpg
+   🔧 フィルタ後マスク数: 74
+   👤  faces=0, character_confidence=0.000
+   📊  fair, Face complete: True, Needs improvement: True
+   📏 サイズ: 725x489
+
+============================================================
+🎯 Enhanced System 最終バッチ完了
+✅ 成功: 25/26 (96.2%)
+❌ 失敗: 1
+⏱️  処理時間: 662.3秒 (平均: 25.5秒/画像)
+
+📊 Enhanced System 効果分析:
+   🔧 平均フィルタ後マスク数: 42.2
+   👤 顔検出成功: 16/25 (64.0%)
+   🛠️ 品質改善実行: 9/25 (36.0%)
+🎉 優秀！Enhanced Systemは大幅な改善を達成しました
+   予想される評価改善: 19.2% → 70%+
+📱 Pushover画像付き通知送信成功: kaname08_0000_cover.jpg
+📱 Pushover通知送信完了
