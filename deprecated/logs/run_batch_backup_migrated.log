@@ -1,0 +1,142 @@
+🚀 バックアップロジック移植版バッチ処理開始
+📁 入力: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08
+📁 出力: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated
+📊 総数: 26枚
+
+============================================================
+📸 処理中 [1/26]: kaname08_0000_cover.jpg
+✅ 成功: kaname08_0000_cover.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0000_cover.jpg (size: 172x416)
+
+============================================================
+📸 処理中 [2/26]: kaname08_0001.jpg
+✅ 成功: kaname08_0001.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0001.jpg (size: 444x683)
+
+============================================================
+📸 処理中 [3/26]: kaname08_0002.jpg
+✅ 成功: kaname08_0002.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0002.jpg (size: 107x250)
+
+============================================================
+📸 処理中 [4/26]: kaname08_0003.jpg
+✅ 成功: kaname08_0003.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0003.jpg (size: 306x663)
+
+============================================================
+📸 処理中 [5/26]: kaname08_0004.jpg
+✅ 成功: kaname08_0004.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0004.jpg (size: 139x293)
+
+============================================================
+📸 処理中 [6/26]: kaname08_0005.jpg
+✅ 成功: kaname08_0005.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0005.jpg (size: 324x561)
+
+============================================================
+📸 処理中 [7/26]: kaname08_0006.jpg
+✅ 成功: kaname08_0006.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0006.jpg (size: 121x236)
+
+============================================================
+📸 処理中 [8/26]: kaname08_0007.jpg
+✅ 成功: kaname08_0007.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0007.jpg (size: 205x367)
+
+============================================================
+📸 処理中 [9/26]: kaname08_0008.jpg
+✅ 成功: kaname08_0008.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0008.jpg (size: 333x692)
+
+============================================================
+📸 処理中 [10/26]: kaname08_0009.jpg
+✅ 成功: kaname08_0009.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0009.jpg (size: 399x475)
+
+============================================================
+📸 処理中 [11/26]: kaname08_0010.jpg
+✅ 成功: kaname08_0010.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0010.jpg (size: 244x469)
+
+============================================================
+📸 処理中 [12/26]: kaname08_0011.jpg
+✅ 成功: kaname08_0011.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0011.jpg (size: 120x268)
+
+============================================================
+📸 処理中 [13/26]: kaname08_0012.jpg
+✅ 成功: kaname08_0012.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0012.jpg (size: 421x921)
+
+============================================================
+📸 処理中 [14/26]: kaname08_0013.jpg
+✅ 成功: kaname08_0013.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0013.jpg (size: 68x1024)
+
+============================================================
+📸 処理中 [15/26]: kaname08_0014.jpg
+✅ 成功: kaname08_0014.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0014.jpg (size: 185x322)
+
+============================================================
+📸 処理中 [16/26]: kaname08_0015.jpg
+✅ 成功: kaname08_0015.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0015.jpg (size: 197x373)
+
+============================================================
+📸 処理中 [17/26]: kaname08_0016.jpg
+✅ 成功: kaname08_0016.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0016.jpg (size: 175x212)
+
+============================================================
+📸 処理中 [18/26]: kaname08_0017.jpg
+✅ 成功: kaname08_0017.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0017.jpg (size: 104x161)
+
+============================================================
+📸 処理中 [19/26]: kaname08_0018.jpg
+✅ 成功: kaname08_0018.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0018.jpg (size: 113x1024)
+
+============================================================
+📸 処理中 [20/26]: kaname08_0019.jpg
+✅ 成功: kaname08_0019.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0019.jpg (size: 402x467)
+
+============================================================
+📸 処理中 [21/26]: kaname08_0020.jpg
+✅ 成功: kaname08_0020.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0020.jpg (size: 220x396)
+
+============================================================
+📸 処理中 [22/26]: kaname08_0021.jpg
+✅ 成功: kaname08_0021.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0021.jpg (size: 115x217)
+
+============================================================
+📸 処理中 [23/26]: kaname08_0022.jpg
+✅ 成功: kaname08_0022.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0022.jpg (size: 206x384)
+
+============================================================
+📸 処理中 [24/26]: kaname08_0023.jpg
+✅ 成功: kaname08_0023.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0023.jpg (size: 311x539)
+
+============================================================
+📸 処理中 [25/26]: kaname08_0024.jpg
+✅ 成功: kaname08_0024.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0024.jpg (size: 353x162)
+
+============================================================
+📸 処理中 [26/26]: kaname08_0025_cover.jpg
+✅ 成功: kaname08_0025_cover.jpg
+    /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_backup_migrated/kaname08_0025_cover.jpg (size: 725x486)
+
+============================================================
+🎯 バッチ処理完了
+✅ 成功: 26/26 (100.0%)
+❌ 失敗: 0
+⏱️  処理時間: 632.2秒 (平均: 24.3秒/画像)
+📱 Pushover画像付き通知送信成功: kaname08_0000_cover.jpg
+📱 Pushover通知送信完了

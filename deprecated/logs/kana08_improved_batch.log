@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/mnt/c/AItools/segment-anything/extract_kana08_improved.py", line 22, in <module>
+    from features.evaluation.utils.face_detection import AnimeFaceDetector
+ImportError: cannot import name 'AnimeFaceDetector' from 'features.evaluation.utils.face_detection' (/mnt/c/AItools/segment-anything/features/evaluation/utils/face_detection.py)

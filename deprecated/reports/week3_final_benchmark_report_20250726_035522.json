@@ -1,0 +1,353 @@
+{
+  "timestamp": "2025-07-26T03:55:22.750612",
+  "total_images": 20,
+  "face_detection_rate": 1.0,
+  "pose_detection_rate": 0.95,
+  "sci_average": 0.5351106499844144,
+  "sci_anime_average": 0.7043161441716986,
+  "target_achievement": {
+    "face_detection_rate": true,
+    "pose_detection_rate": true,
+    "sci_score": true
+  },
+  "detailed_results": [
+    {
+      "image_path": "test_small/kana05_0001.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.9500000000000001,
+      "pose_detection_success": true,
+      "pose_confidence": 0.8824152114445513,
+      "sci_score": 0.5266974854994151,
+      "sci_anime_score": 0.7133487427497076,
+      "ensemble_confidence": 0.7432671403015051,
+      "processing_time": 4.212464094161987,
+      "improvement_metrics": {
+        "ensemble_boost": -0.20673285969849498,
+        "sci_anime_improvement": 0.18665125725029252,
+        "detection_diversity": 3
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0002.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.9500000000000001,
+      "pose_detection_success": true,
+      "pose_confidence": 0.7637775747703783,
+      "sci_score": 0.5088722157999898,
+      "sci_anime_score": 0.7044361078999949,
+      "ensemble_confidence": 0.7091727683963481,
+      "processing_time": 3.742894411087036,
+      "improvement_metrics": {
+        "ensemble_boost": -0.24082723160365194,
+        "sci_anime_improvement": 0.19556389210000513,
+        "detection_diversity": 3
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0003.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.9500000000000001,
+      "pose_detection_success": true,
+      "pose_confidence": 0.9083741137042189,
+      "sci_score": 0.5096089542407345,
+      "sci_anime_score": 0.7048044771203672,
+      "ensemble_confidence": 0.7068683609438522,
+      "processing_time": 3.9910342693328857,
+      "improvement_metrics": {
+        "ensemble_boost": -0.24313163905614787,
+        "sci_anime_improvement": 0.1951955228796327,
+        "detection_diversity": 3
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0004.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.9500000000000001,
+      "pose_detection_success": true,
+      "pose_confidence": 0.9248270133553129,
+      "sci_score": 0.5035583618431686,
+      "sci_anime_score": 0.7017791809215843,
+      "ensemble_confidence": 0.747070622974197,
+      "processing_time": 4.453912973403931,
+      "improvement_metrics": {
+        "ensemble_boost": -0.20292937702580305,
+        "sci_anime_improvement": 0.1982208190784157,
+        "detection_diversity": 3
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0005.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.9500000000000001,
+      "pose_detection_success": true,
+      "pose_confidence": 0.9142134259361209,
+      "sci_score": 0.5053200397679177,
+      "sci_anime_score": 0.7026600198839589,
+      "ensemble_confidence": 0.6614741500074306,
+      "processing_time": 4.597286701202393,
+      "improvement_metrics": {
+        "ensemble_boost": -0.28852584999256947,
+        "sci_anime_improvement": 0.19733998011604115,
+        "detection_diversity": 3
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0006.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.9500000000000001,
+      "pose_detection_success": true,
+      "pose_confidence": 0.9222626410180872,
+      "sci_score": 0.511607567067564,
+      "sci_anime_score": 0.705803783533782,
+      "ensemble_confidence": 0.6871420848641001,
+      "processing_time": 4.005549430847168,
+      "improvement_metrics": {
+        "ensemble_boost": -0.26285791513589996,
+        "sci_anime_improvement": 0.19419621646621799,
+        "detection_diversity": 3
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0007.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.9500000000000001,
+      "pose_detection_success": true,
+      "pose_confidence": 0.783470593383818,
+      "sci_score": 0.7901711875397286,
+      "sci_anime_score": 0.8565092597086393,
+      "ensemble_confidence": 0.6597451818856258,
+      "processing_time": 4.4770143032073975,
+      "improvement_metrics": {
+        "ensemble_boost": -0.29025481811437426,
+        "sci_anime_improvement": 0.06633807216891074,
+        "detection_diversity": 3
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0008.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.9500000000000001,
+      "pose_detection_success": false,
+      "pose_confidence": 0.0,
+      "sci_score": 0.49193120064288254,
+      "sci_anime_score": 0.6651675521734102,
+      "ensemble_confidence": 0.4979297386703209,
+      "processing_time": 4.048930883407593,
+      "improvement_metrics": {
+        "ensemble_boost": -0.45207026132967915,
+        "sci_anime_improvement": 0.17323635153052763,
+        "detection_diversity": 3
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0009.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.75,
+      "pose_detection_success": true,
+      "pose_confidence": 0.9005246387602706,
+      "sci_score": 0.4842195340083243,
+      "sci_anime_score": 0.6535578187933838,
+      "ensemble_confidence": 0.6013742884559562,
+      "processing_time": 4.045128583908081,
+      "improvement_metrics": {
+        "ensemble_boost": -0.1486257115440438,
+        "sci_anime_improvement": 0.16933828478505952,
+        "detection_diversity": 2
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0010.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.9500000000000001,
+      "pose_detection_success": true,
+      "pose_confidence": 0.9266218007513971,
+      "sci_score": 0.4989155475115907,
+      "sci_anime_score": 0.6825917775854141,
+      "ensemble_confidence": 0.7701972412771618,
+      "processing_time": 4.174473762512207,
+      "improvement_metrics": {
+        "ensemble_boost": -0.17980275872283824,
+        "sci_anime_improvement": 0.18367623007382344,
+        "detection_diversity": 3
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0011.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.9500000000000001,
+      "pose_detection_success": true,
+      "pose_confidence": 0.8093139305548235,
+      "sci_score": 0.4788534481061508,
+      "sci_anime_score": 0.6485275355860153,
+      "ensemble_confidence": 0.7132508861157354,
+      "processing_time": 4.108317136764526,
+      "improvement_metrics": {
+        "ensemble_boost": -0.23674911388426467,
+        "sci_anime_improvement": 0.16967408747986445,
+        "detection_diversity": 3
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0012.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.9500000000000001,
+      "pose_detection_success": true,
+      "pose_confidence": 0.9218573522567749,
+      "sci_score": 0.4265654131050408,
+      "sci_anime_score": 0.5337167316908535,
+      "ensemble_confidence": 0.72007996250148,
+      "processing_time": 4.230121612548828,
+      "improvement_metrics": {
+        "ensemble_boost": -0.22992003749852008,
+        "sci_anime_improvement": 0.10715131858581273,
+        "detection_diversity": 3
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0013.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.9500000000000001,
+      "pose_detection_success": true,
+      "pose_confidence": 0.917860142782782,
+      "sci_score": 0.7417781418934375,
+      "sci_anime_score": 0.8196713157560132,
+      "ensemble_confidence": 0.681695883692733,
+      "processing_time": 4.1716649532318115,
+      "improvement_metrics": {
+        "ensemble_boost": -0.268304116307267,
+        "sci_anime_improvement": 0.07789317386257566,
+        "detection_diversity": 3
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0014.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.9500000000000001,
+      "pose_detection_success": true,
+      "pose_confidence": 0.9092746161357923,
+      "sci_score": 0.5122978675329191,
+      "sci_anime_score": 0.7061489337664595,
+      "ensemble_confidence": 0.7790045475911924,
+      "processing_time": 3.845038652420044,
+      "improvement_metrics": {
+        "ensemble_boost": -0.17099545240880765,
+        "sci_anime_improvement": 0.19385106623354043,
+        "detection_diversity": 3
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0015.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.8150000000000001,
+      "pose_detection_success": true,
+      "pose_confidence": 0.9002834071760828,
+      "sci_score": 0.5158065359538154,
+      "sci_anime_score": 0.7079032679769077,
+      "ensemble_confidence": 0.6382408693651417,
+      "processing_time": 4.380908012390137,
+      "improvement_metrics": {
+        "ensemble_boost": -0.17675913063485837,
+        "sci_anime_improvement": 0.1920967320230923,
+        "detection_diversity": 3
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0016.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.9500000000000001,
+      "pose_detection_success": true,
+      "pose_confidence": 0.885642470609058,
+      "sci_score": 0.529241214658591,
+      "sci_anime_score": 0.7146206073292954,
+      "ensemble_confidence": 0.7383533252671142,
+      "processing_time": 4.1700170040130615,
+      "improvement_metrics": {
+        "ensemble_boost": -0.2116466747328859,
+        "sci_anime_improvement": 0.18537939267070447,
+        "detection_diversity": 3
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0017.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.9500000000000001,
+      "pose_detection_success": true,
+      "pose_confidence": 0.8788528820213042,
+      "sci_score": 0.6525643012366078,
+      "sci_anime_score": 0.7940022633647159,
+      "ensemble_confidence": 0.7314777849110567,
+      "processing_time": 4.178654432296753,
+      "improvement_metrics": {
+        "ensemble_boost": -0.21852221508894332,
+        "sci_anime_improvement": 0.1414379621281081,
+        "detection_diversity": 3
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0018.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.9500000000000001,
+      "pose_detection_success": true,
+      "pose_confidence": 0.9011523087241433,
+      "sci_score": 0.5190701532933863,
+      "sci_anime_score": 0.7095350766466931,
+      "ensemble_confidence": 0.7336853832031823,
+      "processing_time": 4.135474920272827,
+      "improvement_metrics": {
+        "ensemble_boost": -0.21631461679681774,
+        "sci_anime_improvement": 0.19046492335330678,
+        "detection_diversity": 3
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0019.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.9500000000000001,
+      "pose_detection_success": true,
+      "pose_confidence": 0.9387336755160129,
+      "sci_score": 0.49886207180663655,
+      "sci_anime_score": 0.6813924845838557,
+      "ensemble_confidence": 0.7529414329164019,
+      "processing_time": 4.356826543807983,
+      "improvement_metrics": {
+        "ensemble_boost": -0.19705856708359815,
+        "sci_anime_improvement": 0.18253041277721915,
+        "detection_diversity": 3
+      }
+    },
+    {
+      "image_path": "test_small/kana05_0020.jpg",
+      "face_detection_success": true,
+      "face_confidence": 0.9500000000000001,
+      "pose_detection_success": true,
+      "pose_confidence": 0.8870884758614228,
+      "sci_score": 0.49627175818038716,
+      "sci_anime_score": 0.6801459463629181,
+      "ensemble_confidence": 0.7276414103356943,
+      "processing_time": 4.409215211868286,
+      "improvement_metrics": {
+        "ensemble_boost": -0.22235858966430577,
+        "sci_anime_improvement": 0.18387418818253098,
+        "detection_diversity": 3
+      }
+    }
+  ],
+  "performance_summary": {
+    "face_detection_rate": 1.0,
+    "pose_detection_rate": 0.95,
+    "avg_face_confidence": 0.9332499999999999,
+    "avg_pose_confidence": 0.8438273137381176,
+    "avg_ensemble_confidence": 0.7000306531838115,
+    "sci_average": 0.5351106499844144,
+    "sci_anime_average": 0.7043161441716986,
+    "avg_processing_time": 4.1867463946342465,
+    "total_processing_time": 83.73492789268494
+  },
+  "ensemble_effectiveness": {
+    "avg_ensemble_improvement": -0.23321934681618856,
+    "avg_sci_improvement": 0.1692054941872841,
+    "avg_method_diversity": 2.95,
+    "target_achievement_rate": 0.65,
+    "total_target_achieving_images": 13
+  }
+}
