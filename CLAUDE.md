@@ -33,10 +33,10 @@ pip install opencv-python pycocotools matplotlib onnxruntime onnx ultralytics ea
 ### キャラクター抽出実行
 ```bash
 # 最新パイプライン（v0.0.43）- 推奨
-python extract_kaname03.py --quality_method balanced
+python extract_kana03.py --quality_method balanced
 
-# 改良版パイプライン（kaname04系列）
-python extract_kaname04.py
+# 改良版パイプライン（kana04系列）
+python extract_kana04.py
 
 # インタラクティブバッチ処理
 python sam_batch_interactive.py
@@ -146,8 +146,8 @@ python -m pytest tests/test_extract.py -v
 - `requirements.txt` - Python依存関係
 
 ### ログファイル
-- `kaname03_*.log` - パイプライン実行ログ（balanced, confidence, size, fullbody, central各手法別）
-- `kaname04_*.log` - 改良版パイプラインログ
+- `kana03_*.log` - パイプライン実行ログ（balanced, confidence, size, fullbody, central各手法別）
+- `kana04_*.log` - 改良版パイプラインログ
 - `v042_sequential_full.log` - フル実行ログ
 
 ## アーキテクチャ
@@ -177,10 +177,10 @@ python -m pytest tests/test_extract.py -v
 #### 実行例
 ```bash
 # バランス手法で実行
-python extract_kaname03.py --quality_method balanced
+python extract_kana03.py --quality_method balanced
 
 # 信頼度優先で実行  
-python extract_kaname03.py --quality_method confidence_priority
+python extract_kana03.py --quality_method confidence_priority
 ```
 
 ### コアモジュール
@@ -251,7 +251,7 @@ cp config/pushover.json.example config/pushover.json
 ```bash
 # ログレベル変更
 export LOG_LEVEL=DEBUG
-python extract_kaname03.py
+python extract_kana03.py
 
 # テスト用小規模実行
 python test_phase2_simple.py

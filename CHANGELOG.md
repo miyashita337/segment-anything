@@ -131,7 +131,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **run_batch_v035.py**: Enhanced batch processing script with comprehensive JSON results output and detailed performance metrics
 - **batch_results_v035.json**: Detailed batch processing results documentation with individual image processing times and success rates
-- **Performance Benchmarking**: Comprehensive processing statistics for kaname09 dataset (58 images, 46.6% success rate)
+- **Performance Benchmarking**: Comprehensive processing statistics for kana09 dataset (58 images, 46.6% success rate)
 
 ### Fixed
 - **Batch Processing Reliability**: Improved error handling and progress tracking for large-scale image processing
@@ -139,7 +139,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Performance Monitoring**: Better tracking of processing time per image and overall batch performance
 
 ### Performance Metrics
-- **Processing Speed**: Average 17.3 seconds per image on kaname09 dataset
+- **Processing Speed**: Average 17.3 seconds per image on kana09 dataset
 - **Success Rate**: 46.6% (27/58 images) with detailed failure analysis
 - **Memory Usage**: Stable memory consumption during batch processing
 - **Error Classification**: Detailed categorization of processing failures for improvement targeting
@@ -214,7 +214,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v0.3.3] - 2025-07-18
 
 ### Added
-- **[P1-009] Learning Data Collection Planning**: Strategic learning data collection system with gap analysis and sampling strategy based on kaname07 evaluation data (41 samples analyzed)
+- **[P1-009] Learning Data Collection Planning**: Strategic learning data collection system with gap analysis and sampling strategy based on kana07 evaluation data (41 samples analyzed)
 - **[P1-015] Evaluation Difference Analyzer**: Quantification system for automatic vs user evaluation differences with correlation analysis and improvement recommendations
 - **[P1-017] Boundary Analysis Algorithm**: Boundary line quality quantification using curvature variance, Douglas-Peucker simplification, and smoothness metrics
 - **[P1-019] Human Structure Recognition System**: Human body structure recognition for limb truncation prevention with body region estimation and risk assessment
@@ -247,7 +247,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Region Priority System**: New region-based character selection system based on user evaluation feedback
-- **User Evaluation Data Integration**: Added kaname07_user_evaluation.jsonl with 41 image evaluations
+- **User Evaluation Data Integration**: Added kana07_user_evaluation.jsonl with 41 image evaluations
 - **Character Selection Optimization**: Enhanced character selection with position-based prioritization
 
 ### Changed
@@ -309,7 +309,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Memory Efficiency**: Optimized clustering for large images with sampling techniques
 
 ### Performance Benchmarks
-- **kaname07 Dataset**: 3/3 images successful mosaic detection with 0.772-1.000 confidence
+- **kana07 Dataset**: 3/3 images successful mosaic detection with 0.772-1.000 confidence
 - **Detection Coverage**: Multiple pattern types (grid, pixelated, blur, rotated patterns)
 - **Processing Speed**: Maintained target of 5000+ pixels/second across all implementations
 - **Quality Metrics**: Average boundary quality scores >0.8 for detected regions
@@ -355,7 +355,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentation**: Comprehensive developer guides and troubleshooting
 
 ### Performance
-- **Batch Processing**: Confirmed 32.6% success rate on kaname06 dataset (28/86 images)
+- **Batch Processing**: Confirmed 32.6% success rate on kana06 dataset (28/86 images)
 - **Initialization**: Streamlined model loading with singleton pattern preparation
 - **Memory Management**: Improved resource handling for large datasets
 
