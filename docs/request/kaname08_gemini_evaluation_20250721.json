@@ -1,0 +1,168 @@
+{
+  "batch_info": {
+    "total_images": 26,
+    "mcp_success_count": 0,
+    "mcp_error_count": 26,
+    "mcp_success_rate": 0.0,
+    "total_time": 0.04741096496582031,
+    "timestamp": "2025-07-21T13:26:43.310249"
+  },
+  "results": [
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0000_cover.jpg",
+      "timestamp": "2025-07-21T13:26:43.264794",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0001.jpg",
+      "timestamp": "2025-07-21T13:26:43.266788",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0002.jpg",
+      "timestamp": "2025-07-21T13:26:43.268564",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0003.jpg",
+      "timestamp": "2025-07-21T13:26:43.270395",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0004.jpg",
+      "timestamp": "2025-07-21T13:26:43.272141",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0005.jpg",
+      "timestamp": "2025-07-21T13:26:43.274097",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0006.jpg",
+      "timestamp": "2025-07-21T13:26:43.275910",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0007.jpg",
+      "timestamp": "2025-07-21T13:26:43.277625",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0008.jpg",
+      "timestamp": "2025-07-21T13:26:43.279363",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0009.jpg",
+      "timestamp": "2025-07-21T13:26:43.281027",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0010.jpg",
+      "timestamp": "2025-07-21T13:26:43.283092",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0011.jpg",
+      "timestamp": "2025-07-21T13:26:43.284897",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0012.jpg",
+      "timestamp": "2025-07-21T13:26:43.286780",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0013.jpg",
+      "timestamp": "2025-07-21T13:26:43.288602",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0014.jpg",
+      "timestamp": "2025-07-21T13:26:43.290410",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0015.jpg",
+      "timestamp": "2025-07-21T13:26:43.292243",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0016.jpg",
+      "timestamp": "2025-07-21T13:26:43.294028",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0017.jpg",
+      "timestamp": "2025-07-21T13:26:43.295762",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0018.jpg",
+      "timestamp": "2025-07-21T13:26:43.297726",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0019.jpg",
+      "timestamp": "2025-07-21T13:26:43.299673",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0020.jpg",
+      "timestamp": "2025-07-21T13:26:43.301476",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0021.jpg",
+      "timestamp": "2025-07-21T13:26:43.303299",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0022.jpg",
+      "timestamp": "2025-07-21T13:26:43.305114",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0023.jpg",
+      "timestamp": "2025-07-21T13:26:43.306839",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0024.jpg",
+      "timestamp": "2025-07-21T13:26:43.308552",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0/kana08_0025_cover.jpg",
+      "timestamp": "2025-07-21T13:26:43.310239",
+      "success": false,
+      "error": "利用可能なAPIがありません。APIキーを確認してください。"
+    }
+  ]
+}

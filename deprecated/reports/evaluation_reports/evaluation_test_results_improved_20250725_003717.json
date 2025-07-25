@@ -1,0 +1,39 @@
+{
+  "timestamp": "2025-07-25 00:37:17.086873",
+  "batch_size": 30,
+  "pla_statistics": null,
+  "sci_statistics": {
+    "mean": 0.17061929370417742,
+    "std": 0.17871188977794336,
+    "min": 0.0,
+    "max": 0.5540256500244141,
+    "median": 0.15,
+    "q25": 0.0,
+    "q75": 0.3,
+    "count": 30
+  },
+  "ple_result": {
+    "ple_score": 0.0,
+    "improvement_rate": 0.0,
+    "stability": 0.0,
+    "efficiency": 0.0,
+    "learning_status": "データ不足",
+    "status_code": 0,
+    "trend_direction": "unknown"
+  },
+  "overall_quality_score": 0.17061929370417742,
+  "overall_quality_level": "品質不足",
+  "milestone_progress": {
+    "phase_a1": 0.0,
+    "phase_a2": 0.2437418481488249,
+    "phase_b1": 0.2274923916055699,
+    "phase_c1": 0.17061929370417742
+  },
+  "recommendations": [
+    "SCI平均値向上が必要: 0.171 → 0.70",
+    "学習効率改善が必要: 手法見直しまたはパラメータ調整推奨"
+  ],
+  "alerts": [
+    "SCI警告: 平均値が目標を下回る (0.171 < 0.70)"
+  ]
+}

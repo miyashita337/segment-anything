@@ -85,3 +85,11 @@ config/pushover.json
 config/secret*.json
 config/*.key
 config/*.token
+
+# セキュリティ原則追加: プロジェクトルート直下画像出力禁止
+expanded_dataset/
+test_batches/
+phase1_panel_detection/
+visualizations/
+
+PRINCIPLE.md

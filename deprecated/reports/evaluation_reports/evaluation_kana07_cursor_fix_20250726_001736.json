@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-07-26 00:17:36.066638",
+  "batch_size": 21,
+  "pla_statistics": {
+    "mean": 0.0,
+    "std": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "median": 0.0,
+    "q25": 0.0,
+    "q75": 0.0,
+    "count": 7
+  },
+  "sci_statistics": {
+    "mean": 0.1197832493554978,
+    "std": 0.15760170744344232,
+    "min": 0.0,
+    "max": 0.4675305474888195,
+    "median": 0.0,
+    "q25": 0.0,
+    "q75": 0.23975692879069938,
+    "count": 21
+  },
+  "ple_result": {
+    "ple_score": 0.0,
+    "improvement_rate": 0.0,
+    "stability": 0.0,
+    "efficiency": 0.0,
+    "learning_status": "データ不足",
+    "status_code": 0,
+    "trend_direction": "unknown"
+  },
+  "overall_quality_score": 0.04791329974219913,
+  "overall_quality_level": "品質不足",
+  "milestone_progress": {
+    "phase_a1": 0.0,
+    "phase_a2": 0.17111892765071116,
+    "phase_b1": 0.07098266628473945,
+    "phase_c1": 0.0598916246777489
+  },
+  "recommendations": [
+    "PLA平均値向上が必要: 0.000 → 0.75",
+    "SCI平均値向上が必要: 0.120 → 0.70",
+    "学習効率改善が必要: 手法見直しまたはパラメータ調整推奨"
+  ],
+  "alerts": [
+    "PLA警告: 平均値が目標を下回る (0.000 < 0.75)",
+    "SCI警告: 平均値が目標を下回る (0.120 < 0.70)"
+  ]
+}

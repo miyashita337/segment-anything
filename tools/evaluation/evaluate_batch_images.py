@@ -22,7 +22,7 @@ def main():
     print("🚀 v0.3.5成功画像バッチ評価開始")
     
     # 設定
-    results_dir = Path("/mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5")
+    results_dir = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kaname09_0_3_5")
     output_file = Path("batch_evaluation_results.json")
     
     # batch_results_v035.jsonから成功画像リストを取得

@@ -1,0 +1,168 @@
+🚀 修正版バッチ処理開始
+📁 入力: /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08
+📁 出力: /mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_claude_uni_13_9_fixed
+📊 総数: 26枚
+
+============================================================
+📸 処理中 [1/26]: kaname08_0000_cover.jpg
+✅ 成功: kaname08_0000_cover.jpg
+   出力: 6)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0000_cover.jpg
+
+============================================================
+📸 処理中 [2/26]: kaname08_0001.jpg
+✅ 成功: kaname08_0001.jpg
+   出力: 444x683)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0001.jpg
+
+============================================================
+📸 処理中 [3/26]: kaname08_0002.jpg
+✅ 成功: kaname08_0002.jpg
+   出力: 107x250)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0002.jpg
+
+============================================================
+📸 処理中 [4/26]: kaname08_0003.jpg
+✅ 成功: kaname08_0003.jpg
+   出力: 306x663)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0003.jpg
+
+============================================================
+📸 処理中 [5/26]: kaname08_0004.jpg
+✅ 成功: kaname08_0004.jpg
+   出力: 139x293)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0004.jpg
+
+============================================================
+📸 処理中 [6/26]: kaname08_0005.jpg
+✅ 成功: kaname08_0005.jpg
+   出力: 324x561)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0005.jpg
+
+============================================================
+📸 処理中 [7/26]: kaname08_0006.jpg
+✅ 成功: kaname08_0006.jpg
+   出力: 121x236)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0006.jpg
+
+============================================================
+📸 処理中 [8/26]: kaname08_0007.jpg
+✅ 成功: kaname08_0007.jpg
+   出力: 205x367)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0007.jpg
+
+============================================================
+📸 処理中 [9/26]: kaname08_0008.jpg
+✅ 成功: kaname08_0008.jpg
+   出力: 333x692)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0008.jpg
+
+============================================================
+📸 処理中 [10/26]: kaname08_0009.jpg
+✅ 成功: kaname08_0009.jpg
+   出力: 399x475)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0009.jpg
+
+============================================================
+📸 処理中 [11/26]: kaname08_0010.jpg
+✅ 成功: kaname08_0010.jpg
+   出力: 244x469)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0010.jpg
+
+============================================================
+📸 処理中 [12/26]: kaname08_0011.jpg
+✅ 成功: kaname08_0011.jpg
+   出力: 120x268)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0011.jpg
+
+============================================================
+📸 処理中 [13/26]: kaname08_0012.jpg
+✅ 成功: kaname08_0012.jpg
+   出力: 421x921)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0012.jpg
+
+============================================================
+📸 処理中 [14/26]: kaname08_0013.jpg
+✅ 成功: kaname08_0013.jpg
+   出力: 68x1024)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0013.jpg
+
+============================================================
+📸 処理中 [15/26]: kaname08_0014.jpg
+✅ 成功: kaname08_0014.jpg
+   出力: 185x322)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0014.jpg
+
+============================================================
+📸 処理中 [16/26]: kaname08_0015.jpg
+✅ 成功: kaname08_0015.jpg
+   出力: 197x373)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0015.jpg
+
+============================================================
+📸 処理中 [17/26]: kaname08_0016.jpg
+✅ 成功: kaname08_0016.jpg
+   出力: 175x212)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0016.jpg
+
+============================================================
+📸 処理中 [18/26]: kaname08_0017.jpg
+✅ 成功: kaname08_0017.jpg
+   出力: 104x161)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0017.jpg
+
+============================================================
+📸 処理中 [19/26]: kaname08_0018.jpg
+✅ 成功: kaname08_0018.jpg
+   出力: 13x1024)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0018.jpg
+
+============================================================
+📸 処理中 [20/26]: kaname08_0019.jpg
+✅ 成功: kaname08_0019.jpg
+   出力: 402x467)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0019.jpg
+
+============================================================
+📸 処理中 [21/26]: kaname08_0020.jpg
+✅ 成功: kaname08_0020.jpg
+   出力: 220x396)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0020.jpg
+
+============================================================
+📸 処理中 [22/26]: kaname08_0021.jpg
+✅ 成功: kaname08_0021.jpg
+   出力: 115x217)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0021.jpg
+
+============================================================
+📸 処理中 [23/26]: kaname08_0022.jpg
+✅ 成功: kaname08_0022.jpg
+   出力: 206x384)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0022.jpg
+
+============================================================
+📸 処理中 [24/26]: kaname08_0023.jpg
+✅ 成功: kaname08_0023.jpg
+   出力: 311x539)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0023.jpg
+
+============================================================
+📸 処理中 [25/26]: kaname08_0024.jpg
+✅ 成功: kaname08_0024.jpg
+   出力: 353x162)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0024.jpg
+
+============================================================
+📸 処理中 [26/26]: kaname08_0025_cover.jpg
+✅ 成功: kaname08_0025_cover.jpg
+   出力: 6)
+Successfully processed /mnt/c/AItools/lora/train/yadokugaeru/org/kaname08/kaname08_0025_cover.jpg
+
+============================================================
+🎯 バッチ処理完了
+✅ 成功: 26/26 (100.0%)
+❌ 失敗: 0
+⏱️  処理時間: 631.2秒 (平均: 24.3秒/画像)
+📱 Pushover画像付き通知送信成功: kaname08_0000_cover.jpg
+📱 Pushover通知送信完了

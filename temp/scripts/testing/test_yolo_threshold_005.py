@@ -24,7 +24,7 @@ def select_test_images():
     """失敗画像から5枚を選定"""
     
     # v0.3.5バッチ結果から失敗画像を取得
-    results_path = Path("/mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5/batch_results_v035.json")
+    results_path = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kaname09_0_3_5/batch_results_v035.json")
     
     with open(results_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
@@ -54,8 +54,8 @@ def test_threshold_005():
     test_files = select_test_images()
     
     # 入力・出力パス設定
-    input_dir = Path("/mnt/c/AItools/lora/train/yadokugaeru/org/kaname09")
-    output_dir = Path("/mnt/c/AItools/lora/train/yadokugaeru/test_threshold_005")
+    input_dir = Path("/mnt/c/AItools/lora/train/yado/org/kaname09")
+    output_dir = Path("/mnt/c/AItools/lora/train/yado/test_threshold_005")
     output_dir.mkdir(exist_ok=True)
     
     # キャラクター抽出システム初期化

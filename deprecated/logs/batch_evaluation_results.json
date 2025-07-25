@@ -1,0 +1,234 @@
+{
+  "batch_info": {
+    "total_images": 27,
+    "success_count": 27,
+    "error_count": 0,
+    "success_rate": 100.0,
+    "total_time": 145.6178319454193,
+    "timestamp": "2025-07-19T00:14:35.479191"
+  },
+  "results": [
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 2,\n    \"boundary_quality\": 2,\n    \"background_removal\": 2,\n    \"overall_quality\": 2,\n    \"comments\": \"画像の一部が切れており、キャラクターの完全性が欠けています。境界線がぼやけており、ギザギザしています。背景が不自然に残っており、全体的な抽出品質は低いです。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_000_cover.jpg",
+      "timestamp": "2025-07-19T00:12:15.216066",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 5,\n    \"boundary_quality\": 4,\n    \"background_removal\": 5,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの手足や体の一部は完全に抽出されており、欠けている部分はありません。境界線は全体的に滑らかですが、若干のぼやけが見られる箇所があります。背景は完全に除去されており、不自然な切り抜きは見受けられません。総合的に高品質な抽出ですが、境界線の精度が若干改善の余地があります。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_002.jpg",
+      "timestamp": "2025-07-19T00:12:20.963930",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 4,\n    \"boundary_quality\": 4,\n    \"background_removal\": 4,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの抽出は全体的に良好です。手足や体の一部が切断されている様子はなく、境界線も比較的滑らかです。背景の除去も適切に行われており、不自然な切り抜きは見られません。ただし、細部において若干の改善の余地があります。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_003.jpg",
+      "timestamp": "2025-07-19T00:12:25.903634",
+      "success": true
+    },
+    {
+      "completeness": 5,
+      "boundary_quality": 4,
+      "background_removal": 5,
+      "overall_quality": 4,
+      "comments": "キャラクターの手足や体の一部が切断されておらず、抽出は完全です。境界線は比較的滑らかですが、若干のぼやけが見られます。背景は完全に除去されており、不自然な切り抜きはありません。全体的に高品質な抽出ですが、境界線の精度が若干改善の余地があります。",
+      "api_used": "gpt-4o",
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_004.jpg",
+      "timestamp": "2025-07-19T00:12:30.915352",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 4,\n    \"boundary_quality\": 4,\n    \"background_removal\": 5,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの手足や体の一部はほぼ完全に抽出されていますが、若干の切断が見られる可能性があります。境界線は比較的滑らかで、ギザギザは少ないです。背景はしっかりと除去されており、不自然な切り抜きは見られません。全体的に高品質な抽出ですが、細部に若干の改善の余地があります。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_005.jpg",
+      "timestamp": "2025-07-19T00:12:36.499564",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 4,\n    \"boundary_quality\": 4,\n    \"background_removal\": 4,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの手足や体の一部はほぼ完全に抽出されていますが、右手が少し切れているように見えます。境界線は比較的滑らかで、ギザギザは少ないです。背景はほとんど除去されていますが、若干の不自然さが残っている可能性があります。全体的に高品質な抽出ですが、細部に若干の改善の余地があります。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_007.jpg",
+      "timestamp": "2025-07-19T00:12:44.796765",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 4,\n    \"boundary_quality\": 4,\n    \"background_removal\": 5,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの手足や体の一部はほぼ完全に抽出されていますが、若干の切断が見られる可能性があります。境界線は比較的滑らかで、ギザギザは少ないです。背景はしっかりと除去されており、不自然な切り抜きは見られません。全体的に高品質な抽出ですが、細部の改善が可能です。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_008.jpg",
+      "timestamp": "2025-07-19T00:12:52.209822",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 4,\n    \"boundary_quality\": 3,\n    \"background_removal\": 4,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの手足や体の一部はほぼ完全に抽出されていますが、若干の境界線のぼやけが見られます。背景はほとんど除去されていますが、少し不自然な部分があります。全体的には良好な品質です。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_009.jpg",
+      "timestamp": "2025-07-19T00:12:55.867825",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 4,\n    \"boundary_quality\": 4,\n    \"background_removal\": 5,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの手足や体の一部はほぼ完全に抽出されていますが、若干の切断が見られる可能性があります。境界線は比較的滑らかで、ギザギザは少ないです。背景は完全に除去されており、不自然な切り抜きは見られません。全体的に高品質な抽出ですが、細部の改善が可能です。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_010.jpg",
+      "timestamp": "2025-07-19T00:13:02.528986",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 4,\n    \"boundary_quality\": 4,\n    \"background_removal\": 5,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの手足や体の一部はほぼ完全に抽出されていますが、若干の切断が見られる可能性があります。境界線は比較的滑らかで、ギザギザは少ないです。背景は完全に除去されており、不自然な切り抜きは見られません。全体的に高品質な抽出ですが、細部の改善が可能です。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_011.jpg",
+      "timestamp": "2025-07-19T00:13:07.903254",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 5,\n    \"boundary_quality\": 4,\n    \"background_removal\": 5,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの一部が切断されている様子はなく、抽出は完全です。境界線は比較的滑らかですが、若干のギザギザが見られます。背景は完全に除去されており、不自然な切り抜きはありません。全体的に高品質な抽出ですが、境界線の精度が若干改善の余地があります。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_012.jpg",
+      "timestamp": "2025-07-19T00:13:15.873998",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 2,\n    \"boundary_quality\": 3,\n    \"background_removal\": 3,\n    \"overall_quality\": 2,\n    \"comments\": \"画像の上部と右側が切断されており、抽出の完全性が低いです。境界線は比較的滑らかですが、背景の一部が残っている可能性があります。全体的に抽出品質は改善の余地があります。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_014.jpg",
+      "timestamp": "2025-07-19T00:13:18.395088",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 5,\n    \"boundary_quality\": 4,\n    \"background_removal\": 5,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの手足や体の一部は完全に抽出されており、切断されていません。境界線は比較的滑らかですが、若干のぼやけが見られます。背景は完全に除去されており、不自然な切り抜きはありません。全体的に高品質な抽出ですが、境界線の精度が若干改善の余地があります。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_015.jpg",
+      "timestamp": "2025-07-19T00:13:23.783890",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 4,\n    \"boundary_quality\": 4,\n    \"background_removal\": 5,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの手足や体の一部はほぼ完全に抽出されていますが、若干の切断が見られる可能性があります。境界線は比較的滑らかで、ギザギザはほとんどありません。背景は完全に除去されており、不自然な切り抜きは見られません。全体的に高品質な抽出ですが、細部の改善が可能です。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_016.jpg",
+      "timestamp": "2025-07-19T00:13:31.488494",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 5,\n    \"boundary_quality\": 4,\n    \"background_removal\": 3,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの手足や体の一部は完全に描かれており、抽出の完全性は非常に良いです。境界線は比較的滑らかですが、若干のぼやけが見られます。背景は一部残っており、完全な除去には至っていませんが、全体的な品質は良好です。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_018.jpg",
+      "timestamp": "2025-07-19T00:13:35.939097",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 2,\n    \"boundary_quality\": 3,\n    \"background_removal\": 4,\n    \"overall_quality\": 3,\n    \"comments\": \"キャラクターの一部が欠けており、特に右側の腕が完全に切断されています。境界線は比較的滑らかですが、若干のぼやけが見られます。背景はほぼ完全に除去されていますが、全体的な抽出品質は改善の余地があります。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_019.jpg",
+      "timestamp": "2025-07-19T00:13:39.025972",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 5,\n    \"boundary_quality\": 4,\n    \"background_removal\": 5,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの手足や体の一部は完全に抽出されており、切断されていません。境界線は比較的滑らかですが、若干のぼやけが見られます。背景は完全に除去されており、不自然な切り抜きはありません。全体的に高品質な抽出ですが、境界線の精度が若干改善の余地があります。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_020.jpg",
+      "timestamp": "2025-07-19T00:13:45.494019",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 5,\n    \"boundary_quality\": 4,\n    \"background_removal\": 5,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの手足や体の一部は完全に抽出されており、欠損は見られません。境界線は比較的滑らかですが、若干のぼやけが見られる部分があります。背景は完全に除去されており、不自然な切り抜きはありません。全体的に高品質な抽出ですが、境界線の精度が若干改善の余地があります。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_021.jpg",
+      "timestamp": "2025-07-19T00:13:50.254513",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 5,\n    \"boundary_quality\": 4,\n    \"background_removal\": 5,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの手足や体の一部は完全に抽出されており、欠けている部分はありません。境界線は比較的滑らかですが、若干のぼやけが見られます。背景は完全に除去されており、不自然な切り抜きはありません。全体的に高品質な抽出ですが、境界線の精度が若干改善の余地があります。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_023.jpg",
+      "timestamp": "2025-07-19T00:13:55.257777",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 3,\n    \"boundary_quality\": 2,\n    \"background_removal\": 3,\n    \"overall_quality\": 3,\n    \"comments\": \"キャラクターの形状は大まかに保たれていますが、境界線がギザギザしており、精度が低いです。背景はほぼ除去されていますが、切り抜きが不自然に見える部分があります。全体的に改善の余地があります。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_025.jpg",
+      "timestamp": "2025-07-19T00:13:58.948626",
+      "success": true
+    },
+    {
+      "completeness": 5,
+      "boundary_quality": 4,
+      "background_removal": 5,
+      "overall_quality": 5,
+      "comments": "キャラクターの手足や体の一部が完全に表示されており、抽出は非常に良好です。境界線はほぼ滑らかですが、わずかにギザギザが見られる部分があります。背景は完全に除去されており、不自然な切り抜きもありません。全体的に非常に高品質な抽出です。",
+      "api_used": "gpt-4o",
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_028.jpg",
+      "timestamp": "2025-07-19T00:14:04.720232",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 4,\n    \"boundary_quality\": 4,\n    \"background_removal\": 4,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの手足や体の一部はほぼ完全に抽出されています。境界線も比較的滑らかで、ギザギザは少ないです。背景の除去も良好で、不自然な切り抜きは見られません。全体的に高品質な抽出ですが、細部に若干の改善の余地があります。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_029.jpg",
+      "timestamp": "2025-07-19T00:14:09.250239",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 4,\n    \"boundary_quality\": 4,\n    \"background_removal\": 5,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの手足や体の一部はほぼ完全に抽出されていますが、若干の切断が見られる可能性があります。境界線は比較的滑らかで、ギザギザは少ないです。背景は完全に除去されており、不自然な切り抜きは見られません。全体的に高品質な抽出ですが、細部の改善が可能です。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_030.jpg",
+      "timestamp": "2025-07-19T00:14:15.733717",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 5,\n    \"boundary_quality\": 4,\n    \"background_removal\": 4,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの手足や体の一部は完全に抽出されており、切断されていません。境界線は比較的滑らかですが、若干のぼやけが見られます。背景はほとんど除去されていますが、わずかに不自然な部分があります。全体的に高品質な抽出ですが、細部の改善が可能です。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_032.jpg",
+      "timestamp": "2025-07-19T00:14:20.788106",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 4,\n    \"boundary_quality\": 4,\n    \"background_removal\": 4,\n    \"overall_quality\": 4,\n    \"comments\": \"キャラクターの手足や体の一部は完全に抽出されており、切断されている部分は見受けられません。境界線は比較的滑らかで、ぼやけやギザギザは少ないです。背景はほとんど除去されており、不自然な切り抜きは見られません。全体的に高品質な抽出ですが、若干の改善余地があります。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_034.jpg",
+      "timestamp": "2025-07-19T00:14:26.251761",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 5,\n    \"boundary_quality\": 5,\n    \"background_removal\": 5,\n    \"overall_quality\": 5,\n    \"comments\": \"画像は完全に抽出されており、手足や体の一部が切断されていません。境界線も非常に滑らかで、ギザギザしていません。背景も完全に除去されており、不自然な切り抜きは見られません。総合的に非常に高品質な抽出です。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_049.jpg",
+      "timestamp": "2025-07-19T00:14:30.071042",
+      "success": true
+    },
+    {
+      "raw_response": "```json\n{\n    \"completeness\": 3,\n    \"boundary_quality\": 2,\n    \"background_removal\": 3,\n    \"overall_quality\": 3,\n    \"comments\": \"キャラクターの一部が切断されている可能性があります。境界線がややぼやけており、ギザギザしています。背景はほぼ除去されていますが、全体的な品質は普通です。\"\n}\n```",
+      "api_used": "gpt-4o",
+      "parse_error": true,
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana09_0_3_5/kana09_052.jpg",
+      "timestamp": "2025-07-19T00:14:35.479143",
+      "success": true
+    }
+  ]
+}

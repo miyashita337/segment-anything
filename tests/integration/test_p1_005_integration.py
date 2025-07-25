@@ -26,7 +26,7 @@ class TestP1005Integration(unittest.TestCase):
     
     def setUp(self):
         self.processor = EnhancedMosaicBoundaryProcessor()
-        self.test_image_path = "/mnt/c/AItools/lora/train/yadokugaeru/org/kaname07"
+        self.test_image_path = "/mnt/c/AItools/lora/train/yado/org/kaname07"
         
     def test_real_image_processing(self):
         """実際の画像でのモザイク境界処理テスト"""

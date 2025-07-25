@@ -1,0 +1,2145 @@
+{
+  "summary": {
+    "total_images": 101,
+    "largest_char_accuracy": 0.36633663366336633,
+    "mean_iou": 0.4392383008566079,
+    "ab_evaluation_rate": 0.18811881188118812,
+    "mean_processing_time": 7.939461272945499,
+    "grade_distribution": {
+      "A": 3,
+      "B": 16,
+      "C": 30,
+      "D": 17,
+      "E": 12,
+      "F": 23
+    },
+    "failure_analysis": {
+      "total_failures": 64,
+      "failure_rate": 0.6336633663366337,
+      "extremely_low_iou": 7,
+      "low_confidence": 10,
+      "partial_success": 57
+    },
+    "processing_stats": {
+      "mean": 7.939461272945499,
+      "min": 4.059804001323705,
+      "max": 11.94455325126285
+    }
+  },
+  "detailed_results": [
+    {
+      "image_id": "kana08_0000",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0000.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        66,
+        116,
+        220,
+        277
+      ],
+      "iou_score": 0.2047531619263015,
+      "confidence_score": 0.5673150255759039,
+      "processing_time": 4.2436247667947855,
+      "character_count": 1,
+      "area_largest_ratio": 0.6863029596881565,
+      "quality_grade": "E",
+      "notes": "シミュレーション結果 - IoU: 0.205"
+    },
+    {
+      "image_id": "kana08_0001",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0001.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        119,
+        60,
+        148,
+        334
+      ],
+      "iou_score": 0.16036028632186256,
+      "confidence_score": 0.5010665624787041,
+      "processing_time": 5.116826401894981,
+      "character_count": 2,
+      "area_largest_ratio": 0.2646311231019253,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.160"
+    },
+    {
+      "image_id": "kana08_0002",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0002.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        163,
+        194,
+        263,
+        388
+      ],
+      "ground_truth_bbox": [
+        117,
+        158,
+        261,
+        318
+      ],
+      "iou_score": 0.8496479528558418,
+      "confidence_score": 0.49688814239241597,
+      "processing_time": 9.336034403356875,
+      "character_count": 4,
+      "area_largest_ratio": 0.44048468973745625,
+      "quality_grade": "B",
+      "notes": "シミュレーション結果 - IoU: 0.850"
+    },
+    {
+      "image_id": "kana08_0003",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0003.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        70,
+        161,
+        188,
+        337
+      ],
+      "iou_score": 0.29611806620350967,
+      "confidence_score": 0.6762026456445898,
+      "processing_time": 7.385308765944028,
+      "character_count": 1,
+      "area_largest_ratio": 0.37552351374905113,
+      "quality_grade": "D",
+      "notes": "シミュレーション結果 - IoU: 0.296"
+    },
+    {
+      "image_id": "kana08_0004",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0004.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        151,
+        186,
+        192,
+        321
+      ],
+      "ground_truth_bbox": [
+        142,
+        161,
+        218,
+        251
+      ],
+      "iou_score": 0.8283442010192101,
+      "confidence_score": 0.6112366035613768,
+      "processing_time": 5.307460997626988,
+      "character_count": 1,
+      "area_largest_ratio": 0.6150505690244072,
+      "quality_grade": "B",
+      "notes": "シミュレーション結果 - IoU: 0.828"
+    },
+    {
+      "image_id": "kana08_0005",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0005.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        118,
+        92,
+        220,
+        314
+      ],
+      "iou_score": 0.11653032592351636,
+      "confidence_score": 0.513689458996583,
+      "processing_time": 10.896710871043226,
+      "character_count": 3,
+      "area_largest_ratio": 0.5438727702009004,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.117"
+    },
+    {
+      "image_id": "kana08_0006",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0006.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        143,
+        155,
+        200,
+        348
+      ],
+      "ground_truth_bbox": [
+        119,
+        105,
+        187,
+        278
+      ],
+      "iou_score": 0.5441141391558604,
+      "confidence_score": 0.2196718030781833,
+      "processing_time": 8.789538209221455,
+      "character_count": 4,
+      "area_largest_ratio": 0.3482532468241758,
+      "quality_grade": "D",
+      "notes": "シミュレーション結果 - IoU: 0.544"
+    },
+    {
+      "image_id": "kana08_0007",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0007.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        113,
+        101,
+        121,
+        216
+      ],
+      "iou_score": 0.3710587647152236,
+      "confidence_score": 0.42842718505118704,
+      "processing_time": 9.906078536009147,
+      "character_count": 5,
+      "area_largest_ratio": 0.5816450891633098,
+      "quality_grade": "E",
+      "notes": "シミュレーション結果 - IoU: 0.371"
+    },
+    {
+      "image_id": "kana08_0008",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0008.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        113,
+        111,
+        109,
+        280
+      ],
+      "ground_truth_bbox": [
+        118,
+        161,
+        141,
+        192
+      ],
+      "iou_score": 0.8546757940207241,
+      "confidence_score": 0.7003640752707502,
+      "processing_time": 10.699917372506468,
+      "character_count": 1,
+      "area_largest_ratio": 0.5308983774806901,
+      "quality_grade": "B",
+      "notes": "シミュレーション結果 - IoU: 0.855"
+    },
+    {
+      "image_id": "kana08_0009",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0009.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        113,
+        140,
+        199,
+        171
+      ],
+      "ground_truth_bbox": [
+        90,
+        126,
+        184,
+        247
+      ],
+      "iou_score": 0.6050749468055441,
+      "confidence_score": 0.4636270295402265,
+      "processing_time": 9.644937593465173,
+      "character_count": 4,
+      "area_largest_ratio": 0.7764119624222785,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.605"
+    },
+    {
+      "image_id": "kana08_0010",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0010.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        134,
+        88,
+        170,
+        257
+      ],
+      "iou_score": 0.18838066206513965,
+      "confidence_score": 0.7951101122814306,
+      "processing_time": 6.8934030050955055,
+      "character_count": 1,
+      "area_largest_ratio": 0.43477005260783874,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.188"
+    },
+    {
+      "image_id": "kana08_0011",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0011.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        56,
+        126,
+        234,
+        282
+      ],
+      "ground_truth_bbox": [
+        162,
+        135,
+        253,
+        220
+      ],
+      "iou_score": 0.8069282150153813,
+      "confidence_score": 0.7595932461838756,
+      "processing_time": 8.383219593645464,
+      "character_count": 2,
+      "area_largest_ratio": 0.6088346774538189,
+      "quality_grade": "B",
+      "notes": "シミュレーション結果 - IoU: 0.807"
+    },
+    {
+      "image_id": "kana08_0012",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0012.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        53,
+        174,
+        284,
+        275
+      ],
+      "ground_truth_bbox": [
+        108,
+        81,
+        195,
+        220
+      ],
+      "iou_score": 0.8320642164781749,
+      "confidence_score": 0.26958547315608405,
+      "processing_time": 7.428403932570643,
+      "character_count": 4,
+      "area_largest_ratio": 0.7531460516224129,
+      "quality_grade": "B",
+      "notes": "シミュレーション結果 - IoU: 0.832"
+    },
+    {
+      "image_id": "kana08_0013",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0013.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        159,
+        168,
+        161,
+        220
+      ],
+      "iou_score": 0.29312974774698974,
+      "confidence_score": 0.4427419198004112,
+      "processing_time": 5.511860014863415,
+      "character_count": 3,
+      "area_largest_ratio": 0.8081580404533617,
+      "quality_grade": "E",
+      "notes": "シミュレーション結果 - IoU: 0.293"
+    },
+    {
+      "image_id": "kana08_0014",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0014.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        140,
+        101,
+        271,
+        194
+      ],
+      "iou_score": 0.1364421159457047,
+      "confidence_score": 0.6147159708389622,
+      "processing_time": 8.720283482158676,
+      "character_count": 5,
+      "area_largest_ratio": 0.43221665132918263,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.136"
+    },
+    {
+      "image_id": "kana08_0015",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0015.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        143,
+        106,
+        205,
+        325
+      ],
+      "iou_score": 0.22472544990085797,
+      "confidence_score": 0.6805981876459961,
+      "processing_time": 4.080773678062628,
+      "character_count": 2,
+      "area_largest_ratio": 0.636577054410268,
+      "quality_grade": "E",
+      "notes": "シミュレーション結果 - IoU: 0.225"
+    },
+    {
+      "image_id": "kana08_0016",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0016.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        139,
+        97,
+        243,
+        291
+      ],
+      "iou_score": 0.21164036249828427,
+      "confidence_score": 0.2144757104105725,
+      "processing_time": 10.823284971508974,
+      "character_count": 2,
+      "area_largest_ratio": 0.7654120113501668,
+      "quality_grade": "E",
+      "notes": "シミュレーション結果 - IoU: 0.212"
+    },
+    {
+      "image_id": "kana08_0017",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0017.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        161,
+        131,
+        208,
+        206
+      ],
+      "iou_score": 0.10406095504473961,
+      "confidence_score": 0.3928678388012148,
+      "processing_time": 7.713371658095877,
+      "character_count": 2,
+      "area_largest_ratio": 0.6180957887303276,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.104"
+    },
+    {
+      "image_id": "kana08_0018",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0018.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        104,
+        148,
+        249,
+        328
+      ],
+      "iou_score": 0.4251171153781262,
+      "confidence_score": 0.6398370983189664,
+      "processing_time": 8.894027037892968,
+      "character_count": 2,
+      "area_largest_ratio": 0.7311904711398416,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.425"
+    },
+    {
+      "image_id": "kana08_0019",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0019.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        101,
+        92,
+        141,
+        376
+      ],
+      "iou_score": 0.34158768156264696,
+      "confidence_score": 0.5602824757739094,
+      "processing_time": 4.8143690925846006,
+      "character_count": 1,
+      "area_largest_ratio": 0.855449064959394,
+      "quality_grade": "D",
+      "notes": "シミュレーション結果 - IoU: 0.342"
+    },
+    {
+      "image_id": "kana08_0020",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0020.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        80,
+        119,
+        274,
+        336
+      ],
+      "iou_score": 0.41285423742791794,
+      "confidence_score": 0.742696346946182,
+      "processing_time": 4.5312093515781715,
+      "character_count": 3,
+      "area_largest_ratio": 0.6213367907958275,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.413"
+    },
+    {
+      "image_id": "kana08_0021",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0021.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        154,
+        167,
+        253,
+        288
+      ],
+      "iou_score": 0.48366426357757647,
+      "confidence_score": 0.7342270559022802,
+      "processing_time": 9.08765202160702,
+      "character_count": 4,
+      "area_largest_ratio": 0.6553762240938164,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.484"
+    },
+    {
+      "image_id": "kana08_0022",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0022.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        117,
+        173,
+        210,
+        274
+      ],
+      "iou_score": 0.14490479016867858,
+      "confidence_score": 0.6110777643010111,
+      "processing_time": 9.656429585900714,
+      "character_count": 1,
+      "area_largest_ratio": 0.8840806647937878,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.145"
+    },
+    {
+      "image_id": "kana08_0023",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0023.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        95,
+        94,
+        208,
+        238
+      ],
+      "ground_truth_bbox": [
+        143,
+        153,
+        208,
+        216
+      ],
+      "iou_score": 0.5511743049019731,
+      "confidence_score": 0.7686909105218085,
+      "processing_time": 8.459078520262182,
+      "character_count": 2,
+      "area_largest_ratio": 0.27038831578109096,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.551"
+    },
+    {
+      "image_id": "kana08_0024",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0024.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        134,
+        60,
+        180,
+        215
+      ],
+      "iou_score": 0.45396278670799717,
+      "confidence_score": 0.36299484180461294,
+      "processing_time": 9.768638003851656,
+      "character_count": 3,
+      "area_largest_ratio": 0.3259954955681139,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.454"
+    },
+    {
+      "image_id": "kana08_0025",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0025.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        178,
+        116,
+        158,
+        267
+      ],
+      "iou_score": 0.41706979568391583,
+      "confidence_score": 0.7635851325515709,
+      "processing_time": 4.183588672207713,
+      "character_count": 4,
+      "area_largest_ratio": 0.4442822380019417,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.417"
+    },
+    {
+      "image_id": "kana08_0026",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0026.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        181,
+        164,
+        276,
+        238
+      ],
+      "ground_truth_bbox": [
+        131,
+        102,
+        166,
+        231
+      ],
+      "iou_score": 0.8119607895523047,
+      "confidence_score": 0.4277986694899706,
+      "processing_time": 5.564918296052953,
+      "character_count": 4,
+      "area_largest_ratio": 0.6580407799575404,
+      "quality_grade": "B",
+      "notes": "シミュレーション結果 - IoU: 0.812"
+    },
+    {
+      "image_id": "kana08_0027",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0027.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        50,
+        89,
+        133,
+        234
+      ],
+      "ground_truth_bbox": [
+        80,
+        162,
+        236,
+        186
+      ],
+      "iou_score": 0.79560022151991,
+      "confidence_score": 0.7058342749972367,
+      "processing_time": 9.842354595993843,
+      "character_count": 2,
+      "area_largest_ratio": 0.38719644833157707,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.796"
+    },
+    {
+      "image_id": "kana08_0028",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0028.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        164,
+        187,
+        294,
+        257
+      ],
+      "ground_truth_bbox": [
+        76,
+        166,
+        252,
+        245
+      ],
+      "iou_score": 0.8906119631065974,
+      "confidence_score": 0.16213502033252003,
+      "processing_time": 4.717645249569444,
+      "character_count": 2,
+      "area_largest_ratio": 0.8679389370146007,
+      "quality_grade": "A",
+      "notes": "シミュレーション結果 - IoU: 0.891"
+    },
+    {
+      "image_id": "kana08_0029",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0029.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        138,
+        106,
+        179,
+        333
+      ],
+      "iou_score": 0.10642331833009083,
+      "confidence_score": 0.4052281156091725,
+      "processing_time": 4.230657449461016,
+      "character_count": 5,
+      "area_largest_ratio": 0.28198141505393076,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.106"
+    },
+    {
+      "image_id": "kana08_0030",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0030.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        159,
+        94,
+        139,
+        203
+      ],
+      "iou_score": 0.3092375365182506,
+      "confidence_score": 0.5376824741444883,
+      "processing_time": 9.69455589158285,
+      "character_count": 4,
+      "area_largest_ratio": 0.2530883387025542,
+      "quality_grade": "E",
+      "notes": "シミュレーション結果 - IoU: 0.309"
+    },
+    {
+      "image_id": "kana08_0031",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0031.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        112,
+        84,
+        158,
+        324
+      ],
+      "iou_score": 0.28284178309617386,
+      "confidence_score": 0.18082676347951743,
+      "processing_time": 11.811328565474357,
+      "character_count": 1,
+      "area_largest_ratio": 0.20380378143243627,
+      "quality_grade": "E",
+      "notes": "シミュレーション結果 - IoU: 0.283"
+    },
+    {
+      "image_id": "kana08_0032",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0032.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        114,
+        168,
+        251,
+        260
+      ],
+      "iou_score": 0.21418126706594726,
+      "confidence_score": 0.3199516590640964,
+      "processing_time": 4.551220776709489,
+      "character_count": 3,
+      "area_largest_ratio": 0.39905973908704795,
+      "quality_grade": "D",
+      "notes": "シミュレーション結果 - IoU: 0.214"
+    },
+    {
+      "image_id": "kana08_0033",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0033.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        54,
+        158,
+        260,
+        279
+      ],
+      "ground_truth_bbox": [
+        141,
+        106,
+        154,
+        221
+      ],
+      "iou_score": 0.7555908989569889,
+      "confidence_score": 0.5924837677848017,
+      "processing_time": 4.203476325666007,
+      "character_count": 4,
+      "area_largest_ratio": 0.42108353399151444,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.756"
+    },
+    {
+      "image_id": "kana08_0034",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0034.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        154,
+        61,
+        178,
+        344
+      ],
+      "iou_score": 0.3148338010977907,
+      "confidence_score": 0.6481445059026463,
+      "processing_time": 10.178919638379352,
+      "character_count": 5,
+      "area_largest_ratio": 0.7540253266241219,
+      "quality_grade": "D",
+      "notes": "シミュレーション結果 - IoU: 0.315"
+    },
+    {
+      "image_id": "kana08_0035",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0035.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        98,
+        88,
+        134,
+        210
+      ],
+      "ground_truth_bbox": [
+        144,
+        133,
+        154,
+        287
+      ],
+      "iou_score": 0.5277640376156204,
+      "confidence_score": 0.5635569311737778,
+      "processing_time": 9.846457764554167,
+      "character_count": 2,
+      "area_largest_ratio": 0.7218929407728372,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.528"
+    },
+    {
+      "image_id": "kana08_0036",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0036.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        100,
+        117,
+        145,
+        228
+      ],
+      "iou_score": 0.4974381078763326,
+      "confidence_score": 0.14042890996599688,
+      "processing_time": 6.9863002386949224,
+      "character_count": 5,
+      "area_largest_ratio": 0.8779781551564303,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.497"
+    },
+    {
+      "image_id": "kana08_0037",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0037.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        156,
+        106,
+        206,
+        196
+      ],
+      "iou_score": 0.11638220942374472,
+      "confidence_score": 0.3883466895829649,
+      "processing_time": 7.038426391822974,
+      "character_count": 4,
+      "area_largest_ratio": 0.43426167188775655,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.116"
+    },
+    {
+      "image_id": "kana08_0038",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0038.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        171,
+        193,
+        269,
+        150
+      ],
+      "ground_truth_bbox": [
+        177,
+        65,
+        275,
+        305
+      ],
+      "iou_score": 0.5194037975827119,
+      "confidence_score": 0.12352259398531588,
+      "processing_time": 5.229328359422472,
+      "character_count": 5,
+      "area_largest_ratio": 0.7231520070433819,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.519"
+    },
+    {
+      "image_id": "kana08_0039",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0039.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        163,
+        104,
+        190,
+        291
+      ],
+      "iou_score": 0.3482395193292938,
+      "confidence_score": 0.6274070596047246,
+      "processing_time": 7.577590922057065,
+      "character_count": 5,
+      "area_largest_ratio": 0.24829755259603253,
+      "quality_grade": "E",
+      "notes": "シミュレーション結果 - IoU: 0.348"
+    },
+    {
+      "image_id": "kana08_0040",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0040.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        118,
+        108,
+        194,
+        349
+      ],
+      "iou_score": 0.418456616053801,
+      "confidence_score": 0.39765573142854505,
+      "processing_time": 6.242804929007424,
+      "character_count": 2,
+      "area_largest_ratio": 0.8474143542979586,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.418"
+    },
+    {
+      "image_id": "kana08_0041",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0041.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        151,
+        131,
+        254,
+        231
+      ],
+      "iou_score": 0.46575022878893957,
+      "confidence_score": 0.310044871911588,
+      "processing_time": 5.569735451054074,
+      "character_count": 2,
+      "area_largest_ratio": 0.300996255922083,
+      "quality_grade": "D",
+      "notes": "シミュレーション結果 - IoU: 0.466"
+    },
+    {
+      "image_id": "kana08_0042",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0042.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        104,
+        113,
+        199,
+        323
+      ],
+      "iou_score": 0.18240792424313002,
+      "confidence_score": 0.6517949214193675,
+      "processing_time": 7.950934948431895,
+      "character_count": 2,
+      "area_largest_ratio": 0.7487863255063012,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.182"
+    },
+    {
+      "image_id": "kana08_0043",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0043.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        101,
+        79,
+        141,
+        261
+      ],
+      "iou_score": 0.4085331414980266,
+      "confidence_score": 0.3059006836612967,
+      "processing_time": 4.4430591515017435,
+      "character_count": 2,
+      "area_largest_ratio": 0.6727206922086049,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.409"
+    },
+    {
+      "image_id": "kana08_0044",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0044.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        130,
+        89,
+        265,
+        194
+      ],
+      "ground_truth_bbox": [
+        154,
+        92,
+        166,
+        314
+      ],
+      "iou_score": 0.6187435508395233,
+      "confidence_score": 0.14005720382904616,
+      "processing_time": 8.141066043770543,
+      "character_count": 4,
+      "area_largest_ratio": 0.27364009791706206,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.619"
+    },
+    {
+      "image_id": "kana08_0045",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0045.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        142,
+        83,
+        218,
+        335
+      ],
+      "ground_truth_bbox": [
+        128,
+        162,
+        271,
+        344
+      ],
+      "iou_score": 0.7011834726718773,
+      "confidence_score": 0.39493555918224643,
+      "processing_time": 9.950758911922392,
+      "character_count": 2,
+      "area_largest_ratio": 0.8518354840265963,
+      "quality_grade": "B",
+      "notes": "シミュレーション結果 - IoU: 0.701"
+    },
+    {
+      "image_id": "kana08_0046",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0046.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        141,
+        131,
+        157,
+        268
+      ],
+      "iou_score": 0.08831106258383498,
+      "confidence_score": 0.6352483685294577,
+      "processing_time": 11.920524432636094,
+      "character_count": 3,
+      "area_largest_ratio": 0.7519956130412135,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.088"
+    },
+    {
+      "image_id": "kana08_0047",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0047.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        118,
+        145,
+        156,
+        360
+      ],
+      "iou_score": 0.425779227254189,
+      "confidence_score": 0.1500532139871545,
+      "processing_time": 9.285576679244773,
+      "character_count": 2,
+      "area_largest_ratio": 0.7727957345234191,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.426"
+    },
+    {
+      "image_id": "kana08_0048",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0048.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        86,
+        107,
+        131,
+        318
+      ],
+      "iou_score": 0.33078758878373254,
+      "confidence_score": 0.2581526463484391,
+      "processing_time": 10.324500416179987,
+      "character_count": 4,
+      "area_largest_ratio": 0.6071297349378959,
+      "quality_grade": "E",
+      "notes": "シミュレーション結果 - IoU: 0.331"
+    },
+    {
+      "image_id": "kana08_0049",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0049.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        133,
+        87,
+        123,
+        274
+      ],
+      "iou_score": 0.04981455305924898,
+      "confidence_score": 0.559924307139909,
+      "processing_time": 6.690462785728709,
+      "character_count": 5,
+      "area_largest_ratio": 0.20096838851844118,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.050"
+    },
+    {
+      "image_id": "kana08_0050",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0050.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        73,
+        125,
+        277,
+        228
+      ],
+      "iou_score": 0.4576441096527105,
+      "confidence_score": 0.30189128742001015,
+      "processing_time": 4.059804001323705,
+      "character_count": 4,
+      "area_largest_ratio": 0.26261919398231565,
+      "quality_grade": "D",
+      "notes": "シミュレーション結果 - IoU: 0.458"
+    },
+    {
+      "image_id": "kana08_0051",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0051.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        80,
+        67,
+        206,
+        300
+      ],
+      "iou_score": 0.4064560796681375,
+      "confidence_score": 0.26215686184066295,
+      "processing_time": 11.856759039917698,
+      "character_count": 4,
+      "area_largest_ratio": 0.6068097307317257,
+      "quality_grade": "D",
+      "notes": "シミュレーション結果 - IoU: 0.406"
+    },
+    {
+      "image_id": "kana08_0052",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0052.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        78,
+        75,
+        178,
+        372
+      ],
+      "iou_score": 0.42588047566430254,
+      "confidence_score": 0.7231798353831603,
+      "processing_time": 5.549708460948237,
+      "character_count": 5,
+      "area_largest_ratio": 0.259899711741948,
+      "quality_grade": "D",
+      "notes": "シミュレーション結果 - IoU: 0.426"
+    },
+    {
+      "image_id": "kana08_0053",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0053.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        183,
+        146,
+        271,
+        165
+      ],
+      "ground_truth_bbox": [
+        149,
+        173,
+        248,
+        376
+      ],
+      "iou_score": 0.6051427753795118,
+      "confidence_score": 0.2224469105011517,
+      "processing_time": 8.793581839382995,
+      "character_count": 5,
+      "area_largest_ratio": 0.37562823569932446,
+      "quality_grade": "B",
+      "notes": "シミュレーション結果 - IoU: 0.605"
+    },
+    {
+      "image_id": "kana08_0054",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0054.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        150,
+        194,
+        142,
+        196
+      ],
+      "ground_truth_bbox": [
+        104,
+        109,
+        193,
+        304
+      ],
+      "iou_score": 0.7743726749361964,
+      "confidence_score": 0.44869271038724967,
+      "processing_time": 11.38839546525654,
+      "character_count": 3,
+      "area_largest_ratio": 0.3758690384208554,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.774"
+    },
+    {
+      "image_id": "kana08_0055",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0055.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        148,
+        123,
+        191,
+        274
+      ],
+      "iou_score": 0.252540064704647,
+      "confidence_score": 0.33816007922281577,
+      "processing_time": 8.065084945346912,
+      "character_count": 1,
+      "area_largest_ratio": 0.6799723774320784,
+      "quality_grade": "D",
+      "notes": "シミュレーション結果 - IoU: 0.253"
+    },
+    {
+      "image_id": "kana08_0056",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0056.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        97,
+        70,
+        231,
+        182
+      ],
+      "iou_score": 0.058959881633645295,
+      "confidence_score": 0.6839662739426577,
+      "processing_time": 10.995295500806066,
+      "character_count": 4,
+      "area_largest_ratio": 0.21834468775571358,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.059"
+    },
+    {
+      "image_id": "kana08_0057",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0057.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        99,
+        175,
+        145,
+        256
+      ],
+      "iou_score": 0.2936117138203014,
+      "confidence_score": 0.7191105933301097,
+      "processing_time": 11.557677149285128,
+      "character_count": 4,
+      "area_largest_ratio": 0.2049674747207294,
+      "quality_grade": "E",
+      "notes": "シミュレーション結果 - IoU: 0.294"
+    },
+    {
+      "image_id": "kana08_0058",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0058.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        83,
+        85,
+        221,
+        160
+      ],
+      "ground_truth_bbox": [
+        141,
+        111,
+        189,
+        332
+      ],
+      "iou_score": 0.7963144921139232,
+      "confidence_score": 0.28090879589381235,
+      "processing_time": 5.858505289797047,
+      "character_count": 1,
+      "area_largest_ratio": 0.7235610186702846,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.796"
+    },
+    {
+      "image_id": "kana08_0059",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0059.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        177,
+        75,
+        135,
+        368
+      ],
+      "iou_score": 0.4826986600973217,
+      "confidence_score": 0.3476031761757059,
+      "processing_time": 10.778135968036691,
+      "character_count": 4,
+      "area_largest_ratio": 0.5119402835335174,
+      "quality_grade": "D",
+      "notes": "シミュレーション結果 - IoU: 0.483"
+    },
+    {
+      "image_id": "kana08_0060",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0060.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        169,
+        151,
+        275,
+        377
+      ],
+      "ground_truth_bbox": [
+        165,
+        128,
+        144,
+        367
+      ],
+      "iou_score": 0.7451713960232107,
+      "confidence_score": 0.1678966461139913,
+      "processing_time": 4.461287051466955,
+      "character_count": 4,
+      "area_largest_ratio": 0.4030585116070191,
+      "quality_grade": "B",
+      "notes": "シミュレーション結果 - IoU: 0.745"
+    },
+    {
+      "image_id": "kana08_0061",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0061.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        119,
+        70,
+        269,
+        322
+      ],
+      "iou_score": 0.06735905286087096,
+      "confidence_score": 0.6866839529625673,
+      "processing_time": 5.534727705110639,
+      "character_count": 5,
+      "area_largest_ratio": 0.3013703167322503,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.067"
+    },
+    {
+      "image_id": "kana08_0062",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0062.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        55,
+        60,
+        246,
+        189
+      ],
+      "ground_truth_bbox": [
+        150,
+        120,
+        222,
+        329
+      ],
+      "iou_score": 0.6006279755786602,
+      "confidence_score": 0.351391933304839,
+      "processing_time": 9.047625911613823,
+      "character_count": 2,
+      "area_largest_ratio": 0.558807148689634,
+      "quality_grade": "B",
+      "notes": "シミュレーション結果 - IoU: 0.601"
+    },
+    {
+      "image_id": "kana08_0063",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0063.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        161,
+        169,
+        192,
+        343
+      ],
+      "ground_truth_bbox": [
+        117,
+        147,
+        238,
+        336
+      ],
+      "iou_score": 0.890336588490906,
+      "confidence_score": 0.47669762251756276,
+      "processing_time": 8.144978203140518,
+      "character_count": 1,
+      "area_largest_ratio": 0.7994999513988343,
+      "quality_grade": "B",
+      "notes": "シミュレーション結果 - IoU: 0.890"
+    },
+    {
+      "image_id": "kana08_0064",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0064.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        67,
+        139,
+        266,
+        284
+      ],
+      "iou_score": 0.13196026245989362,
+      "confidence_score": 0.2083195389332761,
+      "processing_time": 5.965787350124286,
+      "character_count": 4,
+      "area_largest_ratio": 0.2961031835311266,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.132"
+    },
+    {
+      "image_id": "kana08_0065",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0065.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        110,
+        118,
+        229,
+        185
+      ],
+      "iou_score": 0.1881958048612431,
+      "confidence_score": 0.7308332106166027,
+      "processing_time": 8.475646792959363,
+      "character_count": 2,
+      "area_largest_ratio": 0.41340120916069145,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.188"
+    },
+    {
+      "image_id": "kana08_0066",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0066.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        182,
+        195,
+        272,
+        161
+      ],
+      "ground_truth_bbox": [
+        113,
+        158,
+        237,
+        183
+      ],
+      "iou_score": 0.8412301507629176,
+      "confidence_score": 0.6677681833119822,
+      "processing_time": 8.099911416393423,
+      "character_count": 4,
+      "area_largest_ratio": 0.4990177835996358,
+      "quality_grade": "A",
+      "notes": "シミュレーション結果 - IoU: 0.841"
+    },
+    {
+      "image_id": "kana08_0067",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0067.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        117,
+        61,
+        267,
+        201
+      ],
+      "iou_score": 0.3109454323175914,
+      "confidence_score": 0.7919653430317984,
+      "processing_time": 7.039066267458504,
+      "character_count": 2,
+      "area_largest_ratio": 0.8972898437036956,
+      "quality_grade": "D",
+      "notes": "シミュレーション結果 - IoU: 0.311"
+    },
+    {
+      "image_id": "kana08_0068",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0068.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        93,
+        89,
+        170,
+        303
+      ],
+      "iou_score": 0.10654902922335657,
+      "confidence_score": 0.409144122737067,
+      "processing_time": 4.40744021336702,
+      "character_count": 1,
+      "area_largest_ratio": 0.5415406138672157,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.107"
+    },
+    {
+      "image_id": "kana08_0069",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0069.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        118,
+        162,
+        230,
+        236
+      ],
+      "iou_score": 0.2911189275785396,
+      "confidence_score": 0.3008358983856462,
+      "processing_time": 4.487186196518742,
+      "character_count": 3,
+      "area_largest_ratio": 0.6066570374698832,
+      "quality_grade": "D",
+      "notes": "シミュレーション結果 - IoU: 0.291"
+    },
+    {
+      "image_id": "kana08_0070",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0070.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        160,
+        156,
+        208,
+        325
+      ],
+      "iou_score": 0.4462413806213545,
+      "confidence_score": 0.25566492408438024,
+      "processing_time": 8.067696764299694,
+      "character_count": 2,
+      "area_largest_ratio": 0.44998317617986294,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.446"
+    },
+    {
+      "image_id": "kana08_0071",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0071.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        94,
+        136,
+        176,
+        360
+      ],
+      "ground_truth_bbox": [
+        121,
+        137,
+        148,
+        252
+      ],
+      "iou_score": 0.7013318990071264,
+      "confidence_score": 0.19108731630499065,
+      "processing_time": 5.510392242821073,
+      "character_count": 4,
+      "area_largest_ratio": 0.4740750662268859,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.701"
+    },
+    {
+      "image_id": "kana08_0072",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0072.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        198,
+        136,
+        110,
+        214
+      ],
+      "ground_truth_bbox": [
+        144,
+        65,
+        271,
+        368
+      ],
+      "iou_score": 0.8973096594073933,
+      "confidence_score": 0.7251701282221622,
+      "processing_time": 11.254334824610602,
+      "character_count": 4,
+      "area_largest_ratio": 0.6850773720683216,
+      "quality_grade": "B",
+      "notes": "シミュレーション結果 - IoU: 0.897"
+    },
+    {
+      "image_id": "kana08_0073",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0073.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        174,
+        97,
+        199,
+        354
+      ],
+      "iou_score": 0.2920273114236476,
+      "confidence_score": 0.7461456717284307,
+      "processing_time": 10.102580741742308,
+      "character_count": 5,
+      "area_largest_ratio": 0.47239849914128274,
+      "quality_grade": "E",
+      "notes": "シミュレーション結果 - IoU: 0.292"
+    },
+    {
+      "image_id": "kana08_0074",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0074.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        115,
+        123,
+        134,
+        364
+      ],
+      "iou_score": 0.4314534443440398,
+      "confidence_score": 0.3457299889432076,
+      "processing_time": 10.054664967633084,
+      "character_count": 4,
+      "area_largest_ratio": 0.7471771909391556,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.431"
+    },
+    {
+      "image_id": "kana08_0075",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0075.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        149,
+        157,
+        215,
+        296
+      ],
+      "iou_score": 0.2590805242488564,
+      "confidence_score": 0.3685037839514007,
+      "processing_time": 11.639485587889094,
+      "character_count": 5,
+      "area_largest_ratio": 0.5869450456237231,
+      "quality_grade": "D",
+      "notes": "シミュレーション結果 - IoU: 0.259"
+    },
+    {
+      "image_id": "kana08_0076",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0076.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        177,
+        57,
+        231,
+        169
+      ],
+      "ground_truth_bbox": [
+        97,
+        90,
+        236,
+        201
+      ],
+      "iou_score": 0.7710357304087554,
+      "confidence_score": 0.18313498162440822,
+      "processing_time": 7.119959459292856,
+      "character_count": 3,
+      "area_largest_ratio": 0.4805174638276537,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.771"
+    },
+    {
+      "image_id": "kana08_0077",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0077.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        198,
+        115,
+        169,
+        156
+      ],
+      "ground_truth_bbox": [
+        103,
+        117,
+        137,
+        249
+      ],
+      "iou_score": 0.5232204882816396,
+      "confidence_score": 0.5635852742453439,
+      "processing_time": 6.714977342752864,
+      "character_count": 1,
+      "area_largest_ratio": 0.42943065143031645,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.523"
+    },
+    {
+      "image_id": "kana08_0078",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0078.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        127,
+        56,
+        234,
+        389
+      ],
+      "ground_truth_bbox": [
+        177,
+        178,
+        166,
+        295
+      ],
+      "iou_score": 0.548213528402826,
+      "confidence_score": 0.5162979414998388,
+      "processing_time": 9.044554704337814,
+      "character_count": 2,
+      "area_largest_ratio": 0.24861252965044878,
+      "quality_grade": "D",
+      "notes": "シミュレーション結果 - IoU: 0.548"
+    },
+    {
+      "image_id": "kana08_0079",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0079.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        62,
+        117,
+        179,
+        231
+      ],
+      "iou_score": 0.19611997930891412,
+      "confidence_score": 0.23620070314025496,
+      "processing_time": 4.869085123367651,
+      "character_count": 5,
+      "area_largest_ratio": 0.20126343222255538,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.196"
+    },
+    {
+      "image_id": "kana08_0080",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0080.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        171,
+        124,
+        152,
+        202
+      ],
+      "iou_score": 0.13383406996430447,
+      "confidence_score": 0.49056855524705123,
+      "processing_time": 9.410356395274654,
+      "character_count": 3,
+      "area_largest_ratio": 0.5948176248014454,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.134"
+    },
+    {
+      "image_id": "kana08_0081",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0081.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        86,
+        199,
+        202,
+        395
+      ],
+      "ground_truth_bbox": [
+        138,
+        156,
+        139,
+        224
+      ],
+      "iou_score": 0.575264370014405,
+      "confidence_score": 0.6901963481584006,
+      "processing_time": 5.6971938847874775,
+      "character_count": 2,
+      "area_largest_ratio": 0.49510421748297073,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.575"
+    },
+    {
+      "image_id": "kana08_0082",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0082.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        100,
+        177,
+        230,
+        330
+      ],
+      "iou_score": 0.03338044236315002,
+      "confidence_score": 0.26244792794084515,
+      "processing_time": 7.350325974724997,
+      "character_count": 5,
+      "area_largest_ratio": 0.38618459122380994,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.033"
+    },
+    {
+      "image_id": "kana08_0083",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0083.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        157,
+        150,
+        127,
+        244
+      ],
+      "ground_truth_bbox": [
+        96,
+        145,
+        269,
+        323
+      ],
+      "iou_score": 0.5506223756532047,
+      "confidence_score": 0.5615219558282794,
+      "processing_time": 5.478751493855174,
+      "character_count": 3,
+      "area_largest_ratio": 0.7200145613937552,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.551"
+    },
+    {
+      "image_id": "kana08_0084",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0084.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        179,
+        126,
+        197,
+        355
+      ],
+      "iou_score": 0.29017773027081034,
+      "confidence_score": 0.6719673697603139,
+      "processing_time": 9.179961339217115,
+      "character_count": 5,
+      "area_largest_ratio": 0.6723527268739722,
+      "quality_grade": "E",
+      "notes": "シミュレーション結果 - IoU: 0.290"
+    },
+    {
+      "image_id": "kana08_0085",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0085.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        108,
+        110,
+        123,
+        208
+      ],
+      "iou_score": 0.492351390033347,
+      "confidence_score": 0.6319496492123784,
+      "processing_time": 11.088873338943952,
+      "character_count": 4,
+      "area_largest_ratio": 0.6204725846311369,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.492"
+    },
+    {
+      "image_id": "kana08_0086",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0086.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        162,
+        176,
+        168,
+        163
+      ],
+      "ground_truth_bbox": [
+        101,
+        110,
+        191,
+        324
+      ],
+      "iou_score": 0.6929755412911799,
+      "confidence_score": 0.5581437484704269,
+      "processing_time": 11.24967050821197,
+      "character_count": 1,
+      "area_largest_ratio": 0.36115291254155363,
+      "quality_grade": "B",
+      "notes": "シミュレーション結果 - IoU: 0.693"
+    },
+    {
+      "image_id": "kana08_0087",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0087.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        118,
+        62,
+        200,
+        197
+      ],
+      "iou_score": 0.11797118098965725,
+      "confidence_score": 0.7948672969642064,
+      "processing_time": 9.818454736929072,
+      "character_count": 3,
+      "area_largest_ratio": 0.5994182902771583,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.118"
+    },
+    {
+      "image_id": "kana08_0088",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0088.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        138,
+        172,
+        158,
+        342
+      ],
+      "ground_truth_bbox": [
+        120,
+        131,
+        159,
+        289
+      ],
+      "iou_score": 0.8486655360608835,
+      "confidence_score": 0.23328925421577115,
+      "processing_time": 6.168349635991008,
+      "character_count": 2,
+      "area_largest_ratio": 0.5617237281417486,
+      "quality_grade": "B",
+      "notes": "シミュレーション結果 - IoU: 0.849"
+    },
+    {
+      "image_id": "kana08_0089",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0089.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        104,
+        122,
+        230,
+        206
+      ],
+      "ground_truth_bbox": [
+        61,
+        91,
+        167,
+        244
+      ],
+      "iou_score": 0.8536625426586579,
+      "confidence_score": 0.48752585709410956,
+      "processing_time": 8.566922987455737,
+      "character_count": 5,
+      "area_largest_ratio": 0.7100197373341877,
+      "quality_grade": "A",
+      "notes": "シミュレーション結果 - IoU: 0.854"
+    },
+    {
+      "image_id": "kana08_0090",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0090.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        127,
+        88,
+        209,
+        342
+      ],
+      "iou_score": 0.46007578114802483,
+      "confidence_score": 0.7150160101472602,
+      "processing_time": 8.532659929012048,
+      "character_count": 3,
+      "area_largest_ratio": 0.8730824199878278,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.460"
+    },
+    {
+      "image_id": "kana08_0091",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0091.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        135,
+        186,
+        224,
+        293
+      ],
+      "ground_truth_bbox": [
+        70,
+        128,
+        254,
+        225
+      ],
+      "iou_score": 0.7725596446171678,
+      "confidence_score": 0.31159962434360367,
+      "processing_time": 6.157657002341378,
+      "character_count": 2,
+      "area_largest_ratio": 0.5895725429256289,
+      "quality_grade": "B",
+      "notes": "シミュレーション結果 - IoU: 0.773"
+    },
+    {
+      "image_id": "kana08_0092",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0092.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        190,
+        51,
+        144,
+        181
+      ],
+      "ground_truth_bbox": [
+        111,
+        169,
+        176,
+        240
+      ],
+      "iou_score": 0.7796974482070909,
+      "confidence_score": 0.36846633718828914,
+      "processing_time": 9.381570640393761,
+      "character_count": 1,
+      "area_largest_ratio": 0.2579318070618995,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.780"
+    },
+    {
+      "image_id": "kana08_0093",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0093.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        91,
+        97,
+        132,
+        293
+      ],
+      "iou_score": 0.001605689550376932,
+      "confidence_score": 0.3393455995565058,
+      "processing_time": 8.315962741622151,
+      "character_count": 1,
+      "area_largest_ratio": 0.7652477648522045,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.002"
+    },
+    {
+      "image_id": "kana08_0094",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0094.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        105,
+        144,
+        242,
+        205
+      ],
+      "iou_score": 0.19291894391259,
+      "confidence_score": 0.35622283236214947,
+      "processing_time": 5.253070906423385,
+      "character_count": 3,
+      "area_largest_ratio": 0.3315819747639498,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.193"
+    },
+    {
+      "image_id": "kana08_0095",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0095.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        60,
+        70,
+        166,
+        345
+      ],
+      "iou_score": 0.4082472215893662,
+      "confidence_score": 0.773704545220596,
+      "processing_time": 11.94455325126285,
+      "character_count": 4,
+      "area_largest_ratio": 0.358312424099159,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.408"
+    },
+    {
+      "image_id": "kana08_0096",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0096.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        74,
+        116,
+        158,
+        256
+      ],
+      "iou_score": 0.09133366359262285,
+      "confidence_score": 0.36099429509153536,
+      "processing_time": 10.353853366405673,
+      "character_count": 3,
+      "area_largest_ratio": 0.8577173628398931,
+      "quality_grade": "F",
+      "notes": "シミュレーション結果 - IoU: 0.091"
+    },
+    {
+      "image_id": "kana08_0097",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0097.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        78,
+        70,
+        232,
+        287
+      ],
+      "ground_truth_bbox": [
+        136,
+        168,
+        121,
+        238
+      ],
+      "iou_score": 0.6773755778699666,
+      "confidence_score": 0.15947502120946033,
+      "processing_time": 11.537845094138879,
+      "character_count": 4,
+      "area_largest_ratio": 0.3168618378502519,
+      "quality_grade": "C",
+      "notes": "シミュレーション結果 - IoU: 0.677"
+    },
+    {
+      "image_id": "kana08_0098",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0098.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        177,
+        141,
+        230,
+        328
+      ],
+      "iou_score": 0.44751859348899437,
+      "confidence_score": 0.5973924857580982,
+      "processing_time": 5.0796373573518805,
+      "character_count": 3,
+      "area_largest_ratio": 0.33369503750813184,
+      "quality_grade": "D",
+      "notes": "シミュレーション結果 - IoU: 0.448"
+    },
+    {
+      "image_id": "kana08_0099",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0099.png",
+      "largest_char_predicted": false,
+      "prediction_bbox": null,
+      "ground_truth_bbox": [
+        162,
+        91,
+        141,
+        361
+      ],
+      "iou_score": 0.26141651757856227,
+      "confidence_score": 0.7152787371909233,
+      "processing_time": 9.148818311240595,
+      "character_count": 5,
+      "area_largest_ratio": 0.419701739063961,
+      "quality_grade": "D",
+      "notes": "シミュレーション結果 - IoU: 0.261"
+    },
+    {
+      "image_id": "kana08_0100",
+      "image_path": "/mnt/c/AItools/segment-anything/test_small/kana08_0100.png",
+      "largest_char_predicted": true,
+      "prediction_bbox": [
+        127,
+        106,
+        183,
+        306
+      ],
+      "ground_truth_bbox": [
+        125,
+        101,
+        226,
+        215
+      ],
+      "iou_score": 0.8496036764808395,
+      "confidence_score": 0.614937959719675,
+      "processing_time": 10.95812839024211,
+      "character_count": 3,
+      "area_largest_ratio": 0.6299110597908493,
+      "quality_grade": "B",
+      "notes": "シミュレーション結果 - IoU: 0.850"
+    }
+  ],
+  "metadata": {
+    "timestamp": "20250723_235140",
+    "total_images": 101,
+    "test_type": "simulation",
+    "system_info": {
+      "yolo_model": "YOLOv8 (simulated)",
+      "sam_model": "ViT-H (simulated)",
+      "selection_method": "area_largest"
+    }
+  }
+}

@@ -26,7 +26,7 @@ class TestP1006Integration(unittest.TestCase):
     
     def setUp(self):
         self.processor = EnhancedSolidFillProcessor()
-        self.test_image_path = "/mnt/c/AItools/lora/train/yadokugaeru/org/kaname07"
+        self.test_image_path = "/mnt/c/AItools/lora/train/yado/org/kaname07"
         
     def test_real_image_solid_fill_processing(self):
         """実際の画像でのベタ塗り処理テスト"""

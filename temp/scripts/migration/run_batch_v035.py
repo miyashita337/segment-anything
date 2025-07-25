@@ -25,8 +25,8 @@ def run_batch_v035():
     """v0.3.5最高品質バッチ抽出実行（命名規則改善版）"""
     
     # パス設定（ユーザー指定）
-    input_path = "/mnt/c/AItools/lora/train/yadokugaeru/org/kaname09"
-    output_path = "/mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname09_0_3_5"
+    input_path = "/mnt/c/AItools/lora/train/yado/org/kaname09"
+    output_path = "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kaname09_0_3_5"
     
     print("🚀 v0.3.5最高品質キャラクター抽出バッチ実行開始")
     print(f"入力パス: {input_path}")

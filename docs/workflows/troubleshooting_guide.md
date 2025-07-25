@@ -3,7 +3,7 @@
 ## 🚨 概要
 
 segment-anything v0.4.0バッチ処理で発生する一般的な問題と解決方法。  
-今回のkaname08処理で解決された問題も含む包括的なガイド。
+今回のkana08処理で解決された問題も含む包括的なガイド。
 
 ## 📋 問題分類
 
@@ -190,8 +190,8 @@ find "/path/to/input" -name "*.jpg" -o -name "*.png" -o -name "*.webp" | wc -l
 **解決方法**:
 ```bash
 # 絶対パス使用
-INPUT_DIR="/mnt/c/AItools/lora/train/yadokugaeru/org/kaname08"
-OUTPUT_DIR="/mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_0_4_0"
+INPUT_DIR="/mnt/c/AItools/lora/train/yado/org/kana08"
+OUTPUT_DIR="/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0"
 ```
 
 ### 2.3 モデルファイル問題

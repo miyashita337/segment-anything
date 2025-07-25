@@ -45,9 +45,9 @@
   "output_images": {
     "count": 15,
     "paths": [
-      "/tmp/phase2_test_16_kaname03_0015_Phase_1_自動リトライ（参考）.jpg",
-      "/tmp/phase2_test_21_kaname03_0020_Phase_1_自動リトライ（参考）.jpg",
-      "/tmp/phase2_test_21_kaname03_0020_Phase_2_マルチコマ分割.jpg",
+      "/tmp/phase2_test_16_kana03_0015_Phase_1_自動リトライ（参考）.jpg",
+      "/tmp/phase2_test_21_kana03_0020_Phase_1_自動リトライ（参考）.jpg",
+      "/tmp/phase2_test_21_kana03_0020_Phase_2_マルチコマ分割.jpg",
       "results_batch/img001.jpg",
       "results_batch/img001_character.jpg",
       "results_batch/img002_character.jpg",

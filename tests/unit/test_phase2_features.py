@@ -28,12 +28,12 @@ class TestPhase2Features:
         """Phase 2テスト用画像"""
         return [
             {
-                'path': '/mnt/c/AItools/lora/train/yadokugaeru/org/kaname03/21_kaname03_0020.jpg',
+                'path': '/mnt/c/AItools/lora/train/yado/org/kaname03/21_kaname03_0020.jpg',
                 'name': '21_kaname03_0020.jpg',
                 'description': 'ダイナミックなポーズ + エフェクト線'
             },
             {
-                'path': '/mnt/c/AItools/lora/train/yadokugaeru/org/kaname03/16_kaname03_0015.jpg',
+                'path': '/mnt/c/AItools/lora/train/yado/org/kaname03/16_kaname03_0015.jpg',
                 'name': '16_kaname03_0015.jpg',
                 'description': 'マルチコマ構成'
             }
@@ -63,7 +63,7 @@ class TestPhase2Features:
         """エフェクト線除去機能のテスト"""
         from features.processing.preprocessing.manga_preprocessing import apply_manga_preprocessing
         
-        test_image = '/mnt/c/AItools/lora/train/yadokugaeru/org/kaname03/21_kaname03_0020.jpg'
+        test_image = '/mnt/c/AItools/lora/train/yado/org/kaname03/21_kaname03_0020.jpg'
         
         if os.path.exists(test_image):
             result = apply_manga_preprocessing(test_image, enable_effect_removal=True)
@@ -76,7 +76,7 @@ class TestPhase2Features:
         """マルチコマ分割機能のテスト"""
         from features.processing.preprocessing.manga_preprocessing import apply_manga_preprocessing
         
-        test_image = '/mnt/c/AItools/lora/train/yadokugaeru/org/kaname03/16_kaname03_0015.jpg'
+        test_image = '/mnt/c/AItools/lora/train/yado/org/kaname03/16_kaname03_0015.jpg'
         
         if os.path.exists(test_image):
             result = apply_manga_preprocessing(test_image, enable_panel_split=True)

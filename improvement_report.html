@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase A 基盤改善効果レポート - Character Extraction System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-left: 5px solid;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card.success { border-left-color: #4CAF50; }
+        .card.improvement { border-left-color: #FF9800; }
+        .card.performance { border-left-color: #2196F3; }
+        
+        .card h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 1.3em;
+        }
+        
+        .metric {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .metric.success { color: #4CAF50; }
+        .metric.improvement { color: #FF9800; }
+        .metric.performance { color: #2196F3; }
+        
+        .graph-section {
+            margin: 40px 0;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .graph-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .graph-container img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .before-after {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .comparison-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .before {
+            background: linear-gradient(135deg, #ff4757, #ff3838);
+            color: white;
+        }
+        
+        .after {
+            background: linear-gradient(135deg, #2ed573, #1dd1a1);
+            color: white;
+        }
+        
+        .comparison-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .technical-details {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border-left: 4px solid #6c5ce7;
+        }
+        
+        .improvement-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .improvement-list li {
+            background: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .next-steps {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 40px 0;
+        }
+        
+        .phase-badge {
+            display: inline-block;
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .before-after {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header" style="background: linear-gradient(135deg, #ff4757, #ee5a6f);">
+            <div class="phase-badge" style="background: #2c2c54;">⚠️ 緊急修正レポート</div>
+            <h1>🚨 評価システム重大問題発見</h1>
+            <div class="subtitle">座標一致≠内容一致の致命的評価エラー</div>
+            <div class="subtitle">実行日時: 2025-07-24 | 検証画像数: 101枚</div>
+        </div>
+
+        <div class="summary-cards">
+            <div class="card success" style="border-left-color: #ff4757;">
+                <h3>⚠️ 報告成功率（要検証）</h3>
+                <div class="metric" style="color: #ff4757;">81.2%</div>
+                <p>座標一致基準での成功率<br>82件/101件（内容確認要）</p>
+            </div>
+            
+            <div class="card improvement" style="border-left-color: #ff4757;">
+                <h3>🚨 真の改善効果（推定）</h3>
+                <div class="metric" style="color: #ff4757;">1.2倍</div>
+                <p>16.8% → 19.8%（保守的推定）<br>座標≠内容の重大問題発見</p>
+            </div>
+            
+            <div class="card performance">
+                <h3>⚡ 処理速度</h3>
+                <div class="metric performance">0.50秒</div>
+                <p>1画像あたりの平均処理時間<br>リアルタイム処理可能レベル</p>
+            </div>
+        </div>
+
+        <div class="before-after">
+            <div class="comparison-item before">
+                <h3>🔴 改善前（ベースライン）</h3>
+                <div class="comparison-number">16.8%</div>
+                <p>従来手法<br>YOLO閾値: 0.07<br>Single Point Prompt</p>
+            </div>
+            
+            <div class="comparison-item" style="background: linear-gradient(135deg, #ff4757, #ff3838);">
+                <h3>⚠️ 報告値 vs 真の値</h3>
+                <div class="comparison-number">81.2% → 19.8%</div>
+                <p style="font-size: 0.9em;">座標一致 vs 内容一致<br>評価システムの根本的問題</p>
+            </div>
+        </div>
+
+        <div class="graph-section">
+            <h2>📊 改善効果可視化</h2>
+            
+            <div class="graph-container">
+                <h3>統合改善効果比較</h3>
+                <img src="assets/reports/integrated_improvement_graph.png" alt="統合改善効果グラフ">
+                <p><strong>左図:</strong> 成功率比較（Before vs After）| <strong>右図:</strong> IoUスコア分布（改善後）</p>
+            </div>
+            
+            <div class="graph-container">
+                <h3>YOLO閾値最適化詳細</h3>
+                <img src="assets/reports/yolo_optimization_graph.png" alt="YOLO最適化グラフ">
+                <p>9つの閾値（0.01〜0.30）での系統的テスト結果</p>
+            </div>
+        </div>
+
+        <div class="technical-details">
+            <h2>🔧 技術的改善内容</h2>
+            
+            <h3>1. YOLO検出最適化</h3>
+            <ul class="improvement-list">
+                <li><strong>閾値調整:</strong> 0.07 → 0.03 （検出率 83.3% → 93.3%）</li>
+                <li><strong>効果:</strong> アニメキャラクター特有の低信頼度オブジェクト検出改善</li>
+                <li><strong>処理時間:</strong> 1.69秒 → 1.81秒（わずかな増加で大幅精度向上）</li>
+            </ul>
+            
+            <h3>2. SAMプロンプト戦略改善</h3>
+            <ul class="improvement-list">
+                <li><strong>戦略変更:</strong> Single Center Point → BBox Prompt</li>
+                <li><strong>成功率:</strong> 0.0% → 90.0%（小規模テストにて）</li>
+                <li><strong>平均IoU:</strong> 0.082 → 0.757（9.2倍改善）</li>
+                <li><strong>境界ボックス拡張:</strong> 10%マージンでセグメンテーション精度向上</li>
+            </ul>
+            
+            <h3>3. 統合効果測定</h3>
+            <ul class="improvement-list">
+                <li><strong>検証規模:</strong> 人間ラベル付き101画像での本格ベンチマーク</li>
+                <li><strong>評価基準:</strong> IoU > 0.5（厳格な成功基準）</li>
+                <li><strong>平均IoU:</strong> 0.708（高精度セグメンテーション達成）</li>
+                <li><strong>最高IoU:</strong> 0.997（ほぼ完璧な抽出例）</li>
+            </ul>
+        </div>
+
+        <div class="graph-section">
+            <h2>🏆 成功例ベスト5</h2>
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                <thead style="background: #f8f9fa;">
+                    <tr style="border-bottom: 2px solid #dee2e6;">
+                        <th style="padding: 12px; text-align: left;">順位</th>
+                        <th style="padding: 12px; text-align: left;">画像ID</th>
+                        <th style="padding: 12px; text-align: center;">IoU スコア</th>
+                        <th style="padding: 12px; text-align: center;">YOLO信頼度</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #dee2e6;">
+                        <td style="padding: 12px;">🥇 1位</td>
+                        <td style="padding: 12px;"><strong>kana07_0023</strong></td>
+                        <td style="padding: 12px; text-align: center; color: #4CAF50; font-weight: bold;">0.997</td>
+                        <td style="padding: 12px; text-align: center;">0.191</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #dee2e6;">
+                        <td style="padding: 12px;">🥈 2位</td>
+                        <td style="padding: 12px;"><strong>kana07_0008</strong></td>
+                        <td style="padding: 12px; text-align: center; color: #4CAF50; font-weight: bold;">0.997</td>
+                        <td style="padding: 12px; text-align: center;">0.050</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #dee2e6;">
+                        <td style="padding: 12px;">🥉 3位</td>
+                        <td style="padding: 12px;"><strong>kana07_0000_cover</strong></td>
+                        <td style="padding: 12px; text-align: center; color: #4CAF50; font-weight: bold;">0.993</td>
+                        <td style="padding: 12px; text-align: center;">0.614</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #dee2e6;">
+                        <td style="padding: 12px;">4位</td>
+                        <td style="padding: 12px;"><strong>kana05_0035</strong></td>
+                        <td style="padding: 12px; text-align: center; color: #4CAF50; font-weight: bold;">0.992</td>
+                        <td style="padding: 12px; text-align: center;">0.263</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 12px;">5位</td>
+                        <td style="padding: 12px;"><strong>kana08_0007</strong></td>
+                        <td style="padding: 12px; text-align: center; color: #4CAF50; font-weight: bold;">0.991</td>
+                        <td style="padding: 12px; text-align: center;">0.077</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="technical-details">
+            <h2>📊 詳細分析結果</h2>
+            
+            <h3>IoU分布分析</h3>
+            <ul class="improvement-list">
+                <li><strong>高精度（IoU ≥ 0.7）:</strong> 62件（61.4%）- 実用レベルの高精度抽出</li>
+                <li><strong>中精度（0.3 ≤ IoU < 0.7）:</strong> 31件（30.7%）- 部分的成功、改善余地あり</li>
+                <li><strong>低精度（IoU < 0.3）:</strong> 8件（7.9%）- 失敗ケース、要原因分析</li>
+            </ul>
+            
+            <h3>失敗パターン分析</h3>
+            <ul class="improvement-list">
+                <li><strong>完全失敗（IoU = 0.000）:</strong> 3件 - YOLOまたはSAM検出完全失敗</li>
+                <li><strong>微小検出（IoU < 0.05）:</strong> 2件 - 一部のみ検出、位置ずれ</li>
+                <li><strong>主要原因:</strong> 複雑ポーズ、多キャラクター、背景類似色</li>
+            </ul>
+        </div>
+
+        <div class="next-steps" style="background: linear-gradient(135deg, #ff4757, #ee5a6f);">
+            <h2>🚨 緊急修正計画</h2>
+            
+            <h3>Phase 0: 評価システム根本修正（最優先）</h3>
+            <ul>
+                <li>🔥 <strong>視覚的検証システム統合</strong> - 内容確認の自動化</li>
+                <li>🔥 <strong>人間ラベルデータの見直し</strong> - 15件の全画像ラベル再検証</li>
+                <li>🔥 <strong>真の成功率算出</strong> - 手動検証による正確な評価</li>
+                <li>🔥 <strong>評価基準の刷新</strong> - 座標+内容の統合評価</li>
+            </ul>
+            
+            <h3>Phase A': 改善効果の再評価</h3>
+            <ul>
+                <li>⚠️ <strong>YOLO最適化の真の効果測定</strong> - 内容ベース評価</li>
+                <li>⚠️ <strong>SAM戦略改善の検証</strong> - 実際の抽出品質確認</li>
+                <li>⚠️ <strong>16.8% → 19.8%の詳細分析</strong> - 真の改善要因特定</li>
+            </ul>
+            
+            <h3>根本的解決策</h3>
+            <ul>
+                <li>🎯 <strong>マルチキャラクター画像の特別処理</strong> - 主要キャラクター自動特定</li>
+                <li>🎯 <strong>精密な人間ラベリング</strong> - 個別キャラクター指定</li>
+                <li>🎯 <strong>内容ベース類似度評価</strong> - 視覚的特徴量による判定</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin: 40px 0; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <p style="margin: 0; color: #666; font-style: italic;">
+                Generated by Character Extraction System Improvement Benchmark<br>
+                Project: Segment Anything + YOLO Integration | Date: 2025-07-24
+            </p>
+        </div>
+    </div>
+</body>
+</html>
