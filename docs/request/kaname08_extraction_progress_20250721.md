@@ -1,4 +1,4 @@
-# kaname08 キャラクター抽出 進捗レポート
+# kana08 キャラクター抽出 進捗レポート
 
 **実行日**: 2025-07-21  
 **バージョン**: v0.4.0  
@@ -9,12 +9,12 @@
 ## 📋 実行概要
 
 ### 入力情報
-- **入力ディレクトリ**: `/mnt/c/AItools/lora/train/yadokugaeru/org/kaname08`
+- **入力ディレクトリ**: `/mnt/c/AItools/lora/train/yado/org/kana08`
 - **対象画像数**: 26枚（表紙2枚 + 本編24枚）
 - **処理対象**: メインディレクトリのみ（サブディレクトリ除外）
 
 ### 出力情報
-- **出力ディレクトリ**: `/mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox/kaname08_0_4_0`
+- **出力ディレクトリ**: `/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_0_4_0`
 - **出力形式**: 入力ファイルと同一名（リネーム・プレフィックスなし）
 - **背景処理**: 透過処理なし（RGB形式）
 

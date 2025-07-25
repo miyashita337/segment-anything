@@ -22,7 +22,7 @@
 
 ```bash
 # 実際の画像処理テスト
-python extract_kaname03.py --quality_method balanced
+python extract_kana03.py --quality_method balanced
 
 # ユニットテスト
 python -m pytest tests/

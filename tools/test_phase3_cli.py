@@ -29,13 +29,13 @@ def test_interactive_features():
     # 失敗画像でテスト
     test_images = [
         {
-            'path': '/mnt/c/AItools/lora/train/yadokugaeru/org/kaname03/21_kaname03_0020.jpg',
+            'path': '/mnt/c/AItools/lora/train/yado/org/kaname03/21_kaname03_0020.jpg',
             'name': '21_kaname03_0020.jpg',
             'description': 'ダイナミックなポーズ + エフェクト線',
             'seed_points': [(750, 1000, True), (800, 1200, True), (700, 800, True)]  # キャラクター中心部
         },
         {
-            'path': '/mnt/c/AItools/lora/train/yadokugaeru/org/kaname03/16_kaname03_0015.jpg',
+            'path': '/mnt/c/AItools/lora/train/yado/org/kaname03/16_kaname03_0015.jpg',
             'name': '16_kaname03_0015.jpg', 
             'description': 'マルチコマ構成',
             'seed_points': [(400, 1800, True), (500, 1900, True), (350, 1700, True)]  # 下部のキャラクター

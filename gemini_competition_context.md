@@ -7,7 +7,7 @@ Claude vs Gemini でYOLOモデルを使った人物検出の性能・結果を�
 - **ディレクトリ**: `/mnt/c/AItools/segment-anything`
 - **使用モデル**: YOLO v8 (yolov8n.pt)、SAM ViT-H
 - **環境**: WSL2 Ubuntu、RTX 4070 Ti SUPER、CUDA 12.6
-- **テストデータ**: kaname04データセット（漫画キャラクター画像）
+- **テストデータ**: kana04データセット（漫画キャラクター画像）
 
 ## Claudeの実行結果
 ### 環境構築
@@ -38,9 +38,9 @@ import os
 yolo = YOLOModelWrapper(model_path='yolov8n.pt', confidence_threshold=0.1)
 yolo.load_model()
 
-# kaname04の同一画像でテスト
+# kana04の同一画像でテスト
 test_files = ['0003.jpg', '0005.jpg', '0010.jpg']
-test_dir = '/mnt/c/AItools/lora/train/yadokugaeru/org/kaname04'
+test_dir = '/mnt/c/AItools/lora/train/yado/org/kana04'
 
 for filename in test_files:
     filepath = os.path.join(test_dir, filename)

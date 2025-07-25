@@ -1,0 +1,810 @@
+{
+  "overall_statistics": {
+    "total_images_processed": 36,
+    "total_poses_detected": 29,
+    "overall_pose_detection_rate": 0.8055555555555556,
+    "week2_target_achievement": true,
+    "detection_details": [
+      {
+        "image_file": "kana05_0000_cover.jpg",
+        "detected": true,
+        "pose_category": "sitting",
+        "keypoints_detected": 25,
+        "visibility_score": 0.7575757575757576,
+        "completeness_score": 0.8438124186161793,
+        "confidence": 0.9202776352383873,
+        "output_file": "kana05_0000_cover_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana05_0000_cover_gt.backup.png",
+        "detected": true,
+        "pose_category": "standing",
+        "keypoints_detected": 18,
+        "visibility_score": 0.5454545454545454,
+        "completeness_score": 0.665120586820624,
+        "confidence": 0.8421150264550339,
+        "output_file": "kana05_0000_cover_gt.backup_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana05_0022.jpg",
+        "detected": true,
+        "pose_category": "sitting",
+        "keypoints_detected": 27,
+        "visibility_score": 0.8181818181818182,
+        "completeness_score": 0.8034931472214786,
+        "confidence": 0.9243349930806594,
+        "output_file": "kana05_0022_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana05_0022_gt.backup.png",
+        "detected": true,
+        "pose_category": "action",
+        "keypoints_detected": 15,
+        "visibility_score": 0.45454545454545453,
+        "completeness_score": 0.9746582313017411,
+        "confidence": 0.8858407371694391,
+        "output_file": "kana05_0022_gt.backup_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana05_0028.jpg",
+        "detected": true,
+        "pose_category": "standing",
+        "keypoints_detected": 33,
+        "visibility_score": 1.0,
+        "completeness_score": 0.8625667577891638,
+        "confidence": 0.9725133515578328,
+        "output_file": "kana05_0028_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana05_0028_gt.backup.png",
+        "detected": true,
+        "pose_category": "action",
+        "keypoints_detected": 18,
+        "visibility_score": 0.5454545454545454,
+        "completeness_score": 0.9113091669299386,
+        "confidence": 0.8913527424768968,
+        "output_file": "kana05_0028_gt.backup_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana05_0034.jpg",
+        "detected": false,
+        "pose_category": "unknown",
+        "keypoints_detected": 0,
+        "visibility_score": 0.0,
+        "completeness_score": 0.0,
+        "confidence": 0.0,
+        "output_file": "kana05_0034_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana05_0034_gt.backup.png",
+        "detected": false,
+        "pose_category": "unknown",
+        "keypoints_detected": 0,
+        "visibility_score": 0.0,
+        "completeness_score": 0.0,
+        "confidence": 0.0,
+        "output_file": "kana05_0034_gt.backup_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana07_0000_cover.jpg",
+        "detected": true,
+        "pose_category": "standing",
+        "keypoints_detected": 33,
+        "visibility_score": 1.0,
+        "completeness_score": 0.8452497987133084,
+        "confidence": 0.9690499597426616,
+        "output_file": "kana07_0000_cover_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana07_0000_cover_gt.backup.png",
+        "detected": true,
+        "pose_category": "action",
+        "keypoints_detected": 13,
+        "visibility_score": 0.3939393939393939,
+        "completeness_score": 0.7018038392066956,
+        "confidence": 0.8191486466292179,
+        "output_file": "kana07_0000_cover_gt.backup_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana07_0003.jpg",
+        "detected": true,
+        "pose_category": "standing",
+        "keypoints_detected": 33,
+        "visibility_score": 1.0,
+        "completeness_score": 0.9104996282945981,
+        "confidence": 0.9820999256589196,
+        "output_file": "kana07_0003_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana07_0003_gt.backup.png",
+        "detected": true,
+        "pose_category": "sitting",
+        "keypoints_detected": 16,
+        "visibility_score": 0.48484848484848486,
+        "completeness_score": 0.6708743891029647,
+        "confidence": 0.8311445747902899,
+        "output_file": "kana07_0003_gt.backup_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana07_0011.jpg",
+        "detected": false,
+        "pose_category": "unknown",
+        "keypoints_detected": 0,
+        "visibility_score": 0.0,
+        "completeness_score": 0.0,
+        "confidence": 0.0,
+        "output_file": "kana07_0011_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana07_0011_gt.backup.png",
+        "detected": true,
+        "pose_category": "standing",
+        "keypoints_detected": 32,
+        "visibility_score": 0.9696969696969697,
+        "completeness_score": 0.729954945815332,
+        "confidence": 0.9399303831024604,
+        "output_file": "kana07_0011_gt.backup_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana07_0013.jpg",
+        "detected": true,
+        "pose_category": "standing",
+        "keypoints_detected": 22,
+        "visibility_score": 0.6666666666666666,
+        "completeness_score": 0.7057298242142707,
+        "confidence": 0.8744792981761875,
+        "output_file": "kana07_0013_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana07_0013_gt.backup.png",
+        "detected": true,
+        "pose_category": "standing",
+        "keypoints_detected": 20,
+        "visibility_score": 0.6060606060606061,
+        "completeness_score": 0.6162692203214675,
+        "confidence": 0.8444659652764147,
+        "output_file": "kana07_0013_gt.backup_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana07_0026.jpg",
+        "detected": true,
+        "pose_category": "sitting",
+        "keypoints_detected": 27,
+        "visibility_score": 0.8181818181818182,
+        "completeness_score": 0.6575276404619217,
+        "confidence": 0.8951418917287479,
+        "output_file": "kana07_0026_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana07_0026_gt.backup.png",
+        "detected": true,
+        "pose_category": "action",
+        "keypoints_detected": 9,
+        "visibility_score": 0.2727272727272727,
+        "completeness_score": 0.5733308628201486,
+        "confidence": 0.7692116271094842,
+        "output_file": "kana07_0026_gt.backup_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana07_0030.jpg",
+        "detected": true,
+        "pose_category": "standing",
+        "keypoints_detected": 27,
+        "visibility_score": 0.8181818181818182,
+        "completeness_score": 0.8651628184047613,
+        "confidence": 0.9366689273173159,
+        "output_file": "kana07_0030_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana07_0030_gt.backup.png",
+        "detected": true,
+        "pose_category": "action",
+        "keypoints_detected": 15,
+        "visibility_score": 0.45454545454545453,
+        "completeness_score": 0.8978621528907256,
+        "confidence": 0.870481521487236,
+        "output_file": "kana07_0030_gt.backup_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana07_0031.jpg",
+        "detected": true,
+        "pose_category": "action",
+        "keypoints_detected": 21,
+        "visibility_score": 0.6363636363636364,
+        "completeness_score": 0.9356229638511484,
+        "confidence": 0.9143973200429569,
+        "output_file": "kana07_0031_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana07_0031_gt.backup.png",
+        "detected": true,
+        "pose_category": "action",
+        "keypoints_detected": 15,
+        "visibility_score": 0.45454545454545453,
+        "completeness_score": 0.9979266169396314,
+        "confidence": 0.8904944142970171,
+        "output_file": "kana07_0031_gt.backup_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana08_0000_cover.jpg",
+        "detected": true,
+        "pose_category": "sitting",
+        "keypoints_detected": 29,
+        "visibility_score": 0.8787878787878788,
+        "completeness_score": 0.7731397011966417,
+        "confidence": 0.9303855159969041,
+        "output_file": "kana08_0000_cover_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana08_0000_cover_gt.backup.png",
+        "detected": false,
+        "pose_category": "unknown",
+        "keypoints_detected": 0,
+        "visibility_score": 0.0,
+        "completeness_score": 0.0,
+        "confidence": 0.0,
+        "output_file": "kana08_0000_cover_gt.backup_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana08_0001.jpg",
+        "detected": true,
+        "pose_category": "standing",
+        "keypoints_detected": 19,
+        "visibility_score": 0.5757575757575758,
+        "completeness_score": 0.8172892976439361,
+        "confidence": 0.8786093746803023,
+        "output_file": "kana08_0001_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana08_0001_gt.backup.png",
+        "detected": true,
+        "pose_category": "action",
+        "keypoints_detected": 15,
+        "visibility_score": 0.45454545454545453,
+        "completeness_score": 0.8231475228613073,
+        "confidence": 0.8555385954813524,
+        "output_file": "kana08_0001_gt.backup_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana08_0002.jpg",
+        "detected": true,
+        "pose_category": "standing",
+        "keypoints_detected": 33,
+        "visibility_score": 1.0,
+        "completeness_score": 0.7812511976921198,
+        "confidence": 0.9562502395384239,
+        "output_file": "kana08_0002_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana08_0002_gt.backup.png",
+        "detected": true,
+        "pose_category": "upper_body_only",
+        "keypoints_detected": 3,
+        "visibility_score": 0.09090909090909091,
+        "completeness_score": 0.5975774645805358,
+        "confidence": 0.7376973110979254,
+        "output_file": "kana08_0002_gt.backup_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana08_0010.jpg",
+        "detected": true,
+        "pose_category": "standing",
+        "keypoints_detected": 16,
+        "visibility_score": 0.48484848484848486,
+        "completeness_score": 0.866103642185529,
+        "confidence": 0.8701904254068027,
+        "output_file": "kana08_0010_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana08_0010_gt.backup.png",
+        "detected": false,
+        "pose_category": "unknown",
+        "keypoints_detected": 0,
+        "visibility_score": 0.0,
+        "completeness_score": 0.0,
+        "confidence": 0.0,
+        "output_file": "kana08_0010_gt.backup_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana08_0015.jpg",
+        "detected": true,
+        "pose_category": "action",
+        "keypoints_detected": 15,
+        "visibility_score": 0.45454545454545453,
+        "completeness_score": 0.9948992596431212,
+        "confidence": 0.8898889428377151,
+        "output_file": "kana08_0015_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana08_0015_gt.backup.png",
+        "detected": true,
+        "pose_category": "action",
+        "keypoints_detected": 15,
+        "visibility_score": 0.45454545454545453,
+        "completeness_score": 0.9215000136332078,
+        "confidence": 0.8752090936357324,
+        "output_file": "kana08_0015_gt.backup_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana08_0022.jpg",
+        "detected": false,
+        "pose_category": "unknown",
+        "keypoints_detected": 0,
+        "visibility_score": 0.0,
+        "completeness_score": 0.0,
+        "confidence": 0.0,
+        "output_file": "kana08_0022_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana08_0022_gt.backup.png",
+        "detected": false,
+        "pose_category": "unknown",
+        "keypoints_detected": 0,
+        "visibility_score": 0.0,
+        "completeness_score": 0.0,
+        "confidence": 0.0,
+        "output_file": "kana08_0022_gt.backup_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana08_0023.jpg",
+        "detected": true,
+        "pose_category": "action",
+        "keypoints_detected": 13,
+        "visibility_score": 0.3939393939393939,
+        "completeness_score": 0.744105942050616,
+        "confidence": 0.827609067198002,
+        "output_file": "kana08_0023_pose_analysis.jpg"
+      },
+      {
+        "image_file": "kana08_0023_gt.backup.png",
+        "detected": true,
+        "pose_category": "standing",
+        "keypoints_detected": 18,
+        "visibility_score": 0.5454545454545454,
+        "completeness_score": 0.703419952602549,
+        "confidence": 0.8497748996114189,
+        "output_file": "kana08_0023_gt.backup_pose_analysis.jpg"
+      }
+    ]
+  },
+  "dataset_results": {
+    "kana05": {
+      "dataset_name": "kana05",
+      "image_count": 8,
+      "poses_detected": 6,
+      "detection_details": [
+        {
+          "image_file": "kana05_0000_cover.jpg",
+          "detected": true,
+          "pose_category": "sitting",
+          "keypoints_detected": 25,
+          "visibility_score": 0.7575757575757576,
+          "completeness_score": 0.8438124186161793,
+          "confidence": 0.9202776352383873,
+          "output_file": "kana05_0000_cover_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana05_0000_cover_gt.backup.png",
+          "detected": true,
+          "pose_category": "standing",
+          "keypoints_detected": 18,
+          "visibility_score": 0.5454545454545454,
+          "completeness_score": 0.665120586820624,
+          "confidence": 0.8421150264550339,
+          "output_file": "kana05_0000_cover_gt.backup_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana05_0022.jpg",
+          "detected": true,
+          "pose_category": "sitting",
+          "keypoints_detected": 27,
+          "visibility_score": 0.8181818181818182,
+          "completeness_score": 0.8034931472214786,
+          "confidence": 0.9243349930806594,
+          "output_file": "kana05_0022_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana05_0022_gt.backup.png",
+          "detected": true,
+          "pose_category": "action",
+          "keypoints_detected": 15,
+          "visibility_score": 0.45454545454545453,
+          "completeness_score": 0.9746582313017411,
+          "confidence": 0.8858407371694391,
+          "output_file": "kana05_0022_gt.backup_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana05_0028.jpg",
+          "detected": true,
+          "pose_category": "standing",
+          "keypoints_detected": 33,
+          "visibility_score": 1.0,
+          "completeness_score": 0.8625667577891638,
+          "confidence": 0.9725133515578328,
+          "output_file": "kana05_0028_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana05_0028_gt.backup.png",
+          "detected": true,
+          "pose_category": "action",
+          "keypoints_detected": 18,
+          "visibility_score": 0.5454545454545454,
+          "completeness_score": 0.9113091669299386,
+          "confidence": 0.8913527424768968,
+          "output_file": "kana05_0028_gt.backup_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana05_0034.jpg",
+          "detected": false,
+          "pose_category": "unknown",
+          "keypoints_detected": 0,
+          "visibility_score": 0.0,
+          "completeness_score": 0.0,
+          "confidence": 0.0,
+          "output_file": "kana05_0034_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana05_0034_gt.backup.png",
+          "detected": false,
+          "pose_category": "unknown",
+          "keypoints_detected": 0,
+          "visibility_score": 0.0,
+          "completeness_score": 0.0,
+          "confidence": 0.0,
+          "output_file": "kana05_0034_gt.backup_pose_analysis.jpg"
+        }
+      ],
+      "visualization_files": [
+        "pose_analysis/kana05/kana05_0000_cover_pose_analysis.jpg",
+        "pose_analysis/kana05/kana05_0000_cover_gt.backup_pose_analysis.jpg",
+        "pose_analysis/kana05/kana05_0022_pose_analysis.jpg",
+        "pose_analysis/kana05/kana05_0022_gt.backup_pose_analysis.jpg",
+        "pose_analysis/kana05/kana05_0028_pose_analysis.jpg",
+        "pose_analysis/kana05/kana05_0028_gt.backup_pose_analysis.jpg",
+        "pose_analysis/kana05/kana05_0034_pose_analysis.jpg",
+        "pose_analysis/kana05/kana05_0034_gt.backup_pose_analysis.jpg"
+      ]
+    },
+    "kana07": {
+      "dataset_name": "kana07",
+      "image_count": 14,
+      "poses_detected": 13,
+      "detection_details": [
+        {
+          "image_file": "kana07_0000_cover.jpg",
+          "detected": true,
+          "pose_category": "standing",
+          "keypoints_detected": 33,
+          "visibility_score": 1.0,
+          "completeness_score": 0.8452497987133084,
+          "confidence": 0.9690499597426616,
+          "output_file": "kana07_0000_cover_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana07_0000_cover_gt.backup.png",
+          "detected": true,
+          "pose_category": "action",
+          "keypoints_detected": 13,
+          "visibility_score": 0.3939393939393939,
+          "completeness_score": 0.7018038392066956,
+          "confidence": 0.8191486466292179,
+          "output_file": "kana07_0000_cover_gt.backup_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana07_0003.jpg",
+          "detected": true,
+          "pose_category": "standing",
+          "keypoints_detected": 33,
+          "visibility_score": 1.0,
+          "completeness_score": 0.9104996282945981,
+          "confidence": 0.9820999256589196,
+          "output_file": "kana07_0003_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana07_0003_gt.backup.png",
+          "detected": true,
+          "pose_category": "sitting",
+          "keypoints_detected": 16,
+          "visibility_score": 0.48484848484848486,
+          "completeness_score": 0.6708743891029647,
+          "confidence": 0.8311445747902899,
+          "output_file": "kana07_0003_gt.backup_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana07_0011.jpg",
+          "detected": false,
+          "pose_category": "unknown",
+          "keypoints_detected": 0,
+          "visibility_score": 0.0,
+          "completeness_score": 0.0,
+          "confidence": 0.0,
+          "output_file": "kana07_0011_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana07_0011_gt.backup.png",
+          "detected": true,
+          "pose_category": "standing",
+          "keypoints_detected": 32,
+          "visibility_score": 0.9696969696969697,
+          "completeness_score": 0.729954945815332,
+          "confidence": 0.9399303831024604,
+          "output_file": "kana07_0011_gt.backup_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana07_0013.jpg",
+          "detected": true,
+          "pose_category": "standing",
+          "keypoints_detected": 22,
+          "visibility_score": 0.6666666666666666,
+          "completeness_score": 0.7057298242142707,
+          "confidence": 0.8744792981761875,
+          "output_file": "kana07_0013_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana07_0013_gt.backup.png",
+          "detected": true,
+          "pose_category": "standing",
+          "keypoints_detected": 20,
+          "visibility_score": 0.6060606060606061,
+          "completeness_score": 0.6162692203214675,
+          "confidence": 0.8444659652764147,
+          "output_file": "kana07_0013_gt.backup_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana07_0026.jpg",
+          "detected": true,
+          "pose_category": "sitting",
+          "keypoints_detected": 27,
+          "visibility_score": 0.8181818181818182,
+          "completeness_score": 0.6575276404619217,
+          "confidence": 0.8951418917287479,
+          "output_file": "kana07_0026_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana07_0026_gt.backup.png",
+          "detected": true,
+          "pose_category": "action",
+          "keypoints_detected": 9,
+          "visibility_score": 0.2727272727272727,
+          "completeness_score": 0.5733308628201486,
+          "confidence": 0.7692116271094842,
+          "output_file": "kana07_0026_gt.backup_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana07_0030.jpg",
+          "detected": true,
+          "pose_category": "standing",
+          "keypoints_detected": 27,
+          "visibility_score": 0.8181818181818182,
+          "completeness_score": 0.8651628184047613,
+          "confidence": 0.9366689273173159,
+          "output_file": "kana07_0030_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana07_0030_gt.backup.png",
+          "detected": true,
+          "pose_category": "action",
+          "keypoints_detected": 15,
+          "visibility_score": 0.45454545454545453,
+          "completeness_score": 0.8978621528907256,
+          "confidence": 0.870481521487236,
+          "output_file": "kana07_0030_gt.backup_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana07_0031.jpg",
+          "detected": true,
+          "pose_category": "action",
+          "keypoints_detected": 21,
+          "visibility_score": 0.6363636363636364,
+          "completeness_score": 0.9356229638511484,
+          "confidence": 0.9143973200429569,
+          "output_file": "kana07_0031_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana07_0031_gt.backup.png",
+          "detected": true,
+          "pose_category": "action",
+          "keypoints_detected": 15,
+          "visibility_score": 0.45454545454545453,
+          "completeness_score": 0.9979266169396314,
+          "confidence": 0.8904944142970171,
+          "output_file": "kana07_0031_gt.backup_pose_analysis.jpg"
+        }
+      ],
+      "visualization_files": [
+        "pose_analysis/kana07/kana07_0000_cover_pose_analysis.jpg",
+        "pose_analysis/kana07/kana07_0000_cover_gt.backup_pose_analysis.jpg",
+        "pose_analysis/kana07/kana07_0003_pose_analysis.jpg",
+        "pose_analysis/kana07/kana07_0003_gt.backup_pose_analysis.jpg",
+        "pose_analysis/kana07/kana07_0011_pose_analysis.jpg",
+        "pose_analysis/kana07/kana07_0011_gt.backup_pose_analysis.jpg",
+        "pose_analysis/kana07/kana07_0013_pose_analysis.jpg",
+        "pose_analysis/kana07/kana07_0013_gt.backup_pose_analysis.jpg",
+        "pose_analysis/kana07/kana07_0026_pose_analysis.jpg",
+        "pose_analysis/kana07/kana07_0026_gt.backup_pose_analysis.jpg",
+        "pose_analysis/kana07/kana07_0030_pose_analysis.jpg",
+        "pose_analysis/kana07/kana07_0030_gt.backup_pose_analysis.jpg",
+        "pose_analysis/kana07/kana07_0031_pose_analysis.jpg",
+        "pose_analysis/kana07/kana07_0031_gt.backup_pose_analysis.jpg"
+      ]
+    },
+    "kana08": {
+      "dataset_name": "kana08",
+      "image_count": 14,
+      "poses_detected": 10,
+      "detection_details": [
+        {
+          "image_file": "kana08_0000_cover.jpg",
+          "detected": true,
+          "pose_category": "sitting",
+          "keypoints_detected": 29,
+          "visibility_score": 0.8787878787878788,
+          "completeness_score": 0.7731397011966417,
+          "confidence": 0.9303855159969041,
+          "output_file": "kana08_0000_cover_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana08_0000_cover_gt.backup.png",
+          "detected": false,
+          "pose_category": "unknown",
+          "keypoints_detected": 0,
+          "visibility_score": 0.0,
+          "completeness_score": 0.0,
+          "confidence": 0.0,
+          "output_file": "kana08_0000_cover_gt.backup_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana08_0001.jpg",
+          "detected": true,
+          "pose_category": "standing",
+          "keypoints_detected": 19,
+          "visibility_score": 0.5757575757575758,
+          "completeness_score": 0.8172892976439361,
+          "confidence": 0.8786093746803023,
+          "output_file": "kana08_0001_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana08_0001_gt.backup.png",
+          "detected": true,
+          "pose_category": "action",
+          "keypoints_detected": 15,
+          "visibility_score": 0.45454545454545453,
+          "completeness_score": 0.8231475228613073,
+          "confidence": 0.8555385954813524,
+          "output_file": "kana08_0001_gt.backup_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana08_0002.jpg",
+          "detected": true,
+          "pose_category": "standing",
+          "keypoints_detected": 33,
+          "visibility_score": 1.0,
+          "completeness_score": 0.7812511976921198,
+          "confidence": 0.9562502395384239,
+          "output_file": "kana08_0002_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana08_0002_gt.backup.png",
+          "detected": true,
+          "pose_category": "upper_body_only",
+          "keypoints_detected": 3,
+          "visibility_score": 0.09090909090909091,
+          "completeness_score": 0.5975774645805358,
+          "confidence": 0.7376973110979254,
+          "output_file": "kana08_0002_gt.backup_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana08_0010.jpg",
+          "detected": true,
+          "pose_category": "standing",
+          "keypoints_detected": 16,
+          "visibility_score": 0.48484848484848486,
+          "completeness_score": 0.866103642185529,
+          "confidence": 0.8701904254068027,
+          "output_file": "kana08_0010_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana08_0010_gt.backup.png",
+          "detected": false,
+          "pose_category": "unknown",
+          "keypoints_detected": 0,
+          "visibility_score": 0.0,
+          "completeness_score": 0.0,
+          "confidence": 0.0,
+          "output_file": "kana08_0010_gt.backup_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana08_0015.jpg",
+          "detected": true,
+          "pose_category": "action",
+          "keypoints_detected": 15,
+          "visibility_score": 0.45454545454545453,
+          "completeness_score": 0.9948992596431212,
+          "confidence": 0.8898889428377151,
+          "output_file": "kana08_0015_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana08_0015_gt.backup.png",
+          "detected": true,
+          "pose_category": "action",
+          "keypoints_detected": 15,
+          "visibility_score": 0.45454545454545453,
+          "completeness_score": 0.9215000136332078,
+          "confidence": 0.8752090936357324,
+          "output_file": "kana08_0015_gt.backup_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana08_0022.jpg",
+          "detected": false,
+          "pose_category": "unknown",
+          "keypoints_detected": 0,
+          "visibility_score": 0.0,
+          "completeness_score": 0.0,
+          "confidence": 0.0,
+          "output_file": "kana08_0022_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana08_0022_gt.backup.png",
+          "detected": false,
+          "pose_category": "unknown",
+          "keypoints_detected": 0,
+          "visibility_score": 0.0,
+          "completeness_score": 0.0,
+          "confidence": 0.0,
+          "output_file": "kana08_0022_gt.backup_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana08_0023.jpg",
+          "detected": true,
+          "pose_category": "action",
+          "keypoints_detected": 13,
+          "visibility_score": 0.3939393939393939,
+          "completeness_score": 0.744105942050616,
+          "confidence": 0.827609067198002,
+          "output_file": "kana08_0023_pose_analysis.jpg"
+        },
+        {
+          "image_file": "kana08_0023_gt.backup.png",
+          "detected": true,
+          "pose_category": "standing",
+          "keypoints_detected": 18,
+          "visibility_score": 0.5454545454545454,
+          "completeness_score": 0.703419952602549,
+          "confidence": 0.8497748996114189,
+          "output_file": "kana08_0023_gt.backup_pose_analysis.jpg"
+        }
+      ],
+      "visualization_files": [
+        "pose_analysis/kana08/kana08_0000_cover_pose_analysis.jpg",
+        "pose_analysis/kana08/kana08_0000_cover_gt.backup_pose_analysis.jpg",
+        "pose_analysis/kana08/kana08_0001_pose_analysis.jpg",
+        "pose_analysis/kana08/kana08_0001_gt.backup_pose_analysis.jpg",
+        "pose_analysis/kana08/kana08_0002_pose_analysis.jpg",
+        "pose_analysis/kana08/kana08_0002_gt.backup_pose_analysis.jpg",
+        "pose_analysis/kana08/kana08_0010_pose_analysis.jpg",
+        "pose_analysis/kana08/kana08_0010_gt.backup_pose_analysis.jpg",
+        "pose_analysis/kana08/kana08_0015_pose_analysis.jpg",
+        "pose_analysis/kana08/kana08_0015_gt.backup_pose_analysis.jpg",
+        "pose_analysis/kana08/kana08_0022_pose_analysis.jpg",
+        "pose_analysis/kana08/kana08_0022_gt.backup_pose_analysis.jpg",
+        "pose_analysis/kana08/kana08_0023_pose_analysis.jpg",
+        "pose_analysis/kana08/kana08_0023_gt.backup_pose_analysis.jpg"
+      ]
+    }
+  },
+  "optimization_analysis": {
+    "detection_categories": {
+      "sitting": 5,
+      "standing": 12,
+      "action": 11,
+      "upper_body_only": 1
+    },
+    "keypoint_statistics": {
+      "min": 3,
+      "max": 33,
+      "total": 595,
+      "count": 29
+    },
+    "week2_target_achievement": true
+  }
+}

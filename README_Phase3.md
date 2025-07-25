@@ -59,10 +59,10 @@ Phase 3のテスト結果（失敗画像2枚で検証）：
 ```
 
 ### 生成された抽出結果
-- `/tmp/phase3_seeds_21_kaname03_0020.jpg` - エフェクト線画像（シードポイント）
-- `/tmp/phase3_bbox_21_kaname03_0020.jpg` - エフェクト線画像（バウンディングボックス）
-- `/tmp/phase3_seeds_16_kaname03_0015.jpg` - マルチコマ画像（シードポイント）
-- `/tmp/phase3_bbox_16_kaname03_0015.jpg` - マルチコマ画像（バウンディングボックス）
+- `/tmp/phase3_seeds_21_kana03_0020.jpg` - エフェクト線画像（シードポイント）
+- `/tmp/phase3_bbox_21_kana03_0020.jpg` - エフェクト線画像（バウンディングボックス）
+- `/tmp/phase3_seeds_16_kana03_0015.jpg` - マルチコマ画像（シードポイント）
+- `/tmp/phase3_bbox_16_kana03_0015.jpg` - マルチコマ画像（バウンディングボックス）
 
 各画像には通常版・マスク版・透明背景版が生成されます。
 

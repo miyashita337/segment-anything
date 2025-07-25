@@ -18,8 +18,9 @@ segment-anything を使用したアニメキャラクターのバッチ抽出の
 **詳細は [../../spec.md](../../spec.md) を参照してください。**
 
 主要要件:
+
 - Python 3.8+ (推奨: 3.10)
-- CUDA対応GPU (推奨: 8GB VRAM以上)
+- CUDA 対応 GPU (推奨: 8GB VRAM 以上)
 - 必要なモデルファイルとパッケージ
 
 ### ディレクトリ構造
@@ -97,8 +98,10 @@ PROGRESS_FILE="docs/request/[dataset_name]_extraction_progress_$(date +%Y%m%d).m
 
 #### オプション 1: test_phase2_simple.py 使用（推奨）
 
+- バックグラウンド実行
+
 ```bash
-python3 tools/test_phase2_simple.py \
+nohup python3 tools/test_phase2_simple.py \
   --input_dir "$INPUT_DIR" \
   --output_dir "$OUTPUT_DIR" \
   --score_threshold 0.07

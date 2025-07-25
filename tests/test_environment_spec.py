@@ -436,12 +436,14 @@ def run_environment_tests(verbose: bool = True):
     if result.failures:
         print("\n❌ FAILURES:")
         for test, traceback in result.failures:
-            print(f"  - {test}: {traceback.split('AssertionError: ')[-1].split('\n')[0]}")
+            error_msg = traceback.split('AssertionError: ')[-1].split('\n')[0]
+            print(f"  - {test}: {error_msg}")
     
     if result.errors:
         print("\n❌ ERRORS:")
         for test, traceback in result.errors:
-            print(f"  - {test}: {traceback.split('\n')[-2]}")
+            error_line = traceback.split('\n')[-2]
+            print(f"  - {test}: {error_line}")
     
     if result.wasSuccessful():
         print("\n✅ All tests passed - Environment is compatible with spec.md")

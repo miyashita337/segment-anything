@@ -21,22 +21,22 @@ def test_difficult_poses():
     # テスト対象画像（失敗していた4枚）
     test_images = [
         {
-            'path': '/mnt/c/AItools/lora/train/yadokugaeru/org/kaname03/25_kaname03_0024.jpg',
+            'path': '/mnt/c/AItools/lora/train/yado/org/kaname03/25_kaname03_0024.jpg',
             'name': '25_kaname03_0024.jpg',
             'description': '複雑な座りポーズ + 宣伝画像'
         },
         {
-            'path': '/mnt/c/AItools/lora/train/yadokugaeru/org/kaname03/21_kaname03_0020.jpg', 
+            'path': '/mnt/c/AItools/lora/train/yado/org/kaname03/21_kaname03_0020.jpg', 
             'name': '21_kaname03_0020.jpg',
             'description': 'ダイナミックなポーズ + エフェクト線'
         },
         {
-            'path': '/mnt/c/AItools/lora/train/yadokugaeru/org/kaname03/16_kaname03_0015.jpg',
+            'path': '/mnt/c/AItools/lora/train/yado/org/kaname03/16_kaname03_0015.jpg',
             'name': '16_kaname03_0015.jpg', 
             'description': 'マルチコマ構成'
         },
         {
-            'path': '/mnt/c/AItools/lora/train/yadokugaeru/org/kaname03/20_kaname03_0019.jpg',
+            'path': '/mnt/c/AItools/lora/train/yado/org/kaname03/20_kaname03_0019.jpg',
             'name': '20_kaname03_0019.jpg',
             'description': '複雑な絡み合い + エフェクト'
         }

@@ -188,7 +188,7 @@ class PartialExtractionDetector:
    - メモリ使用量の削減
 
 3. **バリデーション**
-   - kaname06データセットでの検証
+   - kana06データセットでの検証
    - 成功率の定量評価
    - エラーケースの分析
 

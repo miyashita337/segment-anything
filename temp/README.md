@@ -38,7 +38,7 @@ temp/
 - run_batch_extraction.py - バッチ抽出実行
 - run_batch_v034.py - v0.34バッチ実行
 - run_batch_v035.py - v0.35バッチ実行
-- run_kaname07_batch.py - kaname07バッチ実行
+- run_kana07_batch.py - kana07バッチ実行
 - run_small_test_v034.py - v0.34小規模テスト
 
 ## 管理ルール
