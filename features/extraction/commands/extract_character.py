@@ -23,6 +23,14 @@ from features.processing.preprocessing.preprocessing import preprocess_image_pip
 from pathlib import Path
 from PIL import Image
 from typing import Any, Optional, Tuple
+import time
+
+# 通知システム
+try:
+    from features.extraction.extraction_notifier import ExtractionNotifier, create_extraction_results_dict
+    EXTRACTION_NOTIFIER_AVAILABLE = True
+except ImportError:
+    EXTRACTION_NOTIFIER_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -32,11 +40,15 @@ logger = logging.getLogger(__name__)
 @click.option('-o', '--output-path', required=True, help='Output path for extracted character')
 @click.option('--batch', is_flag=True, help='Process a directory of images')
 @click.option('--verbose', is_flag=True, help='Enable verbose output')
+@click.option('--no-notify', is_flag=True, help='Disable Pushover notification')
+@click.option('--no-images', is_flag=True, help='Disable success images in notification')
 def extract_character(
     input_path: str,
     output_path: str,
     batch: bool = False,
-    verbose: bool = False
+    verbose: bool = False,
+    no_notify: bool = False,
+    no_images: bool = False
 ) -> None:
     """Extract anime character from manga image.
 
@@ -61,15 +73,109 @@ def extract_character(
         output_dir = Path(output_path)
         output_dir.mkdir(exist_ok=True)
 
-        for img_path in input_dir.glob('*.jpg'):
-            process_single_image(
-                img_path,
-                output_dir / f'{img_path.stem}_extracted.png',
-                sam_model,
-                yolo_model,
-                perf_monitor,
-                verbose
-            )
+        # バッチ処理の統計情報
+        batch_start_time = time.time()
+        total_images = 0
+        successful_extractions = []
+        failed_images = []
+        
+        # 対象画像ファイルを取得
+        image_extensions = ['*.jpg', '*.jpeg', '*.png', '*.bmp']
+        image_files = []
+        for ext in image_extensions:
+            image_files.extend(input_dir.glob(ext))
+        
+        total_images = len(image_files)
+        
+        if verbose:
+            click.echo(f"🚀 バッチ処理開始: {total_images}枚の画像を処理します...")
+
+        for img_path in image_files:
+            try:
+                output_path_single = output_dir / f'{img_path.stem}_extracted.png'
+                
+                if verbose:
+                    click.echo(f"📝 処理中: {img_path.name}")
+                
+                mask = process_single_image(
+                    img_path,
+                    output_path_single,
+                    sam_model,
+                    yolo_model,
+                    perf_monitor,
+                    verbose
+                )
+                
+                if mask is not None and output_path_single.exists():
+                    # 成功記録
+                    successful_extractions.append({
+                        'input_path': str(img_path),
+                        'output_path': str(output_path_single),
+                        'extracted_files': [str(output_path_single)],
+                        'quality_score': 0.8,  # デフォルト値
+                        'processing_time': 1.0  # デフォルト値
+                    })
+                    
+                    if verbose:
+                        click.echo(f"✅ 成功: {img_path.name}")
+                else:
+                    failed_images.append(str(img_path))
+                    if verbose:
+                        click.echo(f"❌ 失敗: {img_path.name}")
+                        
+            except Exception as e:
+                failed_images.append(str(img_path))
+                if verbose:
+                    click.echo(f"❌ エラー: {img_path.name} - {e}")
+        
+        # バッチ処理完了
+        batch_processing_time = time.time() - batch_start_time
+        success_count = len(successful_extractions)
+        success_rate = (success_count / total_images * 100) if total_images > 0 else 0
+        
+        # 結果表示
+        click.echo(f"\n🎯 バッチ処理完了!")
+        click.echo(f"📊 結果: {success_count}/{total_images}枚成功 ({success_rate:.1f}%)")
+        click.echo(f"⏱️ 処理時間: {batch_processing_time:.1f}秒")
+        
+        # Pushover通知送信
+        if not no_notify and EXTRACTION_NOTIFIER_AVAILABLE and success_count > 0:
+            try:
+                notifier = ExtractionNotifier()
+                
+                # 抽出結果辞書を作成
+                extraction_results = create_extraction_results_dict(
+                    total_images=total_images,
+                    successful_extractions=successful_extractions,
+                    processing_time=batch_processing_time,
+                    quality_method="fullbody_priority",
+                    output_dir=str(output_dir)
+                )
+                
+                # 通知送信（デフォルトで画像付き）
+                include_images = not no_images
+                success = notifier.send_extraction_completion_notification(
+                    extraction_results, 
+                    include_images=include_images
+                )
+                
+                if success:
+                    if include_images:
+                        click.echo("📱 Pushover通知送信完了（成功画像付き）")
+                    else:
+                        click.echo("📱 Pushover通知送信完了")
+                else:
+                    click.echo("⚠️ Pushover通知送信失敗")
+                    
+            except Exception as e:
+                if verbose:
+                    click.echo(f"⚠️ 通知送信エラー: {e}")
+        elif not no_notify and not EXTRACTION_NOTIFIER_AVAILABLE:
+            if verbose:
+                click.echo("⚠️ 通知システムが利用できません")
+        elif success_count == 0:
+            if verbose:
+                click.echo("⚠️ 成功した抽出がないため通知をスキップ")
     else:
         process_single_image(
             Path(input_path),
@@ -128,6 +234,64 @@ def process_single_image(
             mask = generate_character_mask(enhanced_bgr, sam_model, yolo_model, quality_method)
 
         if mask is not None:
+            # 🚀 P1-A004: セグメンテーション精度総合向上システム適用
+            try:
+                from features.extraction.integrated_precision_pipeline import IntegratedPrecisionPipeline
+                
+                precision_pipeline = IntegratedPrecisionPipeline()
+                
+                # 統合精度向上パイプライン実行
+                pipeline_result = precision_pipeline.process_with_integrated_pipeline(
+                    image=enhanced_bgr,
+                    initial_mask=mask,
+                    yolo_model=yolo_model,
+                    sam_model=sam_model,
+                    target_quality=0.5
+                )
+                
+                if pipeline_result.success and pipeline_result.final_mask is not None:
+                    mask = pipeline_result.final_mask
+                    
+                    if verbose:
+                        improvement_pct = pipeline_result.improvement_ratio * 100
+                        click.echo(f'🚀 統合精度向上完了: 品質 {pipeline_result.initial_quality:.3f} → {pipeline_result.final_quality:.3f} '
+                                 f'(改善率 {improvement_pct:+.1f}%, リトライ {pipeline_result.retry_count}回, '
+                                 f'処理時間 {pipeline_result.total_processing_time:.1f}秒)')
+                        
+                        # 処理段階の詳細表示
+                        completed_stages = [s.name for s in pipeline_result.processing_stages if s.status == 'completed']
+                        if completed_stages:
+                            click.echo(f'   完了段階: {", ".join(completed_stages)}')
+                else:
+                    if verbose:
+                        click.echo(f'⚠️ 統合精度向上未達: 最終品質 {pipeline_result.final_quality:.3f}（元マスク使用）')
+                
+            except Exception as e:
+                if verbose:
+                    click.echo(f'⚠️ 統合精度向上エラー（フォールバック使用）: {e}')
+                
+                # フォールバック: 従来のSAM後処理のみ適用
+                try:
+                    from features.processing.sam_postprocessing_pipeline import SAMPostprocessingPipeline
+                    postprocessor = SAMPostprocessingPipeline()
+                    
+                    # マスク品質向上処理
+                    enhancement_result = postprocessor.enhance_mask_quality(mask, enhanced_bgr)
+                    enhanced_mask = enhancement_result.get('enhanced_mask', mask)
+                    quality_score = enhancement_result.get('quality_score', 0.0)
+                    
+                    if verbose:
+                        improvements = enhancement_result.get('improvements', [])
+                        click.echo(f'🔧 フォールバック処理完了: 品質スコア {quality_score:.3f}, 改善 {len(improvements)}項目')
+                    
+                    # 改良されたマスクを使用
+                    mask = enhanced_mask
+                    
+                except Exception as fallback_e:
+                    if verbose:
+                        click.echo(f'⚠️ フォールバック処理もエラー（元マスク使用）: {fallback_e}')
+                    # エラー時は元のマスクを継続使用
+            
             # Skip quality check for testing and save directly
             try:
                 save_extracted_character(enhanced_bgr, mask, output_path)
@@ -188,6 +352,17 @@ def generate_character_mask(image: ImageType, sam_model: Any, yolo_model: Any, q
         # Score masks with YOLO
         scored_masks = yolo_model.score_masks_with_detections(character_masks, image_array)
         print(f"🎯 {len(scored_masks) if scored_masks else 0} scored masks")
+        
+        # 🚀 YOLO検出範囲拡張システム適用 (P1-A001)
+        try:
+            from features.extraction.yolo_detection_expansion import YOLODetectionExpander
+            expander = YOLODetectionExpander()
+            expanded_masks = expander.expand_detection_capabilities(yolo_model, image_array, scored_masks)
+            print(f"🔧 YOLO拡張システム: {len(scored_masks)} → {len(expanded_masks)} masks")
+            scored_masks = expanded_masks
+        except Exception as e:
+            print(f"⚠️ YOLO拡張システムエラー（フォールバック使用）: {e}")
+            # エラー時は元のマスクを継続使用
         
         # Apply enhanced filtering system
         if scored_masks:

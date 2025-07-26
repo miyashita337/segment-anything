@@ -62,6 +62,62 @@ def remove_small_components(mask: np.ndarray, min_area: int = 100) -> np.ndarray
     return cleaned_mask
 
 
+def remove_small_components_adaptive(mask: np.ndarray, 
+                                   min_area_ratio: float = 0.001,
+                                   absolute_min_area: int = 50) -> np.ndarray:
+    """
+    小さなキャラクター対応：適応的面積閾値による連結成分除去
+    
+    画像サイズに応じて面積閾値を動的調整し、
+    小さなキャラクターでも適切に処理できるように最適化
+    
+    Args:
+        mask: 入力マスク (0-255)
+        min_area_ratio: 画像全体に対する最小面積比（デフォルト0.1%）
+        absolute_min_area: 絶対最小面積（非常に小さなノイズ除去用）
+        
+    Returns:
+        処理済みマスク
+    """
+    height, width = mask.shape[:2]
+    total_pixels = height * width
+    
+    # 動的面積閾値計算
+    adaptive_min_area = max(
+        int(total_pixels * min_area_ratio),  # 画像サイズ比例
+        absolute_min_area                    # 絶対最小値
+    )
+    
+    # 連結成分分析
+    num_labels, labels, stats, centroids = cv2.connectedComponentsWithStats(mask, connectivity=8)
+    
+    # 新しいマスクを作成
+    cleaned_mask = np.zeros_like(mask)
+    
+    # 成分面積リストを作成（分析用）
+    component_areas = []
+    kept_components = 0
+    
+    for i in range(1, num_labels):  # 0はバックグラウンド
+        area = stats[i, cv2.CC_STAT_AREA]
+        component_areas.append(area)
+        
+        if area >= adaptive_min_area:
+            cleaned_mask[labels == i] = 255
+            kept_components += 1
+    
+    # デバッグ情報（オプション）
+    if component_areas:
+        largest_area = max(component_areas)
+        avg_area = sum(component_areas) / len(component_areas)
+        print(f"  適応的面積フィルタリング: 閾値={adaptive_min_area} "
+              f"(比率={min_area_ratio:.1%}), "
+              f"保持={kept_components}/{len(component_areas)}, "
+              f"最大面積={largest_area}, 平均面積={avg_area:.1f}")
+    
+    return cleaned_mask
+
+
 def fill_holes_in_mask(mask: np.ndarray) -> np.ndarray:
     """
     マスク内のホールを埋める

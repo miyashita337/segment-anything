@@ -2,17 +2,20 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-Claude Codeを日本語で応答してください。
+日本語で応答してください。
 
 ## プロジェクト概要
-MetaのSegment Anything Model (SAM)とYOLOを組み合わせたキャラクター抽出パイプライン。
-画像からアニメキャラクターを自動検出・抽出する高精度システム。
 
-## 主要機能
-- **自動キャラクター検出**: YOLO + SAM の2段階処理
-- **品質評価システム**: バランス、信頼度、サイズ、全身、中心優先の複数評価手法
-- **バッチ処理**: 大量画像の自動処理とプログレス管理
-- **通知システム**: Pushover統合による長時間処理の進捗通知
+このプロジェクトは、Meta の Segment Anything Model (SAM) と YOLOv8 を組み合わせたアニメキャラクター抽出システムです。漫画・アニメ画像からキャラクターを自動検出・抽出し、LoRA学習用データセットを生成することが主目的です。
+
+## 重要なセキュリティ原則
+
+**画像ファイルは秘匿情報として扱うこと**
+
+- ❌ 画像ファイルの commit 禁止
+- ❌ プロジェクトルート直下への画像出力禁止  
+- ✅ `/mnt/c/AItools/segment-anything/` 直下以外への出力必須
+- ✅ `.gitignore` での画像関連パス完全除外
 
 ## 主要コマンド
 
@@ -23,283 +26,191 @@ python -m venv sam-env
 source sam-env/bin/activate  # Linux
 sam-env\Scripts\activate     # Windows
 
-# 依存関係インストール（setup.pyのdev版推奨）
+# 開発依存関係込みインストール（推奨）
 pip install -e .[dev]
-# または個別インストール
+
+# または基本インストール
 pip install -e .
 pip install opencv-python pycocotools matplotlib onnxruntime onnx ultralytics easyocr
 ```
 
 ### キャラクター抽出実行
 ```bash
-# 最新パイプライン（v0.0.43）- 推奨
-python extract_kana03.py --quality_method balanced
+# メイン抽出コマンド
+python features/extraction/commands/extract_character.py input_image.jpg -o output_dir/
 
-# 改良版パイプライン（kana04系列）
-python extract_kana04.py
+# バッチ処理
+python features/extraction/commands/extract_character.py input_dir/ -o output_dir/ --batch
 
-# インタラクティブバッチ処理
-python sam_batch_interactive.py
+# インタラクティブ抽出（100%成功率）
+python features/extraction/commands/quick_interactive.py image.jpg --points 750,1000,pos 800,1200,pos
 
-# Phase 3インタラクティブ抽出（100%成功率）
-python commands/quick_interactive.py <image_path> --points 750,1000,pos 800,1200,pos 500,500,neg
+# 自動パイプライン実行
+python tools/run_auto_pipeline.py
 
-# バッチ実行スクリプト
-./run_v042_sequential.sh
-./run_v042_resume.sh
-
-# コマンドライン個別実行
-python scripts/amg.py --checkpoint sam_vit_h_4b8939.pth --model-type vit_h --input <image_path> --output <output_path>
+# レガシー互換ツール
+python tools/sam_yolo_character_segment.py --mode reproduce-auto --input_dir ./test_small/ --output_dir ./results/
 ```
 
-### テスト・開発
+### テスト・品質チェック
 ```bash
-# Phase3 CLI テスト
-python test_phase3_cli.py
-
-# 困難姿勢テスト
-python test_difficult_pose.py
-
-# 開発用小規模テスト
-python test_phase2_simple.py
-
-# レジューム機能テスト
-python test_resume_functionality.py
-
-# コード品質チェック（flake8, black, mypy, isort）
+# 統合品質チェック（flake8, black, mypy, isort）
 ./linter.sh
 
 # 個別テスト実行
-python -m pytest tests/test_extract.py -v
+python -m pytest tests/unit/test_extract.py -v
+python -m pytest tests/integration/test_extraction_pipeline.py -v
+
+# 段階的テスト
+python tools/test_phase2_simple.py
+python tools/test_phase3_cli.py
+python tools/test_difficult_pose.py
+
+# 品質評価
+python tools/unified_quality_checker.py
+python tools/quality_dashboard.py
 ```
 
-## 🚨 絶対遵守ルール（毎回確認）
-
-### 実装報告の前に必須
-1. **テスト作成**: 失敗テストを先に作成し、実行確認
-2. **動作確認**: 実際にコマンド実行し、期待通りの動作を確認
-3. **出力確認**: ファイル出力される場合は、実際のファイルを確認
-4. **エラーテスト**: 異常系のテストも実行
-5. **報告形式**: 「実装完了」ではなく「動作確認済み」で報告
-
-### 報告テンプレート（必須使用）
-```
-## 🔍 実装完了報告
-
-### ✅ テスト結果
-- テストファイル: [作成したテストファイル名]
-- 実行結果: [テスト実行の出力]
-- 成功/失敗: [具体的な結果]
-
-### ✅ 動作確認
-- 実行コマンド: [実際に実行したコマンド]
-- 実行結果: [コマンドの出力結果]
-- 期待通りの動作: [Yes/No + 詳細]
-
-### ✅ 出力確認
-- 生成ファイル: [作成されたファイル名]
-- ファイル内容: [内容の確認結果]
-- 正常性: [正常/異常 + 詳細]
-
-### ✅ エラーハンドリング
-- 異常系テスト: [実行した異常系テスト]
-- エラー処理: [エラー時の動作確認]
-- 復旧確認: [エラーからの復旧確認]
-```
-
-### 🚫 禁止事項
-- 「できました」「完了しました」の曖昧な報告
-- テスト結果の添付なし報告
-- 動作確認の実行結果なし報告
-- 上記テンプレートを使用しない報告
-
-## プロジェクト構造（Phase0リファクタリング後）
-
-### 新しいディレクトリ構造
-- `core/` - 元のFacebook実装
-  - `segment_anything/` - SAMコアモジュール
-  - `scripts/` - バッチ処理・ONNX変換スクリプト
-  - `demo/` - デモアプリケーション
-- `features/` - 自作機能実装
-  - `extraction/` - キャラクター抽出機能
-    - `commands/` - CLI コマンドモジュール
-    - `models/` - SAM/YOLOラッパークラス
-  - `evaluation/` - 品質評価システム
-    - `utils/` - 評価・学習ユーティリティ
-  - `processing/` - 前処理・後処理
-    - `preprocessing/` - 画像前処理
-    - `postprocessing/` - 画像後処理
-  - `common/` - 共通ユーティリティ
-    - `hooks/` - 初期化・設定
-    - `notification/` - 通知システム
-    - `performance/` - パフォーマンス監視
-- `tests/` - 統合テスト
-  - `unit/` - 単体テスト
-  - `integration/` - 統合テスト
-  - `fixtures/` - テストデータ
-- `tools/` - 実行可能スクリプト
-- `test_small/` - テスト用小規模画像セット
-- `results_batch/` - バッチ処理結果出力
-
-### 設定ファイル
-- `config/pushover.json` - 通知設定（pushover.json.exampleからコピー）
-- `requirements.txt` - Python依存関係
-
-### ログファイル
-- `kana03_*.log` - パイプライン実行ログ（balanced, confidence, size, fullbody, central各手法別）
-- `kana04_*.log` - 改良版パイプラインログ
-- `v042_sequential_full.log` - フル実行ログ
-
-## アーキテクチャ
-
-### 処理フロー（v0.0.43最新版）
-1. **入力画像準備**: test_small/またはカスタムディレクトリから画像読み込み
-2. **YOLO検出**: キャラクター候補の境界ボックス検出
-3. **SAM精密分割**: YOLOの結果を元にSAMで高精度セグメンテーション
-4. **品質評価**: 5つの評価手法から最適な抽出結果を選択
-5. **A評価保護**: 品質スコア≥0.8の場合は改善処理をスキップ
-6. **v0.0.43改善処理** (A評価以外):
-   - 手足切断防止処理（LimbProtectionSystem）
-   - 適応的マスク拡張（MaskExpansionProcessor）
-   - 安定性監視（StabilityManager）
-7. **後処理**: マスク適用、背景除去、リサイズ等
-8. **結果保存**: results_batch/に処理結果を保存
-
-### 品質評価システム
-
-#### 評価手法
-1. **balanced** - バランス重視（推奨）
-2. **confidence_priority** - 信頼度優先
-3. **size_priority** - サイズ優先  
-4. **fullbody_priority** - 全身検出優先
-5. **central_priority** - 中心位置優先
-
-#### 実行例
+### モデル管理
 ```bash
-# バランス手法で実行
-python extract_kana03.py --quality_method balanced
+# モデル初期化確認
+python tools/init_models.py
 
-# 信頼度優先で実行  
-python extract_kana03.py --quality_method confidence_priority
+# CUDA利用可能性確認
+python -c "import torch; print(f'CUDA: {torch.cuda.is_available()}, Device count: {torch.cuda.device_count()}')"
 ```
 
-### コアモジュール
+## プロジェクト構造
 
-#### models/
-- `sam_wrapper.py` - SAMモデルのラッパークラス、CUDA最適化
-- `yolo_wrapper.py` - YOLOモデルのラッパークラス、バッチ処理対応
+### 新しい階層化アーキテクチャ（Phase 0 リファクタリング後）
 
-#### commands/
-- `extract_character.py` - メインのキャラクター抽出ロジック
-- `interactive_extract.py` - インタラクティブ抽出インターフェース
-- `quick_interactive.py` - 簡易インタラクティブモード
+```
+├── core/                    # 元Facebook実装（未改変）
+│   ├── segment_anything/    # SAM コアライブラリ
+│   ├── scripts/            # バッチ処理・ONNX変換
+│   └── demo/               # React デモアプリ
+│
+├── features/               # 自作機能実装
+│   ├── extraction/         # キャラクター抽出
+│   │   ├── commands/       # CLI コマンドモジュール
+│   │   └── models/         # SAM/YOLO ラッパークラス
+│   ├── evaluation/         # 品質評価システム
+│   │   └── utils/          # 評価・学習ユーティリティ
+│   ├── processing/         # 前処理・後処理
+│   │   ├── preprocessing/  # 画像前処理
+│   │   └── postprocessing/ # 画像後処理
+│   └── common/             # 共通ユーティリティ
+│       ├── hooks/          # 初期化・設定
+│       ├── notification/   # 通知システム
+│       └── performance/    # パフォーマンス監視
+│
+├── tools/                  # 実行可能スクリプト
+├── tests/                  # テストスイート
+│   ├── unit/              # 単体テスト
+│   ├── integration/       # 統合テスト
+│   └── fixtures/          # テストデータ
+└── test_small/            # テスト用小規模画像セット
+```
 
-#### utils/
-- `preprocessing.py` - 画像前処理（コントラスト調整、ノイズ除去）
-- `postprocessing.py` - 後処理（マスク適用、背景除去）
-- `notification.py` - Pushover通知システム
-- `performance.py` - パフォーマンス監視
-- `difficult_pose.py` - 困難な姿勢の検出・処理
-- `manga_preprocessing.py` - 漫画特化前処理（テキスト除去）
-- `text_detection.py` - OCR統合テキスト検出
-- `interactive_assistant.py` - GUIインタラクティブモード（tkinter）
-- `interactive_core.py` - インタラクティブ機能の共通基盤
+### 処理フロー
+1. **YOLO検出**: キャラクター候補の境界ボックス検出（閾値0.07、アニメ特化調整済み）
+2. **SAM精密分割**: YOLOの結果をプロンプトとした高精度セグメンテーション
+3. **品質評価**: 5つの評価手法（balanced, confidence, size, fullbody, central）から最適選択
+4. **改善処理**: A評価以外に対して適応的マスク拡張・手足切断防止処理
+5. **後処理**: マスク適用、背景除去、リサイズ等
 
 ## 開発ガイドライン
 
-### 必須依存関係
-- Python 3.8+
-- PyTorch 1.7+ (CUDA推奨)
-- SAMモデルファイル: `sam_vit_h_4b8939.pth` (2.6GB)
-- YOLOモデル: `yolov8n.pt`, `yolov8x.pt`
+### 必須モデルファイル
+- `sam_vit_h_4b8939.pth` - SAM ViT-H モデル（2.6GB）
+- `yolov8n.pt`, `yolov8x.pt` - YOLO v8 モデル
+- これらのファイルは `.gitignore` で除外されている
 
-### コード品質
-- flake8, black, mypy, isortによる品質チェック必須
-- `./linter.sh`で統合チェック実行
-- 100文字行制限
-- setup.pyのdev依存関係: `pip install -e .[dev]`
-- **重要**: black==23.*, isort==5.12.0の特定バージョン必須（linter.shで確認）
+### コード品質基準
+- **black**: バージョン23.* 必須、100文字行制限
+- **isort**: バージョン5.12.0 必須
+- **flake8**: `.flake8` 設定に従う
+- **mypy**: 型チェック（setup.py, notebooks除く）
+
+統合チェックは `./linter.sh` で実行。
 
 ### テスト戦略
-- 新機能追加時は対応するテストを作成
-- `tests/`ディレクトリにpytest形式でテスト配置
-- 段階的テスト: `test_phase2_simple.py` → `test_phase3_cli.py`
-- 特殊ケーステスト: `test_difficult_pose.py`, `test_resume_functionality.py`
+- **段階的テスト**: phase2 → phase3 の順で実行
+- **統合テスト**: `tests/integration/` に配置
+- **フィクスチャ**: `tests/fixtures/` でテストデータ管理
+- **実画像テスト**: `test_small/` の小規模データセットを使用
 
-### 通知設定
+### 通知システム
 ```bash
 # Pushover設定（オプション）
 cp config/pushover.json.example config/pushover.json
-# user_key, api_tokenを設定
+# user_key, api_token を設定
 ```
 
-### バッチ処理のベストプラクティス
-- 大量処理前に小規模テスト(`test_small/`)で動作確認
-- レジューム機能を活用して処理中断時の復旧
-- ログファイルで処理状況を監視
-- GPU利用可能性とメモリ使用量を事前確認
+## アーキテクチャ設計判断
+
+### YOLO + SAM 2段階アプローチ
+- **YOLO**: 高速なキャラクター候補検出
+- **SAM**: YOLOボックスをプロンプトとした精密セグメンテーション
+- この組み合わせで速度と精度を両立
+
+### 品質評価システム（5段階）
+1. **balanced** - バランス重視（推奨）
+2. **confidence_priority** - 信頼度優先
+3. **size_priority** - サイズ優先
+4. **fullbody_priority** - 全身検出優先
+5. **central_priority** - 中心位置優先
+
+### インタラクティブ抽出システム
+- **GUI版**: `features/evaluation/utils/interactive_assistant.py`（X11環境必要）
+- **CLI版**: `features/extraction/commands/quick_interactive.py`
+- 自動処理失敗時の手動介入により100%成功率を達成
 
 ## トラブルシューティング
 
 ### よくある問題
-1. **CUDA利用不可**: PyTorchのCUDA版を再インストール
-2. **メモリ不足**: バッチサイズを削減、yolov8nモデル使用
-3. **モデルファイル不在**: SAMモデル(sam_vit_h_4b8939.pth)をダウンロード
-4. **権限エラー**: スクリプトに実行権限付与(`chmod +x`)
+```bash
+# CUDA利用不可 → PyTorch CUDA版再インストール
+pip uninstall torch torchvision
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+
+# メモリ不足 → 軽量モデル使用
+export YOLO_MODEL=yolov8n.pt  # デフォルトはyolov8x.pt
+
+# モデルファイル不在 → 手動ダウンロード
+wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
+
+# 権限エラー → 実行権限付与
+chmod +x *.sh
+```
 
 ### デバッグ方法
 ```bash
-# ログレベル変更
+# ログレベル調整
 export LOG_LEVEL=DEBUG
-python extract_kana03.py
 
-# テスト用小規模実行
-python test_phase2_simple.py
+# 小規模テスト実行
+python tools/test_phase2_simple.py
 
-# CUDA確認
-python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}')"
-
-# モデルファイル確認
-ls -la sam_vit_h_4b8939.pth yolov8*.pt
+# パフォーマンス監視
+python -c "
+import torch
+import psutil
+print(f'CUDA: {torch.cuda.is_available()}')
+print(f'GPU Memory: {torch.cuda.get_device_properties(0).total_memory // 1024**3} GB')
+print(f'RAM: {psutil.virtual_memory().total // 1024**3} GB')
+"
 ```
 
-## 重要な注意事項
-- SAMモデルファイル(2.6GB)が必要 - [Meta公式からダウンロード](https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth)
-- GPU推奨（CPU処理は非常に遅い）、8GB VRAM以上推奨
-- バッチ処理は長時間実行される可能性（5-8秒/画像、大規模データセットでは数時間）
-- 処理中断時はレジューム機能を利用
-- メモリ制限: RAM 2GB、VRAM 8GB、処理時間5分/画像（v0.0.43安定性管理）
-- **アニメキャラクター特化**: YOLO閾値0.07に調整済み
-
-## 実績データ（v0.0.43）
+## 実績データ（最新版）
 - **処理成功率**: 96.7% (148/153画像)
-- **品質評価**: balanced 30% → size_priority 40%成功率
+- **品質評価**: balanced手法で30%、size_priority手法で40%の成功率
+- **Phase 3インタラクティブ**: 100%成功率（従来自動処理0%から大幅改善）
 - **平均品質スコア**: 0.742（範囲: 0.482-0.938）
-- **Phase 3インタラクティブ**: 100%成功率（従来自動処理0%から改善）
 
-## プロジェクト固有の設計判断
-
-### YOLO + SAMアプローチ
-- YOLO: 高速なキャラクター候補検出
-- SAM: YOLOボックスをプロンプトとした精密セグメンテーション
-- この組み合わせにより、速度と精度を両立
-
-### 5段階品質評価
-- 複数の評価軸（信頼度、サイズ、位置、全身等）で最適な結果を選択
-- アニメキャラクター特有の課題（複雑な姿勢、部分隠蔽等）に対応
-
-### レジューム機能
-- 大規模バッチ処理の中断・再開をサポート
-- 処理済みファイルをスキップして効率的に継続
-
-### v0.0.43改善システム（最新）
-- **MaskExpansionProcessor**: 体型別適応的マスク拡張（全身/上半身判定）
-- **LimbProtectionSystem**: エッジ検出による手足切断防止
-- **StabilityManager**: メモリ・時間制限による安定性確保
-- **A評価保護**: 高品質結果(≥0.8)の保護機能
-
-### Phase 3インタラクティブ抽出
-- GUI版: `utils/interactive_assistant.py`（tkinter、X11環境必要）
-- CLI版: `commands/quick_interactive.py`（コマンドライン）  
-- 手動ポイント指定による100%成功率達成
-- 自動処理失敗時の手動介入システム
+## 重要な制約事項
+- **GPU推奨**: CPU処理は極めて遅い（8GB VRAM以上推奨）
+- **メモリ制限**: RAM 2GB、VRAM 8GB、処理時間5分/画像で安定性管理
+- **バッチ処理**: 5-8秒/画像、大規模データセットでは数時間要する
+- **レジューム機能**: 処理中断時の再開をサポート
+- **アニメ特化**: YOLO閾値0.07にアニメキャラクター向け調整済み

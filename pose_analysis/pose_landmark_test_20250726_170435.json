@@ -1,0 +1,131 @@
+{
+  "timestamp": "2025-07-26T17:04:35.514449",
+  "input_directory": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_rev_merge",
+  "output_directory": "pose_analysis",
+  "total_processed": 10,
+  "detection_count": 9,
+  "detection_rate": 0.9,
+  "week2_target_rate": 0.8,
+  "target_achieved": true,
+  "results": [
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_rev_merge/success_grid_kana08_20250726_112009.jpg",
+      "timestamp": "2025-07-26T17:04:34.041679",
+      "detected": true,
+      "pose_category": "action",
+      "visibility_score": 0.45454545454545453,
+      "completeness_score": 0.8757684897292743,
+      "confidence": 0.8660627888549457,
+      "keypoints_detected": 15,
+      "week2_optimization": true,
+      "output_file": "pose_analysis/success_grid_kana08_20250726_112009_pose_landmarks.jpg"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_rev_merge/kana08_0001_extracted.png",
+      "timestamp": "2025-07-26T17:04:34.200576",
+      "detected": true,
+      "pose_category": "standing",
+      "visibility_score": 0.5757575757575758,
+      "completeness_score": 0.8172892976439361,
+      "confidence": 0.8786093746803023,
+      "keypoints_detected": 19,
+      "week2_optimization": true,
+      "output_file": "pose_analysis/kana08_0001_extracted_pose_landmarks.jpg"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_rev_merge/kana08_0002_extracted.png",
+      "timestamp": "2025-07-26T17:04:34.353466",
+      "detected": true,
+      "pose_category": "standing",
+      "visibility_score": 0.5454545454545454,
+      "completeness_score": 0.8363747622027542,
+      "confidence": 0.8763658615314599,
+      "keypoints_detected": 18,
+      "week2_optimization": true,
+      "output_file": "pose_analysis/kana08_0002_extracted_pose_landmarks.jpg"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_rev_merge/kana08_0003_extracted.png",
+      "timestamp": "2025-07-26T17:04:34.493514",
+      "detected": true,
+      "pose_category": "action",
+      "visibility_score": 0.45454545454545453,
+      "completeness_score": 0.9989942230961539,
+      "confidence": 0.8907079355283216,
+      "keypoints_detected": 15,
+      "week2_optimization": true,
+      "output_file": "pose_analysis/kana08_0003_extracted_pose_landmarks.jpg"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_rev_merge/kana08_0004_extracted.png",
+      "timestamp": "2025-07-26T17:04:34.652496",
+      "detected": true,
+      "pose_category": "standing",
+      "visibility_score": 0.48484848484848486,
+      "completeness_score": 0.9014041831096014,
+      "confidence": 0.8772505335916172,
+      "keypoints_detected": 16,
+      "week2_optimization": true,
+      "output_file": "pose_analysis/kana08_0004_extracted_pose_landmarks.jpg"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_rev_merge/kana08_0005_extracted.png",
+      "timestamp": "2025-07-26T17:04:34.809075",
+      "detected": true,
+      "pose_category": "action",
+      "visibility_score": 0.45454545454545453,
+      "completeness_score": 0.8500592895529486,
+      "confidence": 0.8609209488196806,
+      "keypoints_detected": 15,
+      "week2_optimization": true,
+      "output_file": "pose_analysis/kana08_0005_extracted_pose_landmarks.jpg"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_rev_merge/kana08_0006_extracted.png",
+      "timestamp": "2025-07-26T17:04:34.978462",
+      "detected": true,
+      "pose_category": "standing",
+      "visibility_score": 0.5757575757575758,
+      "completeness_score": 0.8931333522905002,
+      "confidence": 0.8937781856096152,
+      "keypoints_detected": 19,
+      "week2_optimization": true,
+      "output_file": "pose_analysis/kana08_0006_extracted_pose_landmarks.jpg"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_rev_merge/kana08_0007_extracted.png",
+      "timestamp": "2025-07-26T17:04:35.168597",
+      "detected": true,
+      "pose_category": "sitting",
+      "visibility_score": 0.7272727272727273,
+      "completeness_score": 0.67861775403673,
+      "confidence": 0.8811780962618914,
+      "keypoints_detected": 24,
+      "week2_optimization": true,
+      "output_file": "pose_analysis/kana08_0007_extracted_pose_landmarks.jpg"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_rev_merge/kana08_0008_extracted.png",
+      "timestamp": "2025-07-26T17:04:35.349801",
+      "detected": true,
+      "pose_category": "action",
+      "visibility_score": 0.45454545454545453,
+      "completeness_score": 0.9965652603994717,
+      "confidence": 0.8902221429889852,
+      "keypoints_detected": 15,
+      "week2_optimization": true,
+      "output_file": "pose_analysis/kana08_0008_extracted_pose_landmarks.jpg"
+    },
+    {
+      "image_path": "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kana08_rev_merge/kana08_0009_extracted.png",
+      "timestamp": "2025-07-26T17:04:35.514422",
+      "detected": false,
+      "pose_category": "unknown",
+      "visibility_score": 0.0,
+      "completeness_score": 0.0,
+      "confidence": 0.0,
+      "keypoints_detected": 0,
+      "week2_optimization": true
+    }
+  ]
+}

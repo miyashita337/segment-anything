@@ -1,0 +1,41 @@
+{
+  "timestamp": "2025-07-26T17:10:17.594525",
+  "test_type": "small_character_area_threshold",
+  "adaptive_filtering_implemented": true,
+  "adaptive_threshold_calculation": true,
+  "test_cases": [
+    {
+      "name": "tiny_character",
+      "description": "超小キャラクター（0.3%）",
+      "expected_ratio": 0.003,
+      "actual_coverage": 0.009357452392578125,
+      "default_threshold": 0.15,
+      "adaptive_threshold": 0.036224365234375,
+      "default_pass": false,
+      "adaptive_pass": false,
+      "improvement": false
+    },
+    {
+      "name": "small_character",
+      "description": "小さなキャラクター（2%）",
+      "expected_ratio": 0.02,
+      "actual_coverage": 0.061954498291015625,
+      "default_threshold": 0.15,
+      "adaptive_threshold": 0.08,
+      "default_pass": false,
+      "adaptive_pass": false,
+      "improvement": false
+    },
+    {
+      "name": "normal_character",
+      "description": "通常サイズキャラクター（8%）",
+      "expected_ratio": 0.08,
+      "actual_coverage": 0.24834060668945312,
+      "default_threshold": 0.15,
+      "adaptive_threshold": 0.15,
+      "default_pass": true,
+      "adaptive_pass": true,
+      "improvement": false
+    }
+  ]
+}

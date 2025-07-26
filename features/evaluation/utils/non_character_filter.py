@@ -132,41 +132,47 @@ class NonCharacterFilter:
             area = w * h
             aspect_ratio = h / max(w, 1)
             
-            # 1. 形状分析 - マスクは水平長方形、楕円、または三角形状
-            if 0.2 <= aspect_ratio <= 0.9:  # 横長形状
+            # 1. 形状分析 - マスクは水平長方形、楕円、または三角形状（キャラクターを除外）
+            # キャラクター除外: 縦長（>1.2）や正方形に近い（0.8-1.2）は除外
+            if 0.2 <= aspect_ratio <= 0.7 and not (0.8 <= aspect_ratio <= 1.2):  # 明確に横長のみ
                 result['confidence'] += 0.25
                 result['reasons'].append('horizontal_shape')
                 
-                # さらに細かい形状判定
-                if 0.3 <= aspect_ratio <= 0.7:  # 典型的なマスク比率
+                # より厳格なマスク比率判定
+                if 0.3 <= aspect_ratio <= 0.6:  # 典型的なマスク比率（より厳格）
                     result['confidence'] += 0.15
                     result['reasons'].append('typical_mask_ratio')
             
-            # 2. サイズ分析 - より幅広いサイズ範囲をカバー
-            if 300 <= area <= 25000:  # 小〜中サイズ
-                result['confidence'] += 0.2
-                result['reasons'].append('mask_size')
-                
-                # 大きすぎるマスクを検出（顔より大きい不自然なマスク）
-                relative_area = area / (image_width * image_height)
-                if relative_area > 0.15:  # 画像の15%以上
-                    result['confidence'] += 0.2
-                    result['reasons'].append('oversized_mask')
+            # 2. サイズ分析 - 小さなマスク物のみ対象（キャラクター全体を除外）
+            relative_area = area / (image_width * image_height)
             
-            # 3. 位置分析の強化 - より正確な顔領域判定
+            # 小さな顔マスクのみ対象、大きなキャラクター全体は除外
+            if 300 <= area <= 8000 and relative_area <= 0.05:  # より小さなサイズに限定
+                result['confidence'] += 0.2
+                result['reasons'].append('small_mask_size')
+            
+            # 極小マスク（装飾品等）
+            elif area < 300:
+                result['confidence'] += 0.1
+                result['reasons'].append('tiny_accessory')
+            
+            # 3. 位置分析 - 顔マスクのみ検出（全身キャラクターを除外）
             center_x, center_y = x + w/2, y + h/2
             relative_y = center_y / image_height
             relative_x = center_x / image_width
             
-            # 顔領域（上部〜中央部）
-            if 0.15 <= relative_y <= 0.65 and 0.25 <= relative_x <= 0.75:
-                result['confidence'] += 0.25
-                result['reasons'].append('face_region')
+            # 顔マスク位置判定: 小さなマスクで顔領域にある場合のみ
+            is_in_face_region = (0.15 <= relative_y <= 0.55 and 0.25 <= relative_x <= 0.75)
+            is_small_object = relative_area <= 0.05  # 画像の5%以下
+            
+            if is_in_face_region and is_small_object:
+                result['confidence'] += 0.15  # 低めのスコア
+                result['reasons'].append('small_face_accessory')
                 
-                # 顔の中心部（目・鼻・口の領域）
-                if 0.25 <= relative_y <= 0.55 and 0.35 <= relative_x <= 0.65:
-                    result['confidence'] += 0.15
-                    result['reasons'].append('face_center')
+                # より厳格な顔中心部判定
+                if 0.25 <= relative_y <= 0.45 and 0.4 <= relative_x <= 0.6:
+                    result['confidence'] += 0.1
+                    result['reasons'].append('face_center_small')
             
             # 4. 色分析の強化
             masked_pixels = roi[mask_roi > 0]
@@ -255,8 +261,8 @@ class NonCharacterFilter:
                     result['confidence'] += 0.1
                     result['reasons'].append('monotone_texture')
             
-            # 閾値を調整（より厳格に）
-            result['is_mask_object'] = result['confidence'] > 0.5  # 0.6→0.5に下げて検出感度向上
+            # 閾値を調整（キャラクター保護のため厳格に）
+            result['is_mask_object'] = result['confidence'] > 0.8  # より高い閾値でキャラクターを保護
             
             return result
             
