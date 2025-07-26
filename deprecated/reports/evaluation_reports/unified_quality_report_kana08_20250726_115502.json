@@ -1,0 +1,126 @@
+{
+  "timestamp": "2025-07-26 11:55:02",
+  "dataset_name": "kana08",
+  "total_images": 0,
+  "evaluation_metrics": [
+    {
+      "name": "Largest-Character Accuracy",
+      "value": 0.0,
+      "threshold": 0.8,
+      "status": "failed",
+      "category": "evaluation",
+      "notes": "0/0 成功",
+      "improvement_suggestions": [
+        "YOLO閾値調整",
+        "SAM後処理改良"
+      ]
+    },
+    {
+      "name": "A/B評価率",
+      "value": 0.0,
+      "threshold": 0.7,
+      "status": "failed",
+      "category": "evaluation",
+      "notes": "0/0 A/B評価",
+      "improvement_suggestions": [
+        "品質判定基準見直し",
+        "セグメンテーション精度向上"
+      ]
+    },
+    {
+      "name": "FPS",
+      "value": 0.0,
+      "threshold": 0.2,
+      "status": "failed",
+      "category": "evaluation",
+      "notes": "平均処理時間: 0.00秒",
+      "improvement_suggestions": [
+        "GPU最適化",
+        "モデル軽量化"
+      ]
+    },
+    {
+      "name": "C以上評価率",
+      "value": 0.0,
+      "threshold": 0.5,
+      "status": "failed",
+      "category": "evaluation",
+      "notes": "0/0 C以上評価",
+      "improvement_suggestions": [
+        "全体的品質向上",
+        "困難ケース対策"
+      ]
+    }
+  ],
+  "mask_metrics": [
+    {
+      "name": "マスク品質分析",
+      "value": 0.0,
+      "threshold": null,
+      "status": "error",
+      "category": "mask",
+      "notes": "抽出済み画像が見つかりません",
+      "improvement_suggestions": []
+    }
+  ],
+  "objective_metrics": [
+    {
+      "name": "SCI (Semantic Completeness Index)",
+      "value": 0.0,
+      "threshold": 0.7,
+      "status": "no_data",
+      "category": "objective",
+      "notes": "成功データがありません",
+      "improvement_suggestions": [
+        "抽出成功率向上"
+      ]
+    },
+    {
+      "name": "PLA (Pixel-Level Accuracy)",
+      "value": 0.0,
+      "threshold": 0.75,
+      "status": "failed",
+      "category": "objective",
+      "notes": "SAMスコア(0.000)とマスク比率(0.000)から推定",
+      "improvement_suggestions": [
+        "ground truth データ準備",
+        "直接IoU計算"
+      ]
+    },
+    {
+      "name": "PLE (Progressive Learning Efficiency)",
+      "value": 0.0,
+      "threshold": 0.1,
+      "status": "failed",
+      "category": "objective",
+      "notes": "履歴トレンドから推定 (データ数: 2)",
+      "improvement_suggestions": [
+        "長期履歴蓄積",
+        "より精密なトレンド分析"
+      ]
+    }
+  ],
+  "overall_score": 0.0,
+  "passed_metrics": 0,
+  "total_metrics": 7,
+  "status": "FAIL",
+  "priority_improvements": [
+    "より精密なトレンド分析",
+    "直接IoU計算",
+    "セグメンテーション精度向上",
+    "長期履歴蓄積",
+    "GPU最適化",
+    "全体的品質向上",
+    "SAM後処理改良",
+    "困難ケース対策",
+    "モデル軽量化",
+    "品質判定基準見直し",
+    "ground truth データ準備",
+    "YOLO閾値調整"
+  ],
+  "technical_recommendations": [
+    "アニメキャラクター特化YOLO閾値最適化",
+    "SAMマスク後処理パイプライン改良",
+    "品質評価システムのA/B判定基準見直し"
+  ]
+}

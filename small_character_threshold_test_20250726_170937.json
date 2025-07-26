@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-07-26T17:09:37.561082",
+  "test_type": "small_character_area_threshold",
+  "adaptive_filtering_implemented": true,
+  "adaptive_threshold_calculation": true,
+  "test_cases": [
+    {
+      "name": "very_small_character",
+      "description": "非常に小さなキャラクター（0.5%）",
+      "expected_ratio": 0.005,
+      "actual_coverage": 0.015460968017578125,
+      "default_threshold": 0.15,
+      "adaptive_threshold": 0.08,
+      "default_pass": 
