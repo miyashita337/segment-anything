@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.1] - 2025-07-27
+
+### Fixed
+- Restored Phase 1 improvements (kana08_stable_batch.py) that were incorrectly moved to deprecated folder
+- Fixed A/B evaluation rate showing 0% when it was actually 80%
+- Corrected SCI value from 0.400 to 0.853
+
+### Added
+- Comprehensive quality assurance workflow system with tracker ID format (PH{Phase}-{3-digit})
+- File protection checklist tool (`tools/file_protection_checklist.py`)
+- Automated quality workflow script (`tools/run_quality_workflow.sh`)
+- Output directory configuration documentation (`docs/workflows/output_directory_config.md`)
+- Implementation report template (`docs/templates/implementation_report_template.md`)
+- Root cause analysis for PH2-001 (`PH2-001_ROOT_CAUSE_ANALYSIS.md`)
+
+### Changed
+- Enhanced CLAUDE.md with file protection principles and severity classification
+- Updated PRINCIPLE.md with steady improvement principle ("歩みは少なくても着実な方法")
+- Improved folder_structure.md with 6-step mandatory file movement checklist
+- Expanded PROGRESS_TRACKER.md with complete quality assurance workflow
+
+### Thanks
+- @miyashita337 for identifying the Phase 1 code issue and providing guidance on steady improvement
+
 ## [v0.1.0-cleanup] - 2025-07-26
 
 ### Added
