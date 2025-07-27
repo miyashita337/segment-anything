@@ -18,6 +18,18 @@ Please check out our new release on [**Segment Anything Model 2 (SAM 2)**](https
 
 [[`Paper`](https://ai.facebook.com/research/publications/segment-anything/)] [[`Project`](https://segment-anything.com/)] [[`Demo`](https://segment-anything.com/demo)] [[`Dataset`](https://segment-anything.com/dataset/index.html)] [[`Blog`](https://ai.facebook.com/blog/segment-anything-foundation-model-image-segmentation/)] [[`BibTeX`](#citing-segment-anything)]
 
+## 🚧 開発状態
+
+**現在のバージョン**: v0.1.2 (開発中)
+
+このフォークは、SAMとYOLOを組み合わせたアニメキャラクター抽出に特化した開発版です。
+
+- **抽出成功率**: 80% (Phase 1改善適用時)
+- **品質評価**: A/B評価率 80%、SCI値 0.853
+- **総合品質**: 75.0% (PASS)
+
+⚠️ **注意**: 本プロジェクトはまだ開発段階にあり、本番環境での使用は推奨されません。品質向上と安定性改善を継続的に実施中です。
+
 ![SAM design](assets/model_diagram.png?raw=true)
 
 The **Segment Anything Model (SAM)** produces high quality object masks from input prompts such as points or boxes, and it can be used to generate masks for all objects in an image. It has been trained on a [dataset](https://segment-anything.com/dataset/index.html) of 11 million images and 1.1 billion masks, and has strong zero-shot performance on a variety of segmentation tasks.

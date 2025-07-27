@@ -5,7 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v1.0.1] - 2025-07-27
+## バージョニング修正について
+
+**重要**: v1.0 および v1.0.1 は実際の品質・完成度に対して不適切なバージョン番号でした。
+本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
+今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
+
+## [v0.1.2] - 2025-07-27
+
+実質的には v1.0.1 と同じ内容ですが、適切なバージョン番号に修正しました。
+
+### Fixed
+- Phase 1 改善コード (kana08_stable_batch.py) を deprecated フォルダから復元
+- A/B評価率が実際は 80% なのに 0% と表示されていた問題を修正
+- SCI値を 0.400 から 0.853 に修正
+
+### Added
+- トラッカーID形式 (PH{Phase}-{3桁}) による品質保証ワークフローシステム
+- ファイル保護チェックリストツール (`tools/file_protection_checklist.py`)
+- 自動品質ワークフロースクリプト (`tools/run_quality_workflow.sh`)
+- 出力ディレクトリ設定ドキュメント (`docs/workflows/output_directory_config.md`)
+- 実装レポートテンプレート (`docs/templates/implementation_report_template.md`)
+- PH2-001 の根本原因分析 (`PH2-001_ROOT_CAUSE_ANALYSIS.md`)
+
+### Changed
+- CLAUDE.md にファイル保護原則と重要度分類を追加
+- PRINCIPLE.md に着実な改善原則 ("歩みは少なくても着実な方法") を追加
+- folder_structure.md に 6段階必須ファイル移動チェックリストを追加
+- PROGRESS_TRACKER.md に完全な品質保証ワークフローを追加
+
+### 開発状態
+- 抽出成功率: 80% (Phase 1 改善適用時)
+- 品質評価: A/B評価率 80%、SCI値 0.853
+- 総合品質: 75.0% (PASS)
+- **注意**: まだ開発中であり、本番利用には適していません
+
+## [v1.0.1] - 2025-07-27 [誤ったバージョニング]
 
 ### Fixed
 - Restored Phase 1 improvements (kana08_stable_batch.py) that were incorrectly moved to deprecated folder
