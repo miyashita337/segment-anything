@@ -1,0 +1,120 @@
+{
+  "generated_at": "2025-07-28T02:15:46.310733",
+  "dashboard_id": "P1A003_dashboard_20250728_021546",
+  "system_status": {
+    "baseline_exists": true,
+    "test_results_count": 8,
+    "monitoring_active": true,
+    "last_test_time": "2025-07-28T02:15:39.921350",
+    "system_health": "HEALTHY"
+  },
+  "quality_metrics": {
+    "baseline_metrics": {
+      "ab_evaluation_rate": 75.0,
+      "sci_score": 0.75,
+      "pla_score": 0.8,
+      "ple_score": 0.85,
+      "success_count": 15,
+      "total_processed": 15
+    },
+    "latest_metrics": {
+      "ab_evaluation_rate": 20.0,
+      "sci_score": 0.75,
+      "pla_score": 0.8,
+      "ple_score": 0.85,
+      "success_count": 4,
+      "total_processed": 4,
+      "test_status": "WARNING",
+      "degradation_detected": true
+    },
+    "trend_analysis": {
+      "ab_evaluation_trend": "DECLINING",
+      "average_ab_rate": 55.625,
+      "recent_degradations": 2,
+      "stability_score": 60
+    }
+  },
+  "test_history": [
+    {
+      "test_id": "test_kana08_20250728_021539",
+      "timestamp": "2025-07-28T02:15:39.930192",
+      "status": "WARNING",
+      "degradation_detected": true,
+      "degradation_count": 1,
+      "ab_evaluation_rate": 20.0
+    },
+    {
+      "test_id": "test_kana08_20250728_020039",
+      "timestamp": "2025-07-28T02:00:39.343874",
+      "status": "PASS",
+      "degradation_detected": false,
+      "degradation_count": 0,
+      "ab_evaluation_rate": 80.0
+    },
+    {
+      "test_id": "test_kana08_20250728_020010",
+      "timestamp": "2025-07-28T02:00:10.167596",
+      "status": "WARNING",
+      "degradation_detected": true,
+      "degradation_count": 1,
+      "ab_evaluation_rate": 20.0
+    },
+    {
+      "test_id": "test_kana08_20250728_015950",
+      "timestamp": "2025-07-28T01:59:50.625199",
+      "status": "PASS",
+      "degradation_detected": false,
+      "degradation_count": 0,
+      "ab_evaluation_rate": 75.0
+    },
+    {
+      "test_id": "test_kana08_20250728_015858",
+      "timestamp": "2025-07-28T01:58:58.568848",
+      "status": "PASS",
+      "degradation_detected": false,
+      "degradation_count": 0,
+      "ab_evaluation_rate": 80.0
+    },
+    {
+      "test_id": "test_kana08_20250728_015829",
+      "timestamp": "2025-07-28T01:58:29.056338",
+      "status": "WARNING",
+      "degradation_detected": true,
+      "degradation_count": 1,
+      "ab_evaluation_rate": 20.0
+    },
+    {
+      "test_id": "test_kana08_20250728_015806",
+      "timestamp": "2025-07-28T01:58:06.215292",
+      "status": "PASS",
+      "degradation_detected": false,
+      "degradation_count": 0,
+      "ab_evaluation_rate": 75.0
+    },
+    {
+      "test_id": "test_kana08_20250728_015618",
+      "timestamp": "2025-07-28T01:56:18.089397",
+      "status": "PASS",
+      "degradation_detected": false,
+      "degradation_count": 0,
+      "ab_evaluation_rate": 75.0
+    }
+  ],
+  "alerts": [
+    {
+      "level": "WARNING",
+      "type": "QUALITY_DEGRADATION",
+      "message": "最新テストで品質劣化が検出されました",
+      "action": "劣化詳細を確認し、対策を検討してください"
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": "HIGH",
+      "category": "QUALITY",
+      "title": "A/B評価率の改善",
+      "description": "現在のA/B評価率 (20.0%) を80%以上に改善することを推奨します",
+      "action": "YOLO検出パラメータの調整またはSAM分割精度の向上"
+    }
+  ]
+}

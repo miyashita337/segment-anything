@@ -1,0 +1,59 @@
+{
+  "total_analyzed": 2,
+  "true_successes": 1,
+  "true_success_rate": 50.0,
+  "coordinate_match_rate": 100.0,
+  "visual_match_rate": 50.0,
+  "verification_results": [
+    {
+      "image_id": "sample_image_1",
+      "reported_iou": 0.85,
+      "reported_success": true,
+      "human_label_area": [
+        95,
+        95,
+        205,
+        305
+      ],
+      "ai_extraction_area": [
+        100,
+        100,
+        200,
+        300
+      ],
+      "coordinate_match": true,
+      "visual_content_match": true,
+      "true_success": true,
+      "issue_type": null,
+      "confidence_level": "medium"
+    },
+    {
+      "image_id": "sample_image_2",
+      "reported_iou": 0.6,
+      "reported_success": false,
+      "human_label_area": [
+        45,
+        45,
+        155,
+        255
+      ],
+      "ai_extraction_area": [
+        50,
+        50,
+        150,
+        250
+      ],
+      "coordinate_match": true,
+      "visual_content_match": false,
+      "true_success": false,
+      "issue_type": "visual_content_mismatch",
+      "confidence_level": "medium"
+    }
+  ],
+  "issue_breakdown": {
+    "visual_content_mismatch": 1
+  },
+  "confidence_breakdown": {
+    "medium": 2
+  }
+}

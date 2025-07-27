@@ -1,0 +1,29 @@
+{
+  "total_processed": 1,
+  "visual_matches": 1,
+  "visual_match_rate": 100.0,
+  "verification_results": [
+    {
+      "image_id": "sample_image_1",
+      "human_bbox": [
+        95,
+        95,
+        205,
+        305
+      ],
+      "ai_bbox": [
+        100,
+        100,
+        200,
+        300
+      ],
+      "reported_iou": 0.85,
+      "visual_match": true,
+      "actual_character_extracted": "メインキャラクター",
+      "expected_character": "メインキャラクター",
+      "issue_type": null
+    }
+  ],
+  "issue_breakdown": {},
+  "generated_at": "20250728_022311"
+}

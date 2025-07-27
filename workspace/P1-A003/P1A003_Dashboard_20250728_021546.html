@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P1-A003: 自動テスト強化システム ダッシュボード</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 20px; }
+        .card { background: white; padding: 20px; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .metric { display: inline-block; margin: 10px 20px; text-align: center; }
+        .metric-value { font-size: 2em; font-weight: bold; color: #667eea; }
+        .metric-label { color: #666; font-size: 0.9em; }
+        .status-healthy { color: #28a745; }
+        .status-warning { color: #ffc107; }
+        .status-critical { color: #dc3545; }
+        .alert { padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .alert-critical { background-color: #f8d7da; border-left: 4px solid #dc3545; }
+        .alert-warning { background-color: #fff3cd; border-left: 4px solid #ffc107; }
+        .recommendation { padding: 15px; margin: 10px 0; background-color: #e7f3ff; border-left: 4px solid #007bff; border-radius: 5px; }
+        .test-history { max-height: 300px; overflow-y: auto; }
+        .test-item { padding: 10px; border-bottom: 1px solid #eee; }
+        .test-pass { color: #28a745; }
+        .test-warning { color: #ffc107; }
+        .test-fail { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 P1-A003: 自動テスト強化システム</h1>
+            <h2>品質劣化事前検出ダッシュボード</h2>
+            <p>生成日時: 2025-07-28 02:15:46</p>
+        </div>
+        
+        <div class="card">
+            <h3>📊 システム状態</h3>
+            <div class="metric">
+                <div class="metric-value status-healthy">HEALTHY</div>
+                <div class="metric-label">システム健全性</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">8</div>
+                <div class="metric-label">テスト結果数</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">🟢</div>
+                <div class="metric-label">継続監視</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>📈 品質メトリクス</h3>
+            <div class="metric">
+                <div class="metric-value">20.0%</div>
+                <div class="metric-label">A/B評価率</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">0.750</div>
+                <div class="metric-label">SCI スコア</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">0.800</div>
+                <div class="metric-label">PLA スコア</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">60/100</div>
+                <div class="metric-label">安定性スコア</div>
+            </div>
+        </div>
+        <div class="card">
+            <h3>🚨 アラート</h3>
+            <div class="alert alert-warning">
+                <strong>WARNING: QUALITY_DEGRADATION</strong><br>
+                最新テストで品質劣化が検出されました<br>
+                <small>対応: 劣化詳細を確認し、対策を検討してください</small>
+            </div>
+        </div>
+        <div class="card">
+            <h3>💡 推奨事項</h3>
+            <div class="recommendation">
+                <strong>A/B評価率の改善 (HIGH)</strong><br>
+                現在のA/B評価率 (20.0%) を80%以上に改善することを推奨します<br>
+                <small>アクション: YOLO検出パラメータの調整またはSAM分割精度の向上</small>
+            </div>
+        </div>
+        <div class="card">
+            <h3>📋 テスト履歴 (最新10件)</h3>
+            <div class="test-history">
+                <div class="test-item">
+                    <span class="test-warning">●</span> 
+                    test_kana08_20250728_021539 - 2025-07-28T02:15:39 
+                    ⚠️ A/B: 20.0%
+                </div>
+                <div class="test-item">
+                    <span class="test-pass">●</span> 
+                    test_kana08_20250728_020039 - 2025-07-28T02:00:39 
+                    ✅ A/B: 80.0%
+                </div>
+                <div class="test-item">
+                    <span class="test-warning">●</span> 
+                    test_kana08_20250728_020010 - 2025-07-28T02:00:10 
+                    ⚠️ A/B: 20.0%
+                </div>
+                <div class="test-item">
+                    <span class="test-pass">●</span> 
+                    test_kana08_20250728_015950 - 2025-07-28T01:59:50 
+                    ✅ A/B: 75.0%
+                </div>
+                <div class="test-item">
+                    <span class="test-pass">●</span> 
+                    test_kana08_20250728_015858 - 2025-07-28T01:58:58 
+                    ✅ A/B: 80.0%
+                </div>
+                <div class="test-item">
+                    <span class="test-warning">●</span> 
+                    test_kana08_20250728_015829 - 2025-07-28T01:58:29 
+                    ⚠️ A/B: 20.0%
+                </div>
+                <div class="test-item">
+                    <span class="test-pass">●</span> 
+                    test_kana08_20250728_015806 - 2025-07-28T01:58:06 
+                    ✅ A/B: 75.0%
+                </div>
+                <div class="test-item">
+                    <span class="test-pass">●</span> 
+                    test_kana08_20250728_015618 - 2025-07-28T01:56:18 
+                    ✅ A/B: 75.0%
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
