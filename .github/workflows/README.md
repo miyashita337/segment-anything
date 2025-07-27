@@ -28,7 +28,7 @@ python extract_kana03.py --quality_method balanced
 python -m pytest tests/
 
 # linterの実行
-./linter.sh
+./bin/shell/linter.sh
 ```
 
 ## Claude for GitHub について
@@ -81,5 +81,5 @@ python -m pytest tests/
 
 もしGitHub Actionsが不要になった場合:
 ```bash
-./rollback-github-actions.sh
+./bin/shell/rollback-github-actions.sh
 ```

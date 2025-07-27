@@ -4,12 +4,13 @@
 抽出完了時に成功画像のグリッドと統計情報を自動送信
 """
 
+import numpy as np
+
 import json
 import logging
 from pathlib import Path
-from typing import List, Optional, Dict, Any
 from PIL import Image, ImageDraw, ImageFont
-import numpy as np
+from typing import Any, Dict, List, Optional
 
 try:
     from features.common.notification.notification import PushoverNotifier

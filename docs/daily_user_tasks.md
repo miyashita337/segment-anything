@@ -43,7 +43,7 @@ python tools/show_daily_tasks.py --date today
 #### メイン開発サイクル（随時実行）
 ```bash
 # 1. コード変更後の品質チェック
-./linter.sh  # flake8, black, mypy, isort
+./bin/shell/linter.sh  # flake8, black, mypy, isort
 
 # 2. 小規模テスト実行
 python test_phase2_simple.py  # 基本動作確認
@@ -253,7 +253,7 @@ def automate_daily_tasks():
 # ~/.bashrc または ~/.zshrc に追加
 alias sam-env='cd /mnt/c/AItools/segment-anything && source sam-env/bin/activate'
 alias sam-test='python test_phase2_simple.py'
-alias sam-lint='./linter.sh'
+alias sam-lint='./bin/shell/linter.sh'
 alias sam-status='python tools/daily_progress_tracker.py --date today --summary'
 alias sam-quality='python tools/objective_quality_evaluation.py --batch results_batch/ --quick'
 ```

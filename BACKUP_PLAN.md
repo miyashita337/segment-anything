@@ -42,7 +42,7 @@
 - **`PROGRESS_TRACKER.md`** - 進捗追跡（本ドキュメント）
 - **`requirements.txt`** - Python依存関係
 - **`setup.py`** - パッケージ設定
-- **`linter.sh`** - コード品質チェック
+- **`bin/shell/linter.sh`** - コード品質チェック
 
 #### 🟡 **重要ファイル**
 - **`*.py`** - 個別Pythonスクリプト
@@ -55,7 +55,7 @@
   - `README.md`
 - **`*.sh`** - 実行スクリプト
   - `run_v042_*.sh`
-  - `monitor_v042_tests.sh`
+  - `bin/shell/monitor_v042_tests.sh`
 
 #### 🔵 **設定ファイル**
 - **`*.json`** - 設定・進捗ファイル
@@ -74,7 +74,7 @@ mkdir -p /mnt/c/AItools/segment-anything-backup-$(date +%Y%m%d)
 cp -r commands/ models/ utils/ hooks/ config/ tests/ backup_dir/
 
 # 重要ファイルのバックアップ
-cp CLAUDE.md PROGRESS_TRACKER.md requirements.txt setup.py linter.sh backup_dir/
+cp CLAUDE.md PROGRESS_TRACKER.md requirements.txt setup.py bin/shell/linter.sh backup_dir/
 cp *.py *.md *.sh *.json backup_dir/
 ```
 
@@ -188,7 +188,7 @@ config/                     →  config/
 - [ ] PROGRESS_TRACKER.md
 - [ ] requirements.txt
 - [ ] setup.py
-- [ ] linter.sh
+- [ ] bin/shell/linter.sh
 
 ### Phase 2: 設定・環境
 - [ ] pip freeze 出力

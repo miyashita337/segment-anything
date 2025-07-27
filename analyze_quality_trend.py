@@ -6,15 +6,16 @@
 品質指標の時系列変化を分析し、改善/悪化傾向を判定する
 """
 
+import numpy as np
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+
 import json
 import sys
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Tuple, Optional
-import numpy as np
 from dataclasses import dataclass
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
 
 
 @dataclass

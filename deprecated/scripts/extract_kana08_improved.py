@@ -6,21 +6,22 @@ kana08バッチ抽出スクリプト（Week 4改善版）
 
 import numpy as np
 import cv2
+
 import json
 import logging
 import os
 import sys
 import time
 from pathlib import Path
-from typing import List, Optional, Tuple, Dict, Any
+from typing import Any, Dict, List, Optional, Tuple
 
 # プロジェクトパスの追加
 project_root = Path(__file__).parent
 sys.path.append(str(project_root))
 
+from features.evaluation.utils.enhanced_sci_processor import EnhancedSCIProcessor
 # 改善された評価システムのインポート
 from features.evaluation.utils.face_detection import AnimeFaceDetector
-from features.evaluation.utils.enhanced_sci_processor import EnhancedSCIProcessor
 from features.extraction.models.sam_wrapper import SAMWrapper
 from features.extraction.models.yolo_wrapper import YOLOWrapper
 from features.processing.postprocessing.postprocessing import apply_mask_to_image

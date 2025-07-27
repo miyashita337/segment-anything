@@ -4,13 +4,15 @@
 ベースラインと現在の実装結果を比較し、定量的改善効果を測定
 """
 
-import json
+import numpy as np
+import matplotlib.pyplot as plt
+
 import argparse
+import json
 import os
 from datetime import datetime
-from typing import Dict, Any, Optional, List
-import matplotlib.pyplot as plt
-import numpy as np
+from typing import Any, Dict, List, Optional
+
 
 class ImprovementComparisonSystem:
     """改善効果比較システム"""

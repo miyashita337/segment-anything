@@ -5,8 +5,9 @@ Phase 1抽出結果から統合品質チェッカー用のJSONレポートを生
 
 import json
 import os
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
 
 def create_extraction_report_from_images(image_dir, output_path):
     """

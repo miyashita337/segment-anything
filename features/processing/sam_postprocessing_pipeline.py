@@ -10,12 +10,13 @@ SAM後処理パイプライン改良システム
 
 import numpy as np
 import cv2
+
 import logging
-from typing import Dict, List, Tuple, Optional, Any
+import scipy.ndimage as ndimage
 from dataclasses import dataclass
 from pathlib import Path
-import scipy.ndimage as ndimage
 from scipy.spatial.distance import cdist
+from typing import Any, Dict, List, Optional, Tuple
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -508,7 +509,9 @@ class SAMPostprocessingPipeline:
         """包括的品質評価"""
         try:
             # 基本品質メトリクス
-            from features.processing.postprocessing.postprocessing import calculate_mask_quality_metrics
+            from features.processing.postprocessing.postprocessing import (
+                calculate_mask_quality_metrics,
+            )
             basic_metrics = calculate_mask_quality_metrics(mask)
             
             # 追加品質メトリクス

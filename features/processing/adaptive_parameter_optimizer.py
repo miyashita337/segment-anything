@@ -10,12 +10,13 @@
 
 import numpy as np
 import cv2
+
+import json
 import logging
-from typing import Dict, List, Tuple, Optional, Any
+import math
 from dataclasses import dataclass
 from pathlib import Path
-import json
-import math
+from typing import Any, Dict, List, Optional, Tuple
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

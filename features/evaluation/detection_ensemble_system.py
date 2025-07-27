@@ -11,6 +11,7 @@ Week 3: 検出精度向上の切り札
 
 import numpy as np
 import cv2
+
 import logging
 import sys
 from dataclasses import dataclass
@@ -23,11 +24,11 @@ project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 from features.evaluation.enhanced_detection_systems import (
+    EnhancedDetectionReport,
     EnhancedFaceDetector,
     EnhancedPoseDetector,
     FaceDetection,
     PoseDetectionResult,
-    EnhancedDetectionReport,
 )
 
 # ログ設定

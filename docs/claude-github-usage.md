@@ -101,7 +101,7 @@ Claude Code Session:
 
 もし問題が発生した場合：
 ```bash
-./rollback-github-actions.sh
+./bin/shell/rollback-github-actions.sh
 ```
 
 従来のPROGRESS_TRACKER.md + Claude Code開発に戻せます。

@@ -21,7 +21,7 @@ Push/PR → 自動構文チェック → フィードバック
 
 ### ✅ 完了済み
 - バックアップタグ: `pre-github-actions-v0.3.6`
-- ロールバックスクリプト: `rollback-github-actions.sh`
+- ロールバックスクリプト: `bin/shell/rollback-github-actions.sh`
 - 基本CI設定: `.github/workflows/basic-ci.yml`
 
 ### 🚧 今後の予定
@@ -61,7 +61,7 @@ git commit -m "Disable GitHub Actions temporarily"
 
 ### 完全にロールバック
 ```bash
-./rollback-github-actions.sh
+./bin/shell/rollback-github-actions.sh
 ```
 
 ## FAQ

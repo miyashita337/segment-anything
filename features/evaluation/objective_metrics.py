@@ -10,13 +10,14 @@
 
 import numpy as np
 import cv2
+import matplotlib.pyplot as plt
+
 import json
 import logging
-from pathlib import Path
-from dataclasses import dataclass, asdict
-from typing import Dict, List, Optional, Tuple, Any
+from dataclasses import asdict, dataclass
 from datetime import datetime
-import matplotlib.pyplot as plt
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 try:
     import mediapipe as mp

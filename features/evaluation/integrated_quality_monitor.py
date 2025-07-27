@@ -10,13 +10,14 @@
 
 import numpy as np
 import cv2
-import logging
-from typing import Dict, List, Tuple, Optional, Any
-from dataclasses import dataclass, field
-from pathlib import Path
+
 import json
+import logging
 import time
+from dataclasses import dataclass, field
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -157,7 +158,9 @@ class IntegratedQualityMonitor:
             quality_checker = UnifiedQualityChecker()
             
             # 基本マスク品質評価
-            from features.processing.postprocessing.postprocessing import calculate_mask_quality_metrics
+            from features.processing.postprocessing.postprocessing import (
+                calculate_mask_quality_metrics,
+            )
             basic_metrics = calculate_mask_quality_metrics(mask)
             
             # 客観指標評価
@@ -187,7 +190,11 @@ class IntegratedQualityMonitor:
                                    original_image: Optional[np.ndarray] = None) -> Dict[str, float]:
         """客観指標計算"""
         try:
-            from features.evaluation.objective_metrics import PLACalculator, SCICalculator, PLETracker
+            from features.evaluation.objective_metrics import (
+                PLACalculator,
+                PLETracker,
+                SCICalculator,
+            )
             
             metrics = {}
             

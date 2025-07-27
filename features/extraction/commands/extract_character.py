@@ -7,6 +7,7 @@ import cv2
 
 import click
 import logging
+import time
 from features.common.hooks.start import (
     get_performance_monitor,
     get_sam_model,
@@ -23,11 +24,13 @@ from features.processing.preprocessing.preprocessing import preprocess_image_pip
 from pathlib import Path
 from PIL import Image
 from typing import Any, Optional, Tuple
-import time
 
 # 通知システム
 try:
-    from features.extraction.extraction_notifier import ExtractionNotifier, create_extraction_results_dict
+    from features.extraction.extraction_notifier import (
+        ExtractionNotifier,
+        create_extraction_results_dict,
+    )
     EXTRACTION_NOTIFIER_AVAILABLE = True
 except ImportError:
     EXTRACTION_NOTIFIER_AVAILABLE = False
@@ -236,7 +239,9 @@ def process_single_image(
         if mask is not None:
             # 🚀 P1-A004: セグメンテーション精度総合向上システム適用
             try:
-                from features.extraction.integrated_precision_pipeline import IntegratedPrecisionPipeline
+                from features.extraction.integrated_precision_pipeline import (
+                    IntegratedPrecisionPipeline,
+                )
                 
                 precision_pipeline = IntegratedPrecisionPipeline()
                 
@@ -272,7 +277,9 @@ def process_single_image(
                 
                 # フォールバック: 従来のSAM後処理のみ適用
                 try:
-                    from features.processing.sam_postprocessing_pipeline import SAMPostprocessingPipeline
+                    from features.processing.sam_postprocessing_pipeline import (
+                        SAMPostprocessingPipeline,
+                    )
                     postprocessor = SAMPostprocessingPipeline()
                     
                     # マスク品質向上処理

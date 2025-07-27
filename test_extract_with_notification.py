@@ -3,8 +3,8 @@
 抽出コマンドの通知機能テスト
 """
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 # プロジェクトルート追加
@@ -18,8 +18,8 @@ def test_extraction_with_notification():
     """通知機能付き抽出のテスト"""
     
     try:
-        from features.extraction.commands.extract_character import extract_character
         from click.testing import CliRunner
+        from features.extraction.commands.extract_character import extract_character
         
         print("✅ 抽出コマンドimport成功")
         

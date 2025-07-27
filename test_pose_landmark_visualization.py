@@ -9,14 +9,15 @@ MediaPipe Pose最適化の効果をビジュアルで確認
 - Week 2最適化の効果測定（38.9% → 80%目標）
 """
 
-import cv2
 import numpy as np
-import sys
-import os
+import cv2
+
 import json
+import os
+import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Optional, Tuple
 
 # プロジェクトルートをPythonパスに追加
 project_root = Path(__file__).parent

@@ -508,7 +508,7 @@ jobs:
           
           # Project-specific testing (if applicable)
           python tools/test_phase2_simple.py
-          ./linter.sh
+          ./bin/shell/linter.sh
           ```
 
           ### 🔍 Quality Assurance

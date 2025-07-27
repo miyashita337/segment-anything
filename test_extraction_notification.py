@@ -12,7 +12,10 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent))
 
 try:
-    from features.extraction.extraction_notifier import ExtractionNotifier, create_extraction_results_dict
+    from features.extraction.extraction_notifier import (
+        ExtractionNotifier,
+        create_extraction_results_dict,
+    )
     print("✅ ExtractionNotifier import成功")
 except ImportError as e:
     print(f"❌ ExtractionNotifier import失敗: {e}")

@@ -6,13 +6,14 @@ kana08シンプル抽出スクリプト
 
 import numpy as np
 import cv2
+
 import json
 import logging
 import os
 import sys
 import time
 from pathlib import Path
-from typing import List, Optional, Tuple, Dict
+from typing import Dict, List, Optional, Tuple
 
 # プロジェクトパスの追加
 project_root = Path(__file__).parent
@@ -20,6 +21,7 @@ sys.path.append(str(project_root))
 
 from features.extraction.models.sam_wrapper import SAMModelWrapper
 from features.extraction.models.yolo_wrapper import YOLOModelWrapper
+
 # from features.processing.postprocessing.postprocessing import apply_mask_to_image
 
 logging.basicConfig(

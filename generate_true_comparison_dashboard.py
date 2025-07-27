@@ -4,11 +4,13 @@
 Phase 1前後の実際の改善効果を可視化
 """
 
-import json
-import matplotlib.pyplot as plt
 import numpy as np
-from datetime import datetime
+import matplotlib.pyplot as plt
+
+import json
 import os
+from datetime import datetime
+
 
 def load_reports():
     """ベースラインとPhase 1結果を読み込み"""

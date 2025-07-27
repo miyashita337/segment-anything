@@ -11,13 +11,14 @@ P1-A001〜A003の協調動作制御・失敗ケース自動検出・リトライ
 
 import numpy as np
 import cv2
-import logging
-from typing import Dict, List, Tuple, Optional, Any, Union
-from dataclasses import dataclass, field
-from pathlib import Path
-import time
+
 import json
+import logging
+import time
+from dataclasses import dataclass, field
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -410,7 +411,9 @@ class IntegratedPrecisionPipeline:
     def _evaluate_mask_quality(self, mask: np.ndarray, image: Optional[np.ndarray] = None) -> float:
         """基本マスク品質評価"""
         try:
-            from features.processing.postprocessing.postprocessing import calculate_mask_quality_metrics
+            from features.processing.postprocessing.postprocessing import (
+                calculate_mask_quality_metrics,
+            )
             
             metrics = calculate_mask_quality_metrics(mask)
             

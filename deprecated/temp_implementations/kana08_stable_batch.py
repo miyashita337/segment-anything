@@ -6,21 +6,22 @@ kana08 安定版バッチ抽出スクリプト
 
 import numpy as np
 import cv2
+import torch
+
 import json
 import logging
 import os
 import sys
 import time
-import torch
 from pathlib import Path
-from typing import List, Optional, Tuple, Dict, Any
+from typing import Any, Dict, List, Optional, Tuple
 
 # プロジェクトパスの追加
 project_root = Path(__file__).parent
 sys.path.append(str(project_root))
 
 # SAMとYOLOのインポート
-from core.segment_anything import sam_model_registry, SamPredictor
+from core.segment_anything import SamPredictor, sam_model_registry
 from ultralytics import YOLO
 
 logging.basicConfig(

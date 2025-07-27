@@ -6,12 +6,13 @@
 小さなキャラクターでの品質チェック改善効果を検証
 """
 
-import cv2
 import numpy as np
+import cv2
+
 import json
 import sys
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, List
 
 # プロジェクトルートをPythonパスに追加
@@ -19,8 +20,8 @@ project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
 from features.processing.postprocessing.postprocessing import (
-    calculate_mask_quality_metrics, 
-    remove_small_components_adaptive
+    calculate_mask_quality_metrics,
+    remove_small_components_adaptive,
 )
 from tools.unified_quality_checker import UnifiedQualityChecker
 

@@ -10,13 +10,14 @@
 
 import numpy as np
 import cv2
+import matplotlib.pyplot as plt
+
 import logging
-from typing import Dict, List, Tuple, Optional, Any
 from dataclasses import dataclass
 from pathlib import Path
+from scipy.interpolate import splev, splprep
 from scipy.spatial.distance import cdist
-from scipy.interpolate import splprep, splev
-import matplotlib.pyplot as plt
+from typing import Any, Dict, List, Optional, Tuple
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -599,7 +600,9 @@ class ContourEnhancementSystem:
         """輪郭品質評価"""
         try:
             # 基本品質メトリクス
-            from features.processing.postprocessing.postprocessing import calculate_mask_quality_metrics
+            from features.processing.postprocessing.postprocessing import (
+                calculate_mask_quality_metrics,
+            )
             basic_metrics = calculate_mask_quality_metrics(mask)
             
             # 追加輪郭品質メトリクス

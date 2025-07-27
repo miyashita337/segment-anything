@@ -3,11 +3,12 @@
 YOLO拡張システム グレースケール対応修正テスト
 """
 
-import os
-import sys
-import logging
 import numpy as np
 import cv2
+
+import logging
+import os
+import sys
 from pathlib import Path
 
 # プロジェクトルートを追加

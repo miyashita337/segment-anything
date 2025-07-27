@@ -89,7 +89,7 @@ python tools/sam_yolo_character_segment.py --mode reproduce-auto --input_dir ./t
 ### テスト・品質チェック
 ```bash
 # 統合品質チェック（flake8, black, mypy, isort）
-./linter.sh
+./bin/shell/linter.sh
 
 # 個別テスト実行
 python -m pytest tests/unit/test_extract.py -v
@@ -166,7 +166,7 @@ python -c "import torch; print(f'CUDA: {torch.cuda.is_available()}, Device count
 - **flake8**: `.flake8` 設定に従う
 - **mypy**: 型チェック（setup.py, notebooks除く）
 
-統合チェックは `./linter.sh` で実行。
+統合チェックは `./bin/shell/linter.sh` で実行。
 
 ### テスト戦略
 - **段階的テスト**: phase2 → phase3 の順で実行

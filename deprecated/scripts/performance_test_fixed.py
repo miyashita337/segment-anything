@@ -4,14 +4,20 @@
 API戻り値型統一対応版
 """
 
-import time
 import psutil
 import sys
+import time
 from pathlib import Path
+
 sys.path.append(str(Path('.')))
 
-from features.evaluation.enhanced_detection_systems import EnhancedFaceDetector, EnhancedPoseDetector
 import cv2
+
+from features.evaluation.enhanced_detection_systems import (
+    EnhancedFaceDetector,
+    EnhancedPoseDetector,
+)
+
 
 def run_performance_test():
     """修正版パフォーマンステスト実行"""

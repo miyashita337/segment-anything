@@ -10,10 +10,11 @@ YOLO検出範囲拡張システム
 
 import numpy as np
 import cv2
+
 import logging
-from typing import Dict, List, Tuple, Optional, Any
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
