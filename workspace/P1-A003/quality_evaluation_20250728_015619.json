@@ -1,0 +1,28 @@
+{
+  "evaluation_timestamp": "2025-07-28T01:56:19.246076",
+  "test_id": "test_kana08_20250728_015618",
+  "status": "PASS",
+  "degradation_detected": false,
+  "baseline_metrics": {
+    "ab_evaluation_rate": 75.0,
+    "sci_score": 0.75,
+    "pla_score": 0.8,
+    "ple_score": 0.85
+  },
+  "current_metrics": {
+    "ab_evaluation_rate": 75.0,
+    "sci_score": 0.75,
+    "pla_score": 0.8,
+    "ple_score": 0.85,
+    "success_count": 15,
+    "total_processed": 15
+  },
+  "differences": {
+    "ab_evaluation_rate": 0.0,
+    "sci_score": 0.0,
+    "pla_score": 0.0,
+    "ple_score": 0.0
+  },
+  "degradation_details": [],
+  "recommendation": "品質劣化は検出されませんでした。現在の品質レベルを維持してください。"
+}

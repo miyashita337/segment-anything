@@ -20,6 +20,7 @@ class TaskStatus(Enum):
     QUALITY_CHECK = "品質チェック"
     EXTRACTION_PIPELINE = "抽出パイプライン"
     RELEASE = "/release"
+    COMPLETED = "終了"
 
 
 class ComponentStatus(Enum):
@@ -49,31 +50,32 @@ class ProgressColumns:
         'C': 'status',              # ステータス
         'D': 'created_date',        # 登録日付
         'E': 'updated_date',        # 更新日付
-        'F': 'description'          # 概要
+        'F': 'description',         # 概要
+        'G': 'details'              # 詳細
     }
     
     # 動的列（追加・削除可能）
     DYNAMIC_COLUMNS = {
-        'G': 'operation_check',     # 動作確認
-        'H': 'unit_test',          # テストUNIT
-        'I': 'quality_evaluation', # 品質評価
-        'J': 'integration_script', # 統合実行スクリプト
-        'K': 'dashboard_generation', # ダッシュボード生成
-        'L': 'extraction_pipeline' # 抽出パイプライン
+        'H': 'operation_check',     # 動作確認
+        'I': 'unit_test',          # テストUNIT
+        'J': 'quality_evaluation', # 品質評価
+        'K': 'integration_script', # 統合実行スクリプト
+        'L': 'dashboard_generation', # ダッシュボード生成
+        'M': 'extraction_pipeline' # 抽出パイプライン
     }
     
-    # 10指標列（M-V列）
+    # 10指標列（N-W列）
     METRICS_COLUMNS = {
-        'M': 'lca',                 # LCA (バウンディングボックス精度)
-        'N': 'ab_evaluation_rate',  # A/B評価率
-        'O': 'fps',                 # FPS (処理速度)
-        'P': 'c_plus_rate',         # C以上評価率
-        'Q': 'avg_coverage_rate',   # 平均カバレッジ率
-        'R': 'avg_compactness',     # 平均コンパクトネス
-        'S': 'avg_fill_rate',       # 平均フィル率
-        'T': 'sci',                 # SCI (Semantic Completeness Index)
-        'U': 'pla',                 # PLA (Pixel-Level Accuracy)
-        'V': 'ple'                  # PLE (Progressive Learning Efficiency)
+        'N': 'lca',                 # LCA (バウンディングボックス精度)
+        'O': 'ab_evaluation_rate',  # A/B評価率
+        'P': 'fps',                 # FPS (処理速度)
+        'Q': 'c_plus_rate',         # C以上評価率
+        'R': 'avg_coverage_rate',   # 平均カバレッジ率
+        'S': 'avg_compactness',     # 平均コンパクトネス
+        'T': 'avg_fill_rate',       # 平均フィル率
+        'U': 'sci',                 # SCI (Semantic Completeness Index)
+        'V': 'pla',                 # PLA (Pixel-Level Accuracy)
+        'W': 'ple'                  # PLE (Progressive Learning Efficiency)
     }
     
     @classmethod
@@ -164,6 +166,7 @@ class TaskRecord:
     created_date: Optional[datetime] = None
     updated_date: Optional[datetime] = None
     description: str = ""
+    details: str = ""  # 詳細フィールド追加
     
     # コンポーネント別ステータス
     operation_check: ComponentStatus = ComponentStatus.EMPTY
@@ -197,14 +200,15 @@ class TaskRecord:
             raise ValueError(f"Unknown component: {component}")
     
     def to_sheets_row(self) -> List[str]:
-        """Google Sheets行データに変換（22列：A-V）"""
+        """Google Sheets行データに変換（23列：A-W）"""
         base_row = [
             self.tracker_id,
             self.priority.value,
             self.status.value,
-            self.created_date.strftime('%Y-%m-%d') if self.created_date else "",
-            self.updated_date.strftime('%Y-%m-%d') if self.updated_date else "",
+            self.created_date.strftime('%Y-%m-%d %H:%M:%S') if self.created_date else "",
+            self.updated_date.strftime('%Y-%m-%d %H:%M:%S') if self.updated_date else "",
             self.description,
+            self.details,  # 詳細フィールド追加
             self.operation_check.value,
             self.unit_test.value,
             self.quality_evaluation.value,
@@ -213,20 +217,46 @@ class TaskRecord:
             self.extraction_pipeline.value
         ]
         
-        # 10指標追加（M-V列）
+        # 10指標追加（N-W列）
         metrics_row = self.metrics.to_sheets_row() if self.metrics else [""] * 10
         
         return base_row + metrics_row
     
+    @staticmethod
+    def _parse_date_flexible(date_str: str) -> Optional[datetime]:
+        """柔軟な日付解析（既存データ対応）"""
+        if not date_str:
+            return None
+        
+        # 新フォーマット（yyyy-mm-dd hh:mm:ss）を優先
+        try:
+            return datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
+        except ValueError:
+            pass
+        
+        # 旧フォーマット（yyyy-mm-dd）への後方互換
+        try:
+            return datetime.strptime(date_str, '%Y-%m-%d')
+        except ValueError:
+            pass
+        
+        # ISO形式への対応
+        try:
+            return datetime.fromisoformat(date_str.replace('T', ' '))
+        except ValueError:
+            pass
+        
+        return None
+
     @classmethod
     def from_sheets_row(cls, row: List[str]) -> 'TaskRecord':
-        """Google Sheets行データから作成（22列対応）"""
-        # デフォルト値設定（22列分）
-        defaults = [""] * 22
+        """Google Sheets行データから作成（23列対応）"""
+        # デフォルト値設定（23列分）
+        defaults = [""] * 23
         row = row + defaults[len(row):]
         
-        # メトリクス部分を抽出（M-V列、インデックス12-21）
-        metrics = MetricsRecord.from_sheets_row(row, start_col=12)
+        # メトリクス部分を抽出（N-W列、インデックス13-22）
+        metrics = MetricsRecord.from_sheets_row(row, start_col=13)
         
         # 優先度の安全な変換
         def safe_priority(value: str) -> PriorityLevel:
@@ -240,15 +270,16 @@ class TaskRecord:
             tracker_id=row[0],
             priority=safe_priority(row[1]),
             status=TaskStatus(row[2]) if row[2] else TaskStatus.NOT_STARTED,
-            created_date=datetime.strptime(row[3], '%Y-%m-%d') if row[3] else None,
-            updated_date=datetime.strptime(row[4], '%Y-%m-%d') if row[4] else None,
+            created_date=cls._parse_date_flexible(row[3]) if row[3] else None,
+            updated_date=cls._parse_date_flexible(row[4]) if row[4] else None,
             description=row[5],
-            operation_check=ComponentStatus(row[6]) if row[6] else ComponentStatus.EMPTY,
-            unit_test=ComponentStatus(row[7]) if row[7] else ComponentStatus.EMPTY,
-            quality_evaluation=ComponentStatus(row[8]) if row[8] else ComponentStatus.EMPTY,
-            integration_script=ComponentStatus(row[9]) if row[9] else ComponentStatus.EMPTY,
-            dashboard_generation=ComponentStatus(row[10]) if row[10] else ComponentStatus.EMPTY,
-            extraction_pipeline=ComponentStatus(row[11]) if row[11] else ComponentStatus.EMPTY,
+            details=row[6],  # 詳細フィールド追加
+            operation_check=ComponentStatus(row[7]) if row[7] else ComponentStatus.EMPTY,
+            unit_test=ComponentStatus(row[8]) if row[8] else ComponentStatus.EMPTY,
+            quality_evaluation=ComponentStatus(row[9]) if row[9] else ComponentStatus.EMPTY,
+            integration_script=ComponentStatus(row[10]) if row[10] else ComponentStatus.EMPTY,
+            dashboard_generation=ComponentStatus(row[11]) if row[11] else ComponentStatus.EMPTY,
+            extraction_pipeline=ComponentStatus(row[12]) if row[12] else ComponentStatus.EMPTY,
             metrics=metrics
         )
 

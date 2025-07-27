@@ -1,0 +1,45 @@
+{
+  "timestamp": "2025-07-28 01:55:50",
+  "version": "Enhanced_Stable_Merge_v1.0",
+  "total_images": 20,
+  "success_count": 15,
+  "success_rate": 0.75,
+  "processing_time": 8.500002145767212,
+  "avg_processing_time": 0.4250001072883606,
+  "quality_distribution": {
+    "A": 3,
+    "B": 3,
+    "C": 2,
+    "D": 7,
+    "E": 0
+  },
+  "ab_evaluation_rate": 0.4,
+  "statistics": {
+    "avg_confidence": 0.43484445412953693,
+    "avg_sam_score": 0.9685756444931031,
+    "avg_mask_ratio": 0.11259883257710797,
+    "avg_quality_score": 0.6649906902320186
+  },
+  "failed_files": [
+    [
+      "kana08_0000_cover.jpg",
+      "キャラクター検出失敗"
+    ],
+    [
+      "kana08_0011.jpg",
+      "キャラクター検出失敗"
+    ],
+    [
+      "kana08_0012.jpg",
+      "キャラクター検出失敗"
+    ],
+    [
+      "kana08_0016.jpg",
+      "キャラクター検出失敗"
+    ],
+    [
+      "kana08_0018.jpg",
+      "キャラクター検出失敗"
+    ]
+  ]
+}

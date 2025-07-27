@@ -34,8 +34,8 @@ class Kana08StableExtractor:
     """kana08安定版抽出器"""
     
     def __init__(self, input_dir=None, output_dir=None):
-        self.input_dir = Path(input_dir) if input_dir else Path("/mnt/c/AItools/segment-anything/test_sample_kana05")
-        self.output_dir = Path(output_dir) if output_dir else Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace/PH2-001-RESTORED/extraction")
+        self.input_dir = Path(input_dir) if input_dir else Path("/mnt/c/AItools/lora/train/yado/org/kana08")
+        self.output_dir = Path(output_dir) if output_dir else Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace/P1-A001")
         
         # モデル初期化
         logger.info("モデル初期化中...")
@@ -328,10 +328,10 @@ def main():
     
     parser = argparse.ArgumentParser(description='Phase 1改善版キャラクター抽出')
     parser.add_argument('--input_dir', type=str, 
-                       default='/mnt/c/AItools/segment-anything/test_sample_kana05',
+                       default='/mnt/c/AItools/lora/train/yado/org/kana08',
                        help='入力ディレクトリ')
     parser.add_argument('--output_dir', type=str,
-                       default='/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace/PH2-001-RESTORED/extraction',
+                       default='/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace/P1-A001',
                        help='出力ディレクトリ')
     
     args = parser.parse_args()

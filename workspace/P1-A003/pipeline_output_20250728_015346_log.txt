@@ -1,0 +1,26 @@
+INFO:__main__:デフォルト設定を作成: /mnt/c/AItools/segment-anything/config/quality_testing.json
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1753635227.583288   33989 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1753635227.601748   34030 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO:__main__:品質テスト開始: kana08 (standard)
+INFO:__main__:ベースライン作成開始: kana08
+INFO:__main__:処理対象: 20ファイル (standardモード)
+W0000 00:00:1753635227.653072   34019 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1753635227.682054   34027 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:__main__:実行コマンド: /usr/bin/python3 /mnt/c/AItools/segment-anything/tools/batch/kana08_enhanced_stable_batch.py --input_dir /mnt/c/AItools/segment-anything/workspace/P1-A003/temp_input_20250728_015347 --output_dir /mnt/c/AItools/segment-anything/workspace/P1-A003/baseline_kana08 --model_type yolov8x
+ERROR:__main__:バッチ処理失敗: Traceback (most recent call last):
+  File "/mnt/c/AItools/segment-anything/tools/batch/kana08_enhanced_stable_batch.py", line 23, in <module>
+    from core.segment_anything import sam_model_registry, SamPredictor
+ModuleNotFoundError: No module named 'core.segment_anything'
+
+Traceback (most recent call last):
+  File "/mnt/c/AItools/segment-anything/tools/core/automated_quality_testing.py", line 615, in <module>
+    main()
+  File "/mnt/c/AItools/segment-anything/tools/core/automated_quality_testing.py", line 592, in main
+    test_result = testing_system.run_quality_test(args.dataset, args.mode)
+  File "/mnt/c/AItools/segment-anything/tools/core/automated_quality_testing.py", line 193, in run_quality_test
+    baseline = self.create_baseline(dataset_name)
+  File "/mnt/c/AItools/segment-anything/tools/core/automated_quality_testing.py", line 161, in create_baseline
+    raise RuntimeError(f"ベースライン作成失敗: {dataset_name}")
+RuntimeError: ベースライン作成失敗: kana08

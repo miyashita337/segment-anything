@@ -1,0 +1,16 @@
+{
+  "dataset": "kana08",
+  "timestamp": "2025-07-28T01:55:51.059150",
+  "ab_evaluation_rate": 75.0,
+  "sci_score": 0.75,
+  "pla_score": 0.8,
+  "ple_score": 0.85,
+  "total_processed": 15,
+  "success_count": 15,
+  "failure_count": 0,
+  "avg_processing_time": 5.0,
+  "quality_grade_distribution": {
+    "A": 7,
+    "B": 7
+  }
+}

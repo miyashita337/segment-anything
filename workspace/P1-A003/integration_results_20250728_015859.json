@@ -1,0 +1,69 @@
+{
+  "integration_id": "P1A003_integration_20250728_015739",
+  "timestamp": "2025-07-28T01:57:39.751241",
+  "phases": {
+    "ベースライン確認": {
+      "status": "SUCCESS",
+      "execution_time": 0.0023071765899658203,
+      "details": {
+        "baseline_created": true,
+        "ab_evaluation_rate": 75.0,
+        "sci_score": 0.75,
+        "pla_score": 0.8,
+        "ple_score": 0.85,
+        "total_processed": 15,
+        "success_count": 15
+      }
+    },
+    "品質テスト実行": {
+      "status": "SUCCESS",
+      "execution_time": 27.355607509613037,
+      "details": {
+        "test_id": "test_kana08_20250728_015806",
+        "status": "PASS",
+        "degradation_detected": false,
+        "degradation_count": 0,
+        "current_metrics": {
+          "ab_evaluation_rate": 75.0,
+          "sci_score": 0.75,
+          "pla_score": 0.8,
+          "ple_score": 0.85
+        }
+      }
+    },
+    "劣化検出テスト": {
+      "status": "SUCCESS",
+      "execution_time": 52.21604609489441,
+      "details": {
+        "quick_test": {
+          "status": "WARNING",
+          "degradation_detected": true
+        },
+        "full_test": {
+          "status": "PASS",
+          "degradation_detected": false,
+          "total_processed": 16
+        },
+        "degradation_detection_capability": "VERIFIED"
+      }
+    },
+    "継続監視設定": {
+      "status": "SUCCESS",
+      "execution_time": 0.0052356719970703125,
+      "details": {
+        "config_file": "/mnt/c/AItools/segment-anything/workspace/P1-A003/monitoring_config.json",
+        "monitoring_script": "/mnt/c/AItools/segment-anything/workspace/P1-A003/start_monitoring.py",
+        "monitoring_enabled": true
+      }
+    },
+    "統合レポート生成": {
+      "status": "FAILED",
+      "execution_time": 0.002437591552734375,
+      "details": {
+        "success": false
+      }
+    }
+  },
+  "overall_status": "FAILED",
+  "total_execution_time": 79.58163404464722
+}
