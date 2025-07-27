@@ -20,11 +20,12 @@ class P1A003Dashboard:
     
     def __init__(self):
         """初期化"""
-        self.workspace = project_root / "workspace" / "P1-A003"
+        # PROGRESS_TRACKER.md仕様準拠の正しいパス
+        self.workspace = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace/P1-A003")
         self.workspace.mkdir(parents=True, exist_ok=True)
         
         self.test_results_dir = project_root / "test_results" / "quality"
-        self.baselines_dir = project_root / "baselines"
+        self.baselines_dir = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace/baseline")
         
         self.dashboard_data = {
             "generated_at": datetime.now().isoformat(),

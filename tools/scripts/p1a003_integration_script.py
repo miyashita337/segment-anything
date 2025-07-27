@@ -23,7 +23,8 @@ class P1A003IntegrationRunner:
     
     def __init__(self):
         """初期化"""
-        self.workspace = project_root / "workspace" / "P1-A003"
+        # PROGRESS_TRACKER.md仕様準拠の正しいパス
+        self.workspace = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace/P1-A003")
         self.workspace.mkdir(parents=True, exist_ok=True)
         
         self.testing_system = AutomatedQualityTesting()

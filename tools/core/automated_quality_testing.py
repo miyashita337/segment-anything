@@ -78,9 +78,11 @@ class AutomatedQualityTesting:
         """初期化"""
         self.project_root = project_root
         self.config_path = config_path or (project_root / "config" / "quality_testing.json")
-        self.baseline_dir = project_root / "baselines"
+        # PROGRESS_TRACKER.md仕様準拠の正しいパス
+        self.workspace_root = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace")
+        self.workspace_dir = self.workspace_root / "P1-A003"
+        self.baseline_dir = self.workspace_root / "baseline"
         self.test_results_dir = project_root / "test_results" / "quality"
-        self.workspace_dir = project_root / "workspace" / "P1-A003"
         
         # ディレクトリ作成
         for dir_path in [self.baseline_dir, self.test_results_dir, self.workspace_dir]:
