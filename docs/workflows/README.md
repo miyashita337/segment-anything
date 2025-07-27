@@ -1,172 +1,143 @@
-# AI-人間協調ワークフロー
+# AI-人間協調ワークフロー（現在仕様版）
 
 **バージョン**: [../../spec.md](../../spec.md) を参照  
-**最終更新**: 2025-07-21
+**最終更新**: 2025-07-27  
+**重要変更**: GitHub Action仕様から現在のlocalhost Claude Code仕様に全面更新
 
 ## 📋 概要
 
-このドキュメントは、人間と AI（Claude Code、GPT-4O、Gemini）が協調して最善策を導き出し、自動的に PDCA サイクルを回すワークフローを定義しています。継続的な品質改善とプロジェクトの持続的発展を目指します。
+このドキュメントは、人間と Claude Code が協調して最善策を導き出し、継続的に品質改善を行うワークフローを定義しています。localhost環境でのClaude Codeを中心とした実用的な開発プロセスを提供します。
 
 ## 🔄 ワークフロー全体図
 
 ```mermaid
 flowchart TB
-    Start([開始: 人間のフィードバック]) --> Issue[①ISSUE作成<br/>👤人間 + 🤖Claude + 🧠GPT-4O]
+    Start([開始: 人間のフィードバック]) --> Issue[①タスク定義<br/>👤人間 + 🤖Claude Code]
     Issue --> Check{工数・規模確認}
-    Check -->|大規模| SubIssue[サブISSUE分割]
-    Check -->|適正| Priority[優先度設定]
+    Check -->|大規模| SubIssue[サブタスク分割]
+    Check -->|適正| Priority[Google Sheets進捗管理]
     SubIssue --> Priority
-    Priority --> TestFirst[②実装前テスト作成<br/>⚙️GitHub Actions + 🤖Claude]
-    TestFirst --> Impl[③実装<br/>⚙️GitHub Actions + 🤖Claude]
-    Impl --> TestAfter[④実装後テスト<br/>⚙️GitHub Actions + 🤖Claude]
+    Priority --> TestFirst[②実装前テスト作成<br/>🤖Claude Code]
+    TestFirst --> Impl[③実装<br/>🤖Claude Code<br/>📊進捗をGoogle Sheetsに反映]
+    Impl --> TestAfter[④実装後テスト<br/>🤖Claude Code]
     TestAfter --> TestPass{テスト通過?}
     TestPass -->|❌失敗| Impl
-    TestPass -->|✅成功| MR[⑤MR作成<br/>⚙️GitHub Actions + 🤖Claude]
-    MR --> LocalTest[⑥ローカルテスト<br/>🤖Claude + 👤人間<br/>🔔Pushover通知]
+    TestPass -->|✅成功| LocalTest[⑤ローカルテスト<br/>🤖Claude Code + 👤人間<br/>🔔Pushover通知]
     LocalTest --> Success{成功率90%以上?}
     Success -->|❌未達| Issue
-    Success -->|✅達成| Evaluation[⑦評価フェーズ]
+    Success -->|✅達成| Evaluation[⑥評価フェーズ]
 
-    Evaluation --> HumanEval[👤人間による目視評価<br/>B評価50%以上]
-    Evaluation --> AIEval[🧠AIによる自動評価<br/>🔄努力目標]
+    Evaluation --> AutoEval[🤖Claude Code客観的評価<br/>PLA・SCI・PLE指標]
+    Evaluation --> HumanEval[👤人間による目視評価<br/>A/B評価50%以上]
 
     HumanEval --> EvalPass{評価基準達成?}
-    AIEval --> EvalPass
+    AutoEval --> EvalPass
     EvalPass -->|❌未達成<br/>最優先で差し戻し| Issue
-    EvalPass -->|✅達成| Merge[⑧マージ<br/>👤人間がボタン押下]
-    Merge --> Release[⑨リリース<br/>🤖Claude /releaseコマンド<br/>git pull & バージョンアップ]
-    Release --> End([完了])
+    EvalPass -->|✅達成| Release[⑦リリース<br/>🤖Claude Code /releaseコマンド<br/>📊Google Sheets更新]
+    Release --> End([完了<br/>🔔Pushover通知])
 
     %% スタイル定義
     classDef humanTask fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
-    classDef aiTask fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    classDef autoTask fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
+    classDef claudeTask fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef sheetsTask fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
     classDef decision fill:#fff3e0,stroke:#f57c00,stroke-width:2px
 
-    class Issue,HumanEval,Merge humanTask
-    class TestFirst,Impl,TestAfter,MR,LocalTest,AIEval,Release aiTask
+    class Issue,HumanEval humanTask
+    class TestFirst,Impl,TestAfter,LocalTest,AutoEval,Release claudeTask
+    class Priority,Evaluation sheetsTask
     class Check,TestPass,Success,EvalPass decision
 ```
 
 ## 🎯 各フェーズの詳細
 
-### ①ISSUE 作成フェーズ
+### ①タスク定義フェーズ
 
-**責任者**: 👤 人間 + 🤖Claude Code + 🧠GPT-4O  
+**責任者**: 👤 人間 + 🤖Claude Code  
 **目標**: 曖昧な要求を具体的なタスクに変換
 
 #### プロセス
 
 1. **人間の役割**
-
    - 評価・フィードバックの提供
    - 要件定義・発案
    - 最終採決（LGTM 判定）
 
-2. **AI 協議プロセス**
-
-   - Claude Code と GPT-4O が協議してベストプラクティスを導出
-   - API リミット時は Gemini や他モデルで継続
-   - **議事録必須**: token 消費量とリミット対策
+2. **Claude Code の役割**
+   - 要求分析と技術的実現可能性評価
+   - 実装計画の策定
+   - Google Sheetsへのタスク登録
 
 3. **成果物**
    - メリット・デメリット・工数の明示
    - 複数案からの人間による採決
-   - PROGRESS_TRACKER.md への追記
-   - 英語版 ISSUE 文（GitHub 用）
+   - Google Sheetsへの進捗登録
+   - 実装計画書の作成
 
 #### 判断基準
 
-- **大規模案件**: サブ ISSUE・サブフォルダで体系化
+- **大規模案件**: サブタスク・フェーズで体系化
 - **タスク粒度**: 1 つずつ実行可能なレベル
+- **Google Sheets管理**: 進捗・品質指標の可視化
 
 ### ② 実装前テスト作成
 
-**責任者**: ⚙️GitHub Actions + 🤖Claude Code  
+**責任者**: 🤖Claude Code  
 **目標**: テストファーストでの品質保証
 
 - 機能追加に対応するテスト作成
 - バグ発生時の再発防止テスト追加
-- 既存 `test_environment_spec.py` との整合性確保
+- 既存テストスイートとの整合性確保
+- pytest形式での統一的なテスト実装
 
 ### ③ 実装
 
-**責任者**: ⚙️GitHub Actions + 🤖Claude Code  
-**目標**: ISSUE 要件の確実な実装
-**注意**: 基本的に「実装」は GitHub Actions に任せるので localhost での実装は基本的にしない
+**責任者**: 🤖Claude Code  
+**目標**: タスク要件の確実な実装
 
-- PROGRESS_TRACKER.md の優先順位に従って実行
+- Google Sheetsの優先順位に従って実行
 - 既存テンプレート（[batch_extraction_template.md](./batch_extraction_template.md)）の活用
 - [spec.md](../../spec.md) 準拠の実装
+- PH2-002で実装されたスケーラビリティ改善の活用
 
-### 🚨 localhost Claude Code の役割制限
+#### 🤖 Claude Code の実装責任範囲
 
-**重要原則**: localhost の Claude Code は実装を行わない
-
-#### localhost Claude Code の責任範囲
-1. **問題分析**: 既存コードの読み取りと問題特定
-2. **指示作成**: GPT-4O との協議による実装指示の作成
-3. **GitHub への依頼**: @claude コマンドでの実装依頼
-4. **テスト実行**: 実装後の動作確認とバリデーション
-5. **結果報告**: 事実ベースでの結果分析
-
-#### 🚫 localhost Claude Code が行わない作業
-- **コード実装**: 新しいコード、関数、クラスの作成
-- **ファイル修正**: 既存ファイルの編集・改変
-- **新規ファイル作成**: 実装目的でのファイル新規作成
-- **直接的なバグ修正**: コードレベルでの修正作業
-
-#### 🔄 実装が必要な場合の正しい流れ
-1. localhost Claude Code が問題を分析・特定
-2. GPT-4O と協議して実装方針・手順を決定  
-3. **初回実装**: GitHub Actions の Claude Code (@claude) に実装を依頼
-4. localhost Claude Code が結果をテスト・検証
-5. **差し戻し発生時**: localhost Claude Code での直接実装を許可
-   - 理由: 従量課金コスト削減と効率性向上
-   - 条件: 初回GitHub Actions実装が失敗した場合のみ
-6. 事実ベースで結果を報告
-
-#### 💰 コスト効率化の考慮
-- **初回**: GitHub Actions Claude Code（品質重視）
-- **差し戻し時**: localhost実装（コスト重視）
-- **目的**: 品質とコストのバランス最適化
+1. **コード実装**: 新しいコード、関数、クラスの作成
+2. **ファイル修正**: 既存ファイルの編集・改変
+3. **新規ファイル作成**: 実装目的でのファイル新規作成
+4. **直接的なバグ修正**: コードレベルでの修正作業
+5. **テスト作成**: 実装に対応するテストコードの作成
+6. **ドキュメント更新**: 実装内容に応じた文書更新
+7. **進捗更新**: Google Sheetsでの進捗状況反映
 
 ### ④ 実装後テスト
 
-**責任者**: ⚙️GitHub Actions + 🤖Claude Code  
+**責任者**: 🤖Claude Code  
 **目標**: 実装品質の確認
 
 #### 検証内容
 
 1. **動作検証**: 画像抽出〜出力まで完全実行
-2. **UnitTest 実行**: 毎回必須
-3. **エラー時対応**: 実装フェーズへ自動戻し
+2. **UnitTest 実行**: pytest実行、毎回必須
+3. **品質チェック**: linter.sh による品質確認
+4. **エラー時対応**: 実装フェーズへ自動戻し
 
-### ⑤MR（Pull Request）作成
-
-**責任者**: ⚙️GitHub Actions + 🤖Claude Code  
-**目標**: レビュー準備の完了
-
-- 自動的な PR 作成
-- テスト結果の添付
-- [update-spec.yml](./.github/workflows/update-spec.yml) による自動検証
-
-### ⑥Windows ローカルテスト
+### ⑤ローカルテスト
 
 **責任者**: 🤖Claude Code + 👤 人間  
 **目標**: 実環境での動作確認
 
 #### 人間の作業
 
-1. `git pull` でブランチ取得
-2. ブランチ切り替え
-3. input_path, output_path の指定
+1. 必要に応じて入力データの準備
+2. 抽出パイプラインの開始指示
+3. 結果の最終確認
 
-#### 自動化部分
+#### Claude Code による自動化
 
-- バックグラウンドでのバッチ処理実行
-- Pushover によるスマホ通知
-- 進捗状況の自動記録
+- 抽出パイプラインの実行管理
+- PH2-002並列処理システムの活用
+- Pushover によるスマホ通知（処理開始・完了時）
+- Google Sheetsでの進捗状況リアルタイム更新
 
 #### 成功判定基準
 
@@ -174,93 +145,173 @@ flowchart TB
 
 - 例: 入力 100 枚 → 90 枚以上の抽出成功
 
-### ⑦ 評価フェーズ
+### ⑥ 評価フェーズ
 
 **目標**: 品質の最終確認
 
-#### 👤 人間による目視評価（必須）
+#### 🤖 Claude Code による客観的評価（メイン）
 
-**判定基準**: **B 評価が全体の 50%以上**
+**判定基準**: **PLA・SCI・PLE指標による総合評価**
 
-- 例: 90 枚出力 → 45 枚以上が B 判定
+- **PLA (Pixel-Level Accuracy)**: ピクセル単位精度
+- **SCI (Semantic Completeness Index)**: 構造完全性
+- **PLE (Progressive Learning Efficiency)**: 学習効率性
+- 統合品質チェッカーによる自動評価実行
+
+#### 👤 人間による目視評価（最終確認）
+
+**判定基準**: **A/B 評価が全体の 50%以上**
+
+- 例: 90 枚出力 → 45 枚以上が A/B 判定
 - 評価基準: [quality_evaluation_guide.md](./quality_evaluation_guide.md) 準拠
-- **差し戻し時**: ①ISSUE 作成へ最優先で戻す
+- **差し戻し時**: ①タスク定義へ最優先で戻す
 
-#### 🧠AI による自動評価（努力目標）
-
-- GPT-4O または Gemini での自動評価
-- API リミット時はエラー出力後に継続
-- あくまで **補助的評価** として位置付け
-
-### ⑧ マージ
-
-**責任者**: 👤 人間  
-**目標**: 品質確認済み機能の本流取り込み
-
-⑦ 評価成功時のみ人間がマージボタンを押下
-
-### ⑨ リリース
+### ⑦ リリース
 
 **責任者**: 🤖Claude Code  
 **目標**: バージョン管理とリリース準備
 
-1. `main` ブランチへ checkout
-2. `git pull` で最新取り込み
-3. `/release` コマンドでバージョンアップ
-4. リリースノート自動生成
+1. `/release` コマンドでバージョンアップ
+2. リリースノート自動生成
+3. Google Sheetsでの最終ステータス更新
+4. Pushover通知によるリリース完了報告
 
 ## 📊 重要な数値基準
 
-| 項目                     | 基準           | 測定方法                |
-| ------------------------ | -------------- | ----------------------- |
-| **ローカルテスト成功率** | 90%以上        | 出力画像数 ÷ 入力画像数 |
-| **人間評価基準**         | B 評価 50%以上 | B 以上評価数 ÷ 総出力数 |
-| **タスク粒度**           | 1 つずつ実行   | PROGRESS_TRACKER 管理   |
-| **AI 協議記録**          | 100%記録       | 議事録必須作成          |
+| 項目                     | 基準               | 測定方法                    |
+| ------------------------ | ------------------ | --------------------------- |
+| **ローカルテスト成功率** | 90%以上            | 出力画像数 ÷ 入力画像数     |
+| **人間評価基準**         | A/B 評価 50%以上   | A/B 評価数 ÷ 総出力数       |
+| **客観的品質指標**       | PLA≥0.75, SCI≥0.7 | 統合品質チェッカーによる測定 |
+| **タスク粒度**           | 1 つずつ実行       | Google Sheets 管理          |
+| **進捗可視性**           | リアルタイム更新   | Google Sheets 自動反映      |
 
 ## 🔗 関連ドキュメント
 
-### 既存ワークフロー文書
+### 現在運用中の文書
 
-- [バッチ抽出テンプレート](./batch_extraction_template.md) - ⑥ ローカルテストで使用
-- [品質評価ガイド](./quality_evaluation_guide.md) - ⑦ 評価フェーズで参照
+- [バッチ抽出テンプレート](./batch_extraction_template.md) - ⑤ ローカルテストで使用
+- [品質評価ガイド](./quality_evaluation_guide.md) - ⑥ 評価フェーズで参照
 - [トラブルシューティング](./troubleshooting_guide.md) - 全フェーズのエラー対処
-- [進捗追跡テンプレート](./progress_tracking_template.md) - 進捗管理基礎
+- [Google Sheets セットアップ](./google_sheets_setup.md) - 進捗管理システム設定
 
-### 新規作成文書
+### タスク管理文書
 
-- [ISSUE 管理ガイド](./issue_management_guide.md) - ① フェーズ詳細
-- [PROGRESS_TRACKER.md](./PROGRESS_TRACKER.md) - 優先度管理
-- [自動評価フレームワーク](./automated_evaluation_framework.md) - ⑦AI 評価詳細
-- [リリースプロセスガイド](./release_process_guide.md) - ⑨ リリース手順
+- [タスク管理ガイド](./issue_management_guide.md) - ① フェーズ詳細
+- [Google Sheets 進捗管理](./PROGRESS_TRACKER.md) - 優先度・進捗管理
+- [客観的評価フレームワーク](./automated_evaluation_framework.md) - ⑥Claude評価詳細
+- [リリースプロセスガイド](./release_process_guide.md) - ⑦ リリース手順
 
 ## 🚨 重要なポリシー
 
 ### 品質優先
 
 - 基準未達時は確実に差し戻し
+- 客観的指標（PLA・SCI・PLE）による定量評価
 - 人間の最終判定を最優先
-- AI 評価は努力目標レベル
 
-### 継続性確保
+### 可視性確保
 
-- API 制限時も議事録で継続可能
-- 各フェーズでの明確な成功/失敗基準
-- 自動化とマニュアル作業の適切な分担
+- Google Sheetsによるリアルタイム進捗管理
+- Pushover通知による重要イベント報告
+- 明確な成功/失敗基準と測定方法
 
 ### 効率性重視
 
-- 人間の作業を最小化
-- 自動化可能な部分は積極的に自動化
+- Claude Codeによる高度な自動化
+- PH2-002並列処理システムの活用
+- 人間の作業を重要な判断・評価に集中
+
+### 継続性確保
+
+- localhost環境での安定した開発
+- エラー時の自動復旧とフォールバック
 - 明確な責任分界点
+
+## 🎫 タスク起票システム
+
+### 起票プロセス定義
+
+**目的**: 新規タスクをGoogle Spreadsheetsに登録し、体系的にプロジェクト管理を行う
+
+#### 必須要素
+1. **トラッカーID採番**
+   - 形式: `{Phase}-{連番3桁}` (例: PH1-001, T-001)
+   - 重複防止: 自動チェック機能
+
+2. **優先度設定**
+   - デフォルト: 「優先度中」
+   - 選択肢: 優先度最高/高/中/低
+
+3. **登録日付記述**
+   - 形式: YYYY-MM-DD
+   - 自動設定: 起票時の日付
+
+4. **概要の記述**
+   - 内容: タスクの目的と期待成果を明記
+   - 文字数: 100文字以内推奨
+
+#### 起票手順
+```bash
+# 単一タスク起票
+python tools/task_ticket.py \
+  --tracker-id "PH3-001" \
+  --priority "優先度高" \
+  --description "設定ファイル管理システムの実装"
+
+# 一括タスク起票（CSVファイルから）
+python tools/batch_task_ticketing.py \
+  --csv remaining_tasks.csv \
+  --default-priority "優先度中"
+
+# インタラクティブ起票
+python tools/task_ticket.py --interactive
+```
+
+#### 起票後の自動処理
+1. Google Sheets登録（重複チェック済み）
+2. ステータス「着手前」設定
+3. Pushover通知（オプション）
+4. 起票履歴ログ記録
+
+### タスク定義時の必須ルール
+
+1. **起票前チェックリスト**
+   - [ ] タスクの粒度は1つずつ実行可能なレベルか
+   - [ ] 依存関係は明確か
+   - [ ] 成功条件は定量的に定義されているか
+   - [ ] 優先度は適切に設定されているか
+
+2. **起票テンプレート**
+```yaml
+tracker_id: PH3-001
+priority: 優先度中
+title: 設定ファイル管理システムの実装
+description: |
+  各種設定ファイルの一元管理システムを実装し、
+  設定変更の追跡可能性を確保する
+success_criteria:
+  - 設定ファイルの統一フォーマット定義
+  - バージョン管理機能の実装
+  - 設定変更履歴の可視化
+estimated_hours: 8
+dependencies: [PH2-008]
+```
+
+3. **禁止事項**
+   - 曖昧なタスク説明
+   - 測定不可能な成功条件
+   - 依存関係の未記載
+   - 優先度未設定での起票
 
 ## 🎉 このワークフローの効果
 
-1. **品質の継続的向上**: 人間と AI の協調による最適解導出
-2. **効率的なリソース活用**: 適材適所の役割分担
-3. **持続可能な運営**: API 制限やエラー時の対応策
-4. **透明性のある意思決定**: 明確な基準と記録
+1. **品質の継続的向上**: 客観的指標による定量的品質管理
+2. **効率的なリソース活用**: Claude Codeによる高度自動化
+3. **透明性のある運営**: Google Sheetsによるリアルタイム可視化
+4. **持続可能な開発**: localhost環境での安定性と継続性
+5. **体系的タスク管理**: 起票システムによる完全な進捗追跡
 
 ---
 
-このワークフローにより、プロジェクトは継続的に品質向上し、人間と AI の最適な協働を実現できます。
+このワークフローにより、プロジェクトは継続的に品質向上し、人間とClaude Codeの最適な協働を実現できます。

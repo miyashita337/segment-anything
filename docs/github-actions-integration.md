@@ -1,4 +1,10 @@
-# GitHub Actions 統合ガイド
+# ⚠️ 【廃止】GitHub Actions 統合ガイド
+
+**最終更新**: 2025-07-27  
+**📋 現在のステータス**: 🚫 **廃止済み** - localhost Claude Code に移行済み
+
+> ⚠️ **重要**: このドキュメントは廃止されました。現在はlocalhost環境でのClaude Codeを使用しています。  
+> 最新のワークフローについては [docs/workflows/README.md](./workflows/README.md) を参照してください。
 
 ## 概要
 

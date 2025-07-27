@@ -35,6 +35,15 @@ try:
 except ImportError:
     EXTRACTION_NOTIFIER_AVAILABLE = False
 
+# Google Sheets自動更新
+try:
+    import sys
+    sys.path.append(str(Path(__file__).parent.parent.parent.parent / "tools"))
+    from status_update_hook import create_hook, update_extraction_status
+    GOOGLE_SHEETS_HOOK_AVAILABLE = True
+except ImportError:
+    GOOGLE_SHEETS_HOOK_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -93,6 +102,18 @@ def extract_character(
         if verbose:
             click.echo(f"🚀 バッチ処理開始: {total_images}枚の画像を処理します...")
 
+        # Google Sheets: 抽出開始状態更新
+        if GOOGLE_SHEETS_HOOK_AVAILABLE:
+            try:
+                dataset_name = input_dir.name
+                update_extraction_status("PH2-002", "start", 
+                                        dataset_name=dataset_name, 
+                                        total_images=total_images)
+                if verbose:
+                    click.echo("📊 Google Sheets: 抽出開始状態更新完了")
+            except Exception as e:
+                logger.warning(f"Google Sheets更新エラー: {e}")
+
         for img_path in image_files:
             try:
                 output_path_single = output_dir / f'{img_path.stem}_extracted.png'
@@ -140,6 +161,18 @@ def extract_character(
         click.echo(f"\n🎯 バッチ処理完了!")
         click.echo(f"📊 結果: {success_count}/{total_images}枚成功 ({success_rate:.1f}%)")
         click.echo(f"⏱️ 処理時間: {batch_processing_time:.1f}秒")
+        
+        # Google Sheets: 抽出完了状態更新
+        if GOOGLE_SHEETS_HOOK_AVAILABLE:
+            try:
+                update_extraction_status("PH2-002", "complete", 
+                                        dataset_name=dataset_name, 
+                                        total_images=total_images,
+                                        success_count=success_count)
+                if verbose:
+                    click.echo("📊 Google Sheets: 抽出完了状態更新完了")
+            except Exception as e:
+                logger.warning(f"Google Sheets更新エラー: {e}")
         
         # Pushover通知送信
         if not no_notify and EXTRACTION_NOTIFIER_AVAILABLE and success_count > 0:

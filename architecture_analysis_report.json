@@ -1,0 +1,210 @@
+{
+  "timestamp": "2025-07-27T16:31:34.577120",
+  "system_resources": {
+    "cpu": {
+      "count": 12,
+      "physical_cores": 6,
+      "usage_percent": 0.4,
+      "frequency": 3799.93
+    },
+    "memory": {
+      "total_gb": 19.536293029785156,
+      "available_gb": 17.84304428100586,
+      "used_gb": 1.3981094360351562,
+      "percent": 8.7
+    },
+    "gpu": {
+      "available": true,
+      "count": 1,
+      "current_device": 0,
+      "device_name": "NVIDIA GeForce RTX 4070 Ti SUPER",
+      "memory_total_gb": 15.99169921875,
+      "memory_allocated_gb": 0.0,
+      "memory_reserved_gb": 0.0
+    },
+    "disk": {
+      "read_mb": 5971.3466796875,
+      "write_mb": 561.2734375,
+      "read_count": 158047,
+      "write_count": 67646
+    }
+  },
+  "code_structure": {
+    "total_files": 194,
+    "total_lines": 59474,
+    "modules": {
+      "analyze_detection_failures.py": {
+        "files": 1,
+        "lines": 466
+      },
+      "analyze_quality_trend.py": {
+        "files": 1,
+        "lines": 333
+      },
+      "auto_progress_system.py": {
+        "files": 1,
+        "lines": 469
+      },
+      "benchmark_human_vs_ai.py": {
+        "files": 1,
+        "lines": 473
+      },
+      "create_phase1_extraction_report.py": {
+        "files": 1,
+        "lines": 146
+      },
+      "final_visual_summary.py": {
+        "files": 1,
+        "lines": 137
+      },
+      "generate_improvement_comparison.py": {
+        "files": 1,
+        "lines": 360
+      },
+      "generate_true_comparison_dashboard.py": {
+        "files": 1,
+        "lines": 244
+      },
+      "setup.py": {
+        "files": 1,
+        "lines": 19
+      },
+      "test_extraction_notification.py": {
+        "files": 1,
+        "lines": 106
+      },
+      "test_extract_with_notification.py": {
+        "files": 1,
+        "lines": 85
+      },
+      "test_grayscale_fix.py": {
+        "files": 1,
+        "lines": 146
+      },
+      "test_pose_landmark_visualization.py": {
+        "files": 1,
+        "lines": 376
+      },
+      "test_pushover_notification.py": {
+        "files": 1,
+        "lines": 149
+      },
+      "test_small_character_area_threshold.py": {
+        "files": 1,
+        "lines": 228
+      },
+      "core": {
+        "files": 23,
+        "lines": 4374
+      },
+      "evaluation": {
+        "files": 6,
+        "lines": 942
+      },
+      "features": {
+        "files": 73,
+        "lines": 29612
+      },
+      "scripts": {
+        "files": 1,
+        "lines": 216
+      },
+      "temp": {
+        "files": 19,
+        "lines": 3004
+      },
+      "tests": {
+        "files": 28,
+        "lines": 6541
+      },
+      "tools": {
+        "files": 29,
+        "lines": 11048
+      }
+    },
+    "error_handling": {
+      "files_with_try_except": 125,
+      "generic_exceptions": 571,
+      "specific_exceptions": 55
+    },
+    "memory_management": {
+      "files_with_gc": 3,
+      "files_with_cuda_cache": 6
+    }
+  },
+  "performance_metrics": {},
+  "bottlenecks": [
+    {
+      "type": "memory_management",
+      "severity": "medium",
+      "description": "ガベージコレクション呼び出しが少ない",
+      "impact": "メモリリークの可能性",
+      "recommendation": "定期的なgc.collect()の追加"
+    },
+    {
+      "type": "error_handling",
+      "severity": "high",
+      "description": "汎用的なException catchが多すぎる",
+      "impact": "エラーの特定と対処が困難",
+      "recommendation": "具体的な例外クラスの使用"
+    },
+    {
+      "type": "gpu_utilization",
+      "severity": "low",
+      "description": "GPU利用率が低い",
+      "impact": "処理速度の非効率",
+      "recommendation": "バッチサイズの増加やGPU並列処理の実装"
+    },
+    {
+      "type": "disk_io",
+      "severity": "medium",
+      "description": "ディスクI/Oが多い",
+      "impact": "処理速度の低下",
+      "recommendation": "キャッシュの実装やバッチ読み込み"
+    }
+  ],
+  "optimization_points": [
+    {
+      "area": "parallel_processing",
+      "priority": "high",
+      "description": "6コアCPUを活用した並列処理",
+      "expected_improvement": "処理速度2-4倍",
+      "implementation": "multiprocessing.Pool or concurrent.futures"
+    },
+    {
+      "area": "gpu_optimization",
+      "priority": "high",
+      "description": "GPU演算の最適化とバッチ処理",
+      "expected_improvement": "処理速度5-10倍",
+      "implementation": "torch.cuda.amp, バッチサイズ最適化"
+    },
+    {
+      "area": "caching",
+      "priority": "medium",
+      "description": "計算結果のキャッシュ実装",
+      "expected_improvement": "重複計算の削減",
+      "implementation": "functools.lru_cache, Redis"
+    },
+    {
+      "area": "error_handling",
+      "priority": "high",
+      "description": "階層的エラーハンドリングシステム",
+      "expected_improvement": "システム安定性向上",
+      "implementation": "カスタム例外クラスとリトライ機構"
+    },
+    {
+      "area": "resource_management",
+      "priority": "medium",
+      "description": "コンテキストマネージャーによるリソース管理",
+      "expected_improvement": "メモリリーク防止",
+      "implementation": "with文, contextlib"
+    }
+  ],
+  "summary": {
+    "total_python_files": 194,
+    "total_lines_of_code": 59474,
+    "identified_bottlenecks": 4,
+    "optimization_opportunities": 5,
+    "high_priority_items": 3
+  }
+}

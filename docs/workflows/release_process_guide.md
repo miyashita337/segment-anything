@@ -1,56 +1,59 @@
-# リリースプロセスガイド
+# リリースプロセスガイド（現在仕様版）
 
-**参照**: [AI-人間協調ワークフロー](./README.md) - ⑧⑨フェーズ  
-**最終更新**: 2025-07-21
+**参照**: [AI-人間協調ワークフロー](./README.md) - ⑦リリースフェーズ  
+**最終更新**: 2025-07-27  
+**重要変更**: GitHub Action仕様からlocalhost Claude Code仕様に更新
 
 ## 📋 概要
 
-人間によるマージ承認から、Claude Code による自動リリースまでの完全なプロセスを定義します。品質確認済みの機能を安全かつ効率的に本番環境に反映します。
+人間による品質評価承認から、Claude Code による自動リリースまでの完全なプロセスを定義します。localhost環境で品質確認済みの機能を安全かつ効率的にリリースします。
 
 ## 🔄 リリースフロー全体図
 
 ```mermaid
 flowchart TB
-    Evaluation[⑦評価完了<br/>B評価50%以上達成] --> HumanCheck{👤人間最終確認}
-    HumanCheck -->|承認| Merge[⑧マージ実行<br/>👤人間がボタン押下]
-    HumanCheck -->|却下| Reject[差し戻し<br/>①ISSUEへ戻る]
+    Evaluation[⑥評価完了<br/>A/B評価50%以上 + 客観的指標達成] --> HumanCheck{👤人間最終確認}
+    HumanCheck -->|承認| Release[⑦-1 リリース実行<br/>🤖Claude Code: /release コマンド]
+    HumanCheck -->|却下| Reject[差し戻し<br/>①タスク定義へ戻る]
     
-    Merge --> AutoPull[⑨-1 自動プル<br/>🤖Claude: git checkout main]
-    AutoPull --> GitPull[⑨-2 最新取得<br/>🤖Claude: git pull origin main]
-    GitPull --> VersionCheck[⑨-3 バージョン確認<br/>🤖Claude: 現在バージョン確認]
-    VersionCheck --> Release[⑨-4 リリース実行<br/>🤖Claude: /release コマンド]
-    Release --> Notification[⑨-5 通知送信<br/>🔔Pushover → 📱人間]
+    Release --> VersionUp[⑦-2 バージョンアップ<br/>🤖Claude Code: 自動バージョン管理]
+    VersionUp --> Notes[⑦-3 リリースノート生成<br/>🤖Claude Code: 変更点自動生成]
+    Notes --> SheetsUpdate[⑦-4 Google Sheets更新<br/>🤖Claude Code: ステータス→/release]
+    SheetsUpdate --> Notification[⑦-5 完了通知<br/>🔔Pushover → 📱人間]
     
-    Notification --> Complete[✅完了]
+    Notification --> Complete[✅リリース完了]
     
     %% スタイル定義
     classDef humanTask fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
-    classDef autoTask fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef claudeTask fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     classDef notification fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
     
-    class HumanCheck,Merge humanTask
-    class AutoPull,GitPull,VersionCheck,Release autoTask
+    class HumanCheck humanTask
+    class Release,VersionUp,Notes,SheetsUpdate claudeTask
     class Notification notification
 ```
 
-## ⑧ マージフェーズ（人間）
+## ⑥ 人間による最終確認
 
 ### 事前チェック項目
-人間がマージボタンを押す前の最終確認：
+人間がリリース承認する前の最終確認：
 
 ```markdown
-## マージ前チェックリスト
-- [ ] ⑦評価結果: B評価50%以上達成
-- [ ] CI/CDパイプライン: 全テスト通過
-- [ ] コードレビュー: 承認済み
+## リリース前チェックリスト
+- [ ] ⑥評価結果: A/B評価50%以上達成
+- [ ] 客観的指標: PLA≥0.75, SCI≥0.7達成
+- [ ] ローカルテスト: 成功率90%以上
+- [ ] 品質チェック: linter.sh通過
 - [ ] ドキュメント: 更新済み
 - [ ] 既知の問題: なし、または許容可能
 - [ ] 影響範囲: 確認済み
+- [ ] Google Sheets: 進捗状況正常
 ```
 
-### マージ実行手順
-1. **GitHub PR画面でマージボタン押下**
-2. **マージコメント記録**
+### リリース承認手順
+1. **上記チェックリストの確認**
+2. **Claude Codeへリリース承認指示**
+   - 「/releaseで進めてください」などの明確な指示
    ```markdown
    Merge approved after successful evaluation:
    - Success rate: XX%

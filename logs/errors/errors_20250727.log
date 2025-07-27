@@ -1,0 +1,8 @@
+2025-07-27 16:33:59,109 - ErrorHandler - ERROR - validation_error: バリデーションエラー: test=invalid, 期待値: valid
+2025-07-27 16:33:59,112 - ErrorHandler - ERROR - processing_error: 処理エラー [test]: test error
+2025-07-27 16:33:59,114 - ErrorHandler - ERROR - validation_error: バリデーションエラー: field1=value1, 期待値: expected1
+2025-07-27 16:33:59,114 - ErrorHandler - ERROR - processing_error: 処理エラー [stage1]: reason1
+2025-07-27 16:33:59,114 - ErrorHandler - WARNING - gpu_error: GPU利用不可: test
+2025-07-27 16:33:59,117 - ErrorHandler - ERROR - validation_error: バリデーションエラー: test=invalid, 期待値: valid
+2025-07-27 16:33:59,126 - ErrorHandler - ERROR - unknown_error: standard error
+2025-07-27 16:33:59,128 - ErrorHandler - ERROR - processing_error: 処理エラー [test]: recoverable error

@@ -1,7 +1,11 @@
-# Claude Code GitHub Action 移行ステータス
+# ⚠️ 【廃止】Claude Code GitHub Action 移行ステータス
 
 **最終更新**: 2025-07-20  
-**全体進捗**: 5% ⚠️ （実装は未完成）
+**全体進捗**: 5% ⚠️ （実装は未完成）  
+**📋 現在のステータス**: 🚫 **廃止済み** - localhost Claude Code に移行済み
+
+> ⚠️ **重要**: このドキュメントは廃止されました。現在はlocalhost環境でのClaude Codeを使用しています。  
+> 最新のワークフローについては [docs/workflows/README.md](./workflows/README.md) を参照してください。
 
 ## 🎯 移行概要
 

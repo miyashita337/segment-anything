@@ -1,4 +1,10 @@
-# Windows版Claude CodeでGitHub Actions統合が失敗する問題とManual Setup解決法
+# ⚠️ 【廃止】Windows版Claude CodeでGitHub Actions統合が失敗する問題とManual Setup解決法
+
+**最終更新**: 2025-07-27  
+**📋 現在のステータス**: 🚫 **廃止済み** - localhost Claude Code に移行済み
+
+> ⚠️ **重要**: このドキュメントは廃止されました。現在はlocalhost環境でのClaude Codeを使用しています。  
+> 最新のワークフローについては [docs/workflows/README.md](./workflows/README.md) を参照してください。
 
 ## はじめに
 

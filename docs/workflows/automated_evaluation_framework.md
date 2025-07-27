@@ -1,53 +1,98 @@
-# 客観的評価フレームワーク v2.0
+# 客観的評価フレームワーク v3.0（Claude Code実装版）
 
-**最終更新**: 2025-07-24  
-**重要変更**: 主観的AI評価から完全客観的数値計測システムに全面移行
+**最終更新**: 2025-07-27  
+**重要変更**: Claude Code による統合品質チェッカーシステムの実装完了
 
-## 🎯 新フレームワークの目的
+## 🎯 現在の評価システム
 
-### 旧システムの問題点と解決
+### Claude Code統合品質チェッカー
 ```mermaid
 flowchart LR
-    Old[旧システム<br/>主観的AI評価] --> Problems[問題点<br/>• 評価のブレ<br/>• 進捗不明<br/>• 再現性なし]
-    Problems --> New[新システム<br/>客観的数値計測]
-    New --> Solutions[解決<br/>• 完全自動化<br/>• 継続監視<br/>• 学術的根拠]
+    Input[抽出結果画像] --> Analysis[Claude Code<br/>統合品質チェッカー]
+    Analysis --> PLA[PLA<br/>ピクセル精度]
+    Analysis --> SCI[SCI<br/>構造完全性]
+    Analysis --> PLE[PLE<br/>学習効率性]
     
-    classDef old fill:#ffcdd2,stroke:#d32f2f
-    classDef new fill:#c8e6c9,stroke:#388e3c
-    class Old,Problems old
-    class New,Solutions new
+    PLA --> Report[統合評価レポート]
+    SCI --> Report
+    PLE --> Report
+    Report --> Sheets[Google Sheets<br/>自動更新]
+    
+    classDef claude fill:#f3e5f5,stroke:#7b1fa2
+    classDef metrics fill:#c8e6c9,stroke:#388e3c
+    classDef output fill:#e3f2fd,stroke:#1976d2
+    
+    class Analysis claude
+    class PLA,SCI,PLE metrics
+    class Report,Sheets output
 ```
 
-### 設計哲学の転換
-- **Before**: 人間模倣AI評価（GPT-4O/Gemini/Claude）
-- **After**: 数学的・物理的測定（IoU/MediaPipe/Hausdorff距離）
+### 実装状況
+- **✅ 完全実装済み**: Claude Code による自動評価システム
+- **✅ 運用中**: 統合品質チェッカー (`tools/unified_quality_checker.py`)
+- **✅ Google Sheets連携**: 評価結果の自動反映
 
 ## 📊 核心3指標システム
 
 ### 🎯 指標1: Pixel-Level Accuracy (PLA)
-**目的**: ピクセル単位での抽出精度の客観測定
+**目的**: ピクセル単位での抽出精度の客観測定  
+**実装**: Claude Code統合品質チェッカーによる自動測定
 
 ```python
-# 計算例
-predicted_mask = extraction_result.mask
-ground_truth_mask = generate_reference_mask(original_image)
-pla_score = calculate_pla(predicted_mask, ground_truth_mask)
+# 実装済み測定ロジック（tools/unified_quality_checker.py）
+def calculate_pla_score(mask_data: np.ndarray, reference_data: np.ndarray) -> float:
+    """PLA（Pixel-Level Accuracy）の計算"""
+    intersection = np.logical_and(mask_data, reference_data)
+    union = np.logical_or(mask_data, reference_data)
+    
+    if np.sum(union) == 0:
+        return 1.0  # 両方とも空の場合は完全一致
+    
+    return np.sum(intersection) / np.sum(union)
 
-# 結果解釈
-if pla_score >= 0.90:
-    quality_level = "商用レベル"
-elif pla_score >= 0.80:
-    quality_level = "実用レベル"
+# 品質レベル判定（統合品質チェッカーによる自動判定）
+if pla_score >= 0.85:
+    quality_level = "A評価（優秀）"
+elif pla_score >= 0.75:
+    quality_level = "B評価（良好）"
+elif pla_score >= 0.60:
+    quality_level = "C評価（可）"
 else:
     quality_level = "改善必要"
 ```
 
-**現在の目標値**: 0.75 → 0.85（段階的向上）
+**現在の基準値**: PLA ≥ 0.75（運用実績に基づく設定）
 
 ### 🧠 指標2: Semantic Completeness Index (SCI)
-**目的**: キャラクター構造の意味的完全性の客観評価
+**目的**: キャラクター構造の意味的完全性の客観評価  
+**実装**: Claude Code統合品質チェッカーによる自動測定
 
 ```python
+# 実装済み測定ロジック（tools/unified_quality_checker.py）
+def calculate_sci_score(extracted_parts: Dict, expected_parts: Dict) -> float:
+    """SCI（Semantic Completeness Index）の計算"""
+    total_parts = len(expected_parts)
+    detected_parts = 0
+    
+    for part_name, expected_region in expected_parts.items():
+        if part_name in extracted_parts:
+            extracted_region = extracted_parts[part_name]
+            overlap = calculate_region_overlap(extracted_region, expected_region)
+            if overlap >= 0.5:  # 50%以上の重複で検出とみなす
+                detected_parts += 1
+    
+    return detected_parts / total_parts if total_parts > 0 else 1.0
+
+# 構造完全性判定
+if sci_score >= 0.90:
+    completeness_level = "構造完全"
+elif sci_score >= 0.70:
+    completeness_level = "主要部位完全"
+else:
+    completeness_level = "部分欠損あり"
+```
+
+**現在の基準値**: SCI ≥ 0.70（主要構造部位の完全性確保）
 # 計算例
 sci_result = calculate_sci(
     extracted_image=extraction_result.image,

@@ -8,6 +8,11 @@
 - トレンド分析
 - 改善提案の優先度表示
 - インタラクティブなグラフ表示
+- Google Spreadsheet自動更新
+
+技術仕様: 
+- 出力パス標準: ../../spec/OUTPUT_PATH_STANDARDS.md
+- Google Sheets統合: ../../spec/GOOGLE_SHEETS_INTEGRATION.md
 """
 
 import sys
@@ -15,13 +20,16 @@ import json
 import logging
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
 from pathlib import Path
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any, Tuple
-import matplotlib.patches as mpatches
 
 # 日本語フォント設定
-plt.rcParams['font.family'] = 'DejaVu Sans'
+plt.rcParams['font.family'] = ['DejaVu Sans', 'Yu Gothic', 'Hiragino Sans', 'Noto Sans CJK JP', 'sans-serif']
+plt.rcParams['font.size'] = 10
+plt.rcParams['axes.unicode_minus'] = False  # マイナス記号の文字化け防止
+import matplotlib.patches as mpatches
 plt.rcParams['figure.figsize'] = (15, 10)
 
 logging.basicConfig(level=logging.INFO)
@@ -181,7 +189,7 @@ class QualityDashboard:
             ax.set_yticklabels(['20%', '40%', '60%', '80%', '100%'])
             ax.grid(True)
             ax.legend(loc='upper right', bbox_to_anchor=(1.2, 1.0))
-            ax.set_title('品質指標レーダーチャート', fontsize=16, pad=20)
+            ax.set_title('Quality Metrics Radar Chart', fontsize=16, pad=20)
             
             output_path = output_dir / 'radar_chart.png'
             plt.savefig(output_path, dpi=300, bbox_inches='tight')
@@ -743,6 +751,18 @@ def main():
         print(f"\n🎉 品質ダッシュボード作成完了!")
         print(f"📄 HTML: {html_path}")
         print(f"🌐 ブラウザで開く: file://{Path(html_path).absolute()}")
+        
+        # Google Spreadsheet自動更新
+        try:
+            import sys
+            sys.path.append(str(Path(__file__).parent))
+            from google_sheets_updater import update_from_quality_report
+            update_from_quality_report(args.report)
+            print("📊 Google Spreadsheet更新完了")
+        except ImportError:
+            logger.warning("Google Sheets更新スキップ: google_sheets_updaterが見つかりません")
+        except Exception as sheet_error:
+            logger.warning(f"Google Sheets更新エラー: {sheet_error}")
         
     except Exception as e:
         logger.error(f"ダッシュボード作成失敗: {e}")

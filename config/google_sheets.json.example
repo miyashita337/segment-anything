@@ -1,0 +1,20 @@
+{
+  "spreadsheet_id": "YOUR_SPREADSHEET_ID_HERE",
+  "service_account_path": "/mnt/c/AItools/segment-anything/config/service-account-key.json",
+  "sheets": {
+    "status": "Status",
+    "quality": "Quality Metrics",
+    "processing": "Processing Log", 
+    "improvement": "Improvement"
+  },
+  "update_triggers": {
+    "quality_check_complete": true,
+    "extraction_pipeline_complete": true,
+    "dashboard_generation_complete": true,
+    "status_change": true
+  },
+  "rate_limit": {
+    "requests_per_minute": 100,
+    "requests_per_day": 20000
+  }
+}

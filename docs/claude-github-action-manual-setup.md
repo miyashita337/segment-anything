@@ -1,6 +1,12 @@
-# Claude Code GitHub Action Manual Setup Guide (Windows)
+# ⚠️ 【廃止】Claude Code GitHub Action Manual Setup Guide (Windows)
 
 **作成日**: 2025-07-20  
+**最終更新**: 2025-07-27  
+**📋 現在のステータス**: 🚫 **廃止済み** - localhost Claude Code に移行済み
+
+> ⚠️ **重要**: このドキュメントは廃止されました。現在はlocalhost環境でのClaude Codeを使用しています。  
+> 最新のワークフローについては [docs/workflows/README.md](./workflows/README.md) を参照してください。
+
 **対象**: Windows版Claude Codeでの`/install-github-app`コマンドが機能しない問題の回避方法
 
 ## 問題の概要

@@ -120,15 +120,15 @@ echo "  📊 ダッシュボード生成..."
 if [ -f "${OUTPUT_DIR}/quality/unified_quality_report.json" ]; then
     python3 tools/quality_dashboard.py \
         --report "${OUTPUT_DIR}/quality/unified_quality_report.json" \
-        --output_dir "${OUTPUT_DIR}/dashboard/"
+        --output "${OUTPUT_DIR}/dashboard/"
 else
     echo "⚠️  統合品質レポートが見つかりません。ダッシュボード生成をスキップします。"
 fi
 
 # 4-3. 客観指標テスト
 echo "  🎯 客観指標テスト実行..."
-python3 features/evaluation/objective_metrics.py \
-    --test all \
+python3 tools/run_objective_evaluation.py \
+    --batch "${OUTPUT_DIR}/extraction/" \
     --output "${OUTPUT_DIR}/tests/objective_metrics_test.json"
 
 # 5. 改善効果測定（ベースライン比較）
