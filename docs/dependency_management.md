@@ -1,5 +1,8 @@
 # 依存関係管理ガイド
 
+**⚠️ 重要**: この情報は [`dependency_reference.md`](dependency_reference.md) に統合されました。  
+**最新情報については**: `docs/dependency_reference.md` を参照してください。
+
 **作成日**: 2025-07-24  
 **対象**: segment-anything プロジェクトの依存ライブラリ管理
 

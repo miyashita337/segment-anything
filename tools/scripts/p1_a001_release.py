@@ -54,9 +54,9 @@ def update_p1_a001_to_release():
         
         logger.info("10指標データ読み込み完了")
         
-        # 行データを更新（22列分）
+        # 行データを更新（23列分）
         updated_row = list(current_data)
-        while len(updated_row) < 22:
+        while len(updated_row) < 23:
             updated_row.append("")
         
         # ステータスを/releaseに更新（C列：インデックス2）
@@ -65,7 +65,7 @@ def update_p1_a001_to_release():
         # 更新日付を現在時刻に更新（E列：インデックス4）
         updated_row[4] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         
-        # 10指標データを更新（M-V列：インデックス12-21）
+        # 10指標データを更新（N-W列：インデックス13-22）
         metrics_values = [
             f"{metrics_data.get('lca', 0):.3f}",
             f"{metrics_data.get('ab_evaluation_rate', 0):.3f}",
@@ -81,7 +81,7 @@ def update_p1_a001_to_release():
         
         # 10指標データを行データに設定
         for i, value in enumerate(metrics_values):
-            updated_row[12 + i] = value
+            updated_row[13 + i] = value
         
         # Google Sheetsで行を更新
         row_number = updater.find_existing_record('P1-A001')
@@ -91,7 +91,7 @@ def update_p1_a001_to_release():
         
         # 更新実行
         sheet_name = "シート1"
-        range_name = f"{sheet_name}!A{row_number}:V{row_number}"
+        range_name = f"{sheet_name}!A{row_number}:W{row_number}"
         
         update_body = {'values': [updated_row]}
         

@@ -1,0 +1,158 @@
+# Google Sheets進捗管理システム - 統一リファレンス
+
+**📋 このドキュメントについて**
+このドキュメントは、Google Sheets進捗管理システムの**唯一の正式な参照元**です。
+すべての関連ドキュメント・コード・設定は、この情報を基準として作成・更新されています。
+
+**⚠️ 重要**: Google Sheets関連の情報は、必ずこのドキュメントを参照してください。
+
+---
+
+## 🔗 Google Sheetsアクセス情報
+
+### メインスプレッドシート
+**URL**: https://docs.google.com/spreadsheets/d/10B7JIXPR7AoVHBrLbIG6bvn4wfKha_SradJODwzUHFA/edit?gid=0#gid=0
+
+**Spreadsheet ID**: `10B7JIXPR7AoVHBrLbIG6bvn4wfKha_SradJODwzUHFA`
+
+**シート名**: `シート1` (実際の運用名、設定上は`Progress Tracker`)
+
+**更新日時**: 2025-07-28 (最新更新確認日)
+
+---
+
+## 📊 列構成仕様（23列: A-W）
+
+**最終更新**: 2025-07-28  
+**構成**: 23列拡張システム（A-W列）
+
+### 基本情報列（A-G列）
+| 列 | フィールド名 | 説明 | 例 |
+|---|---|---|---|
+| A | tracker_id | トラッカーID | P1-005, PH2-001 |
+| B | priority | 優先度 | 優先度最高, 優先度高, 優先度中, 優先度低 |
+| C | status | ステータス | 着手前, 着手中, /release |
+| D | created_date | 登録日付 | 2025-07-28 |
+| E | updated_date | 更新日付 | 2025-07-28 |
+| F | description | 概要 | 自動マスク修正機能実装 |
+| G | details | 詳細 | 66.57%改善率達成 |
+
+### コンポーネント状況列（H-M列）
+| 列 | フィールド名 | 説明 | 値 |
+|---|---|---|---|
+| H | operation_check | 動作確認 | 完了, 失敗, 未実行, 実行中 |
+| I | unit_test | テストUNIT | 完了, 失敗, 未実行, 実行中 |
+| J | quality_evaluation | 品質評価 | 完了, 失敗, 未実行, 実行中 |
+| K | integration_script | 統合実行スクリプト | 完了, 失敗, 未実行, 実行中 |
+| L | dashboard_generation | ダッシュボード生成 | 完了, 失敗, 未実行, 実行中 |
+| M | extraction_pipeline | 抽出パイプライン | 完了, 失敗, 未実行, 実行中 |
+
+### 10指標列（N-W列）
+| 列 | 指標名 | 正式名称 | 説明 | 範囲 |
+|---|---|---|---|---|
+| N | lca | LCA (Largest-Character Accuracy) | バウンディングボックス精度 | 0.0-1.0 |
+| O | ab_evaluation_rate | A/B評価率 | 高品質評価の割合 | 0.0-1.0 |
+| P | fps | FPS | 処理速度（フレーム/秒） | 0.0+ |
+| Q | c_plus_rate | C以上評価率 | 標準以上品質の割合 | 0.0-1.0 |
+| R | avg_coverage_rate | 平均カバレッジ率 | マスクカバレッジ平均 | 0.0-1.0 |
+| S | avg_compactness | 平均コンパクトネス | 形状コンパクト性平均 | 0.0-1.0 |
+| T | avg_fill_rate | 平均フィル率 | マスク充填率平均 | 0.0-1.0 |
+| U | sci | SCI (Semantic Completeness Index) | 意味完全性指標 | 0.0-1.0 |
+| V | pla | PLA (Pixel-Level Accuracy) | ピクセル精度 | 0.0-1.0 |
+| W | ple | PLE (Progressive Learning Efficiency) | 学習効率指標 | 0.0-1.0 |
+
+---
+
+## 🔧 API設定情報
+
+### 認証設定
+**認証ファイル**: `config/google_sheets_auth.json`  
+**認証方式**: Google Service Account  
+**必要権限**: Google Sheets API (読み取り・書き込み)  
+
+### API制限
+**読み取り**: 100 requests/100秒/ユーザー  
+**書き込み**: 100 requests/100秒/ユーザー  
+**セル更新**: 500 requests/100秒/ユーザー  
+
+---
+
+## 📋 ステータス定義
+
+### タスクステータス
+- `着手前` - 未着手状態
+- `着手中` - 実装開始
+- `実装完了` - コード実装完了
+- `動作確認` - 動作確認済み  
+- `テストUNIT` - 単体テスト完了
+- `品質チェック` - 品質評価完了
+- `抽出パイプライン` - パイプライン動作確認済み
+- `/release` - 完全完了・リリース済み
+- `終了` - プロジェクト終了
+
+### コンポーネントステータス
+- `` (空) - 未実行
+- `完了` - 正常完了
+- `失敗` - エラーまたは失敗
+- `スキップ` - 意図的スキップ
+- `実行中` - 処理中
+
+---
+
+## 🚀 操作方法
+
+### CLI コマンド
+```bash
+# ステータス確認
+python3 tools/progress_tracker/cli.py status
+
+# タスク更新
+python3 tools/progress_tracker/cli.py update P1-005 "/release"
+
+# 指標更新
+python3 tools/progress_tracker/cli.py update-metrics P1-005 --lca 0.85 --pla 0.67
+
+# 接続確認
+python3 tools/progress_tracker/cli.py connection-status
+```
+
+### 自動更新トリガー
+1. **品質ワークフロー実行時**: `./tools/scripts/run_quality_workflow.sh`
+2. **ダッシュボード生成時**: `tools/core/quality_dashboard.py`
+3. **抽出パイプライン完了時**: `features/extraction/commands/extract_character.py`
+
+---
+
+## 🔄 更新履歴
+
+### 2025-07-28
+- 23列システム（A-W）への拡張完了
+- PLA（V列）、PLE（W列）指標追加
+- P1-005での動作確認完了
+
+### 2025-07-27  
+- 初期21列システム（A-U）運用開始
+- Google Sheets API連携実装
+
+---
+
+## ⚠️ 注意事項
+
+### セキュリティ
+- 認証ファイル（`config/google_sheets_auth.json`）はGit管理対象外
+- サービスアカウントキーの漏洩に注意
+- スプレッドシート共有権限は必要最小限に設定
+
+### 運用ルール
+- **このドキュメントが情報の正**です
+- Google Sheets構造変更時は、必ずこのドキュメントを最初に更新
+- 他のドキュメントはこのドキュメントを参照する形で記載
+
+### トラブルシューティング
+- 列数エラー: このドキュメントの列構成を確認
+- 認証エラー: `tools/progress_tracker/cli.py connection-status`で診断
+- API制限エラー: 1分待機後に再試行
+
+---
+
+**📞 サポート**: このドキュメントの情報に疑問がある場合は、Claude Codeに相談してください。

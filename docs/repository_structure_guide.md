@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """
 リポジトリ構造整理スクリプト
+
+⚠️ 重要: この情報は project_structure_reference.md に統合されました。
+最新情報については: docs/project_structure_reference.md を参照してください。
+
 Usage: python tools/cleanup_repository.py --dry-run
 """
 import argparse

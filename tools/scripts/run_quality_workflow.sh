@@ -19,10 +19,10 @@ if [ -z "$TRACKER_ID" ]; then
     exit 1
 fi
 
-# トラッカーID形式チェック
-if [[ ! "$TRACKER_ID" =~ ^PH[0-9]+-[0-9]{3}$ ]]; then
+# トラッカーID形式チェック（P1-005形式も許可）
+if [[ ! "$TRACKER_ID" =~ ^(PH[0-9]+-[0-9]{3}|P[0-9]+-[0-9]{3})$ ]]; then
     echo "❌ エラー: 無効なトラッカーID形式: $TRACKER_ID"
-    echo "正しい形式: PH{Phase番号}-{3桁連番} (例: PH2-001)"
+    echo "正しい形式: PH{Phase番号}-{3桁連番} (例: PH2-001) または P{番号}-{3桁連番} (例: P1-005)"
     exit 1
 fi
 
@@ -63,7 +63,7 @@ if [ "$SKIP_EXTRACTION" = false ]; then
     EXTRACTION_LOG="${OUTPUT_DIR}/${TRACKER_ID}_extraction.log"
     
     # バックグラウンド実行開始
-    nohup python3 tools/sam_yolo_character_segment.py \
+    nohup python3 tools/core/sam_yolo_character_segment.py \
         --mode reproduce-auto \
         --input_dir "$INPUT_DIR" \
         --output_dir "${OUTPUT_DIR}/extraction/" \

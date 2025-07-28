@@ -1,5 +1,8 @@
 # 客観的評価指標仕様書
 
+**⚠️ 重要**: この情報は [`docs/technical_specifications.md`](technical_specifications.md) に統合されました。  
+**最新情報については**: `docs/technical_specifications.md` を参照してください。
+
 **最終更新**: 2025-07-24  
 **目的**: 人間評価の主観性を排除し、完全客観的・ブレない評価システムの構築
 

@@ -1,5 +1,8 @@
 # Segment Anything プロジェクト ファイル構造ドキュメント
 
+**⚠️ 重要**: この情報は [`project_structure_reference.md`](project_structure_reference.md) に統合されました。  
+**最新情報については**: `docs/project_structure_reference.md` を参照してください。
+
 **作成日**: 2025-07-17  
 **最終更新**: 2025-07-17  
 **Phase 0 タスク**: [P0-001] 現在のファイル構造の完全把握・ドキュメント化

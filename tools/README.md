@@ -4,9 +4,11 @@ Tools directoryはTDR-001により機能別に整理されました。
 
 ## 📁 ディレクトリ構造
 
+> **詳細**: [`docs/project_structure_reference.md`](../docs/project_structure_reference.md) を参照
+
 ### core/ - 中核ツール
 継続的に使用される重要なツール群
-- `google_sheets_updater.py` - Google Sheets統合管理
+- `google_sheets_updater.py` - Google Sheets統合管理（詳細: [`docs/google_sheets_reference.md`](../docs/google_sheets_reference.md) を参照）
 - `quality_dashboard.py` - 品質ダッシュボード生成
 - `run_auto_pipeline.py` - 自動パイプライン実行
 - `run_objective_evaluation.py` - 客観的評価実行

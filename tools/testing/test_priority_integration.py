@@ -61,7 +61,7 @@ def test_priority_integration():
         
         if existing_row:
             # 既存レコード更新
-            range_name = f"{sheet_name}!A{existing_row}:V{existing_row}"
+            range_name = f"{sheet_name}!A{existing_row}:W{existing_row}"
             result = updater.service.spreadsheets().values().update(
                 spreadsheetId=updater.spreadsheet_id,
                 range=range_name,
@@ -71,7 +71,7 @@ def test_priority_integration():
             print(f"   ✅ 既存レコード更新完了（行{existing_row}）")
         else:
             # 新規レコード追加
-            range_name = f"{sheet_name}!A:V"
+            range_name = f"{sheet_name}!A:W"
             result = updater.service.spreadsheets().values().append(
                 spreadsheetId=updater.spreadsheet_id,
                 range=range_name,
@@ -138,7 +138,7 @@ def test_priority_integration():
     print("疎通確認結果サマリー")
     print("=" * 60)
     print("✅ 優先度列（B列）正常動作確認")
-    print("✅ 22列データ構造正常動作確認")
+    print("✅ 23列データ構造正常動作確認")
     print("✅ ステータス更新フック正常動作確認")
     print("✅ 品質データ統合正常動作確認")
     print("\n📊 Google Sheetsで確認:")

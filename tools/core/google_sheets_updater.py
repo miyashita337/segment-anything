@@ -642,6 +642,7 @@ def update_from_quality_report(report_path: str, tracker_id: str = "PH2-002"):
     if success:
         logger.info(f"Google Spreadsheet更新完了: {tracker_id}")
         logger.info(f"Spreadsheet URL: https://docs.google.com/spreadsheets/d/10B7JIXPR7AoVHBrLbIG6bvn4wfKha_SradJODwzUHFA/edit")
+        # 詳細: docs/google_sheets_reference.md を参照
     else:
         logger.warning(f"Google Spreadsheet更新に失敗: {tracker_id}")
 
@@ -777,6 +778,7 @@ def main():
             
             print("✅ Google Sheets API接続成功")
             print(f"📊 スプレッドシートURL: https://docs.google.com/spreadsheets/d/{updater.spreadsheet_id}/edit")
+            # 詳細: docs/google_sheets_reference.md を参照
             
             # 統計情報表示
             if args.stats:

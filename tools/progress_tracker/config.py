@@ -13,6 +13,7 @@ def get_default_config() -> ProgressTrackerConfig:
     """デフォルト設定取得"""
     
     # ユーザー指定のスプレッドシートID
+    # 詳細: docs/google_sheets_reference.md を参照
     default_spreadsheet_id = "10B7JIXPR7AoVHBrLbIG6bvn4wfKha_SradJODwzUHFA"
     
     # 環境変数から設定を取得（オーバーライド可能）

@@ -34,6 +34,9 @@ virtual_environment: "必須"
 ```
 
 ### 必須パッケージ
+
+> **詳細**: [`docs/dependency_reference.md`](docs/dependency_reference.md) を参照
+
 ```yaml
 core_packages:
   torch: ">=1.7.0"
@@ -105,6 +108,8 @@ yolo_alternatives:
 ```
 
 ## 📁 ディレクトリ構造
+
+> **詳細**: [`docs/project_structure_reference.md`](docs/project_structure_reference.md) を参照
 
 ### 標準プロジェクト構造
 ```

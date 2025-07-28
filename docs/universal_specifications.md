@@ -1,5 +1,8 @@
 # 普遍的仕様書（変更禁止事項）
 
+**⚠️ 重要**: この情報は [`docs/technical_specifications.md`](technical_specifications.md) に統合されました。  
+**最新情報については**: `docs/technical_specifications.md` を参照してください。
+
 **作成日**: 2025-07-24  
 **重要度**: 最高  
 **変更制限**: このドキュメントの項目は基本的に変更禁止

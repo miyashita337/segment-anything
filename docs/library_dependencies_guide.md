@@ -1,4 +1,8 @@
 # segment-anything complete requirements
+
+**⚠️ 重要**: この情報は [`dependency_reference.md`](dependency_reference.md) に統合されました。  
+**最新情報については**: `docs/dependency_reference.md` を参照してください。
+
 # 核心技術スタック（変更禁止）
 
 # SAM (Segment Anything Model) - Meta AI

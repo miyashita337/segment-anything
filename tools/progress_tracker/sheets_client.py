@@ -283,7 +283,7 @@ class GoogleSheetsClient:
     def append_sheet_values(self, values: List[List[str]]) -> None:
         """シートデータ追加"""
         try:
-            safe_range = self._get_safe_range("A:U")
+            safe_range = self._get_safe_range("A:W")
             
             body = {
                 'values': values
@@ -396,7 +396,7 @@ class GoogleSheetsClient:
     def get_all_tasks(self) -> List[TaskRecord]:
         """全タスク取得"""
         try:
-            values = self.get_sheet_values("A2:U1000")  # ヘッダー行をスキップ（21列）
+            values = self.get_sheet_values("A2:W1000")  # ヘッダー行をスキップ（23列）
             tasks = []
             
             for row in values:
@@ -438,8 +438,8 @@ class GoogleSheetsClient:
                 self.append_sheet_values([task.to_sheets_row()])
                 logger.info(f"新規タスク追加: {task.tracker_id}")
             else:
-                # 既存タスクを更新（21列）
-                range_name = f"A{row_number}:U{row_number}"
+                # 既存タスクを更新（23列）
+                range_name = f"A{row_number}:W{row_number}"
                 self.update_sheet_values(range_name, [task.to_sheets_row()])
                 logger.info(f"タスク更新: {task.tracker_id} (行 {row_number})")
                 
@@ -453,7 +453,7 @@ class GoogleSheetsClient:
             if row_number is None:
                 return None
             
-            range_name = f"A{row_number}:U{row_number}"
+            range_name = f"A{row_number}:W{row_number}"
             values = self.get_sheet_values(range_name)
             
             if values and values[0]:
@@ -467,7 +467,7 @@ class GoogleSheetsClient:
     def initialize_sheet(self) -> None:
         """シート初期化（ヘッダー設定）"""
         try:
-            # ヘッダー行設定（21列：A-U）
+            # ヘッダー行設定（23列：A-W）
             headers = [
                 "トラッカーID",        # A
                 "ステータス",          # B
@@ -492,12 +492,12 @@ class GoogleSheetsClient:
                 "PLE"                  # U
             ]
             
-            # 既存のヘッダーをチェック（21列）
-            existing_values = self.get_sheet_values("A1:U1")
+            # 既存のヘッダーをチェック（23列）
+            existing_values = self.get_sheet_values("A1:W1")
             
             if not existing_values or existing_values[0] != headers:
-                self.update_sheet_values("A1:U1", [headers])
-                logger.info("ヘッダー行設定完了（21列）")
+                self.update_sheet_values("A1:W1", [headers])
+                logger.info("ヘッダー行設定完了（23列）")
             
             # データバリデーション設定
             self.setup_sheet_validation()

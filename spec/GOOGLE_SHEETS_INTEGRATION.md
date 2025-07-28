@@ -1,5 +1,7 @@
 # Google Sheets 自動更新統合仕様
 
+**⚠️ 重要**: 最新のGoogle Sheets情報は [`docs/google_sheets_reference.md`](../docs/google_sheets_reference.md) を参照してください。
+
 ## 概要
 品質チェック、抽出パイプライン、評価システムの結果をGoogle Spreadsheetに自動反映するシステム。
 progress_tracker統合により重複防止と統一データ管理を実現。
@@ -42,7 +44,7 @@ from tools.progress_tracker.config import get_default_config
 from tools.progress_tracker.data_models import MetricsRecord, TaskRecord
 
 config = get_default_config()
-# Spreadsheet ID: 10B7JIXPR7AoVHBrLbIG6bvn4wfKha_SradJODwzUHFA
+# Spreadsheet ID: 詳細は docs/google_sheets_reference.md を参照
 # 認証ファイル: config/google_sheets_auth.json
 ```
 
@@ -53,12 +55,14 @@ config = get_default_config()
   - 新規 → `values().append()`で末尾追加
 - **パフォーマンス最適化**: A列のみ検索で高速化
 
-### シート構造（A-V列）
-- **A列**: トラッカーID（tracker_id）
-- **B列**: 優先度（priority） - 優先度最高/高/中/低
-- **C-F列**: 基本情報（status, created_date, updated_date, description）
-- **G-L列**: コンポーネント別ステータス（動作確認, テストUNIT, 品質評価等）
-- **M-V列**: 10指標（LCA, A/B評価率, FPS, SCI, PLA, PLE等）
+### シート構造（A-W列）
+
+**⚠️ 重要**: 最新の列構成は [`docs/google_sheets_reference.md`](../docs/google_sheets_reference.md) を参照してください。
+
+**現在の構成**: 23列拡張システム（A-W列）
+- **A-G列**: 基本情報（トラッカーID、優先度、ステータス、日付、概要等）
+- **H-M列**: コンポーネント別ステータス（動作確認、テスト、品質評価等）
+- **N-W列**: 10指標（LCA、A/B評価率、FPS、SCI、PLA、PLE等）
 
 ### 更新フック統合箇所
 1. `tools/quality_dashboard.py` - ダッシュボード生成後（実装済み）

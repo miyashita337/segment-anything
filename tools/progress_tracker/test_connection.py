@@ -24,6 +24,7 @@ def test_connection():
         service = build('sheets', 'v4', credentials=credentials)
         
         # スプレッドシート情報取得
+        # 詳細: docs/google_sheets_reference.md を参照
         spreadsheet_id = '10B7JIXPR7AoVHBrLbIG6bvn4wfKha_SradJODwzUHFA'
         
         print("📋 スプレッドシート情報取得中...")

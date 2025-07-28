@@ -19,6 +19,7 @@ from features.evaluation.utils.face_detection import filter_non_character_masks
 from features.evaluation.utils.mask_quality_validator import validate_and_improve_mask
 from features.evaluation.utils.non_character_filter import apply_non_character_filter
 from features.processing.postprocessing.postprocessing import calculate_mask_quality_metrics
+from features.processing.postprocessing.auto_mask_correction import create_auto_mask_corrector
 from features.processing.preprocessing.boundary_enhancer import BoundaryEnhancer
 from features.processing.preprocessing.preprocessing import preprocess_image_pipeline
 from pathlib import Path
@@ -331,6 +332,31 @@ def process_single_image(
                     if verbose:
                         click.echo(f'⚠️ フォールバック処理もエラー（元マスク使用）: {fallback_e}')
                     # エラー時は元のマスクを継続使用
+            
+            # P1-005: 自動マスク修正機能を適用
+            try:
+                auto_corrector = create_auto_mask_corrector(quality_focused=True)
+                correction_result = auto_corrector.correct_mask_automatically(
+                    mask, enhanced_bgr, quality_score=quality_score if 'quality_score' in locals() else None
+                )
+                
+                if correction_result['processing_success']:
+                    corrected_mask = correction_result['corrected_mask']
+                    improvement_ratio = correction_result['improvement_ratio']
+                    
+                    # 改善が見られた場合のみ適用
+                    if improvement_ratio > 0.1:  # 10%以上の改善
+                        mask = corrected_mask
+                        if verbose:
+                            click.echo(f'🔧 自動マスク修正適用: 改善率 {improvement_ratio:.2%}')
+                            for log_entry in correction_result['correction_log']:
+                                click.echo(f'   - {log_entry}')
+                    elif verbose:
+                        click.echo(f'ℹ️ 自動マスク修正: 改善効果が低いためスキップ ({improvement_ratio:.2%})')
+                
+            except Exception as correction_e:
+                if verbose:
+                    click.echo(f'⚠️ 自動マスク修正エラー（元マスク使用）: {correction_e}')
             
             # Skip quality check for testing and save directly
             try:

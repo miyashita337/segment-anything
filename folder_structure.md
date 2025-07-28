@@ -1,5 +1,8 @@
 # 📁 プロジェクト構成分析レポート
 
+**⚠️ 重要**: この情報は [`docs/project_structure_reference.md`](docs/project_structure_reference.md) に統合されました。  
+**最新情報については**: `docs/project_structure_reference.md` を参照してください。
+
 **生成日時**: 2025-07-26  
 **分析対象**: segment-anything プロジェクト  
 **総ファイル数**: 383 個 (git 追跡ファイル + 生成ファイル)

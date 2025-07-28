@@ -6,7 +6,8 @@
 
 ## 📊 Google Sheetsアクセス
 
-**メインスプレッドシート**: [Progress Tracker](https://docs.google.com/spreadsheets/d/10B7JIXPR7AoVHBrLbIG6bvn4wfKha_SradJODwzUHFA/edit?gid=0#gid=0)
+**メインスプレッドシート**: [Progress Tracker](https://docs.google.com/spreadsheets/d/10B7JIXPR7AoVHBrLbIG6bvn4wfKha_SradJODwzUHFA/edit?gid=0#gid=0)  
+**詳細**: `docs/google_sheets_reference.md` を参照
 
 **用途**: PROGRESS_TRACKER.mdの機能をGoogle Sheetsに完全移行し、Claude Codeによる自動更新とリアルタイム進捗管理を実現
 
@@ -46,7 +47,7 @@ Claude Codeによる**自動進捗更新**と**リアルタイム可視化**に�
 3. **完全履歴管理**: 全ての変更履歴とタイムスタンプ記録
 4. **マルチアクセス対応**: 複数環境からの同時アクセス可能
 
-### 22列管理システム（A-V列）
+### 23列管理システム（A-W列）
 ```mermaid
 graph TD
     A[Google Sheets進捗管理] --> B[基本情報<br/>A-F列]

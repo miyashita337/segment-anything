@@ -59,6 +59,7 @@ class GoogleSheetsDemo:
     def __init__(self):
         """サンプルデータで初期化"""
         self.spreadsheet_url = "https://docs.google.com/spreadsheets/d/10B7JIXPR7AoVHBrLbIG6bvn4wfKha_SradJODwzUHFA/edit"
+        # 詳細: docs/google_sheets_reference.md を参照
         self.sample_tasks = self._create_sample_data()
         
         print("📊 Google Sheetsデモモード")
