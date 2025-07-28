@@ -11,6 +11,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.6.0] - 2025-07-28
+
+### Added
+- **P1-A003 自動テスト強化システム**: 品質劣化の事前検出機能を実装
+  - 3段階テストモード (quick/standard/full)
+  - 継続監視システムによる24時間365日監視
+  - 品質劣化検出メカニズム
+  - 自動ダッシュボード生成機能
+  - ベースライン比較による品質トレンド分析
+- **P1-A001 改善コード復旧プロジェクト**: 15個の改善機能を本番環境に復旧
+  - true_success_analyzer.py: 真の成功分析システム
+  - visual_verification_system.py: 視覚的検証システム
+  - kana08_enhanced_stable_batch.py: 拡張バッチ処理
+  - その他12個の改善機能
+- **ツール階層化**: tools/ ディレクトリの大規模リファクタリング
+  - core/: 中核機能
+  - batch/: バッチ処理
+  - scripts/: 実行スクリプト
+  - testing/: テストツール
+  - utils/: ユーティリティ
+  - legacy/: レガシーコード
+
+### Changed
+- **ワークスペース構造**: PROGRESS_TRACKER.md準拠の正しいパスに修正
+  - 誤: `/mnt/c/AItools/segment-anything/workspace/`
+  - 正: `/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace/`
+- **tools/ ディレクトリ構造**: 機能別に整理・分類
+  - 34個のファイルを適切なサブディレクトリに移動
+  - 実行順序・依存関係の明確化
+
+### Fixed
+- **P1-A003 ワークスペースパス問題**: 4回の指摘後に正しいパスに修正
+- **品質評価精度**: A/B評価率の正確な計算と表示
+- **Google Sheets連携**: ステータス更新と品質指標の同期
+
+### Technical
+- **テストカバレッジ**: 新規ユニットテスト追加
+  - test_automated_quality_testing.py (9テスト)
+  - test_p1_a001_recovery.py (15機能検証)
+- **継続的品質監視**: monitoring_config.json による設定管理
+- **成功率改善**: P1-A001で100%成功率達成（15/15機能）
+
+### Security
+- **廃止ファイル管理**: 重要ファイルをdeprecated/tools_archive/に安全保管
+- **ファイル保護チェックリスト**: file_protection_checklist.py による重要度分類
+
+この大規模な品質改善により、自動テスト強化と改善コード復旧の基盤が確立されました。
+
 ## [v0.2.0] - 2025-07-27
 
 ### Added
