@@ -11,6 +11,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.7.0] - 2025-07-29
+
+### Added
+- **ワークスペースパス一元管理システム**: 全パス設定を`config/workspace_config.py`で統合管理
+  - 環境変数`TRACKER_WORKSPACE_BASE`による動的設定変更対応
+  - 3つの主要ファイル統合（output_path_manager.py, validate_tracker_completion.py, run_quality_workflow.sh）
+  - バリデーション・設定確認機能付き
+- **P1-005自動マスク修正機能**: `features/processing/postprocessing/auto_mask_correction.py`実装
+  - 適応的マスク拡張による品質改善
+  - エッジ保持フィルタリングシステム
+  - 手足切断防止処理
+- **ドキュメント統一リファレンス化**: 技術文書の体系的整理
+  - `docs/technical_specifications.md` - 統合技術仕様書
+  - `docs/dependency_reference.md` - 依存関係リファレンス
+  - `docs/project_structure_reference.md` - プロジェクト構造ガイド
+  - `docs/github_actions_reference.md` - GitHub Actions統合文書
+- **トラッカー完了検証システム**: `tools/utils/validate_tracker_completion.py`
+  - 4回目仕様違反の恒久対策として実装
+  - ワークスペース構造・抽出結果・品質レポート・ダッシュボードの包括検証
+  - A-F評価での総合判定システム
+
+### Changed
+- **CLAUDE.md大幅強化**: トラッカーワークフロー必須要件の明文化
+  - シリアル処理要件（パラレル実装禁止）の徹底
+  - 入力検証強化（存在しないディレクトリでの強制実行防止）
+  - チェックボックス式完了判定基準の導入
+  - 禁止表現リスト（ワークスペース出力完了まで使用禁止）
+- **ワークスペースパス標準化**: ハードコードされたパスを全面的に統合
+  - `/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace/` → `/mnt/c/AItools/lora/train/yado/tracker-workspace/`
+  - パス変更時の影響範囲を1箇所に集約
+
+### Fixed
+- **P1-007完了検証問題**: 空の抽出ディレクトリとダッシュボードグラフ未生成問題を解決
+  - 正しい入力パス（`/mnt/c/AItools/lora/train/yado/org/kana05`）での抽出実行
+  - 39枚の画像を正常に処理し、完全なワークスペース出力を生成
+- **入力検証の欠如**: 存在しないディレクトリでの強制実行を防止
+  - `features/common/input_validation.py`による統一検証システム
+  - 詳細なエラーメッセージと対処方法の提示
+
+### Technical
+- **設定管理の近代化**: 環境変数ベースの柔軟な設定システム
+- **品質保証ワークフローの自動化**: シェルスクリプトでのPython設定統合
+- **テストスイート拡張**: 新機能に対応した単体テスト追加
+- **ドキュメント構造最適化**: 重複排除と参照性向上
+
+### Security
+- **設定ファイル一元化**: 散在していたパス設定による設定ミス防止
+- **入力検証強化**: 不正なパスでの処理実行を防止
+
+この包括的な改善により、トラッカーワークフローの品質保証が大幅に向上し、設定管理の運用性が改善されました。
+
 ## [v0.6.0] - 2025-07-28
 
 ### Added
