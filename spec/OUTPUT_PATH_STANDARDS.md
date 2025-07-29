@@ -73,7 +73,7 @@ output_file = ensure_compliant_output(
 #### パターンB: 仕様準拠の直接実装（許容）
 ```python
 # 仕様書準拠の最低限実装
-WORKSPACE_BASE = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace")
+WORKSPACE_BASE = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/workspace")
 
 def get_tracker_output_path(tracker_id: str, category: str, filename: str = None) -> Path:
     """仕様準拠の出力パス生成"""
@@ -94,7 +94,7 @@ output_dir.mkdir(parents=True, exist_ok=True)
 
 ### ワークスペース基本構造
 ```
-/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace/
+/mnt/c/AItools/lora/train/yado/tracker-workspace/workspace/
 ├── {tracker_id}/                 # 例: PH2-002, baseline
 │   ├── dashboard/               # HTMLダッシュボード、可視化
 │   ├── extraction/              # 抽出結果画像
@@ -171,7 +171,7 @@ compliance = manager.validate_compliance()
 assert compliance["compliant"], f"Issues: {compliance['issues']}"
 
 # パス確認
-expected_base = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace")
+expected_base = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/workspace")
 assert output_path.is_relative_to(expected_base), "Path not in workspace"
 ```
 
@@ -220,7 +220,7 @@ logger = logging.getLogger(__name__)
 
 def validate_output_location(output_path: Path):
     """出力先検証"""
-    workspace_base = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace")
+    workspace_base = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/workspace")
     if not output_path.is_relative_to(workspace_base):
         logger.error(f"⚠️ Non-compliant output path: {output_path}")
         # アラート送信等

@@ -10,6 +10,11 @@ from typing import Optional, Dict, Any, List
 from dataclasses import dataclass
 from enum import Enum
 import logging
+import sys
+
+# config モジュールのパスを追加
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+from config.workspace_config import WorkspaceConfig
 
 logger = logging.getLogger(__name__)
 
@@ -55,8 +60,10 @@ class WorkspaceStructure:
 class OutputPathManager:
     """標準出力パス管理クラス"""
     
-    # 仕様書準拠のベースパス
-    WORKSPACE_BASE = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace")
+    # config から動的に取得（ハードコード廃止）
+    @property
+    def WORKSPACE_BASE(self) -> Path:
+        return WorkspaceConfig.get_workspace_root()
     
     def __init__(self, tracker_id: str, base_path: Optional[Path] = None):
         """
@@ -241,7 +248,7 @@ class OutputPathManager:
         Returns:
             発見されたトラッカーID一覧
         """
-        search_path = base_path or cls.WORKSPACE_BASE
+        search_path = base_path or WorkspaceConfig.get_workspace_root()
         trackers = []
         
         if search_path.exists():

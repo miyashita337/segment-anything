@@ -39,6 +39,16 @@ import urllib.request
 import psutil
 import gc
 
+# 入力検証共通モジュール
+sys.path.append(str(Path(__file__).parent.parent.parent))
+from features.common.input_validation import (
+    validate_input_directory, 
+    validate_output_directory,
+    check_input_dir_with_images,
+    InputValidationError,
+    log_validation_summary
+)
+
 # SAM関連インポート
 from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
 from segment_anything.utils.amg import batched_mask_to_box
@@ -2453,6 +2463,22 @@ if __name__ == "__main__":
         args.anime_yolo = True  # 漫画用にアニメモード有効
     
     try:
+        # 基本的な入力検証
+        if args.mode in ["batch", "choice", "reproduce-auto"] and args.input_dir:
+            try:
+                validate_input_directory(args.input_dir, f"{args.mode}モード用入力ディレクトリ")
+            except InputValidationError as e:
+                print(f"\n{e}")
+                sys.exit(1)
+        
+        if args.mode == "interactive" and args.input:
+            try:
+                from features.common.input_validation import validate_input_file
+                validate_input_file(args.input, "interactiveモード用入力画像")
+            except InputValidationError as e:
+                print(f"\n{e}")
+                sys.exit(1)
+        
         # セグメンター初期化
         segmentor = SAMYOLOCharacterSegmentor(
             sam_checkpoint=args.sam_checkpoint,
@@ -2465,14 +2491,36 @@ if __name__ == "__main__":
         )
         
         if args.mode == "reproduce-auto":
-            # 再現自動抽出モード
-            if not os.path.exists(args.input_dir):
-                print(f"エラー: 入力ディレクトリが見つかりません: {args.input_dir}")
+            # 再現自動抽出モード - 入力検証強化
+            try:
+                # 入力ディレクトリ検証（画像ファイル存在チェック込み）
+                input_path = check_input_dir_with_images(args.input_dir, min_images=1)
+                
+                # 出力ディレクトリ検証・作成
+                output_path = validate_output_directory(args.output_dir, "抽出結果出力ディレクトリ")
+                
+                # 検証結果ログ
+                log_validation_summary([input_path], [output_path], "SAM+YOLO キャラクター抽出")
+                
+                segmentor.process_reproduce_auto_mode(str(input_path), str(output_path))
+                print("🎉 再現自動抽出が完了しました！")
+                sys.exit(0)  # 正常終了
+                
+            except InputValidationError as e:
+                print(f"\n{e}")
                 sys.exit(1)
-            
-            segmentor.process_reproduce_auto_mode(args.input_dir, args.output_dir)
-            print("🎉 再現自動抽出が完了しました！")
-            sys.exit(0)  # 正常終了
+        
+        elif args.mode in ["interactive", "batch", "choice"]:
+            # 未実装モードのエラーメッセージ
+            print(f"""❌ エラー: {args.mode}モードは現在未実装です
+   
+🔧 対処方法:
+   1. 現在利用可能: --mode reproduce-auto
+   2. 再現自動抽出の実行例:
+      python {__file__} --mode reproduce-auto --input_dir 入力ディレクトリ --output_dir 出力ディレクトリ
+   
+⚠️ 注意: このスクリプトは現在reproduce-autoモードのみサポートしています""")
+            sys.exit(1)
     
     except KeyboardInterrupt:
         print("\n処理が中断されました")

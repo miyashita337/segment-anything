@@ -5,8 +5,18 @@ Phase 1抽出結果から統合品質チェッカー用のJSONレポートを生
 
 import json
 import os
+import sys
 from datetime import datetime
 from pathlib import Path
+
+# 入力検証共通モジュール
+sys.path.append(str(Path(__file__).parent))
+from features.common.input_validation import (
+    validate_input_directory,
+    validate_output_directory,
+    InputValidationError,
+    log_validation_summary
+)
 
 
 def create_extraction_report_from_images(image_dir, output_path):
@@ -16,12 +26,43 @@ def create_extraction_report_from_images(image_dir, output_path):
     Args:
         image_dir (str): 抽出画像ディレクトリパス
         output_path (str): 出力JSONパス
+        
+    Returns:
+        bool: 成功時True、失敗時False
+        
+    Raises:
+        InputValidationError: 入力検証エラー時
     """
-    image_dir = Path(image_dir)
+    try:
+        # 入力ディレクトリ検証
+        validated_image_dir = validate_input_directory(image_dir, "抽出画像ディレクトリ")
+        
+        # 出力ディレクトリ検証・作成
+        output_path_obj = Path(output_path)
+        output_dir = validate_output_directory(output_path_obj.parent, "レポート出力ディレクトリ")
+        
+        # 検証結果ログ
+        log_validation_summary([validated_image_dir], [output_dir], "Phase 1抽出レポート生成")
+        
+    except InputValidationError as e:
+        print(f"\n{e}")
+        return False
+    
+    # 画像ファイル検索
+    image_dir = validated_image_dir
     extracted_images = list(image_dir.glob("*.jpg")) + list(image_dir.glob("*_extracted.jpg"))
     
     if not extracted_images:
-        print(f"抽出画像が見つかりません: {image_dir}")
+        error_msg = f"""❌ エラー: 抽出画像が見つかりません
+   パス: {image_dir}
+   
+🔧 対処方法:
+   1. ディレクトリ内容確認: ls {image_dir}
+   2. サポート形式: *.jpg, *_extracted.jpg
+   3. 抽出処理が完了しているか確認
+   
+⚠️ 注意: 空のディレクトリでのレポート生成は不可能です"""
+        print(error_msg)
         return False
     
     # 統合品質チェッカーが期待する構造に合わせて修正
@@ -132,15 +173,28 @@ def create_extraction_report_from_images(image_dir, output_path):
     return True
 
 if __name__ == "__main__":
-    import sys
-    
     if len(sys.argv) != 3:
-        print("使用法: python create_phase1_extraction_report.py <画像ディレクトリ> <出力JSONパス>")
+        print("""使用法: python create_phase1_extraction_report.py <画像ディレクトリ> <出力JSONパス>
+
+例:
+    python create_phase1_extraction_report.py ./extraction_results/ ./reports/extraction_report.json
+    
+説明:
+    Phase 1抽出結果から統合品質チェッカー用のJSONレポートを生成します。
+    入力ディレクトリには *.jpg または *_extracted.jpg ファイルが必要です。""")
         sys.exit(1)
     
     image_dir = sys.argv[1]
     output_path = sys.argv[2]
     
-    success = create_extraction_report_from_images(image_dir, output_path)
-    if not success:
+    print("🔄 Phase 1抽出レポート生成開始")
+    print(f"📥 入力ディレクトリ: {image_dir}")
+    print(f"📤 出力ファイル: {output_path}")
+    
+    try:
+        success = create_extraction_report_from_images(image_dir, output_path)
+        if not success:
+            sys.exit(1)
+    except Exception as e:
+        print(f"❌ 予期しないエラー: {e}")
         sys.exit(1)

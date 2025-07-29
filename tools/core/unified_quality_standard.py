@@ -129,7 +129,7 @@ class UnifiedQualityStandardSystem:
         self.project_root = project_root
         
         # PROGRESS_TRACKER.md準拠の正しいパス
-        self.workspace_root = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace")
+        self.workspace_root = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/workspace")
         self.workspace_dir = self.workspace_root / "P1-A002"
         self.workspace_dir.mkdir(parents=True, exist_ok=True)
         

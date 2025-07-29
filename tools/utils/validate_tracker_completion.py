@@ -10,6 +10,10 @@ from typing import Dict, List, Tuple, Optional
 import json
 import logging
 
+# config モジュールのパスを追加
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+from config.workspace_config import WorkspaceConfig
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -17,7 +21,9 @@ logger = logging.getLogger(__name__)
 class TrackerCompletionValidator:
     """トラッカー完了検証クラス"""
     
-    WORKSPACE_BASE = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace")
+    @property
+    def WORKSPACE_BASE(self) -> Path:
+        return WorkspaceConfig.get_workspace_root()
     
     REQUIRED_DIRECTORIES = [
         "extraction",

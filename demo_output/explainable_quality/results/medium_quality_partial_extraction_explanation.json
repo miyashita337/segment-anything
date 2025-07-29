@@ -1,0 +1,64 @@
+{
+  "item_id": "medium_quality_partial_extraction",
+  "overall_score": 0.6643333333333333,
+  "overall_grade": "D",
+  "factors": [
+    {
+      "name": "マスクカバレッジ",
+      "value": 0.68,
+      "importance": 0.8,
+      "description": "抽出マスクが対象物をどの程度カバーしているかを示します（0.680）",
+      "improvement_suggestion": "マスクの境界を調整し、対象物の完全な輪郭を確保してください",
+      "visual_indicators": []
+    },
+    {
+      "name": "エッジ精度",
+      "value": 0.55,
+      "importance": 0.7,
+      "description": "マスクの境界線が実際のオブジェクトエッジとどの程度一致しているかを示します（0.550）",
+      "improvement_suggestion": "セグメンテーション閾値を調整し、より正確な境界抽出を行ってください",
+      "visual_indicators": []
+    },
+    {
+      "name": "画像明瞭性",
+      "value": 0.72,
+      "importance": 0.6,
+      "description": "抽出された領域の画像品質（明度・コントラスト）を示します（0.720）",
+      "improvement_suggestion": "画像の明度調整やコントラスト向上を検討してください",
+      "visual_indicators": []
+    },
+    {
+      "name": "サイズ妥当性",
+      "value": 0.64,
+      "importance": 0.5,
+      "description": "抽出されたオブジェクトのサイズが適切かどうかを示します（0.640）",
+      "improvement_suggestion": "検出感度を調整し、適切なサイズのオブジェクトを抽出してください",
+      "visual_indicators": []
+    },
+    {
+      "name": "位置妥当性",
+      "value": 0.78,
+      "importance": 0.4,
+      "description": "抽出されたオブジェクトの位置が適切かどうかを示します（0.780）",
+      "improvement_suggestion": "構図や画像のトリミングを調整してください",
+      "visual_indicators": []
+    }
+  ],
+  "explanations": {
+    "overall": "総合品質は中程度品質（スコア: 0.664, グレード: D）です。一部の品質要因に改善の余地があります。",
+    "マスクカバレッジ": "第1位の重要要因: マスクカバレッジ\n• 品質スコア: 0.680 (中品質)\n• 重要度: 0.800 (高影響)\n• 説明: 抽出マスクが対象物をどの程度カバーしているかを示します（0.680）\n• 改善提案: マスクの境界を調整し、対象物の完全な輪郭を確保してください",
+    "エッジ精度": "第2位の重要要因: エッジ精度\n• 品質スコア: 0.550 (中品質)\n• 重要度: 0.700 (中影響)\n• 説明: マスクの境界線が実際のオブジェクトエッジとどの程度一致しているかを示します（0.550）\n• 改善提案: セグメンテーション閾値を調整し、より正確な境界抽出を行ってください",
+    "画像明瞭性": "第3位の重要要因: 画像明瞭性\n• 品質スコア: 0.720 (高品質)\n• 重要度: 0.600 (中影響)\n• 説明: 抽出された領域の画像品質（明度・コントラスト）を示します（0.720）\n• 改善提案: 画像の明度調整やコントラスト向上を検討してください",
+    "サイズ妥当性": "第4位の重要要因: サイズ妥当性\n• 品質スコア: 0.640 (中品質)\n• 重要度: 0.500 (中影響)\n• 説明: 抽出されたオブジェクトのサイズが適切かどうかを示します（0.640）\n• 改善提案: 検出感度を調整し、適切なサイズのオブジェクトを抽出してください",
+    "位置妥当性": "第5位の重要要因: 位置妥当性\n• 品質スコア: 0.780 (高品質)\n• 重要度: 0.400 (低影響)\n• 説明: 抽出されたオブジェクトの位置が適切かどうかを示します（0.780）\n• 改善提案: 構図や画像のトリミングを調整してください",
+    "confidence": "評価の信頼性: 中程度（0.661）\\n評価結果には一定の信頼性がありますが、追加の検証を推奨します。\\n\\n信頼性の高い要因: なし"
+  },
+  "visual_paths": {
+    "breakdown_chart": "demo_output/explainable_quality/visuals/medium_quality_partial_extraction_quality_breakdown.png",
+    "image_annotation": "demo_output/explainable_quality/visuals/medium_quality_partial_extraction_image_annotation.png"
+  },
+  "recommendations": [
+    "✅ 現在の品質は良好です。定期的な監視を継続してください。"
+  ],
+  "confidence": 0.6613218407883725
+}

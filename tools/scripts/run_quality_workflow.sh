@@ -5,7 +5,21 @@
 set -e  # エラー時に停止
 
 TRACKER_ID=$1
-WORKSPACE_BASE="/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace"
+
+# config から動的にワークスペースパス取得
+WORKSPACE_CONFIG_OUTPUT=$(python3 -c "
+import sys
+sys.path.insert(0, '$(dirname "$0")/../..')
+from config.workspace_config import WorkspaceConfig
+env_vars = WorkspaceConfig.export_environment_variables()
+for key, value in env_vars.items():
+    print(f'{key}=\"{value}\"')
+")
+
+# 環境変数設定
+eval "$WORKSPACE_CONFIG_OUTPUT"
+
+WORKSPACE_BASE="$TRACKER_WORKSPACE_ROOT"
 OUTPUT_DIR="${WORKSPACE_BASE}/${TRACKER_ID}"
 
 # 引数チェック
@@ -29,6 +43,13 @@ fi
 echo "🔄 品質保証ワークフロー開始: ${TRACKER_ID}"
 echo "📁 出力ディレクトリ: ${OUTPUT_DIR}"
 
+# ワークスペース確認リマインダー
+echo ""
+echo "🔔 リマインダー: ${TRACKER_ID} のワークスペース出力確認"
+echo "📍 確認場所: ${WORKSPACE_BASE}/${TRACKER_ID}/"
+echo "📋 必須ディレクトリ: extraction/, quality/, dashboard/, tests/"
+echo ""
+
 # 1. ワークスペース準備
 echo "📂 ワークスペース準備中..."
 mkdir -p "${OUTPUT_DIR}"/{extraction,quality,dashboard,tests}
@@ -51,14 +72,38 @@ if [ "$SKIP_EXTRACTION" = false ]; then
     echo "🚀 抽出パイプライン開始（バックグラウンド実行）"
     echo "⚠️  Windows ハングアップ防止のため、バックグラウンド実行します"
     
-    # kana05の10枚を使用（Phase 1と同じデータセット）
-    INPUT_DIR="/mnt/c/AItools/segment-anything/test_sample_kana05"
+    # kana05の39枚を使用（Phase 1と同じデータセット）
+    INPUT_DIR="/mnt/c/AItools/lora/train/yado/org/kana05"
     
+    # 入力ディレクトリ存在チェック強化
     if [ ! -d "$INPUT_DIR" ]; then
-        echo "❌ エラー: 入力ディレクトリが見つかりません: $INPUT_DIR"
-        echo "入力画像を準備してください"
+        echo "❌ エラー: 入力ディレクトリが存在しません"
+        echo "   パス: $INPUT_DIR"
+        echo ""
+        echo "🔧 対処方法:"
+        echo "   1. パスの確認: ls $(dirname "$INPUT_DIR")"
+        echo "   2. 正しいパスの指定"
+        echo "   3. 必要に応じてディレクトリ作成"
+        echo ""
+        echo "⚠️ 注意: 存在しないパスでの強制実行は品質保証違反です"
         exit 1
     fi
+    
+    # 画像ファイル存在チェック
+    IMAGE_COUNT=$(find "$INPUT_DIR" -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" | wc -l)
+    if [ "$IMAGE_COUNT" -eq 0 ]; then
+        echo "❌ エラー: 入力ディレクトリに画像ファイルが見つかりません"
+        echo "   パス: $INPUT_DIR"
+        echo "   サポート形式: jpg, jpeg, png"
+        echo ""
+        echo "🔧 対処方法:"
+        echo "   1. ディレクトリ内容確認: ls $INPUT_DIR"
+        echo "   2. サポートされている画像形式で画像を配置"
+        echo "   3. ファイル名・拡張子の確認"
+        exit 1
+    fi
+    
+    echo "✅ 入力検証完了: $IMAGE_COUNT 枚の画像を検出"
     
     EXTRACTION_LOG="${OUTPUT_DIR}/${TRACKER_ID}_extraction.log"
     
@@ -171,11 +216,13 @@ $([ -f "${OUTPUT_DIR}/improvement_report.json" ] && echo "✅ 改善効果測定
 - テスト結果: ${OUTPUT_DIR}/tests/
 $([ -f "${OUTPUT_DIR}/improvement_report.json" ] && echo "- 改善レポート: ${OUTPUT_DIR}/improvement_report.json")
 
-📊 次のステップ
+📊 次のステップ（シリアル処理必須）
 1. ダッシュボードで品質確認: file://${OUTPUT_DIR}/dashboard/dashboard.html
 2. 実装完了報告テンプレートの記入
 3. 品質劣化がないことを確認
-4. git commit（品質確認後のみ）
+4. Google Sheetsステータス更新（"/release"）
+5. git commit（品質確認後のみ）
+6. ✅ 次のトラッカーは現在のトラッカーが/releaseになってから開始すること
 
 EOF
 
@@ -185,6 +232,12 @@ echo "📋 実行サマリー: $SUMMARY_FILE"
 echo ""
 echo "🔗 ダッシュボード: file://${OUTPUT_DIR}/dashboard/dashboard.html"
 echo ""
+echo "🔄 シリアル処理確認:"
+echo "   1. 本トラッカー(${TRACKER_ID})の品質確認完了後"
+echo "   2. Google Sheetsで '/release' ステータス更新"
+echo "   3. 次のトラッカー開始可能"
+echo ""
+echo "⚠️ 重要: パラレル実装は品質保証違反です！"
 
 # Windows通知（オプション）
 if command -v windows-notify >/dev/null 2>&1; then

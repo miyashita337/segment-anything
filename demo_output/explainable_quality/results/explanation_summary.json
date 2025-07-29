@@ -1,0 +1,13 @@
+{
+  "total_evaluations": 4,
+  "average_score": 0.5735833333333333,
+  "average_confidence": 0.649087439964821,
+  "grade_distribution": {
+    "A": 0,
+    "B": 1,
+    "C": 0,
+    "D": 1,
+    "E": 1,
+    "F": 1
+  }
+}

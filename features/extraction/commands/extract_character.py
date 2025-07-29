@@ -22,6 +22,8 @@ from features.processing.postprocessing.postprocessing import calculate_mask_qua
 from features.processing.postprocessing.auto_mask_correction import create_auto_mask_corrector
 from features.processing.preprocessing.boundary_enhancer import BoundaryEnhancer
 from features.processing.preprocessing.preprocessing import preprocess_image_pipeline
+from features.common.retry_handler import image_retry_handler
+from features.common.memory_optimizer import BatchMemoryManager, optimize_for_large_dataset
 from pathlib import Path
 from PIL import Image
 from typing import Any, Optional, Tuple
@@ -103,6 +105,11 @@ def extract_character(
         if verbose:
             click.echo(f"🚀 バッチ処理開始: {total_images}枚の画像を処理します...")
 
+        # メモリ管理初期化
+        memory_manager = BatchMemoryManager()
+        if verbose:
+            click.echo("💾 バッチメモリ管理システム初期化完了")
+
         # Google Sheets: 抽出開始状態更新
         if GOOGLE_SHEETS_HOOK_AVAILABLE:
             try:
@@ -122,7 +129,9 @@ def extract_character(
                 if verbose:
                     click.echo(f"📝 処理中: {img_path.name}")
                 
-                mask = process_single_image(
+                # メモリ効率的な処理実行
+                mask = memory_manager.process_batch_item(
+                    process_single_image,
                     img_path,
                     output_path_single,
                     sam_model,
@@ -162,6 +171,17 @@ def extract_character(
         click.echo(f"\n🎯 バッチ処理完了!")
         click.echo(f"📊 結果: {success_count}/{total_images}枚成功 ({success_rate:.1f}%)")
         click.echo(f"⏱️ 処理時間: {batch_processing_time:.1f}秒")
+        
+        # メモリ統計表示
+        if verbose:
+            memory_stats = memory_manager.get_memory_stats()
+            current_memory = memory_stats['current_memory']
+            click.echo(f"💾 メモリ統計: RAM {current_memory['ram_mb']:.1f}MB")
+            if 'gpu_allocated_mb' in current_memory:
+                click.echo(f"    GPU {current_memory['gpu_allocated_mb']:.1f}MB使用")
+            opt_stats = memory_stats['optimization_stats']
+            click.echo(f"    最適化実行: GC {opt_stats['gc_calls']}回, "
+                      f"キャッシュクリア {opt_stats['cache_clears']}回")
         
         # Google Sheets: 抽出完了状態更新
         if GOOGLE_SHEETS_HOOK_AVAILABLE:
@@ -223,6 +243,8 @@ def extract_character(
             verbose
         )
 
+@optimize_for_large_dataset
+@image_retry_handler.retry
 def process_single_image(
     input_path: Path,
     output_path: Path,
@@ -378,6 +400,7 @@ def process_single_image(
             click.echo(f'Error processing {input_path}: {str(e)}')
         return None
 
+@image_retry_handler.retry
 def generate_character_mask(image: ImageType, sam_model: Any, yolo_model: Any, quality_method: str = 'balanced') -> Optional[MaskType]:
     """Generate character mask using SAM and YOLO models with enhanced quality evaluation.
     
