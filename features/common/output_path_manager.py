@@ -4,13 +4,13 @@
 仕様書準拠の出力パス生成と検証機能を提供
 """
 
+import logging
 import os
-from pathlib import Path
-from typing import Optional, Dict, Any, List
+import sys
 from dataclasses import dataclass
 from enum import Enum
-import logging
-import sys
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # config モジュールのパスを追加
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -44,17 +44,21 @@ class WorkspaceStructure:
             raise ValueError(f"Invalid tracker_id format: {self.tracker_id}")
     
     def _validate_tracker_id(self, tracker_id: str) -> bool:
-        """トラッカーID形式検証"""
-        # 基本パターン: PH1-001, PH2-002, baseline, 等
-        valid_patterns = [
-            tracker_id.startswith("PH"),  # PHで始まる
-            tracker_id == "baseline",
-            tracker_id == "backup",
-            tracker_id == "AUDIT",  # 監査用特別ID
-            tracker_id == "TEST",   # テスト用特別ID
-            "-" in tracker_id or tracker_id in ["baseline", "backup", "AUDIT", "TEST"]
-        ]
-        return any(valid_patterns)
+        """トラッカーID形式検証 - Google Sheets A列の全フォーマットをサポート"""
+        # Google Sheets A列で管理される全フォーマットをサポート:
+        # P1-XXX, PH2-XXX, T-XXX, BAT-XXX, CLAUDE-OPT-XXX, P1-A002-1, P1-B001 等
+        if not tracker_id or not isinstance(tracker_id, str):
+            return False
+        
+        # 特別なID（システム用）
+        special_ids = ["baseline", "backup", "AUDIT", "TEST"]
+        if tracker_id in special_ids:
+            return True
+        
+        # 基本形式チェック: 英数字、ハイフン、アンダースコアのみ許可
+        import re
+        pattern = r'^[A-Z0-9\-_]+$'
+        return bool(re.match(pattern, tracker_id))
 
 
 class OutputPathManager:

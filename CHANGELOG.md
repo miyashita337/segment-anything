@@ -150,7 +150,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SCI値を 0.400 から 0.853 に修正
 
 ### Added
-- トラッカーID形式 (PH{Phase}-{3桁}) による品質保証ワークフローシステム
+- 柔軟なトラッカーID形式による品質保証ワークフローシステム (P1-XXX, PH2-XXX, T-XXX, BAT-XXX, CLAUDE-OPT-XXX等のGoogle Sheets A列フォーマット全対応)
 - ファイル保護チェックリストツール (`tools/file_protection_checklist.py`)
 - 自動品質ワークフロースクリプト (`tools/run_quality_workflow.sh`)
 - 出力ディレクトリ設定ドキュメント (`docs/workflows/output_directory_config.md`)
@@ -177,7 +177,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Corrected SCI value from 0.400 to 0.853
 
 ### Added
-- Comprehensive quality assurance workflow system with tracker ID format (PH{Phase}-{3-digit})
+- Comprehensive quality assurance workflow system with flexible tracker ID format (supports P1-XXX, PH2-XXX, T-XXX, BAT-XXX, CLAUDE-OPT-XXX and all Google Sheets A column formats)
 - File protection checklist tool (`tools/file_protection_checklist.py`)
 - Automated quality workflow script (`tools/run_quality_workflow.sh`)
 - Output directory configuration documentation (`docs/workflows/output_directory_config.md`)
