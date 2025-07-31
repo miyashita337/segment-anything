@@ -3,16 +3,17 @@
 大規模データセット対応のためのメモリ効率化
 """
 
+import numpy as np
+import torch
+
 import gc
 import logging
 import psutil
-import torch
-import numpy as np
-from typing import Optional, Dict, Any, List, Callable, Union
-from functools import wraps
-from contextlib import contextmanager
 import threading
 import time
+from contextlib import contextmanager
+from functools import wraps
+from typing import Any, Callable, Dict, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -200,11 +201,25 @@ class BatchMemoryManager:
         self.processed_items = 0
         self.optimization_interval = 10  # 10アイテムごとに最適化
         
+        # P1-015: 大規模データセット対応機能
+        self.large_dataset_mode = False
+        self.adaptive_batch_size = True
+        self.current_batch_size = 1
+        self.max_batch_size = 5
+        self.memory_pressure_threshold = 0.85  # 85%使用でメモリ圧迫
+        self.consecutive_pressure_count = 0
+        self.processing_history = []  # 処理時間履歴
+        
     def _get_safe_memory_limit(self) -> float:
         """安全なメモリ制限を計算"""
         total_memory = psutil.virtual_memory().total / (1024 * 1024)
-        # 総メモリの70%を上限とする
-        return total_memory * 0.7
+        # P1-015: 大規模データセット対応での動的制限
+        if getattr(self, 'large_dataset_mode', False):
+            # 大規模データセットでは更に保守的に60%
+            return total_memory * 0.6
+        else:
+            # 通常は70%を上限とする
+            return total_memory * 0.7
     
     def should_optimize_memory(self) -> bool:
         """メモリ最適化が必要かチェック"""
@@ -212,6 +227,10 @@ class BatchMemoryManager:
         
         # メモリ制限を超えている場合
         if current_memory['ram_mb'] > self.max_memory_mb:
+            return True
+            
+        # P1-015: メモリ圧迫検知
+        if self._is_memory_pressure():
             return True
             
         # 定期的な最適化
@@ -237,13 +256,69 @@ class BatchMemoryManager:
             if self.processed_items % 5 == 0:
                 gc.collect()
     
+    def enable_large_dataset_mode(self, max_batch_size: int = 10):
+        """大規模データセットモード有効化"""
+        self.large_dataset_mode = True
+        self.max_batch_size = max_batch_size
+        self.max_memory_mb = self._get_safe_memory_limit()  # 制限値再計算
+        self.optimization_interval = 5  # より頻繁な最適化
+        logger.info(f"🚀 大規模データセットモード有効化: バッチサイズ上限{max_batch_size}")
+    
+    def disable_large_dataset_mode(self):
+        """大規模データセットモード無効化"""
+        self.large_dataset_mode = False
+        self.current_batch_size = 1
+        self.max_memory_mb = self._get_safe_memory_limit()  # 制限値再計算
+        self.optimization_interval = 10  # 通常間隔に戻す
+        logger.info("📴 大規模データセットモード無効化")
+    
+    def _is_memory_pressure(self) -> bool:
+        """メモリ圧迫状態の検知"""
+        current_memory = self.optimizer.monitor.get_memory_usage()
+        total_memory = psutil.virtual_memory().total / (1024 * 1024)
+        
+        usage_ratio = current_memory['ram_mb'] / total_memory
+        
+        if usage_ratio > self.memory_pressure_threshold:
+            self.consecutive_pressure_count += 1
+            logger.warning(f"⚠️ メモリ圧迫検知: {usage_ratio:.1%} 使用中")
+            return True
+        else:
+            self.consecutive_pressure_count = 0
+            return False
+    
+    def _adapt_batch_size(self):
+        """動的バッチサイズ調整"""
+        if not self.adaptive_batch_size:
+            return
+        
+        # メモリ圧迫が続く場合はバッチサイズを削減
+        if self.consecutive_pressure_count >= 3:
+            self.current_batch_size = max(1, self.current_batch_size - 1)
+            logger.info(f"📉 バッチサイズ削減: {self.current_batch_size}")
+            self.consecutive_pressure_count = 0
+        
+        # メモリに余裕がある場合は増加を検討
+        elif self.consecutive_pressure_count == 0 and len(self.processing_history) >= 10:
+            recent_avg_time = sum(self.processing_history[-5:]) / 5
+            if recent_avg_time < 30.0 and self.current_batch_size < self.max_batch_size:
+                self.current_batch_size += 1
+                logger.info(f"📈 バッチサイズ増加: {self.current_batch_size}")
+    
     def get_memory_stats(self) -> Dict[str, Any]:
         """メモリ統計を取得"""
         stats = self.optimizer.get_optimization_stats()
         stats.update({
             'processed_items': self.processed_items,
             'memory_limit_mb': self.max_memory_mb,
-            'optimization_interval': self.optimization_interval
+            'optimization_interval': self.optimization_interval,
+            # P1-015: 大規模データセット関連統計
+            'large_dataset_mode': self.large_dataset_mode,
+            'current_batch_size': self.current_batch_size,
+            'max_batch_size': self.max_batch_size,
+            'memory_pressure_threshold': self.memory_pressure_threshold,
+            'consecutive_pressure_count': self.consecutive_pressure_count,
+            'processing_history_length': len(self.processing_history)
         })
         return stats
 
