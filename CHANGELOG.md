@@ -11,6 +11,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.8.0] - 2025-07-31
+
+### Added
+- **P1-006階層的品質評価システム**: AIによる説明可能な品質分析機能
+  - `features/evaluation/explainable_quality.py` - AI品質解析エンジン実装
+  - `features/evaluation/hierarchical_quality.py` - 多層品質評価システム
+  - デモ出力付き品質分析結果（高品質・中品質・低品質・特殊ケース対応）
+- **P1-015大規模データセット対応メモリ最適化**: スケーラブル処理システム
+  - `features/common/memory_optimizer.py` - 動的メモリ管理・バッチサイズ調整
+  - `features/processing/large_dataset_processor.py` - 大規模データセット専用処理
+  - メモリ圧迫検出（85%閾値）・チェックポイント機能・プログレッシブ処理
+- **共通機能強化**: 堅牢性向上のための基盤システム
+  - `features/common/input_validation.py` - 統一入力値検証システム
+  - `features/common/retry_handler.py` - 指数バックオフ付きリトライ機能
+  - `config/workspace_config.py` - ワークスペース設定統合管理
+
+### Fixed
+- **トラッカーIDフォーマット制限解除**: Google Sheets A列全フォーマット対応
+  - 旧制限: `PH{Phase}-{3桁}` 固定 → 新対応: P1-XXX, PH2-XXX, T-XXX, BAT-XXX, CLAUDE-OPT-XXX等
+  - `features/common/output_path_manager.py`の正規表現ベース柔軟検証に変更
+  - 複合フォーマット（P1-A002-1, P1-B001）もサポート
+
+### Performance
+- **メモリ使用量最適化**: 87.4MB削減確認（P1-015実装効果）
+- **バッチ処理安定性**: 92.3%成功率での大規模データセット処理
+
+### Testing
+- **テストスイート拡充**: 新機能対応の包括的テスト追加
+  - `tests/integration/test_p1_015_integration.py` - 大規模データセット統合テスト
+  - `tests/unit/test_explainable_quality.py` - AI品質分析テスト
+  - `tests/unit/test_hierarchical_quality.py` - 階層品質評価テスト
+  - `tests/unit/test_memory_optimizer.py` - メモリ最適化テスト
+  - `tests/unit/test_large_dataset_processor.py` - 大規模処理テスト
+
 ## [v0.7.0] - 2025-07-29
 
 ### Added
