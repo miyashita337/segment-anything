@@ -11,6 +11,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.8.3] - 2025-08-02
+
+### Validation
+- **P1-016抽出プログラム統合検証完了**: extract_character.pyでの統合機能動作確認
+  - P1-018バッチサイズ制御改善の統合確認
+  - P1-019プロセス安定性向上（StableBatchProcessor）の統合確認
+  - P1-020 SAM推論最適化（93%処理時間短縮）の統合確認
+  - 実抽出テスト: 12枚成功、品質スコア60.0%、LCA精度100%、A/B評価率87.5%
+  - Google Sheets `/release`ステータス更新完了
+
+### Verification
+- **統合抽出システム動作確認**: sam_yolo_character_segment.py → extract_character.py統合完了の実証
+- **性能改善確認**: 処理時間65.3秒で12枚抽出、メモリ最適化-55.8MB確認
+- **安定バッチ処理確認**: マイクロバッチ処理とチェックポイント機能の正常動作
+
 ## [v0.8.2] - 2025-08-02
 
 ### Documentation
