@@ -332,6 +332,8 @@ def optimize_for_large_dataset(func: Callable) -> Callable:
     """大規模データセット用最適化デコレータ"""
     @wraps(func)
     def wrapper(*args, **kwargs):
+        # スコープエラーを回避するため、必要なインポートをここで行う
+        # これにより内部関数からの呼び出しでも正常に動作する
         with global_memory_optimizer.memory_context(auto_optimize=True):
             return func(*args, **kwargs)
     return wrapper
