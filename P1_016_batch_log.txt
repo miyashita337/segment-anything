@@ -1,0 +1,2402 @@
+Initializing models...
+🚀 Phase 0対応モデル初期化開始...
+✅ SAM vit_h loaded on cuda
+✅ SAM model initialized and loaded
+✅ YOLO yolov8x6_animeface.pt loaded on cuda
+✅ YOLO model initialized and loaded
+✅ Performance monitor initialized
+🎉 全モデル初期化完了（load_model()実行済み）
+🚀 バッチ処理開始: 39枚の画像を処理します...
+🔄 P1-019安定バッチ処理システム初期化完了
+2025-08-02 03:45:33,505 - features.common.stable_batch_processor - INFO - 🚀 安定バッチ処理開始: 39 件処理予定
+2025-08-02 03:45:33,511 - features.common.stable_batch_processor - INFO - 📦 マイクロバッチ 1/13: 3 件
+2025-08-02 03:45:33,516 - features.common.stable_batch_processor - INFO - 🔄 処理中: kana05_0000_cover.jpg
+📝 処理中: kana05_0000_cover.jpg
+✅ 画像読み込み成功: 1494x2110, /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0000_cover.jpg
+🔄 画像リサイズ: 1494x2110 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=37.684, 閾値=0.01, 結果=カラー
+📊 画像統計: 725x1024, 平均輝度: 164.8, カラー
+境界強調統計: コントラスト改善=0.90x, エッジ改善=1.26x
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 47個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0504
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 47個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 47個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 43個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 4個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -91.5%
+INFO:features.evaluation.utils.non_character_filter:🔍 Non-character filter: 4 masks
+INFO:features.evaluation.utils.non_character_filter:   マスク1: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク2: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク3: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク4: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:🎯 Non-character filter result: 4 → 4 masks
+INFO:features.evaluation.utils.face_detection:Face detector loaded: /home/shakufuku/.local/lib/python3.10/site-packages/cv2/data/haarcascade_frontalface_default.xml
+INFO:features.evaluation.utils.face_detection:🔍 Validating 4 masks with face detection
+INFO:features.evaluation.utils.face_detection:   マスク1: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:   マスク2: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:   マスク3: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:   マスク4: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:🎯 フィルタ結果: 4 → 4 マスク
+INFO:features.extraction.integrated_precision_pipeline:🚀 統合精度向上パイプライン開始
+INFO:features.extraction.integrated_precision_pipeline:📊 初期品質スコア: 0.263
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 1/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=228.1, コントラスト=56.5, 複雑度=0.104
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0504
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.272
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.382
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.492
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.291
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.398
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.502
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1754073940.996435  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073941.040757  103103 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.240
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.240 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=parameter_adjustment
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 2/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=228.1, コントラスト=56.5, 複雑度=0.104
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0504
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.272
+W0000 00:00:1754073941.117455  103098 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.382
+W0000 00:00:1754073941.158138  103101 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.492
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.291
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.398
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.502
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073941.223208  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073941.241821  103117 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.240
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.240 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=processing_simplification
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 3/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=228.1, コントラスト=56.5, 複雑度=0.104
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0504
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+W0000 00:00:1754073941.296525  103106 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.272
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.382
+W0000 00:00:1754073941.334521  103115 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.492
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.291
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.398
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.502
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073941.404872  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073941.425226  103131 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.240
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.240 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=fallback_mode
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 4/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=228.1, コントラスト=56.5, 複雑度=0.104
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0504
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+W0000 00:00:1754073941.478464  103122 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.272
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.382
+W0000 00:00:1754073941.517421  103128 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.492
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.291
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.398
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.502
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073941.593506  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073941.613990  103145 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.240
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.240 (critical)
+WARNING:features.extraction.integrated_precision_pipeline:⚠️ 最大リトライ回数に達しました
+INFO:features.extraction.integrated_precision_pipeline:🏁 パイプライン完了: 最終品質 0.240, 改善率 -8.9%, 処理時間 3.3秒
+🔍 Image shape: (1024, 725, 3)
+🚀 P1-020最適化 (p1_020_optimized) でマスク生成完了
+📊 Generated 60 masks
+👤 47 character masks
+🎯 47 scored masks
+🔧 YOLO拡張システム: 47 → 4 masks
+🔍 Step 1: Non-character element filtering
+🔍 Step 2: Face detection validation
+🎯 Final masks for selection: 4
+🔄 Multi-method fallback system starting with: fullbody_priority
+   試行 1/5: fullbody_priority
+🎯 複合スコア評価開始 (基準: fullbody_priority)
+   重み設定: {'area': 0.2, 'fullbody': 0.4, 'central': 0.15, 'grounded': 0.15, 'confidence': 0.1}
+   マスク1: 総合=0.314 (面積=0.08, 全身=0.00, 中央=0.74, 接地=0.67, 信頼度=0.86)
+      詳細: 面積比=0.016, アスペクト比=0.42, bbox=[0, 216, 469, 198], YOLO信頼度=0.860
+      🎯 現在の最高スコア更新!
+   マスク2: 総合=0.639 (面積=0.03, 全身=0.86, 中央=0.76, 接地=0.59, 信頼度=0.86)
+      詳細: 面積比=0.006, アスペクト比=2.22, bbox=[258, 221, 65, 144], YOLO信頼度=0.860
+      🎯 現在の最高スコア更新!
+   マスク3: 総合=0.291 (面積=0.06, 全身=0.00, 中央=0.67, 接地=0.63, 信頼度=0.86)
+      詳細: 面積比=0.011, アスペクト比=0.50, bbox=[0, 216, 343, 170], YOLO信頼度=0.860
+      📊 スコア不足 (最高: 0.639)
+   マスク4: 総合=0.365 (面積=0.15, 全身=0.00, 中央=0.78, 接地=0.88, 信頼度=0.86)
+      詳細: 面積比=0.031, アスペクト比=0.69, bbox=[0, 219, 464, 320], YOLO信頼度=0.860
+      📊 スコア不足 (最高: 0.639)
+✅ 最適マスク選択: 総合スコア 0.639
+✅ Primary method fullbody_priority succeeded
+✅ Selected mask validation: faces=0, character_confidence=0.000
+⚠️ 統合精度向上未達: 最終品質 0.240（元マスク使用）
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正システム初期化完了
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正開始
+⚠️ 自動マスク修正エラー（元マスク使用）: OpenCV(4.11.0) :-1: error: (-5:Bad argument) in function 'morphologyEx'
+> Overload resolution failed:
+>  - src data type = bool is not supported
+>  - Expected Ptr<cv::UMat> for argument 'src'
+
+W0000 00:00:1754073941.675705  103134 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+🔍 Validating mask quality...
+🎯 Mask quality: good, Face complete: True, Needs improvement: False
+💾 Character extracted: /mnt/c/AItools/lora/yado/tracker-workspace/P1-016/extraction/kana05_0000_cover_extracted.jpg (size: 86x165)
+Successfully processed /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0000_cover.jpg
+W0000 00:00:1754073941.719523  103143 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.common.memory_optimizer:🧹 メモリ最適化完了: RAM -50.4MB
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト終了: RAM 2375.0MB
+2025-08-02 03:45:41,945 - features.common.stable_batch_processor - INFO - ✅ 成功: kana05_0000_cover.jpg - 成功: kana05_0000_cover.jpg
+INFO:features.common.stable_batch_processor:✅ 成功: kana05_0000_cover.jpg - 成功: kana05_0000_cover.jpg
+2025-08-02 03:45:41,945 - features.common.stable_batch_processor - INFO - 🔄 処理中: kana05_0001.jpg
+INFO:features.common.stable_batch_processor:🔄 処理中: kana05_0001.jpg
+📝 処理中: kana05_0001.jpg
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト開始: RAM 2375.0MB
+INFO:features.processing.preprocessing.boundary_enhancer:BoundaryEnhancer初期化: skin_factor=1.5, edge_factor=2.0, contrast=1.3
+✅ 画像読み込み成功: 1494x2110, /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0001.jpg
+🔄 画像リサイズ: 1494x2110 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 206.3, グレースケール
+境界強調統計: コントラスト改善=0.94x, エッジ改善=0.78x
+INFO:features.processing.sam_optimization_config:🚀 SAM設定適用: P1-020最適化（6分→2.5分目標）
+INFO:features.processing.sam_optimization_config:📊 期待高速化: 2.4倍
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 60個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0504
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 60個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 60個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 32個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 2個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -96.7%
+INFO:features.evaluation.utils.non_character_filter:🔍 Non-character filter: 2 masks
+INFO:features.evaluation.utils.non_character_filter:   マスク1: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク2: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:🎯 Non-character filter result: 2 → 2 masks
+INFO:features.evaluation.utils.face_detection:Face detector loaded: /home/shakufuku/.local/lib/python3.10/site-packages/cv2/data/haarcascade_frontalface_default.xml
+INFO:features.evaluation.utils.face_detection:🔍 Validating 2 masks with face detection
+INFO:features.evaluation.utils.face_detection:   マスク1: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:   マスク2: 顔検出=True, 信頼度=0.581, キャラクター=True
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.581）
+INFO:features.evaluation.utils.face_detection:🎯 フィルタ結果: 2 → 2 マスク
+INFO:features.extraction.integrated_precision_pipeline:🚀 統合精度向上パイプライン開始
+INFO:features.extraction.integrated_precision_pipeline:📊 初期品質スコア: 0.425
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 1/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=224.2, コントラスト=75.8, 複雑度=0.065
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0504
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.449
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.537
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.228
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.481
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.539
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.229
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073945.235601  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073945.256127  103161 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.286
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.286 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=parameter_adjustment
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 2/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=224.2, コントラスト=75.8, 複雑度=0.065
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0504
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.449
+W0000 00:00:1754073945.309599  103154 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.537
+W0000 00:00:1754073945.346001  103158 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.228
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.481
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.539
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.229
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073946.152583  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073946.256974  103175 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.286
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.286 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=processing_simplification
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 3/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=224.2, コントラスト=75.8, 複雑度=0.065
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0504
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.449
+W0000 00:00:1754073946.311141  103164 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.537
+W0000 00:00:1754073946.350487  103171 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.228
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.481
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.539
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.229
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073947.163426  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073947.181065  103190 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.286
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.286 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=fallback_mode
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 4/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=224.2, コントラスト=75.8, 複雑度=0.065
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0504
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.449
+W0000 00:00:1754073947.234933  103178 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.537
+W0000 00:00:1754073947.274937  103186 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.228
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.481
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.539
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.229
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073948.081843  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073948.098889  103204 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.286
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.286 (critical)
+WARNING:features.extraction.integrated_precision_pipeline:⚠️ 最大リトライ回数に達しました
+INFO:features.extraction.integrated_precision_pipeline:🏁 パイプライン完了: 最終品質 0.286, 改善率 -32.7%, 処理時間 3.8秒
+🔍 Image shape: (1024, 725, 3)
+🚀 P1-020最適化 (p1_020_optimized) でマスク生成完了
+📊 Generated 75 masks
+👤 60 character masks
+🎯 60 scored masks
+🔧 YOLO拡張システム: 60 → 2 masks
+🔍 Step 1: Non-character element filtering
+🔍 Step 2: Face detection validation
+🎯 Final masks for selection: 2
+🔄 Multi-method fallback system starting with: fullbody_priority
+   試行 1/5: fullbody_priority
+🎯 複合スコア評価開始 (基準: fullbody_priority)
+   重み設定: {'area': 0.2, 'fullbody': 0.4, 'central': 0.15, 'grounded': 0.15, 'confidence': 0.1}
+   マスク1: 総合=0.365 (面積=0.02, 全身=0.44, 中央=0.46, 接地=0.30, 信頼度=0.73)
+      詳細: 面積比=0.004, アスペクト比=1.37, bbox=[44, 108, 54, 74], YOLO信頼度=0.727
+      🎯 現在の最高スコア更新!
+   マスク2: 総合=0.759 (面積=0.31, 全身=0.86, 中央=0.76, 接地=1.00, 信頼度=0.90)
+      詳細: 面積比=0.124, アスペクト比=2.21, bbox=[208, 483, 244, 540], YOLO信頼度=0.898
+      🎯 現在の最高スコア更新!
+✅ 最適マスク選択: 総合スコア 0.759
+✅ Primary method fullbody_priority succeeded
+✅ Selected mask validation: faces=1, character_confidence=0.581
+⚠️ 統合精度向上未達: 最終品質 0.286（元マスク使用）
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正システム初期化完了
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正開始
+⚠️ 自動マスク修正エラー（元マスク使用）: OpenCV(4.11.0) :-1: error: (-5:Bad argument) in function 'morphologyEx'
+> Overload resolution failed:
+>  - src data type = bool is not supported
+>  - Expected Ptr<cv::UMat> for argument 'src'
+
+W0000 00:00:1754073948.150605  103196 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+🔍 Validating mask quality...
+🎯 Mask quality: good, Face complete: True, Needs improvement: False
+💾 Character extracted: /mnt/c/AItools/lora/yado/tracker-workspace/P1-016/extraction/kana05_0001_extracted.jpg (size: 264x551)
+Successfully processed /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0001.jpg
+W0000 00:00:1754073948.190634  103199 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.common.memory_optimizer:🧹 メモリ最適化完了: RAM -0.5MB
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト終了: RAM 2910.6MB
+2025-08-02 03:45:48,364 - features.common.stable_batch_processor - INFO - ✅ 成功: kana05_0001.jpg - 成功: kana05_0001.jpg
+INFO:features.common.stable_batch_processor:✅ 成功: kana05_0001.jpg - 成功: kana05_0001.jpg
+2025-08-02 03:45:48,364 - features.common.stable_batch_processor - INFO - 🔄 処理中: kana05_0002.jpg
+INFO:features.common.stable_batch_processor:🔄 処理中: kana05_0002.jpg
+📝 処理中: kana05_0002.jpg
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト開始: RAM 2910.6MB
+INFO:features.processing.preprocessing.boundary_enhancer:BoundaryEnhancer初期化: skin_factor=1.5, edge_factor=2.0, contrast=1.3
+✅ 画像読み込み成功: 1494x2110, /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0002.jpg
+🔄 画像リサイズ: 1494x2110 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 158.3, グレースケール
+境界強調統計: コントラスト改善=1.05x, エッジ改善=0.90x
+INFO:features.processing.sam_optimization_config:🚀 SAM設定適用: P1-020最適化（6分→2.5分目標）
+INFO:features.processing.sam_optimization_config:📊 期待高速化: 2.4倍
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 84個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 84個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 84個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 50個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 3個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -96.4%
+INFO:features.evaluation.utils.non_character_filter:🔍 Non-character filter: 3 masks
+INFO:features.evaluation.utils.non_character_filter:   マスク1: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク2: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク3: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:🎯 Non-character filter result: 3 → 3 masks
+INFO:features.evaluation.utils.face_detection:Face detector loaded: /home/shakufuku/.local/lib/python3.10/site-packages/cv2/data/haarcascade_frontalface_default.xml
+INFO:features.evaluation.utils.face_detection:🔍 Validating 3 masks with face detection
+INFO:features.evaluation.utils.face_detection:   マスク1: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:   マスク2: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:   マスク3: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:🎯 フィルタ結果: 3 → 3 マスク
+INFO:features.extraction.integrated_precision_pipeline:🚀 統合精度向上パイプライン開始
+INFO:features.extraction.integrated_precision_pipeline:📊 初期品質スコア: 0.499
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 1/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=187.2, コントラスト=103.8, 複雑度=0.095
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.519
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.554
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.270
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.515
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.557
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.272
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073951.808972  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073951.826752  103220 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.300
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.300 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=parameter_adjustment
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 2/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+W0000 00:00:1754073951.856224  103209 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=187.2, コントラスト=103.8, 複雑度=0.095
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+W0000 00:00:1754073951.873809  103217 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.519
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.554
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.270
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.515
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.557
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.272
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073952.400781  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073952.419415  103235 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.300
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.300 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=processing_simplification
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 3/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=187.2, コントラスト=103.8, 複雑度=0.095
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.519
+W0000 00:00:1754073952.476632  103224 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.554
+W0000 00:00:1754073952.520339  103231 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.270
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.515
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.557
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.272
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073952.991159  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073953.009263  103249 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.300
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.300 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=fallback_mode
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 4/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=187.2, コントラスト=103.8, 複雑度=0.095
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.519
+W0000 00:00:1754073953.066791  103238 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.554
+W0000 00:00:1754073953.110810  103236 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.270
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.515
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.557
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.272
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073953.584795  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073953.605526  103263 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.300
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.300 (critical)
+WARNING:features.extraction.integrated_precision_pipeline:⚠️ 最大リトライ回数に達しました
+INFO:features.extraction.integrated_precision_pipeline:🏁 パイプライン完了: 最終品質 0.300, 改善率 -40.0%, 処理時間 2.4秒
+🔍 Image shape: (1024, 725, 3)
+🚀 P1-020最適化 (p1_020_optimized) でマスク生成完了
+📊 Generated 93 masks
+👤 84 character masks
+🎯 84 scored masks
+🔧 YOLO拡張システム: 84 → 3 masks
+🔍 Step 1: Non-character element filtering
+🔍 Step 2: Face detection validation
+🎯 Final masks for selection: 3
+🔄 Multi-method fallback system starting with: fullbody_priority
+   試行 1/5: fullbody_priority
+🎯 複合スコア評価開始 (基準: fullbody_priority)
+   重み設定: {'area': 0.2, 'fullbody': 0.4, 'central': 0.15, 'grounded': 0.15, 'confidence': 0.1}
+   マスク1: 総合=0.476 (面積=0.14, 全身=0.30, 中央=0.70, 接地=0.95, 信頼度=0.80)
+      詳細: 面積比=0.027, アスペクト比=1.10, bbox=[490, 381, 183, 202], YOLO信頼度=0.801
+      🎯 現在の最高スコア更新!
+   マスク2: 総合=0.737 (面積=0.51, 全身=0.76, 中央=0.67, 接地=1.00, 信頼度=0.80)
+      詳細: 面積比=0.204, アスペクト比=2.03, bbox=[406, 381, 317, 642], YOLO信頼度=0.801
+      🎯 現在の最高スコア更新!
+   マスク3: 総合=0.660 (面積=0.40, 全身=0.59, 中央=0.70, 接地=1.00, 信頼度=0.88)
+      詳細: 面積比=0.159, アスペクト比=1.68, bbox=[75, 489, 317, 534], YOLO信頼度=0.879
+      📊 スコア不足 (最高: 0.737)
+✅ 最適マスク選択: 総合スコア 0.737
+✅ Primary method fullbody_priority succeeded
+✅ Selected mask validation: faces=0, character_confidence=0.000
+⚠️ 統合精度向上未達: 最終品質 0.300（元マスク使用）
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正システム初期化完了
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正開始
+⚠️ 自動マスク修正エラー（元マスク使用）: OpenCV(4.11.0) :-1: error: (-5:Bad argument) in function 'morphologyEx'
+> Overload resolution failed:
+>  - src data type = bool is not supported
+>  - Expected Ptr<cv::UMat> for argument 'src'
+
+W0000 00:00:1754073953.662968  103252 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1754073953.707507  103259 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+🔍 Validating mask quality...
+🎯 Mask quality: good, Face complete: True, Needs improvement: False
+💾 Character extracted: /mnt/c/AItools/lora/yado/tracker-workspace/P1-016/extraction/kana05_0002_extracted.jpg (size: 326x652)
+Successfully processed /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0002.jpg
+INFO:features.common.memory_optimizer:🧹 メモリ最適化完了: RAM +0.0MB
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト終了: RAM 3402.1MB
+2025-08-02 03:45:53,879 - features.common.stable_batch_processor - INFO - ✅ 成功: kana05_0002.jpg - 成功: kana05_0002.jpg
+INFO:features.common.stable_batch_processor:✅ 成功: kana05_0002.jpg - 成功: kana05_0002.jpg
+2025-08-02 03:45:53,883 - features.common.stable_batch_processor - INFO - チェックポイント保存: 3/39 完了
+INFO:features.common.stable_batch_processor:チェックポイント保存: 3/39 完了
+2025-08-02 03:45:53,883 - features.common.stable_batch_processor - INFO - 📊 進捗: 3/39 (7.7%)
+INFO:features.common.stable_batch_processor:📊 進捗: 3/39 (7.7%)
+2025-08-02 03:45:53,883 - features.common.stable_batch_processor - INFO - 📦 マイクロバッチ 2/13: 3 件
+INFO:features.common.stable_batch_processor:📦 マイクロバッチ 2/13: 3 件
+2025-08-02 03:45:53,884 - features.common.stable_batch_processor - INFO - 🔄 処理中: kana05_0003.jpg
+INFO:features.common.stable_batch_processor:🔄 処理中: kana05_0003.jpg
+📝 処理中: kana05_0003.jpg
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト開始: RAM 3402.1MB
+INFO:features.processing.preprocessing.boundary_enhancer:BoundaryEnhancer初期化: skin_factor=1.5, edge_factor=2.0, contrast=1.3
+✅ 画像読み込み成功: 1494x2110, /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0003.jpg
+🔄 画像リサイズ: 1494x2110 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 152.2, グレースケール
+境界強調統計: コントラスト改善=1.03x, エッジ改善=0.77x
+INFO:features.processing.sam_optimization_config:🚀 SAM設定適用: P1-020最適化（6分→2.5分目標）
+INFO:features.processing.sam_optimization_config:📊 期待高速化: 2.4倍
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 58個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0462
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 58個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 58個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 28個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 2個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -96.6%
+INFO:features.evaluation.utils.non_character_filter:🔍 Non-character filter: 2 masks
+INFO:features.evaluation.utils.non_character_filter:   マスク1: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク2: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:🎯 Non-character filter result: 2 → 2 masks
+INFO:features.evaluation.utils.face_detection:Face detector loaded: /home/shakufuku/.local/lib/python3.10/site-packages/cv2/data/haarcascade_frontalface_default.xml
+INFO:features.evaluation.utils.face_detection:🔍 Validating 2 masks with face detection
+INFO:features.evaluation.utils.face_detection:   マスク1: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:   マスク2: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:🎯 フィルタ結果: 2 → 2 マスク
+INFO:features.extraction.integrated_precision_pipeline:🚀 統合精度向上パイプライン開始
+INFO:features.extraction.integrated_precision_pipeline:📊 初期品質スコア: 0.586
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 1/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=175.4, コントラスト=110.5, 複雑度=0.086
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0462
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.619
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.691
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.422
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.636
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.692
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.343
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073956.922877  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073956.941034  103279 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.342
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.342 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=parameter_adjustment
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 2/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=175.4, コントラスト=110.5, 複雑度=0.086
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0462
+W0000 00:00:1754073956.976975  103268 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.619
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.691
+W0000 00:00:1754073957.022190  103276 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.422
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.636
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.692
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.343
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073957.421952  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073957.439071  103293 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.342
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.342 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=processing_simplification
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 3/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=175.4, コントラスト=110.5, 複雑度=0.086
+W0000 00:00:1754073957.474591  103281 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0462
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.619
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.691
+W0000 00:00:1754073957.520419  103290 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.422
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.636
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.692
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.343
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073957.927007  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073957.944550  103307 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.342
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.342 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=fallback_mode
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 4/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=175.4, コントラスト=110.5, 複雑度=0.086
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0462
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.619
+W0000 00:00:1754073957.997230  103296 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.691
+W0000 00:00:1754073958.042874  103295 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.422
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.636
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.692
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.343
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073958.422648  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073958.439826  103322 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.342
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.342 (critical)
+WARNING:features.extraction.integrated_precision_pipeline:⚠️ 最大リトライ回数に達しました
+INFO:features.extraction.integrated_precision_pipeline:🏁 パイプライン完了: 最終品質 0.342, 改善率 -41.6%, 処理時間 2.0秒
+🔍 Image shape: (1024, 725, 3)
+🚀 P1-020最適化 (p1_020_optimized) でマスク生成完了
+📊 Generated 78 masks
+👤 58 character masks
+🎯 58 scored masks
+🔧 YOLO拡張システム: 58 → 2 masks
+🔍 Step 1: Non-character element filtering
+🔍 Step 2: Face detection validation
+🎯 Final masks for selection: 2
+🔄 Multi-method fallback system starting with: fullbody_priority
+   試行 1/5: fullbody_priority
+🎯 複合スコア評価開始 (基準: fullbody_priority)
+   重み設定: {'area': 0.2, 'fullbody': 0.4, 'central': 0.15, 'grounded': 0.15, 'confidence': 0.1}
+   マスク1: 総合=0.516 (面積=0.53, 全身=0.17, 中央=0.66, 接地=1.00, 信頼度=0.91)
+      詳細: 面積比=0.212, アスペクト比=0.97, bbox=[17, 596, 438, 427], YOLO信頼度=0.912
+      🎯 現在の最高スコア更新!
+   マスク2: 総合=0.686 (面積=0.28, 全身=0.76, 中央=0.60, 接地=1.00, 信頼度=0.85)
+      詳細: 面積比=0.111, アスペクト比=2.03, bbox=[458, 613, 202, 410], YOLO信頼度=0.852
+      🎯 現在の最高スコア更新!
+✅ 最適マスク選択: 総合スコア 0.686
+✅ Primary method fullbody_priority succeeded
+✅ Selected mask validation: faces=0, character_confidence=0.000
+🚀 統合精度向上完了: 品質 0.586 → 0.342 (改善率 -41.6%, リトライ 3回, 処理時間 2.0秒)
+   完了段階: parameter_optimization, sam_postprocessing, quality_monitoring
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正システム初期化完了
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正開始
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正完了 - 改善率: 50.08%
+🔧 自動マスク修正適用: 改善率 50.08%
+   - モルフォロジカルOpening実行 - カーネル: 3x3
+   - 小成分除去: 0個除去 (閾値: 150px)
+   - ホール埋め: 対象ホールなし
+   - バイラテラルフィルタ適用 - d:11
+W0000 00:00:1754073958.500973  103312 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1754073958.547138  103315 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+🔍 Validating mask quality...
+🎯 Mask quality: good, Face complete: True, Needs improvement: False
+💾 Character extracted: /mnt/c/AItools/lora/yado/tracker-workspace/P1-016/extraction/kana05_0003_extracted.jpg (size: 220x419)
+Successfully processed /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0003.jpg
+INFO:features.common.memory_optimizer:🧹 メモリ最適化完了: RAM +0.0MB
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト終了: RAM 3879.4MB
+2025-08-02 03:45:58,695 - features.common.stable_batch_processor - INFO - ✅ 成功: kana05_0003.jpg - 成功: kana05_0003.jpg
+INFO:features.common.stable_batch_processor:✅ 成功: kana05_0003.jpg - 成功: kana05_0003.jpg
+2025-08-02 03:45:58,695 - features.common.stable_batch_processor - INFO - 🔄 処理中: kana05_0004.jpg
+INFO:features.common.stable_batch_processor:🔄 処理中: kana05_0004.jpg
+📝 処理中: kana05_0004.jpg
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト開始: RAM 3879.4MB
+INFO:features.processing.preprocessing.boundary_enhancer:BoundaryEnhancer初期化: skin_factor=1.5, edge_factor=2.0, contrast=1.3
+✅ 画像読み込み成功: 1494x2110, /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0004.jpg
+🔄 画像リサイズ: 1494x2110 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 181.2, グレースケール
+境界強調統計: コントラスト改善=0.98x, エッジ改善=0.75x
+INFO:features.processing.sam_optimization_config:🚀 SAM設定適用: P1-020最適化（6分→2.5分目標）
+INFO:features.processing.sam_optimization_config:📊 期待高速化: 2.4倍
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 91個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 91個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 91個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 43個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 4個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -95.6%
+INFO:features.evaluation.utils.non_character_filter:🔍 Non-character filter: 4 masks
+INFO:features.evaluation.utils.non_character_filter:   マスク1: 吹き出し=True, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ❌ 除外: 吹き出し(0.60)
+INFO:features.evaluation.utils.non_character_filter:   マスク2: 吹き出し=True, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ❌ 除外: 吹き出し(0.60)
+INFO:features.evaluation.utils.non_character_filter:   マスク3: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク4: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:🎯 Non-character filter result: 4 → 2 masks
+INFO:features.evaluation.utils.face_detection:Face detector loaded: /home/shakufuku/.local/lib/python3.10/site-packages/cv2/data/haarcascade_frontalface_default.xml
+INFO:features.evaluation.utils.face_detection:🔍 Validating 2 masks with face detection
+INFO:features.evaluation.utils.face_detection:   マスク1: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:   マスク2: 顔検出=True, 信頼度=0.664, キャラクター=True
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.664）
+INFO:features.evaluation.utils.face_detection:🎯 フィルタ結果: 2 → 2 マスク
+INFO:features.extraction.integrated_precision_pipeline:🚀 統合精度向上パイプライン開始
+INFO:features.extraction.integrated_precision_pipeline:📊 初期品質スコア: 0.446
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 1/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=213.3, コントラスト=84.0, 複雑度=0.102
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.462
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.553
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.562
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.562
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.463
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.562
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.578
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073962.092452  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073962.110773  103337 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.285
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.285 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=parameter_adjustment
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 2/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+W0000 00:00:1754073962.140558  103327 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=213.3, コントラスト=84.0, 複雑度=0.102
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.462
+W0000 00:00:1754073962.172367  103332 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.553
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.562
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.562
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.463
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.562
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.578
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073962.307370  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073962.324856  103352 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.285
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.285 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=processing_simplification
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 3/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=213.3, コントラスト=84.0, 複雑度=0.102
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.462
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.553
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.562
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.562
+W0000 00:00:1754073962.510721  103341 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.463
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.562
+W0000 00:00:1754073962.582521  103347 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.578
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073962.593336  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073962.612347  103366 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.285
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.285 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=fallback_mode
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 4/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=213.3, コントラスト=84.0, 複雑度=0.102
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.462
+W0000 00:00:1754073962.688795  103355 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.553
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.562
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.562
+W0000 00:00:1754073962.739659  103361 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.463
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.562
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.578
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073962.813552  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073962.832368  103380 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.285
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.285 (critical)
+WARNING:features.extraction.integrated_precision_pipeline:⚠️ 最大リトライ回数に達しました
+INFO:features.extraction.integrated_precision_pipeline:🏁 パイプライン完了: 最終品質 0.285, 改善率 -36.2%, 処理時間 0.9秒
+🔍 Image shape: (1024, 725, 3)
+🚀 P1-020最適化 (p1_020_optimized) でマスク生成完了
+📊 Generated 117 masks
+👤 91 character masks
+🎯 91 scored masks
+🔧 YOLO拡張システム: 91 → 4 masks
+🔍 Step 1: Non-character element filtering
+🔍 Step 2: Face detection validation
+🎯 Final masks for selection: 2
+🔄 Multi-method fallback system starting with: fullbody_priority
+   試行 1/5: fullbody_priority
+🎯 複合スコア評価開始 (基準: fullbody_priority)
+   重み設定: {'area': 0.2, 'fullbody': 0.4, 'central': 0.15, 'grounded': 0.15, 'confidence': 0.1}
+   マスク1: 総合=0.603 (面積=0.24, 全身=0.58, 中央=0.57, 接地=0.99, 信頼度=0.89)
+      詳細: 面積比=0.048, アスペクト比=1.66, bbox=[461, 699, 191, 317], YOLO信頼度=0.888
+      🎯 現在の最高スコア更新!
+   マスク2: 総合=0.629 (面積=0.31, 全身=0.63, 中央=0.65, 接地=0.87, 信頼度=0.88)
+      詳細: 面積比=0.126, アスペクト比=1.75, bbox=[424, 42, 280, 491], YOLO信頼度=0.884
+      🎯 現在の最高スコア更新!
+✅ 最適マスク選択: 総合スコア 0.629
+✅ Primary method fullbody_priority succeeded
+✅ Selected mask validation: faces=1, character_confidence=0.664
+⚠️ 統合精度向上未達: 最終品質 0.285（元マスク使用）
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正システム初期化完了
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正開始
+⚠️ 自動マスク修正エラー（元マスク使用）: OpenCV(4.11.0) :-1: error: (-5:Bad argument) in function 'morphologyEx'
+> Overload resolution failed:
+>  - src data type = bool is not supported
+>  - Expected Ptr<cv::UMat> for argument 'src'
+
+W0000 00:00:1754073962.886055  103369 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1754073962.930453  103375 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+🔍 Validating mask quality...
+🎯 Mask quality: good, Face complete: True, Needs improvement: False
+💾 Character extracted: /mnt/c/AItools/lora/yado/tracker-workspace/P1-016/extraction/kana05_0004_extracted.jpg (size: 301x511)
+Successfully processed /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0004.jpg
+INFO:features.common.memory_optimizer:🧹 メモリ最適化完了: RAM +0.0MB
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト終了: RAM 4405.5MB
+2025-08-02 03:46:03,111 - features.common.stable_batch_processor - INFO - ✅ 成功: kana05_0004.jpg - 成功: kana05_0004.jpg
+INFO:features.common.stable_batch_processor:✅ 成功: kana05_0004.jpg - 成功: kana05_0004.jpg
+2025-08-02 03:46:03,111 - features.common.stable_batch_processor - INFO - 🔄 処理中: kana05_0005.jpg
+INFO:features.common.stable_batch_processor:🔄 処理中: kana05_0005.jpg
+📝 処理中: kana05_0005.jpg
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト開始: RAM 4321.2MB
+INFO:features.processing.preprocessing.boundary_enhancer:BoundaryEnhancer初期化: skin_factor=1.5, edge_factor=2.0, contrast=1.3
+✅ 画像読み込み成功: 1494x2110, /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0005.jpg
+🔄 画像リサイズ: 1494x2110 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 182.5, グレースケール
+境界強調統計: コントラスト改善=0.97x, エッジ改善=0.69x
+INFO:features.processing.sam_optimization_config:🚀 SAM設定適用: P1-020最適化（6分→2.5分目標）
+INFO:features.processing.sam_optimization_config:📊 期待高速化: 2.4倍
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 83個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 83個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 83個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 37個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 5個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -94.0%
+INFO:features.evaluation.utils.non_character_filter:🔍 Non-character filter: 5 masks
+INFO:features.evaluation.utils.non_character_filter:   マスク1: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク2: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク3: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク4: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク5: 吹き出し=True, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ❌ 除外: 吹き出し(0.60)
+INFO:features.evaluation.utils.non_character_filter:🎯 Non-character filter result: 5 → 4 masks
+INFO:features.evaluation.utils.face_detection:Face detector loaded: /home/shakufuku/.local/lib/python3.10/site-packages/cv2/data/haarcascade_frontalface_default.xml
+INFO:features.evaluation.utils.face_detection:🔍 Validating 4 masks with face detection
+INFO:features.evaluation.utils.face_detection:   マスク1: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:   マスク2: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:   マスク3: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:   マスク4: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:🎯 フィルタ結果: 4 → 4 マスク
+INFO:features.extraction.integrated_precision_pipeline:🚀 統合精度向上パイプライン開始
+INFO:features.extraction.integrated_precision_pipeline:📊 初期品質スコア: 0.394
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 1/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=209.3, コントラスト=90.5, 複雑度=0.101
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.412
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.534
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.620
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.620
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.498
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.621
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.644
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073966.027426  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073966.047511  103395 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.299
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.299 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=parameter_adjustment
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 2/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+W0000 00:00:1754073966.080202  103384 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=209.3, コントラスト=90.5, 複雑度=0.101
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.412
+W0000 00:00:1754073966.119600  103391 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.534
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.620
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.620
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.498
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.621
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.644
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073966.205118  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073966.224948  103409 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.299
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.299 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=processing_simplification
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 3/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=209.3, コントラスト=90.5, 複雑度=0.101
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+W0000 00:00:1754073966.273507  103399 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.412
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.534
+W0000 00:00:1754073966.311697  103404 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.620
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.620
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.498
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.621
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.644
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073966.384802  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073966.404098  103424 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.299
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.299 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=fallback_mode
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 4/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=209.3, コントラスト=90.5, 複雑度=0.101
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.412
+W0000 00:00:1754073966.460700  103413 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.534
+W0000 00:00:1754073966.503995  103421 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.620
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.620
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.498
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.621
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.644
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073966.558622  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073966.576607  103438 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.299
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.299 (critical)
+WARNING:features.extraction.integrated_precision_pipeline:⚠️ 最大リトライ回数に達しました
+INFO:features.extraction.integrated_precision_pipeline:🏁 パイプライン完了: 最終品質 0.299, 改善率 -24.2%, 処理時間 0.7秒
+🔍 Image shape: (1024, 725, 3)
+🚀 P1-020最適化 (p1_020_optimized) でマスク生成完了
+📊 Generated 101 masks
+👤 83 character masks
+🎯 83 scored masks
+🔧 YOLO拡張システム: 83 → 5 masks
+🔍 Step 1: Non-character element filtering
+🔍 Step 2: Face detection validation
+🎯 Final masks for selection: 4
+🔄 Multi-method fallback system starting with: fullbody_priority
+   試行 1/5: fullbody_priority
+🎯 複合スコア評価開始 (基準: fullbody_priority)
+   重み設定: {'area': 0.2, 'fullbody': 0.4, 'central': 0.15, 'grounded': 0.15, 'confidence': 0.1}
+   マスク1: 総合=0.383 (面積=0.25, 全身=0.00, 中央=0.61, 接地=1.00, 信頼度=0.92)
+      詳細: 面積比=0.100, アスペクト比=0.67, bbox=[132, 790, 346, 233], YOLO信頼度=0.917
+      🎯 現在の最高スコア更新!
+   マスク2: 総合=0.343 (面積=0.02, 全身=0.35, 中央=0.54, 接地=0.23, 信頼度=0.83)
+      詳細: 面積比=0.004, アスペクト比=1.20, bbox=[497, 60, 70, 84], YOLO信頼度=0.830
+      📊 スコア不足 (最高: 0.383)
+   マスク3: 総合=0.263 (面積=0.02, 全身=0.24, 中央=0.38, 接地=0.13, 信頼度=0.86)
+      詳細: 面積比=0.004, アスペクト比=1.04, bbox=[26, 0, 76, 79], YOLO信頼度=0.858
+      📊 スコア不足 (最高: 0.383)
+   マスク4: 総合=0.596 (面積=0.09, 全身=0.85, 中央=0.58, 接地=0.44, 信頼度=0.83)
+      詳細: 面積比=0.019, アスペクト比=2.21, bbox=[498, 60, 96, 212], YOLO信頼度=0.830
+      🎯 現在の最高スコア更新!
+✅ 最適マスク選択: 総合スコア 0.596
+✅ Primary method fullbody_priority succeeded
+✅ Selected mask validation: faces=0, character_confidence=0.000
+⚠️ 統合精度向上未達: 最終品質 0.299（元マスク使用）
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正システム初期化完了
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正開始
+⚠️ 自動マスク修正エラー（元マスク使用）: OpenCV(4.11.0) :-1: error: (-5:Bad argument) in function 'morphologyEx'
+> Overload resolution failed:
+>  - src data type = bool is not supported
+>  - Expected Ptr<cv::UMat> for argument 'src'
+
+W0000 00:00:1754073966.629947  103427 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+🔍 Validating mask quality...
+🎯 Mask quality: good, Face complete: True, Needs improvement: False
+💾 Character extracted: /mnt/c/AItools/lora/yado/tracker-workspace/P1-016/extraction/kana05_0005_extracted.jpg (size: 117x233)
+Successfully processed /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0005.jpg
+W0000 00:00:1754073966.683268  103434 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.common.memory_optimizer:🧹 メモリ最適化完了: RAM -42.3MB
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト終了: RAM 4825.8MB
+2025-08-02 03:46:06,782 - features.common.stable_batch_processor - INFO - ✅ 成功: kana05_0005.jpg - 成功: kana05_0005.jpg
+INFO:features.common.stable_batch_processor:✅ 成功: kana05_0005.jpg - 成功: kana05_0005.jpg
+2025-08-02 03:46:06,786 - features.common.stable_batch_processor - INFO - チェックポイント保存: 6/39 完了
+INFO:features.common.stable_batch_processor:チェックポイント保存: 6/39 完了
+2025-08-02 03:46:06,787 - features.common.stable_batch_processor - INFO - 📊 進捗: 6/39 (15.4%)
+INFO:features.common.stable_batch_processor:📊 進捗: 6/39 (15.4%)
+2025-08-02 03:46:06,787 - features.common.stable_batch_processor - INFO - 📦 マイクロバッチ 3/13: 3 件
+INFO:features.common.stable_batch_processor:📦 マイクロバッチ 3/13: 3 件
+2025-08-02 03:46:06,787 - features.common.stable_batch_processor - INFO - 🔄 処理中: kana05_0006.jpg
+INFO:features.common.stable_batch_processor:🔄 処理中: kana05_0006.jpg
+📝 処理中: kana05_0006.jpg
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト開始: RAM 4825.8MB
+INFO:features.processing.preprocessing.boundary_enhancer:BoundaryEnhancer初期化: skin_factor=1.5, edge_factor=2.0, contrast=1.3
+✅ 画像読み込み成功: 1494x2110, /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0006.jpg
+🔄 画像リサイズ: 1494x2110 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 176.4, グレースケール
+境界強調統計: コントラスト改善=1.01x, エッジ改善=0.78x
+INFO:features.processing.sam_optimization_config:🚀 SAM設定適用: P1-020最適化（6分→2.5分目標）
+INFO:features.processing.sam_optimization_config:📊 期待高速化: 2.4倍
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 73個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 73個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 73個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 31個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 6個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -91.8%
+INFO:features.evaluation.utils.non_character_filter:🔍 Non-character filter: 6 masks
+INFO:features.evaluation.utils.non_character_filter:   マスク1: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク2: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク3: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク4: 吹き出し=False, マスク物=True, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ❌ 除外: マスク物(0.90)
+INFO:features.evaluation.utils.non_character_filter:   マスク5: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク6: 吹き出し=True, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ❌ 除外: 吹き出し(0.60)
+INFO:features.evaluation.utils.non_character_filter:🎯 Non-character filter result: 6 → 4 masks
+INFO:features.evaluation.utils.face_detection:Face detector loaded: /home/shakufuku/.local/lib/python3.10/site-packages/cv2/data/haarcascade_frontalface_default.xml
+INFO:features.evaluation.utils.face_detection:🔍 Validating 4 masks with face detection
+INFO:features.evaluation.utils.face_detection:   マスク1: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:   マスク2: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:   マスク3: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:   マスク4: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:🎯 フィルタ結果: 4 → 4 マスク
+INFO:features.extraction.integrated_precision_pipeline:🚀 統合精度向上パイプライン開始
+INFO:features.extraction.integrated_precision_pipeline:📊 初期品質スコア: 0.473
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 1/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=197.5, コントラスト=101.4, 複雑度=0.084
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.509
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.636
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.674
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.674
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.556
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.676
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.689
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073969.895354  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073969.915540  103455 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.321
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.321 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=parameter_adjustment
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 2/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=197.5, コントラスト=101.4, 複雑度=0.084
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+W0000 00:00:1754073969.956810  103444 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.509
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.636
+W0000 00:00:1754073970.025506  103453 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.674
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.674
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.556
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.676
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.689
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073970.216438  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073970.237110  103469 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.321
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.321 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=processing_simplification
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 3/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=197.5, コントラスト=101.4, 複雑度=0.084
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.509
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.636
+W0000 00:00:1754073970.335351  103463 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1754073970.429933  103459 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.674
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.674
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.556
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.676
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.689
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073970.587318  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073970.607558  103483 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.321
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.321 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=fallback_mode
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 4/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=197.5, コントラスト=101.4, 複雑度=0.084
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.509
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.636
+W0000 00:00:1754073970.712279  103472 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.674
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.674
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.556
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+W0000 00:00:1754073970.804293  103480 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.676
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.689
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073970.963335  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073970.986413  103497 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.321
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.321 (critical)
+WARNING:features.extraction.integrated_precision_pipeline:⚠️ 最大リトライ回数に達しました
+INFO:features.extraction.integrated_precision_pipeline:🏁 パイプライン完了: 最終品質 0.321, 改善率 -32.2%, 処理時間 1.4秒
+🔍 Image shape: (1024, 725, 3)
+🚀 P1-020最適化 (p1_020_optimized) でマスク生成完了
+📊 Generated 93 masks
+👤 73 character masks
+🎯 73 scored masks
+🔧 YOLO拡張システム: 73 → 6 masks
+🔍 Step 1: Non-character element filtering
+🔍 Step 2: Face detection validation
+🎯 Final masks for selection: 4
+🔄 Multi-method fallback system starting with: fullbody_priority
+   試行 1/5: fullbody_priority
+🎯 複合スコア評価開始 (基準: fullbody_priority)
+   重み設定: {'area': 0.2, 'fullbody': 0.4, 'central': 0.15, 'grounded': 0.15, 'confidence': 0.1}
+   マスク1: 総合=0.489 (面積=0.39, 全身=0.19, 中央=0.68, 接地=0.99, 信頼度=0.85)
+      詳細: 面積比=0.157, アスペクト比=0.99, bbox=[104, 641, 378, 374], YOLO信頼度=0.847
+      🎯 現在の最高スコア更新!
+   マスク2: 総合=0.374 (面積=0.53, 全身=0.01, 中央=0.66, 接地=0.59, 信頼度=0.76)
+      詳細: 面積比=0.211, アスペクト比=0.81, bbox=[64, 0, 451, 365], YOLO信頼度=0.759
+      📊 スコア不足 (最高: 0.489)
+   マスク3: 総合=0.368 (面積=0.27, 全身=0.00, 中央=0.94, 接地=0.61, 信頼度=0.82)
+      詳細: 面積比=0.108, アスペクト比=0.51, bbox=[91, 384, 462, 237], YOLO信頼度=0.820
+      📊 スコア不足 (最高: 0.489)
+   マスク4: 総合=0.422 (面積=0.02, 全身=0.27, 中央=0.80, 接地=0.73, 信頼度=0.82)
+      詳細: 面積比=0.003, アスペクト比=1.07, bbox=[209, 384, 59, 63], YOLO信頼度=0.820
+      📊 スコア不足 (最高: 0.489)
+✅ 最適マスク選択: 総合スコア 0.489
+✅ Primary method fullbody_priority succeeded
+✅ Selected mask validation: faces=0, character_confidence=0.000
+🚀 統合精度向上完了: 品質 0.473 → 0.321 (改善率 -32.2%, リトライ 3回, 処理時間 1.4秒)
+   完了段階: parameter_optimization, sam_postprocessing, contour_enhancement, quality_monitoring
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正システム初期化完了
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正開始
+W0000 00:00:1754073971.044179  103486 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正完了 - 改善率: 50.09%
+🔧 自動マスク修正適用: 改善率 50.09%
+   - モルフォロジカルOpening実行 - カーネル: 3x3
+   - 小成分除去: 0個除去 (閾値: 150px)
+   - ホール埋め: 対象ホールなし
+   - バイラテラルフィルタ適用 - d:11
+W0000 00:00:1754073971.120482  103493 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+🔍 Validating mask quality...
+🎯 Mask quality: good, Face complete: True, Needs improvement: False
+💾 Character extracted: /mnt/c/AItools/lora/yado/tracker-workspace/P1-016/extraction/kana05_0006_extracted.jpg (size: 404x460)
+Successfully processed /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0006.jpg
+INFO:features.common.memory_optimizer:🧹 メモリ最適化完了: RAM +0.0MB
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト終了: RAM 5293.3MB
+2025-08-02 03:46:11,373 - features.common.stable_batch_processor - INFO - ✅ 成功: kana05_0006.jpg - 成功: kana05_0006.jpg
+INFO:features.common.stable_batch_processor:✅ 成功: kana05_0006.jpg - 成功: kana05_0006.jpg
+2025-08-02 03:46:11,373 - features.common.stable_batch_processor - INFO - 🔄 処理中: kana05_0007.jpg
+INFO:features.common.stable_batch_processor:🔄 処理中: kana05_0007.jpg
+📝 処理中: kana05_0007.jpg
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト開始: RAM 5293.3MB
+INFO:features.processing.preprocessing.boundary_enhancer:BoundaryEnhancer初期化: skin_factor=1.5, edge_factor=2.0, contrast=1.3
+✅ 画像読み込み成功: 1494x2110, /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0007.jpg
+🔄 画像リサイズ: 1494x2110 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 171.6, グレースケール
+境界強調統計: コントラスト改善=1.03x, エッジ改善=0.60x
+INFO:features.processing.sam_optimization_config:🚀 SAM設定適用: P1-020最適化（6分→2.5分目標）
+INFO:features.processing.sam_optimization_config:📊 期待高速化: 2.4倍
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 64個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 64個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 64個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 25個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 1個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -98.4%
+INFO:features.evaluation.utils.non_character_filter:🔍 Non-character filter: 1 masks
+INFO:features.evaluation.utils.non_character_filter:   マスク1: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:🎯 Non-character filter result: 1 → 1 masks
+INFO:features.evaluation.utils.face_detection:Face detector loaded: /home/shakufuku/.local/lib/python3.10/site-packages/cv2/data/haarcascade_frontalface_default.xml
+INFO:features.evaluation.utils.face_detection:🔍 Validating 1 masks with face detection
+INFO:features.evaluation.utils.face_detection:   マスク1: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:🎯 フィルタ結果: 1 → 1 マスク
+INFO:features.extraction.integrated_precision_pipeline:🚀 統合精度向上パイプライン開始
+INFO:features.extraction.integrated_precision_pipeline:📊 初期品質スコア: 0.385
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 1/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=196.2, コントラスト=102.9, 複雑度=0.083
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.408
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.478
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.165
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.415
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.491
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.301
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073974.170656  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073974.191459  103538 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.260
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.260 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=parameter_adjustment
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 2/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=196.2, コントラスト=102.9, 複雑度=0.083
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.408
+W0000 00:00:1754073974.242795  103527 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.478
+W0000 00:00:1754073974.303434  103534 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.165
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.415
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.491
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.301
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073974.472586  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073974.492039  103552 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.260
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.260 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=processing_simplification
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 3/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=196.2, コントラスト=102.9, 複雑度=0.083
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.408
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.478
+W0000 00:00:1754073974.578235  103541 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1754073974.649954  103549 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.165
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.415
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.491
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.301
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073974.775794  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073974.794760  103566 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.260
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.260 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=fallback_mode
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 4/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=196.2, コントラスト=102.9, 複雑度=0.083
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.408
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+W0000 00:00:1754073974.875935  103557 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.478
+W0000 00:00:1754073974.954803  103563 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.165
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.415
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.491
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.301
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073975.080765  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073975.099805  103580 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.260
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.260 (critical)
+WARNING:features.extraction.integrated_precision_pipeline:⚠️ 最大リトライ回数に達しました
+INFO:features.extraction.integrated_precision_pipeline:🏁 パイプライン完了: 最終品質 0.260, 改善率 -32.5%, 処理時間 1.2秒
+🔍 Image shape: (1024, 725, 3)
+🚀 P1-020最適化 (p1_020_optimized) でマスク生成完了
+📊 Generated 79 masks
+👤 64 character masks
+🎯 64 scored masks
+🔧 YOLO拡張システム: 64 → 1 masks
+🔍 Step 1: Non-character element filtering
+🔍 Step 2: Face detection validation
+🎯 Final masks for selection: 1
+🔄 Multi-method fallback system starting with: fullbody_priority
+   試行 1/5: fullbody_priority
+🎯 複合スコア評価開始 (基準: fullbody_priority)
+   重み設定: {'area': 0.2, 'fullbody': 0.4, 'central': 0.15, 'grounded': 0.15, 'confidence': 0.1}
+   マスク1: 総合=0.611 (面積=0.15, 全身=0.73, 中央=0.55, 接地=0.79, 信頼度=0.90)
+      詳細: 面積比=0.029, アスペクト比=1.95, bbox=[0, 564, 127, 248], YOLO信頼度=0.898
+      🎯 現在の最高スコア更新!
+✅ 最適マスク選択: 総合スコア 0.611
+✅ Primary method fullbody_priority succeeded
+✅ Selected mask validation: faces=0, character_confidence=0.000
+⚠️ 統合精度向上未達: 最終品質 0.260（元マスク使用）
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正システム初期化完了
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正開始
+⚠️ 自動マスク修正エラー（元マスク使用）: OpenCV(4.11.0) :-1: error: (-5:Bad argument) in function 'morphologyEx'
+> Overload resolution failed:
+>  - src data type = bool is not supported
+>  - Expected Ptr<cv::UMat> for argument 'src'
+
+🔍 Validating mask quality...
+🎯 Mask quality: good, Face complete: True, Needs improvement: False
+💾 Character extracted: /mnt/c/AItools/lora/yado/tracker-workspace/P1-016/extraction/kana05_0007_extracted.jpg (size: 138x268)
+Successfully processed /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0007.jpg
+W0000 00:00:1754073975.187082  103569 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1754073975.257272  103576 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.common.memory_optimizer:🧹 メモリ最適化完了: RAM -74.0MB
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト終了: RAM 5773.1MB
+2025-08-02 03:46:15,306 - features.common.stable_batch_processor - INFO - ✅ 成功: kana05_0007.jpg - 成功: kana05_0007.jpg
+INFO:features.common.stable_batch_processor:✅ 成功: kana05_0007.jpg - 成功: kana05_0007.jpg
+2025-08-02 03:46:15,306 - features.common.stable_batch_processor - INFO - 🔄 処理中: kana05_0008.jpg
+INFO:features.common.stable_batch_processor:🔄 処理中: kana05_0008.jpg
+📝 処理中: kana05_0008.jpg
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト開始: RAM 5722.2MB
+INFO:features.processing.preprocessing.boundary_enhancer:BoundaryEnhancer初期化: skin_factor=1.5, edge_factor=2.0, contrast=1.3
+✅ 画像読み込み成功: 1494x2110, /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0008.jpg
+🔄 画像リサイズ: 1494x2110 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 193.8, グレースケール
+境界強調統計: コントラスト改善=0.96x, エッジ改善=0.75x
+INFO:features.processing.sam_optimization_config:🚀 SAM設定適用: P1-020最適化（6分→2.5分目標）
+INFO:features.processing.sam_optimization_config:📊 期待高速化: 2.4倍
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 59個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 59個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 59個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 24個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 3個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -94.9%
+INFO:features.evaluation.utils.non_character_filter:🔍 Non-character filter: 3 masks
+INFO:features.evaluation.utils.non_character_filter:   マスク1: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク2: 吹き出し=True, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ❌ 除外: 吹き出し(0.60)
+INFO:features.evaluation.utils.non_character_filter:   マスク3: 吹き出し=True, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ❌ 除外: 吹き出し(0.60)
+INFO:features.evaluation.utils.non_character_filter:🎯 Non-character filter result: 3 → 1 masks
+INFO:features.evaluation.utils.face_detection:Face detector loaded: /home/shakufuku/.local/lib/python3.10/site-packages/cv2/data/haarcascade_frontalface_default.xml
+INFO:features.evaluation.utils.face_detection:🔍 Validating 1 masks with face detection
+INFO:features.evaluation.utils.face_detection:   マスク1: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:🎯 フィルタ結果: 1 → 1 マスク
+INFO:features.extraction.integrated_precision_pipeline:🚀 統合精度向上パイプライン開始
+INFO:features.extraction.integrated_precision_pipeline:📊 初期品質スコア: 0.588
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 1/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=213.7, コントラスト=88.1, 複雑度=0.072
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.611
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.740
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.740
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.740
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.611
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.740
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.742
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073978.023733  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073978.043875  103596 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.338
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.338 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=parameter_adjustment
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 2/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=213.7, コントラスト=88.1, 複雑度=0.072
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.611
+W0000 00:00:1754073978.103593  103585 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.740
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.740
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.740
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.611
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.740
+W0000 00:00:1754073978.171090  103593 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.742
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073978.199151  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073978.218374  103610 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.338
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.338 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=processing_simplification
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 3/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=213.7, コントラスト=88.1, 複雑度=0.072
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.611
+W0000 00:00:1754073978.275220  103602 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.740
+W0000 00:00:1754073978.318374  103604 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.740
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.740
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.611
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.740
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.742
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073978.375833  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073978.394487  103624 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.338
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.338 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=fallback_mode
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 4/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=213.7, コントラスト=88.1, 複雑度=0.072
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.611
+W0000 00:00:1754073978.455117  103617 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.740
+W0000 00:00:1754073978.501111  103621 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.740
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.740
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.611
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.740
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.742
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073978.557375  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073978.575651  103638 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.338
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.338 (critical)
+WARNING:features.extraction.integrated_precision_pipeline:⚠️ 最大リトライ回数に達しました
+INFO:features.extraction.integrated_precision_pipeline:🏁 パイプライン完了: 最終品質 0.338, 改善率 -42.5%, 処理時間 0.7秒
+🔍 Image shape: (1024, 725, 3)
+🚀 P1-020最適化 (p1_020_optimized) でマスク生成完了
+📊 Generated 76 masks
+👤 59 character masks
+🎯 59 scored masks
+🔧 YOLO拡張システム: 59 → 3 masks
+🔍 Step 1: Non-character element filtering
+🔍 Step 2: Face detection validation
+🎯 Final masks for selection: 1
+🔄 Multi-method fallback system starting with: fullbody_priority
+   試行 1/5: fullbody_priority
+🎯 複合スコア評価開始 (基準: fullbody_priority)
+   重み設定: {'area': 0.2, 'fullbody': 0.4, 'central': 0.15, 'grounded': 0.15, 'confidence': 0.1}
+   マスク1: 総合=0.297 (面積=0.27, 全身=0.00, 中央=0.61, 接地=0.42, 信頼度=0.88)
+      詳細: 面積比=0.110, アスペクト比=0.75, bbox=[121, 0, 342, 257], YOLO信頼度=0.880
+      🎯 現在の最高スコア更新!
+✅ 最適マスク選択: 総合スコア 0.297
+✅ Primary method fullbody_priority succeeded
+✅ Selected mask validation: faces=0, character_confidence=0.000
+🚀 統合精度向上完了: 品質 0.588 → 0.338 (改善率 -42.5%, リトライ 3回, 処理時間 0.7秒)
+   完了段階: parameter_optimization, sam_postprocessing, contour_enhancement, quality_monitoring
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正システム初期化完了
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正開始
+W0000 00:00:1754073978.622691  103631 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正完了 - 改善率: 50.09%
+🔧 自動マスク修正適用: 改善率 50.09%
+   - モルフォロジカルOpening実行 - カーネル: 3x3
+   - 小成分除去: 0個除去 (閾値: 150px)
+   - ホール埋め: 対象ホールなし
+   - バイラテラルフィルタ適用 - d:11
+INFO:features.evaluation.utils.mask_quality_validator:🔧 Mask improvement needed: ['expand_for_body_completeness']
+INFO:features.evaluation.utils.mask_quality_validator:   🔄 Expanded mask for body completeness
+W0000 00:00:1754073978.687763  103634 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+🔍 Validating mask quality...
+🎯 Mask quality: fair, Face complete: True, Needs improvement: True
+💾 Character extracted: /mnt/c/AItools/lora/yado/tracker-workspace/P1-016/extraction/kana05_0008_extracted.jpg (size: 356x265)
+Successfully processed /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0008.jpg
+INFO:features.common.memory_optimizer:🧹 メモリ最適化完了: RAM +0.0MB
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト終了: RAM 6253.4MB
+2025-08-02 03:46:18,847 - features.common.stable_batch_processor - INFO - ✅ 成功: kana05_0008.jpg - 成功: kana05_0008.jpg
+INFO:features.common.stable_batch_processor:✅ 成功: kana05_0008.jpg - 成功: kana05_0008.jpg
+2025-08-02 03:46:18,851 - features.common.stable_batch_processor - INFO - チェックポイント保存: 9/39 完了
+INFO:features.common.stable_batch_processor:チェックポイント保存: 9/39 完了
+2025-08-02 03:46:18,852 - features.common.stable_batch_processor - INFO - 📊 進捗: 9/39 (23.1%)
+INFO:features.common.stable_batch_processor:📊 進捗: 9/39 (23.1%)
+2025-08-02 03:46:18,852 - features.common.stable_batch_processor - INFO - 📦 マイクロバッチ 4/13: 3 件
+INFO:features.common.stable_batch_processor:📦 マイクロバッチ 4/13: 3 件
+2025-08-02 03:46:18,852 - features.common.stable_batch_processor - INFO - 🔄 処理中: kana05_0009.jpg
+INFO:features.common.stable_batch_processor:🔄 処理中: kana05_0009.jpg
+📝 処理中: kana05_0009.jpg
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト開始: RAM 6253.4MB
+INFO:features.processing.preprocessing.boundary_enhancer:BoundaryEnhancer初期化: skin_factor=1.5, edge_factor=2.0, contrast=1.3
+✅ 画像読み込み成功: 1494x2110, /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0009.jpg
+🔄 画像リサイズ: 1494x2110 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 204.1, グレースケール
+境界強調統計: コントラスト改善=0.96x, エッジ改善=0.71x
+INFO:features.processing.sam_optimization_config:🚀 SAM設定適用: P1-020最適化（6分→2.5分目標）
+INFO:features.processing.sam_optimization_config:📊 期待高速化: 2.4倍
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 90個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0504
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 90個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 90個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 30個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 2個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -97.8%
+INFO:features.evaluation.utils.non_character_filter:🔍 Non-character filter: 2 masks
+INFO:features.evaluation.utils.non_character_filter:   マスク1: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク2: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:🎯 Non-character filter result: 2 → 2 masks
+INFO:features.evaluation.utils.face_detection:Face detector loaded: /home/shakufuku/.local/lib/python3.10/site-packages/cv2/data/haarcascade_frontalface_default.xml
+INFO:features.evaluation.utils.face_detection:🔍 Validating 2 masks with face detection
+INFO:features.evaluation.utils.face_detection:   マスク1: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:   マスク2: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:🎯 フィルタ結果: 2 → 2 マスク
+INFO:features.extraction.integrated_precision_pipeline:🚀 統合精度向上パイプライン開始
+INFO:features.extraction.integrated_precision_pipeline:📊 初期品質スコア: 0.442
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 1/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=222.7, コントラスト=79.9, 複雑度=0.069
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0504
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.465
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.575
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.169
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.489
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.576
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.169
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073982.420615  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073982.436039  103654 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.290
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.290 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=parameter_adjustment
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 2/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=222.7, コントラスト=79.9, 複雑度=0.069
+W0000 00:00:1754073982.467961  103644 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0504
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.465
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.575
+W0000 00:00:1754073982.532289  103650 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.169
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.489
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.576
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.169
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073983.151920  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073983.169857  103668 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.290
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.290 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=processing_simplification
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 3/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=222.7, コントラスト=79.9, 複雑度=0.069
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0504
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+W0000 00:00:1754073983.220766  103657 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.465
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.575
+W0000 00:00:1754073983.292314  103665 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.169
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.489
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.576
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.169
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073983.872183  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073983.891723  103683 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.290
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.290 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=fallback_mode
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 4/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=222.7, コントラスト=79.9, 複雑度=0.069
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0504
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.465
+W0000 00:00:1754073983.947030  103673 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.575
+W0000 00:00:1754073984.015620  103680 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.169
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.489
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.576
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.169
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073984.591600  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073984.609598  103697 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.290
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.290 (critical)
+WARNING:features.extraction.integrated_precision_pipeline:⚠️ 最大リトライ回数に達しました
+INFO:features.extraction.integrated_precision_pipeline:🏁 パイプライン完了: 最終品質 0.290, 改善率 -34.4%, 処理時間 2.9秒
+🔍 Image shape: (1024, 725, 3)
+🚀 P1-020最適化 (p1_020_optimized) でマスク生成完了
+📊 Generated 105 masks
+👤 90 character masks
+🎯 90 scored masks
+🔧 YOLO拡張システム: 90 → 2 masks
+🔍 Step 1: Non-character element filtering
+🔍 Step 2: Face detection validation
+🎯 Final masks for selection: 2
+🔄 Multi-method fallback system starting with: fullbody_priority
+   試行 1/5: fullbody_priority
+🎯 複合スコア評価開始 (基準: fullbody_priority)
+   重み設定: {'area': 0.2, 'fullbody': 0.4, 'central': 0.15, 'grounded': 0.15, 'confidence': 0.1}
+   マスク1: 総合=0.596 (面積=0.22, 全身=0.56, 中央=0.76, 接地=0.85, 信頼度=0.87)
+      詳細: 面積比=0.043, アスペクト比=1.62, bbox=[194, 587, 172, 279], YOLO信頼度=0.873
+      🎯 現在の最高スコア更新!
+   マスク2: 総合=0.636 (面積=0.27, 全身=0.61, 中央=0.67, 接地=1.00, 信頼度=0.87)
+      詳細: 面積比=0.108, アスペクト比=1.72, bbox=[113, 587, 253, 436], YOLO信頼度=0.873
+      🎯 現在の最高スコア更新!
+✅ 最適マスク選択: 総合スコア 0.636
+✅ Primary method fullbody_priority succeeded
+✅ Selected mask validation: faces=0, character_confidence=0.000
+⚠️ 統合精度向上未達: 最終品質 0.290（元マスク使用）
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正システム初期化完了
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正開始
+⚠️ 自動マスク修正エラー（元マスク使用）: OpenCV(4.11.0) :-1: error: (-5:Bad argument) in function 'morphologyEx'
+> Overload resolution failed:
+>  - src data type = bool is not supported
+>  - Expected Ptr<cv::UMat> for argument 'src'
+
+W0000 00:00:1754073984.660616  103684 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+🔍 Validating mask quality...
+🎯 Mask quality: good, Face complete: True, Needs improvement: False
+💾 Character extracted: /mnt/c/AItools/lora/yado/tracker-workspace/P1-016/extraction/kana05_0009_extracted.jpg (size: 274x447)
+Successfully processed /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0009.jpg
+W0000 00:00:1754073984.728507  103694 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.common.memory_optimizer:🧹 メモリ最適化完了: RAM -23.8MB
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト終了: RAM 6739.2MB
+2025-08-02 03:46:24,828 - features.common.stable_batch_processor - INFO - ✅ 成功: kana05_0009.jpg - 成功: kana05_0009.jpg
+INFO:features.common.stable_batch_processor:✅ 成功: kana05_0009.jpg - 成功: kana05_0009.jpg
+2025-08-02 03:46:24,828 - features.common.stable_batch_processor - INFO - 🔄 処理中: kana05_0010.jpg
+INFO:features.common.stable_batch_processor:🔄 処理中: kana05_0010.jpg
+📝 処理中: kana05_0010.jpg
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト開始: RAM 6664.1MB
+INFO:features.processing.preprocessing.boundary_enhancer:BoundaryEnhancer初期化: skin_factor=1.5, edge_factor=2.0, contrast=1.3
+✅ 画像読み込み成功: 1494x2110, /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0010.jpg
+🔄 画像リサイズ: 1494x2110 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 195.4, グレースケール
+境界強調統計: コントラスト改善=0.97x, エッジ改善=0.65x
+INFO:features.processing.sam_optimization_config:🚀 SAM設定適用: P1-020最適化（6分→2.5分目標）
+INFO:features.processing.sam_optimization_config:📊 期待高速化: 2.4倍
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 77個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 77個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 77個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 26個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 5個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -93.5%
+INFO:features.evaluation.utils.non_character_filter:🔍 Non-character filter: 5 masks
+INFO:features.evaluation.utils.non_character_filter:   マスク1: 吹き出し=True, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ❌ 除外: 吹き出し(0.60)
+INFO:features.evaluation.utils.non_character_filter:   マスク2: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク3: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:   マスク4: 吹き出し=True, マスク物=True, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ❌ 除外: 吹き出し(0.60), マスク物(0.85)
+INFO:features.evaluation.utils.non_character_filter:   マスク5: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:🎯 Non-character filter result: 5 → 3 masks
+INFO:features.evaluation.utils.face_detection:Face detector loaded: /home/shakufuku/.local/lib/python3.10/site-packages/cv2/data/haarcascade_frontalface_default.xml
+INFO:features.evaluation.utils.face_detection:🔍 Validating 3 masks with face detection
+INFO:features.evaluation.utils.face_detection:   マスク1: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:   マスク2: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:   マスク3: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:🎯 フィルタ結果: 3 → 3 マスク
+INFO:features.extraction.integrated_precision_pipeline:🚀 統合精度向上パイプライン開始
+INFO:features.extraction.integrated_precision_pipeline:📊 初期品質スコア: 0.620
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 1/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=220.8, コントラスト=82.1, 複雑度=0.072
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.650
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.697
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.262
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.669
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.695
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.258
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073989.105284  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073989.123945  103713 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.358
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.358 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=parameter_adjustment
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 2/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=220.8, コントラスト=82.1, 複雑度=0.072
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.650
+W0000 00:00:1754073989.180966  103702 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.697
+W0000 00:00:1754073989.234066  103711 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.262
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.669
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.695
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.258
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073990.633264  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073990.651199  103728 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.358
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.358 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=processing_simplification
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 3/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=220.8, コントラスト=82.1, 複雑度=0.072
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+W0000 00:00:1754073990.704615  103716 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.650
+W0000 00:00:1754073990.745658  103723 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.697
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.262
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.669
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.695
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.258
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073992.172233  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073992.187666  103743 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.358
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.358 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=fallback_mode
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 4/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=220.8, コントラスト=82.1, 複雑度=0.072
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.650
+W0000 00:00:1754073992.244003  103732 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.697
+W0000 00:00:1754073992.287489  103737 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.262
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.669
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.695
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.258
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073993.688608  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073993.707599  103758 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.358
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.358 (critical)
+WARNING:features.extraction.integrated_precision_pipeline:⚠️ 最大リトライ回数に達しました
+INFO:features.extraction.integrated_precision_pipeline:🏁 パイプライン完了: 最終品質 0.358, 改善率 -42.3%, 処理時間 6.1秒
+🔍 Image shape: (1024, 725, 3)
+🚀 P1-020最適化 (p1_020_optimized) でマスク生成完了
+📊 Generated 88 masks
+👤 77 character masks
+🎯 77 scored masks
+🔧 YOLO拡張システム: 77 → 5 masks
+🔍 Step 1: Non-character element filtering
+🔍 Step 2: Face detection validation
+🎯 Final masks for selection: 3
+🔄 Multi-method fallback system starting with: fullbody_priority
+   試行 1/5: fullbody_priority
+🎯 複合スコア評価開始 (基準: fullbody_priority)
+   重み設定: {'area': 0.2, 'fullbody': 0.4, 'central': 0.15, 'grounded': 0.15, 'confidence': 0.1}
+   マスク1: 総合=0.483 (面積=0.71, 全身=0.00, 中央=0.66, 接地=1.00, 信頼度=0.91)
+      詳細: 面積比=0.284, アスペクト比=0.51, bbox=[64, 684, 659, 339], YOLO信頼度=0.912
+      🎯 現在の最高スコア更新!
+   マスク2: 総合=0.316 (面積=0.03, 全身=0.00, 中央=0.52, 接地=0.93, 信頼度=0.91)
+      詳細: 面積比=0.007, アスペクト比=0.57, bbox=[490, 878, 133, 76], YOLO信頼度=0.912
+      📊 スコア不足 (最高: 0.483)
+   マスク3: 総合=0.349 (面積=0.05, 全身=0.24, 中央=0.67, 接地=0.39, 信頼度=0.87)
+      詳細: 面積比=0.009, アスペクト比=1.04, bbox=[321, 120, 113, 117], YOLO信頼度=0.866
+      📊 スコア不足 (最高: 0.483)
+✅ 最適マスク選択: 総合スコア 0.483
+✅ Primary method fullbody_priority succeeded
+✅ Selected mask validation: faces=0, character_confidence=0.000
+🚀 統合精度向上完了: 品質 0.620 → 0.358 (改善率 -42.3%, リトライ 3回, 処理時間 6.1秒)
+   完了段階: parameter_optimization, sam_postprocessing, quality_monitoring
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正システム初期化完了
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正開始
+W0000 00:00:1754073993.749451  103748 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正完了 - 改善率: 50.04%
+🔧 自動マスク修正適用: 改善率 50.04%
+   - モルフォロジカルOpening実行 - カーネル: 3x3
+   - 小成分除去: 0個除去 (閾値: 150px)
+   - ホール埋め: 対象ホールなし
+   - バイラテラルフィルタ適用 - d:11
+W0000 00:00:1754073993.813063  103753 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.evaluation.utils.mask_quality_validator:🔧 Mask improvement needed: ['expand_for_body_completeness']
+INFO:features.evaluation.utils.mask_quality_validator:   🔄 Expanded mask for body completeness
+🔍 Validating mask quality...
+🎯 Mask quality: fair, Face complete: True, Needs improvement: True
+💾 Character extracted: /mnt/c/AItools/lora/yado/tracker-workspace/P1-016/extraction/kana05_0010_extracted.jpg (size: 673x353)
+Successfully processed /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0010.jpg
+INFO:features.common.memory_optimizer:🧹 メモリ最適化完了: RAM +0.0MB
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト終了: RAM 7187.4MB
+2025-08-02 03:46:34,021 - features.common.stable_batch_processor - INFO - ✅ 成功: kana05_0010.jpg - 成功: kana05_0010.jpg
+INFO:features.common.stable_batch_processor:✅ 成功: kana05_0010.jpg - 成功: kana05_0010.jpg
+2025-08-02 03:46:34,021 - features.common.stable_batch_processor - INFO - 🔄 処理中: kana05_0011.jpg
+INFO:features.common.stable_batch_processor:🔄 処理中: kana05_0011.jpg
+📝 処理中: kana05_0011.jpg
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト開始: RAM 7187.4MB
+INFO:features.processing.preprocessing.boundary_enhancer:BoundaryEnhancer初期化: skin_factor=1.5, edge_factor=2.0, contrast=1.3
+✅ 画像読み込み成功: 1494x2110, /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0011.jpg
+🔄 画像リサイズ: 1494x2110 → 725x1024 (scale=0.485)
+カラー判定: 最大チャンネル差分=0.000, 閾値=0.01, 結果=グレースケール
+📊 画像統計: 725x1024, 平均輝度: 195.0, グレースケール
+境界強調統計: コントラスト改善=0.97x, エッジ改善=0.68x
+INFO:features.processing.sam_optimization_config:🚀 SAM設定適用: P1-020最適化（6分→2.5分目標）
+INFO:features.processing.sam_optimization_config:📊 期待高速化: 2.4倍
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 75個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 75個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 75個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 34個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 1個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -98.7%
+INFO:features.evaluation.utils.non_character_filter:🔍 Non-character filter: 1 masks
+INFO:features.evaluation.utils.non_character_filter:   マスク1: 吹き出し=False, マスク物=False, テキスト=False
+INFO:features.evaluation.utils.non_character_filter:   ✅ キープ
+INFO:features.evaluation.utils.non_character_filter:🎯 Non-character filter result: 1 → 1 masks
+INFO:features.evaluation.utils.face_detection:Face detector loaded: /home/shakufuku/.local/lib/python3.10/site-packages/cv2/data/haarcascade_frontalface_default.xml
+INFO:features.evaluation.utils.face_detection:🔍 Validating 1 masks with face detection
+INFO:features.evaluation.utils.face_detection:   マスク1: 顔検出=False, 信頼度=0.000, キャラクター=False
+INFO:features.evaluation.utils.face_detection:   ✅ キャラクターとして認定（信頼度=0.000）
+INFO:features.evaluation.utils.face_detection:🎯 フィルタ結果: 1 → 1 マスク
+INFO:features.extraction.integrated_precision_pipeline:🚀 統合精度向上パイプライン開始
+INFO:features.extraction.integrated_precision_pipeline:📊 初期品質スコア: 0.558
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 1/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=220.9, コントラスト=80.9, 複雑度=0.076
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.566
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.820
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.626
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.626
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.420
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.629
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.313
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073997.207034  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073997.225314  103773 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.271
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.271 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=parameter_adjustment
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 2/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=220.9, コントラスト=80.9, 複雑度=0.076
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+W0000 00:00:1754073997.257731  103765 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.566
+W0000 00:00:1754073997.285605  103771 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.820
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.626
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.626
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.420
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.629
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.313
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073997.621058  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073997.639792  103787 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.271
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.271 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=processing_simplification
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 3/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=220.9, コントラスト=80.9, 複雑度=0.076
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.566
+W0000 00:00:1754073997.700305  103776 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.820
+W0000 00:00:1754073997.745589  103780 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.626
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.626
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.420
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.629
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.313
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073998.036766  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073998.053773  103802 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.271
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.271 (critical)
+INFO:features.extraction.integrated_precision_pipeline:🔄 リトライ実行: 戦略=fallback_mode
+INFO:features.extraction.integrated_precision_pipeline:🔄 処理試行 4/4
+INFO:features.processing.adaptive_parameter_optimizer:🎛️ 適応的パラメータ最適化開始
+INFO:features.processing.adaptive_parameter_optimizer:📊 画像特性: 明度=220.9, コントラスト=80.9, 複雑度=0.076
+INFO:features.processing.adaptive_parameter_optimizer:✅ 適応的パラメータ最適化完了
+INFO:features.extraction.yolo_detection_expansion:🚀 YOLO検出範囲拡張開始: 1個のマスク処理
+INFO:features.extraction.yolo_detection_expansion:📊 アダプティブ閾値: 0.0554
+INFO:features.extraction.yolo_detection_expansion:📏 境界ボックス拡張: 1個処理完了
+INFO:features.extraction.yolo_detection_expansion:👤 全身検出最適化: 1個最適化完了
+INFO:features.extraction.yolo_detection_expansion:🎌 アニメ特化フィルタ: 1個通過
+INFO:features.extraction.yolo_detection_expansion:🎯 スコア再計算完了: 0個
+INFO:features.extraction.yolo_detection_expansion:📈 改善統計: 検出率向上 -100.0%
+INFO:features.processing.sam_postprocessing_pipeline:🔧 SAM後処理パイプライン開始
+INFO:features.processing.sam_postprocessing_pipeline:📊 初期品質スコア: 0.566
+W0000 00:00:1754073998.112460  103792 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.820
+W0000 00:00:1754073998.193918  103798 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.626
+INFO:features.processing.sam_postprocessing_pipeline:🎨 輪郭強化完了: コンパクトネス 0.626
+INFO:features.processing.sam_postprocessing_pipeline:📈 最終品質スコア: 0.420
+INFO:features.processing.contour_enhancement_system:🎨 輪郭後処理システム強化開始
+INFO:features.processing.contour_enhancement_system:📊 初期輪郭品質: コンパクトネス 0.629
+INFO:features.processing.contour_enhancement_system:📈 最終輪郭品質: コンパクトネス 0.313
+INFO:features.evaluation.integrated_quality_monitor:🔍 品質監視開始: temp_image
+I0000 00:00:1754073998.444561  102916 gl_context_egl.cc:85] Successfully initialized EGL. Major : 1 Minor: 5
+I0000 00:00:1754073998.462708  103816 gl_context.cc:369] GL version: 3.1 (OpenGL ES 3.1 Mesa 23.2.1-1ubuntu3.1~22.04.3), renderer: D3D12 (AMD Radeon(TM) Graphics)
+WARNING:features.evaluation.integrated_quality_monitor:⚠️ 客観指標計算エラー: 'ObjectiveMetricResult' object has no attribute 'score'
+WARNING:features.evaluation.integrated_quality_monitor:🚨 品質危険レベル: temp_image - スコア 0.271
+INFO:features.evaluation.integrated_quality_monitor:📊 品質監視完了: スコア 0.271 (critical)
+WARNING:features.extraction.integrated_precision_pipeline:⚠️ 最大リトライ回数に達しました
+INFO:features.extraction.integrated_precision_pipeline:🏁 パイプライン完了: 最終品質 0.271, 改善率 -51.5%, 処理時間 1.6秒
+🔍 Image shape: (1024, 725, 3)
+🚀 P1-020最適化 (p1_020_optimized) でマスク生成完了
+📊 Generated 95 masks
+👤 75 character masks
+🎯 75 scored masks
+🔧 YOLO拡張システム: 75 → 1 masks
+🔍 Step 1: Non-character element filtering
+🔍 Step 2: Face detection validation
+🎯 Final masks for selection: 1
+🔄 Multi-method fallback system starting with: fullbody_priority
+   試行 1/5: fullbody_priority
+🎯 複合スコア評価開始 (基準: fullbody_priority)
+   重み設定: {'area': 0.2, 'fullbody': 0.4, 'central': 0.15, 'grounded': 0.15, 'confidence': 0.1}
+   マスク1: 総合=0.513 (面積=0.14, 全身=0.56, 中央=0.57, 接地=0.56, 信頼度=0.91)
+      詳細: 面積比=0.057, アスペクト比=1.62, bbox=[457, 0, 213, 345], YOLO信頼度=0.909
+      🎯 現在の最高スコア更新!
+✅ 最適マスク選択: 総合スコア 0.513
+✅ Primary method fullbody_priority succeeded
+✅ Selected mask validation: faces=0, character_confidence=0.000
+⚠️ 統合精度向上未達: 最終品質 0.271（元マスク使用）
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正システム初期化完了
+INFO:features.processing.postprocessing.auto_mask_correction:自動マスク修正開始
+⚠️ 自動マスク修正エラー（元マスク使用）: OpenCV(4.11.0) :-1: error: (-5:Bad argument) in function 'morphologyEx'
+> Overload resolution failed:
+>  - src data type = bool is not supported
+>  - Expected Ptr<cv::UMat> for argument 'src'
+
+W0000 00:00:1754073998.512064  103803 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+🔍 Validating mask quality...
+🎯 Mask quality: good, Face complete: True, Needs improvement: False
+💾 Character extracted: /mnt/c/AItools/lora/yado/tracker-workspace/P1-016/extraction/kana05_0011_extracted.jpg (size: 234x247)
+Successfully processed /mnt/c/AItools/lora/train/yado/org/kana05/kana05_0011.jpg
+W0000 00:00:1754073998.552253  103814 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:features.common.memory_optimizer:🧹 メモリ最適化完了: RAM -23.9MB
+INFO:features.common.memory_optimizer:📊 メモリコンテキスト終了: RAM 7690.6MB
+2025-08-02 03:46:38,657 - features.common.stable_batch_processor - INFO - ✅ 成功: kana05_0011.jpg - 成功: kana05_0011.jpg
+INFO:features.common.stable_batch_processor:✅ 成功: kana05_0011.jpg - 成功: kana05_0011.jpg
+2025-08-02 03:46:38,661 - features.common.stable_batch_processor - INFO - チェックポイント保存: 12/39 完了
+INFO:features.common.stable_batch_processor:チェックポイント保存: 12/39 完了
+2025-08-02 03:46:38,661 - features.common.stable_batch_processor - INFO - 📊 進捗: 12/39 (30.8%)
+INFO:features.common.stable_batch_processor:📊 進捗: 12/39 (30.8%)
+2025-08-02 03:46:38,661 - features.common.stable_batch_processor - INFO - 📦 マイクロバッチ 5/13: 3 件
+INFO:features.common.stable_batch_processor:📦 マイクロバッチ 5/13: 3 件
+2025-08-02 03:46:38,662 - features.common.stable_batch_processor - WARNING - ⚠️ プロセス健全性低下: メモリ使用量超過: 9005.2MB > 8000MB
+WARNING:features.common.stable_batch_processor:⚠️ プロセス健全性低下: メモリ使用量超過: 9005.2MB > 8000MB
+2025-08-02 03:46:38,662 - features.common.stable_batch_processor - INFO - 💾 現在の進捗を保存して終了
+INFO:features.common.stable_batch_processor:💾 現在の進捗を保存して終了
+2025-08-02 03:46:38,669 - features.common.stable_batch_processor - INFO - チェックポイント保存: 12/39 完了
+INFO:features.common.stable_batch_processor:チェックポイント保存: 12/39 完了
+🎯 P1-019バッチ処理完了: 健全性問題により中断
+📊 統計: 成功 12件, エラー 0件, リトライ 0回
+
+🎯 バッチ処理完了!
+📊 結果: 0/39枚成功 (0.0%)
+⏱️ 処理時間: 65.3秒
+💾 メモリ統計: RAM 7622.1MB
+    GPU 2923.6MB使用
+    最適化実行: GC 0回, キャッシュクリア 0回
+⚠️ 成功した抽出がないため通知をスキップ
