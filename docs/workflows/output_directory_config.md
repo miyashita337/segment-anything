@@ -1,7 +1,7 @@
 # 出力ディレクトリ設定
 
-**最終更新**: 2025-07-26  
-**バージョン**: 1.0
+**最終更新**: 2025-08-02  
+**バージョン**: 1.1（v0.8.1対応）
 
 ## 📋 概要
 
@@ -45,6 +45,18 @@ workspace/
 ## 🛠 使用方法
 
 ### 環境変数での設定
+
+#### v0.8.1以降のデフォルトパス
+```bash
+# 新しいデフォルト設定（v0.8.1以降推奨）
+export DEFAULT_INPUT_PATH="/mnt/c/AItools/lora/train/yado/org/kana05/"
+export DEFAULT_OUTPUT_BASE="/mnt/c/AItools/lora/train/yado/tracker-workspace"
+
+# トラッカー別出力
+# 出力先: ${DEFAULT_OUTPUT_BASE}/${TRACKER_ID}/extraction/
+```
+
+#### 従来の設定（v0.8.0以前）
 ```bash
 # デフォルトの基本パス
 export WORKSPACE_BASE="/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace"
