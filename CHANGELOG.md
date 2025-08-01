@@ -11,6 +11,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.8.2] - 2025-08-02
+
+### Documentation
+- **P1-DOC-UPDATE完了**: v0.8.1修正内容を反映したドキュメント統一更新
+  - `CLAUDE.md`: v0.8.1の重要修正内容（BatchMemoryManagerスコープエラー、面積比閾値、拡張子修正）を追加
+  - `docs/workflows/output_directory_config.md`: v1.1に更新、新デフォルトパス設定を追加
+  - 実運用検証: 12枚抽出成功、品質評価完了、ダッシュボード生成確認
+
+### Validation
+- **実抽出テスト**: kana05データセットで12枚成功抽出（品質スコア60.0%）
+- **品質指標確認**: LCA精度100%、A/B評価率87.5%、FPS 0.667達成
+- **ワークフロー検証**: 統合品質チェック・ダッシュボード生成・Google Sheets連携正常動作
+
 ## [v0.8.1] - 2025-08-02
 
 ### Fixed
