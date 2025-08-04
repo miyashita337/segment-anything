@@ -251,7 +251,7 @@ def calculate_image_statistics(image: np.ndarray) -> dict:
 
 
 def preprocess_image_pipeline(image_path: str,
-                            max_size: int = 1024,
+                            max_size: int = 4096,  # QC成功版対応: 元サイズ保持のため大幅増加
                             enhance_contrast: bool = False) -> Tuple[Optional[np.ndarray], Optional[np.ndarray], float]:
     """
     画像前処理パイプライン

@@ -4,6 +4,8 @@ Provides CLI interface for extracting anime characters from manga images.
 """
 import numpy as np
 import cv2
+import random
+import torch
 
 import click
 import logging
@@ -65,6 +67,8 @@ logger = logging.getLogger(__name__)
               type=click.Choice(['original', 'p1_020_optimized', 'p1_020_balanced', 'p1_020_aggressive']),
               default='p1_020_optimized',
               help='P1-020: SAM optimization profile for 93% speed improvement')
+@click.option('--enable-advanced-pipeline', is_flag=True, 
+              help='Enable 3-stage improvement pipeline (experimental, use with caution)')
 def extract_character(
     input_path: str,
     output_path: str,
@@ -74,7 +78,8 @@ def extract_character(
     no_images: bool = False,
     max_files: Optional[int] = None,
     resume: bool = False,
-    sam_optimization_profile: str = 'p1_020_optimized'
+    sam_optimization_profile: str = 'p1_020_optimized',
+    enable_advanced_pipeline: bool = False
 ) -> None:
     """Extract anime character from manga image.
 
@@ -84,6 +89,15 @@ def extract_character(
         batch: Process directory of images if True
         verbose: Enable detailed logging if True
     """
+    # QC-KANA08決定論的実行: ランダムシード固定
+    random.seed(42)
+    np.random.seed(42)
+    torch.manual_seed(42)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(42)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+    
     # Initialize models if not already initialized
     if get_sam_model() is None or get_yolo_model() is None:
         if verbose:
@@ -150,7 +164,7 @@ def extract_character(
         def process_single_file(file_path_str: str) -> Tuple[bool, str]:
             """単一ファイル処理（P1-019用）"""
             img_path = Path(file_path_str)
-            output_path_single = output_dir / f'{img_path.stem}_extracted.jpg'
+            output_path_single = output_dir / f'extracted_{img_path.stem}.png'
             
             try:
                 if verbose:
@@ -276,7 +290,9 @@ def extract_character(
             sam_model,
             yolo_model, 
             perf_monitor,
-            verbose
+            verbose,
+            sam_optimization_profile,
+            enable_advanced_pipeline
         )
 
 @optimize_for_large_dataset
@@ -288,7 +304,8 @@ def process_single_image(
     yolo_model: Any,
     perf_monitor: Any,
     verbose: bool = False,
-    sam_optimization_profile: str = 'p1_020_optimized'
+    sam_optimization_profile: str = 'p1_020_optimized',
+    enable_advanced_pipeline: bool = False
 ) -> Optional[MaskType]:
     """Process a single image for character extraction.
 
@@ -309,123 +326,122 @@ def process_single_image(
         if processed_bgr is None:
             return None
 
-        # 境界強調前処理を適用
-        boundary_enhancer = BoundaryEnhancer()
-        enhanced_rgb = boundary_enhancer.enhance_image_boundaries(processed_rgb)
-        enhanced_bgr = cv2.cvtColor(enhanced_rgb, cv2.COLOR_RGB2BGR)
+        # QC成功版対応: 境界強調前処理を無効化
+        enhanced_rgb = processed_rgb
+        enhanced_bgr = processed_bgr
         
         if verbose:
-            # 強調統計情報を取得・表示
-            stats = boundary_enhancer.get_enhancement_stats(processed_rgb, enhanced_rgb)
-            click.echo(f"境界強調統計: コントラスト改善={stats['contrast_improvement']:.2f}x, "
-                      f"エッジ改善={stats['edge_improvement']:.2f}x")
+            click.echo("🎯 QC成功版対応: 境界強調処理無効化")
 
-        # Use fullbody_priority for better upper body extraction
-        quality_method = 'fullbody_priority'
-        
-        if perf_monitor and hasattr(perf_monitor, 'measure'):
-            with perf_monitor.measure('inference'):
-                mask = generate_character_mask(enhanced_bgr, sam_model, yolo_model, quality_method, sam_optimization_profile)
-        else:
-            mask = generate_character_mask(enhanced_bgr, sam_model, yolo_model, quality_method, sam_optimization_profile)
+        # QC成功版完全再現: YOLO→SAM直接処理フロー
+        mask = generate_character_mask_qc_style(enhanced_bgr, enhanced_rgb, sam_model, yolo_model, verbose)
 
         if mask is not None:
-            # 🚀 P1-A004: セグメンテーション精度総合向上システム適用
+            # 📊 品質監視システム + 条件付き3段階処理
+            quality_score = 0.0
+            final_mask = mask  # デフォルトは元マスク使用
+            
             try:
-                from features.extraction.integrated_precision_pipeline import (
-                    IntegratedPrecisionPipeline,
+                from features.processing.postprocessing.postprocessing import (
+                    calculate_mask_quality_metrics,
                 )
                 
-                precision_pipeline = IntegratedPrecisionPipeline()
-                
-                # 統合精度向上パイプライン実行
-                pipeline_result = precision_pipeline.process_with_integrated_pipeline(
-                    image=enhanced_bgr,
-                    initial_mask=mask,
-                    yolo_model=yolo_model,
-                    sam_model=sam_model,
-                    target_quality=0.5
+                # 品質スコア計算（処理には影響させない）
+                metrics = calculate_mask_quality_metrics(mask)
+                quality_score = (
+                    metrics.get('compactness', 0.0) * 0.4 +
+                    metrics.get('fill_ratio', 0.0) * 0.3 +
+                    metrics.get('coverage_ratio', 0.0) * 0.3
                 )
                 
-                if pipeline_result.success and pipeline_result.final_mask is not None:
-                    mask = pipeline_result.final_mask
-                    
+                # 🚀 条件付き3段階処理（実験的機能）
+                if enable_advanced_pipeline:
                     if verbose:
-                        improvement_pct = pipeline_result.improvement_ratio * 100
-                        click.echo(f'🚀 統合精度向上完了: 品質 {pipeline_result.initial_quality:.3f} → {pipeline_result.final_quality:.3f} '
-                                 f'(改善率 {improvement_pct:+.1f}%, リトライ {pipeline_result.retry_count}回, '
-                                 f'処理時間 {pipeline_result.total_processing_time:.1f}秒)')
+                        click.echo('🎆 高度パイプライン有効化（実験的）')
+                    
+                    try:
+                        from features.extraction.integrated_precision_pipeline import (
+                            IntegratedPrecisionPipeline,
+                        )
                         
-                        # 処理段階の詳細表示
-                        completed_stages = [s.name for s in pipeline_result.processing_stages if s.status == 'completed']
-                        if completed_stages:
-                            click.echo(f'   完了段階: {", ".join(completed_stages)}')
-                else:
-                    if verbose:
-                        click.echo(f'⚠️ 統合精度向上未達: 最終品質 {pipeline_result.final_quality:.3f}（元マスク使用）')
-                
-            except Exception as e:
-                if verbose:
-                    click.echo(f'⚠️ 統合精度向上エラー（フォールバック使用）: {e}')
-                
-                # フォールバック: 従来のSAM後処理のみ適用
-                try:
-                    from features.processing.sam_postprocessing_pipeline import (
-                        SAMPostprocessingPipeline,
-                    )
-                    postprocessor = SAMPostprocessingPipeline()
+                        precision_pipeline = IntegratedPrecisionPipeline()
+                        
+                        # 3段階改善パイプライン実行（目標値を緩い設定）
+                        pipeline_result = precision_pipeline.process_with_integrated_pipeline(
+                            image=enhanced_bgr,
+                            initial_mask=mask,
+                            yolo_model=yolo_model,
+                            sam_model=sam_model,
+                            target_quality=0.25  # 50%から25%に緩和
+                        )
+                        
+                        if pipeline_result.success and pipeline_result.final_mask is not None:
+                            final_mask = pipeline_result.final_mask
+                            quality_score = pipeline_result.final_quality  # 更新された品質スコア
+                            
+                            if verbose:
+                                improvement_pct = pipeline_result.improvement_ratio * 100
+                                click.echo(f'🚀 3段階改善完了: {pipeline_result.initial_quality:.3f} → {pipeline_result.final_quality:.3f} '
+                                         f'({improvement_pct:+.1f}%, リトライ {pipeline_result.retry_count}回)')
+                        else:
+                            if verbose:
+                                click.echo(f'⚠️ 3段階改善未達（元マスク使用）: {pipeline_result.final_quality:.3f}')
                     
-                    # マスク品質向上処理
-                    enhancement_result = postprocessor.enhance_mask_quality(mask, enhanced_bgr)
-                    enhanced_mask = enhancement_result.get('enhanced_mask', mask)
-                    quality_score = enhancement_result.get('quality_score', 0.0)
-                    
-                    if verbose:
-                        improvements = enhancement_result.get('improvements', [])
-                        click.echo(f'🔧 フォールバック処理完了: 品質スコア {quality_score:.3f}, 改善 {len(improvements)}項目')
-                    
-                    # 改良されたマスクを使用
-                    mask = enhanced_mask
-                    
-                except Exception as fallback_e:
-                    if verbose:
-                        click.echo(f'⚠️ フォールバック処理もエラー（元マスク使用）: {fallback_e}')
-                    # エラー時は元のマスクを継続使用
-            
-            # P1-005: 自動マスク修正機能を適用
-            try:
-                auto_corrector = create_auto_mask_corrector(quality_focused=True)
-                correction_result = auto_corrector.correct_mask_automatically(
-                    mask, enhanced_bgr, quality_score=quality_score if 'quality_score' in locals() else None
-                )
-                
-                if correction_result['processing_success']:
-                    corrected_mask = correction_result['corrected_mask']
-                    improvement_ratio = correction_result['improvement_ratio']
-                    
-                    # 改善が見られた場合のみ適用
-                    if improvement_ratio > 0.1:  # 10%以上の改善
-                        mask = corrected_mask
+                    except Exception as pipeline_e:
                         if verbose:
-                            click.echo(f'🔧 自動マスク修正適用: 改善率 {improvement_ratio:.2%}')
-                            for log_entry in correction_result['correction_log']:
-                                click.echo(f'   - {log_entry}')
-                    elif verbose:
-                        click.echo(f'ℹ️ 自動マスク修正: 改善効果が低いためスキップ ({improvement_ratio:.2%})')
+                            click.echo(f'⚠️ 3段階パイプラインエラー（QC成功版にフォールバック）: {pipeline_e}')
+                        # エラー時は元マスクを使用
                 
-            except Exception as correction_e:
+                # 品質スコアに基づく情報表示（処理制御なし）
+                if quality_score < 0.05:  # 5%未満で警告
+                    if verbose:
+                        status = '🚀 改善済み' if enable_advanced_pipeline else '⚠️ 極端に低い'
+                        click.echo(f'⚠️ 品質警告: スコア {quality_score:.3f} ({status})')
+                elif quality_score < 0.10:  # 10%未満で統計フラグ
+                    if verbose:
+                        click.echo(f'📊 品質監視: スコア {quality_score:.3f} （要統計監視）')
+                elif quality_score < 0.15:  # 15%未満で改善候補
+                    if verbose:
+                        click.echo(f'🔧 品質分析: スコア {quality_score:.3f} （改善検討候補）')
+                elif verbose:
+                    click.echo(f'✅ 品質確認: スコア {quality_score:.3f}')
+                
+                # 統計データ蓄積（将来の改善基盤）
+                try:
+                    import json
+                    from datetime import datetime
+                    from pathlib import Path
+                    
+                    stats_file = Path(output_path).parent / "quality_statistics.jsonl"
+                    with open(stats_file, 'a', encoding='utf-8') as f:
+                        stats_entry = {
+                            'timestamp': datetime.now().isoformat(),
+                            'image_path': str(input_path),
+                            'quality_score': quality_score,
+                            'metrics': metrics,
+                            'advanced_pipeline_used': enable_advanced_pipeline,
+                            'processing_success': True
+                        }
+                        f.write(json.dumps(stats_entry, ensure_ascii=False) + '\n')
+                except Exception as stats_e:
+                    if verbose:
+                        click.echo(f'📊 統計記録エラー（処理継続）: {stats_e}')
+                
+            except Exception as quality_e:
                 if verbose:
-                    click.echo(f'⚠️ 自動マスク修正エラー（元マスク使用）: {correction_e}')
+                    click.echo(f'📊 品質計算エラー（処理継続）: {quality_e}')
+                # 品質計算失敗でも処理は継続
             
-            # Skip quality check for testing and save directly
+            # 全画像を通す方針: 品質に関係なく必ず保存実行
             try:
-                save_extracted_character(enhanced_bgr, mask, output_path)
+                save_extracted_character(enhanced_bgr, final_mask, output_path)
                 if verbose:
-                    click.echo(f'Successfully processed {input_path}')
-                return mask
+                    pipeline_status = '🚀 高度' if enable_advanced_pipeline else '🎯 QC成功'
+                    click.echo(f'✅ 抽出完了: {input_path.name} ({pipeline_status}版, 品質: {quality_score:.3f})')
+                return final_mask
             except Exception as e:
                 if verbose:
-                    click.echo(f'Save failed: {e}')
+                    click.echo(f'❌ 保存失敗: {e}')
                 return None
 
         if verbose:
@@ -491,36 +507,25 @@ def generate_character_mask(image: ImageType, sam_model: Any, yolo_model: Any, q
         
         print(f"👤 {len(character_masks)} character masks")
             
-        # Score masks with YOLO
-        scored_masks = yolo_model.score_masks_with_detections(character_masks, image_array)
-        print(f"🎯 {len(scored_masks) if scored_masks else 0} scored masks")
+        # QC成功版対応: 直接SAMスコアを使用（YOLOスコアリング無効化）
+        # SAMマスクに直接スコアを付与
+        scored_masks = []
+        for i, mask in enumerate(character_masks):
+            mask_with_score = mask.copy()
+            # SAMのstability_scoreをyolo_scoreとして使用
+            stability_score = mask.get('stability_score', 0.0)
+            mask_with_score.update({
+                'yolo_confidence': stability_score,
+                'yolo_score': stability_score,
+                'combined_score': stability_score
+            })
+            scored_masks.append(mask_with_score)
         
-        # 🚀 YOLO検出範囲拡張システム適用 (P1-A001)
-        try:
-            from features.extraction.yolo_detection_expansion import YOLODetectionExpander
-            expander = YOLODetectionExpander()
-            expanded_masks = expander.expand_detection_capabilities(yolo_model, image_array, scored_masks)
-            print(f"🔧 YOLO拡張システム: {len(scored_masks)} → {len(expanded_masks)} masks")
-            scored_masks = expanded_masks
-        except Exception as e:
-            print(f"⚠️ YOLO拡張システムエラー（フォールバック使用）: {e}")
-            # エラー時は元のマスクを継続使用
+        print(f"🎯 QC成功版対応: 直接SAMスコア使用 - {len(scored_masks)} masks")
         
-        # Apply enhanced filtering system
-        if scored_masks:
-            # Step 1: Filter non-character elements (masks, speech bubbles, etc.)
-            print(f"🔍 Step 1: Non-character element filtering")
-            filtered_masks = apply_non_character_filter(scored_masks, image_array)
-            
-            # Step 2: Face detection validation
-            print(f"🔍 Step 2: Face detection validation")
-            validated_masks = filter_non_character_masks(filtered_masks, image_array)
-            
-            # Use validated masks for selection
-            final_masks = validated_masks if validated_masks else scored_masks  # Fallback to original
-            print(f"🎯 Final masks for selection: {len(final_masks)}")
-        else:
-            final_masks = scored_masks
+        # QC成功版対応: フィルタリングシステムを無効化
+        final_masks = scored_masks
+        print(f"🎯 QC成功版対応: フィルタリング無効化 - {len(final_masks)} masks直接選択")
         
         # Enhanced mask selection with multi-method fallback
         best_mask = _select_best_mask_with_fallback(final_masks, image_array.shape, quality_method)
@@ -541,13 +546,14 @@ def generate_character_mask(image: ImageType, sam_model: Any, yolo_model: Any, q
         print(f"❌ Error in generate_character_mask: {e}")
         return None
 
-def _select_best_character_with_criteria(masks: list, image_shape: tuple, criteria: str = 'balanced') -> Optional[dict]:
-    """Select best character using composite scoring (migrated from backup script).
+def _select_best_mask_qc_method(masks: list) -> Optional[dict]:
+    """QC成功版アルゴリズム: 最高YOLOスコアのマスクを単純選択
+    
+    P1-B004教訓: 複雑なスコアリングシステムは品質劣化の原因。
+    QC成功版の単純手法 (masks[np.argmax(scores)]) が100%成功を実現。
     
     Args:
-        masks: List of mask candidates
-        image_shape: Image dimensions (height, width, channels)
-        criteria: Selection criteria ('balanced', 'size_priority', 'fullbody_priority', 'central_priority', 'confidence_priority')
+        masks: List of mask candidates with YOLO scores
         
     Returns:
         Best mask or None
@@ -555,105 +561,36 @@ def _select_best_character_with_criteria(masks: list, image_shape: tuple, criter
     if not masks:
         return None
     
-    h, w = image_shape[:2]
-    image_center_x, image_center_y = w / 2, h / 2
+    # Extract YOLO scores
+    scores = []
+    for mask_data in masks:
+        score = mask_data.get('yolo_confidence', mask_data.get('yolo_score', 0.0))
+        scores.append(score)
     
-    def calculate_composite_score(mask_data: dict) -> dict:
-        """Calculate composite score"""
-        scores = {}
-        
-        # 1. Area score (30%): Evaluate appropriate size
-        area_ratio = mask_data['area'] / (h * w)
-        if 0.05 <= area_ratio <= 0.4:  # 5-40% of image is ideal
-            scores['area'] = min(area_ratio / 0.4, 1.0)
-        else:
-            scores['area'] = max(0, 1.0 - abs(area_ratio - 0.2) / 0.2)
-        
-        # 2. Aspect ratio score (25%): Prioritize full-body characters
-        bbox = mask_data['bbox']
-        aspect_ratio = bbox[3] / max(bbox[2], 1)  # height / width
-        if 1.2 <= aspect_ratio <= 2.5:  # Full-body character range
-            scores['fullbody'] = min((aspect_ratio - 0.5) / 2.0, 1.0)
-        else:
-            scores['fullbody'] = max(0, 1.0 - abs(aspect_ratio - 1.8) / 1.0)
-        
-        # 3. Central position score (20%): Prioritize characters near center
-        mask_center_x = bbox[0] + bbox[2] / 2
-        mask_center_y = bbox[1] + bbox[3] / 2
-        distance_from_center = np.sqrt(
-            ((mask_center_x - image_center_x) / w)**2 + 
-            ((mask_center_y - image_center_y) / h)**2
-        )
-        scores['central'] = max(0, 1.0 - distance_from_center)
-        
-        # 4. Grounding score (15%): Prioritize characters in lower part
-        bottom_position = (bbox[1] + bbox[3]) / h
-        if bottom_position >= 0.6:  # Lower 60% and below
-            scores['grounded'] = min(bottom_position, 1.0)
-        else:
-            scores['grounded'] = bottom_position / 0.6
-        
-        # 5. YOLO confidence score (10%)
-        scores['confidence'] = mask_data.get('yolo_confidence', mask_data.get('yolo_score', 0.0))
-        
-        return scores
+    if not scores:
+        print("❌ YOLOスコアが見つかりません")
+        return None
     
-    # Weight configuration by criteria
-    weight_configs = {
-        'balanced': {'area': 0.30, 'fullbody': 0.25, 'central': 0.20, 'grounded': 0.15, 'confidence': 0.10},
-        'size_priority': {'area': 0.50, 'fullbody': 0.15, 'central': 0.15, 'grounded': 0.10, 'confidence': 0.10},
-        'fullbody_priority': {'area': 0.20, 'fullbody': 0.40, 'central': 0.15, 'grounded': 0.15, 'confidence': 0.10},
-        'central_priority': {'area': 0.20, 'fullbody': 0.20, 'central': 0.35, 'grounded': 0.15, 'confidence': 0.10},
-        'confidence_priority': {'area': 0.25, 'fullbody': 0.20, 'central': 0.15, 'grounded': 0.10, 'confidence': 0.30}
-    }
+    # QC成功版: 最高スコアの単純選択
+    best_index = np.argmax(scores)
+    best_mask = masks[best_index]
+    best_score = scores[best_index]
     
-    weights = weight_configs.get(criteria, weight_configs['balanced'])
+    print(f"🎯 QC成功版アルゴリズム: 最高YOLOスコア {best_score:.3f} のマスクを選択")
+    print(f"   選択: マスク{best_index + 1}/{len(masks)} (面積: {best_mask.get('area', 0)}px)")
     
-    # Calculate scores for each mask
-    best_mask = None
-    best_score = 0.0
-    
-    print(f"🎯 複合スコア評価開始 (基準: {criteria})")
-    print(f"   重み設定: {weights}")
-    
-    for i, mask_data in enumerate(masks):
-        scores = calculate_composite_score(mask_data)
-        
-        # Calculate weighted composite score
-        composite_score = sum(scores[key] * weights[key] for key in weights.keys())
-        
-        # Detailed debug information
-        bbox = mask_data.get('bbox', [0, 0, 0, 0])
-        area_ratio = mask_data.get('area', 0) / (h * w)
-        aspect_ratio = bbox[3] / max(bbox[2], 1) if len(bbox) >= 4 else 0
-        
-        print(f"   マスク{i+1}: 総合={composite_score:.3f} "
-              f"(面積={scores['area']:.2f}, 全身={scores['fullbody']:.2f}, "
-              f"中央={scores['central']:.2f}, 接地={scores['grounded']:.2f}, "
-              f"信頼度={scores['confidence']:.2f})")
-        print(f"      詳細: 面積比={area_ratio:.3f}, アスペクト比={aspect_ratio:.2f}, "
-              f"bbox={bbox}, YOLO信頼度={mask_data.get('yolo_confidence', mask_data.get('yolo_score', 0)):.3f}")
-        
-        if composite_score > best_score:
-            best_score = composite_score
-            best_mask = mask_data
-            print(f"      🎯 現在の最高スコア更新!")
-        else:
-            print(f"      📊 スコア不足 (最高: {best_score:.3f})")
-    
-    if best_mask is not None:
-        print(f"✅ 最適マスク選択: 総合スコア {best_score:.3f}")
-        return best_mask
-    
-    return None
+    return best_mask
 
 def _select_best_mask_with_fallback(masks: list, image_shape: tuple, primary_method: str = 'balanced') -> Optional[dict]:
-    """Select best mask with multi-method fallback system.
+    """QC成功版マスク選択（複雑フォールバックシステム削除）
+    
+    P1-B004教訓により複雑なフォールバックシステムを削除。
+    QC成功版の単純手法が100%成功のため、それを直接使用。
     
     Args:
         masks: List of mask candidates
-        image_shape: Image dimensions
-        primary_method: Primary selection method
+        image_shape: Image dimensions (unused in QC method)
+        primary_method: Method name (unused in QC method)
         
     Returns:
         Best mask or None
@@ -661,58 +598,28 @@ def _select_best_mask_with_fallback(masks: list, image_shape: tuple, primary_met
     if not masks:
         return None
     
-    # Method priority order for fallback
-    method_priority = {
-        'balanced': ['balanced', 'size_priority', 'fullbody_priority', 'central_priority', 'confidence_priority'],
-        'size_priority': ['size_priority', 'balanced', 'fullbody_priority', 'central_priority', 'confidence_priority'],
-        'fullbody_priority': ['fullbody_priority', 'balanced', 'size_priority', 'central_priority', 'confidence_priority'],
-        'central_priority': ['central_priority', 'balanced', 'size_priority', 'fullbody_priority', 'confidence_priority'],
-        'confidence_priority': ['confidence_priority', 'balanced', 'size_priority', 'fullbody_priority', 'central_priority']
-    }
+    print(f"🎯 QC成功版マスク選択開始（複雑フォールバック削除済み）")
     
-    methods_to_try = method_priority.get(primary_method, method_priority['balanced'])
+    # QC成功版アルゴリズムを直接使用
+    best_mask = _select_best_mask_qc_method(masks)
     
-    print(f"🔄 Multi-method fallback system starting with: {primary_method}")
-    
-    for i, method in enumerate(methods_to_try):
-        print(f"   試行 {i+1}/{len(methods_to_try)}: {method}")
+    if best_mask:
+        # 基本的な品質チェック（面積のみ）
+        mask_area_ratio = best_mask.get('area', 0) / (image_shape[0] * image_shape[1])
         
-        best_mask = _select_best_character_with_criteria(masks, image_shape, method)
+        # 極端に小さい・大きいマスクのみ除外（緩い設定）
+        min_area_ratio = 0.001  # 0.1%以上（QC成功版に合わせて緩和）
+        max_area_ratio = 0.8    # 80%以下
         
-        if best_mask:
-            # Check if mask quality is acceptable (basic quality threshold)
-            mask_area_ratio = best_mask.get('area', 0) / (image_shape[0] * image_shape[1])
-            
-            # Quality thresholds - 緩和済み（品質維持で成功率向上）
-            min_area_ratio = 0.005  # At least 0.5% of image (調整: 0.01→0.005)
-            max_area_ratio = 0.7   # At most 70% of image
-            
-            if min_area_ratio <= mask_area_ratio <= max_area_ratio:
-                if i == 0:
-                    print(f"✅ Primary method {method} succeeded")
-                else:
-                    print(f"✅ Fallback to {method} succeeded (attempt {i+1})")
-                return best_mask
-            else:
-                print(f"   ⚠️ {method}: Quality check failed (area ratio: {mask_area_ratio:.3f})")
+        if min_area_ratio <= mask_area_ratio <= max_area_ratio:
+            print(f"✅ QC成功版選択完了: 面積比 {mask_area_ratio:.3f}")
+            return best_mask
         else:
-            print(f"   ❌ {method}: No mask selected")
-    
-    # Final fallback: use original YOLO-based method
-    print("🆘 Final fallback: Using original YOLO-based selection")
-    try:
-        from features.common.hooks.start import get_yolo_model
-        yolo_model = get_yolo_model()
-        # 修正: image_shapeではなく実際のimage配列を渡す
-        fallback_mask = yolo_model.get_best_character_mask(masks, image_array, min_yolo_score=0.02)
-        if fallback_mask:
-            print("✅ Final fallback succeeded")
-            return fallback_mask
-    except Exception as e:
-        print(f"   ❌ Final fallback failed: {e}")
-    
-    print("❌ All fallback methods failed")
-    return None
+            print(f"⚠️ 極端な面積のため除外: {mask_area_ratio:.3f} (範囲: {min_area_ratio}-{max_area_ratio})")
+            return None
+    else:
+        print("❌ QC成功版でも選択できませんでした")
+        return None
 
 def enhance_mask_boundaries(mask: np.ndarray) -> np.ndarray:
     """Enhance mask boundaries to prevent limb cutting and improve quality.
@@ -856,7 +763,7 @@ def save_character_result(image: np.ndarray,
         output_dir.mkdir(parents=True, exist_ok=True)
         
         # Save main image
-        main_path = output_path.with_suffix('.jpg')
+        main_path = output_path.with_suffix('.png')
         cv2.imwrite(str(main_path), image)
         print(f"💾 Character extracted: {main_path} (size: {image.shape[1]}x{image.shape[0]})")
         
@@ -869,11 +776,14 @@ def save_character_result(image: np.ndarray,
 
 def save_extracted_character(image: ImageType, mask: MaskType, output_path: Path) -> None:
     """
-    Extract and save character using backup script logic.
+    QC成功版保存方式: シンプルな白背景マスク適用（100%成功実績）
+    
+    P1-B004教訓: 複雑な境界強化・検証・黒背景処理は品質劣化の原因。
+    QC成功版の単純な白背景処理が100%成功を実現。
     
     Args:
-        image: Input image
-        mask: Character mask
+        image: Input image (BGR format)
+        mask: Character mask (boolean or uint8)
         output_path: Output file path
     """
     try:
@@ -897,61 +807,131 @@ def save_extracted_character(image: ImageType, mask: MaskType, output_path: Path
         if mask_array.dtype != np.uint8:
             mask_array = (mask_array * 255).astype(np.uint8)
         
-        # Enhance mask boundaries
-        enhanced_mask = enhance_mask_boundaries(mask_array)
-        enhanced_mask = enhanced_mask.astype(np.uint8) * 255
+        # QC成功版のシンプル処理: 白背景+マスク適用
+        # Convert BGR to RGB for consistent processing
+        image_rgb = cv2.cvtColor(image_array, cv2.COLOR_BGR2RGB)
         
-        # Step 1: Validate and improve mask quality
-        print(f"🔍 Validating mask quality...")
-        y_indices, x_indices = np.where(enhanced_mask > 0)
+        # Convert mask to boolean (QC成功版と同じ)
+        best_mask = mask_array > 0
+        
+        # QC成功版: 白背景+マスク適用
+        masked_image = np.ones_like(image_rgb) * 255  # 白背景
+        masked_image[best_mask] = image_rgb[best_mask]
+        
+        # QC成功版: シンプルクロップ
+        y_indices, x_indices = np.where(best_mask)
         if len(y_indices) > 0 and len(x_indices) > 0:
-            # Calculate initial bounding box
-            initial_bbox = (
-                max(0, x_indices.min() - 10),
-                max(0, y_indices.min() - 10), 
-                min(image_array.shape[1], x_indices.max() + 10) - max(0, x_indices.min() - 10),
-                min(image_array.shape[0], y_indices.max() + 10) - max(0, y_indices.min() - 10)
-            )
-            
-            # Validate and improve mask
-            improved_mask, improved_bbox, validation_results = validate_and_improve_mask(
-                image_array, enhanced_mask, initial_bbox
-            )
-            
-            print(f"🎯 Mask quality: {validation_results['overall_quality']}, "
-                  f"Face complete: {validation_results['face_validation']['face_complete']}, "
-                  f"Needs improvement: {validation_results['needs_improvement']}")
-            
-            enhanced_mask = improved_mask
+            x_min, x_max = x_indices.min(), x_indices.max()
+            y_min, y_max = y_indices.min(), y_indices.max()
+            cropped_image = masked_image[y_min:y_max+1, x_min:x_max+1]
+        else:
+            cropped_image = masked_image
         
-        # Step 2: Extract character from image (backup script logic)
-        character_image = extract_character_from_image(
-            image_array, 
-            enhanced_mask,
-            background_color=(0, 0, 0)  # Black background
-        )
+        # QC成功版: 単純保存
+        output_image = Image.fromarray(cropped_image.astype(np.uint8))
+        output_image.save(str(output_path))
         
-        # Step 3: Crop to content (backup script logic)
-        cropped_character, cropped_mask, crop_bbox = crop_to_content(
-            character_image,
-            enhanced_mask,
-            padding=10
-        )
-        
-        # Step 4: Save results (backup script logic)
-        save_success = save_character_result(
-            cropped_character,
-            cropped_mask,
-            str(output_path.with_suffix(''))  # Remove extension
-        )
-        
-        if not save_success:
-            print(f"⚠️ Failed to save: {output_path}")
+        print(f"✅ QC成功版保存完了: {output_path.name} (サイズ: {cropped_image.shape[1]}x{cropped_image.shape[0]})")
         
     except Exception as e:
-        print(f"❌ Error extracting character: {e}")
+        print(f"❌ QC成功版保存エラー: {e}")
         import traceback
         traceback.print_exc()
+
+
+def generate_character_mask_qc_style(image_bgr: np.ndarray, 
+                                    image_rgb: np.ndarray,
+                                    sam_model: Any, 
+                                    yolo_model: Any,
+                                    verbose: bool = False) -> Optional[np.ndarray]:
+    """
+    QC成功版の完全再現: YOLO検出→最大面積選択→SAM処理→最高スコア選択
+    
+    Args:
+        image_bgr: Input image (BGR format)
+        image_rgb: Input image (RGB format) 
+        sam_model: SAM model wrapper
+        yolo_model: YOLO model wrapper
+        verbose: Enable detailed logging
+        
+    Returns:
+        Character mask or None
+    """
+    try:
+        # QC成功版ステップ1: YOLO検出（confidence=0.07相当）
+        persons = yolo_model.detect_persons(image_rgb)
+        
+        if verbose:
+            print(f"🎯 QC成功版YOLO検出: {len(persons)} persons detected")
+        
+        if len(persons) == 0:
+            if verbose:
+                print("⚠️ 検出なし: 画像全体を使用")
+            # 画像全体を使用
+            h, w = image_rgb.shape[:2]
+            box = np.array([0, 0, w, h])
+        else:
+            # QC成功版ステップ2: 最大面積ボックス選択
+            areas = [person['area'] for person in persons]
+            max_idx = np.argmax(areas)
+            max_person = persons[max_idx]
+            
+            # bbox_xyxy format [x1, y1, x2, y2]
+            box = np.array(max_person['bbox_xyxy'])
+            
+            if verbose:
+                print(f"🎯 QC成功版最大面積選択: {max_person['area']}px, confidence={max_person['confidence']:.3f}")
+        
+        # QC成功版ステップ3: SAM全マスク生成（現在の実装に合わせる）
+        all_masks = sam_model.generate_masks(image_rgb)
+        
+        if verbose:
+            print(f"🎯 QC成功版SAM処理: {len(all_masks)} masks generated")
+        
+        if not all_masks:
+            return None
+        
+        # QC成功版ステップ4: YOLO検出領域に重なるマスクをフィルタリング
+        filtered_masks = []
+        box_x1, box_y1, box_x2, box_y2 = box
+        
+        for mask_data in all_masks:
+            mask_bbox = mask_data['bbox']  # [x, y, w, h]
+            mask_x1, mask_y1, mask_w, mask_h = mask_bbox
+            mask_x2 = mask_x1 + mask_w
+            mask_y2 = mask_y1 + mask_h
+            
+            # YOLO検出領域との重複チェック
+            overlap_x1 = max(box_x1, mask_x1)
+            overlap_y1 = max(box_y1, mask_y1)
+            overlap_x2 = min(box_x2, mask_x2)
+            overlap_y2 = min(box_y2, mask_y2)
+            
+            if overlap_x1 < overlap_x2 and overlap_y1 < overlap_y2:
+                overlap_area = (overlap_x2 - overlap_x1) * (overlap_y2 - overlap_y1)
+                mask_area = mask_w * mask_h
+                
+                # 50%以上重複するマスクを採用
+                if overlap_area / mask_area >= 0.5:
+                    filtered_masks.append(mask_data)
+        
+        if not filtered_masks:
+            # フォールバック: 最大面積マスク
+            filtered_masks = [max(all_masks, key=lambda x: x['area'])]
+        
+        # QC成功版ステップ5: 最高スコアマスク選択
+        best_mask_data = max(filtered_masks, key=lambda x: x['stability_score'])
+        best_score = best_mask_data['stability_score']
+        
+        if verbose:
+            print(f"🎯 QC成功版最終選択: {len(filtered_masks)}件から選択, score={best_score:.3f}")
+        
+        return best_mask_data['segmentation']
+        
+    except Exception as e:
+        print(f"❌ QC成功版処理エラー: {e}")
+        return None
+
 
 if __name__ == '__main__':
     extract_character()

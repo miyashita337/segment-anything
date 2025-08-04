@@ -78,8 +78,8 @@ def initialize_models():
             raise RuntimeError("SAM model loading failed")
         print("✅ SAM model initialized and loaded")
         
-        # YOLO model initialization with load_model() call (anime model)
-        yolo_model = YOLOModelWrapper(model_path="yolov8x6_animeface.pt")
+        # YOLO model initialization with load_model() call (QC成功版対応: 汎用モデル + アニメ特化閾値)
+        yolo_model = YOLOModelWrapper(model_path="yolov8x.pt", confidence_threshold=0.07)
         if not yolo_model.load_model():
             raise RuntimeError("YOLO model loading failed")
         print("✅ YOLO model initialized and loaded")
