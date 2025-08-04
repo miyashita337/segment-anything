@@ -11,6 +11,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.8.5] - 2025-08-04
+
+### Added
+- **P1-022 Ubuntu環境移行完了**: Windows PE32+からUbuntu python3ネイティブ環境への完全移行
+  - charset issues (cp932→UTF-8) 完全解決
+  - spec.md準拠（python3優先、WSL2、ubuntu仮想環境必須）
+  - QC成功システム100%動作確認・バッチ抽出26/26成功率達成
+  - Pushover連携でcharset問題解消確認
+- **send_pushover_images.py**: Ubuntu環境対応Pushover送信システム実装
+  - 高品質画像10枚の自動選択・送信機能
+  - UTF-8対応でcharset エラー解消
+  - QC基準サイズ(604×1166)完全再現確認
+
+### Fixed  
+- **P1-B004品質劣化問題の教訓ドキュメント化**: 包括的品質改善ガイド追加
+  - 50%品質閾値過適用問題→監視専用運用への方針転換
+  - 3段階処理パイプライン→デフォルト無効化で安定性確保
+  - 複雑スコアリング→QC成功版単純アルゴリズムへの統一
+  - シンプルファースト原則の確立
+
+### Changed
+- **品質指標運用方針**: 処理制御から監視・統計専用への転換
+  - 全画像パス方式（0%閾値）+ 段階的警告システム（5%, 10%, 15%）
+  - 品質データ蓄積による将来改善基盤の構築
+  - ドメイン適合性重視（アニメキャラクター特化指標）
+
+### Technical
+- **Environment Migration**: sam-env Windows PE32+ → sam-env-ubuntu python3 native
+- **Dependency Backup**: sam-env-windows-backup.txt環境記録保持
+- **Charset Resolution**: cp932→UTF-8移行によるPushover・ログ出力問題解消
+- **QC Compatibility**: 100%互換性維持・26/26バッチ抽出成功
+
+### Documentation
+- **integrated_quality_check_guide.md**: P1-B004教訓とシンプルファースト原則
+- **quality_evaluation_guide.md**: 品質指標適用方針と運用ルール明確化
+
+### Performance
+- **Extraction Success**: 26/26 images (100%) on kana08 dataset with Ubuntu environment
+- **Quality Reproduction**: QC reference size (604×1166) perfectly achieved
+- **Charset Issues**: Complete resolution of cp932 encoding problems
+
+この包括的な環境移行により、仕様書準拠のUbuntu環境での安定動作と、品質問題の根本的解決指針が確立されました。
+
 ## [v0.8.4] - 2025-08-04 
 
 ### Fixed
