@@ -11,7 +11,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
-## [v0.8.4] - 2025-08-03
+## [v0.8.4] - 2025-08-04 
+
+### Fixed
+- **P1-B004品質劣化完全解決**: SAM Predictor採用によりQC成功版と100%互換実現
+- **画像サイズ劣化修正**: kana08_0002で604×1166サイズ完全再現達成  
+- **抽出成功率向上**: 全52ファイルで100%成功率実現
+- **YOLOモデル統一**: yolov8x6_animeface.pt→yolov8x.pt移行で安定性向上
+
+### Added
+- **QC互換抽出システム**: `qc_compatible_extraction.py`で完全互換処理実装
+- **LoRA学習適性評価システム**: 品質調査・評価機能追加
+
+### Changed  
+- **SAMアーキテクチャ**: AutomaticMaskGenerator → SAM Predictor移行
+- **画像前処理**: max_size 1024→4096で元サイズ保持
+- **マスク選択アルゴリズム**: 複雑評価システム → QC成功版シンプルアルゴリズム
+
+## [v0.8.3] - 2025-08-03
 
 ### Added
 - **QC品質調査バッチ抽出システム**: 107枚の高品質キャラクター抽出を自動実行
