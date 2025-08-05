@@ -11,6 +11,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.0] - 2025-08-05
+
+### Added
+- **Phase 3-6統合パイプライン実装** - 単一プロセスでの完全ワークフロー
+  - 状態管理とレジューム機能（チェックポイントベース）
+  - 多層バリデーション（入力パス・設定・依存関係）
+  - Web対応HTMLダッシュボード自動生成
+- **Pushover画像送信機能** - 抽出結果上位10枚の自動送信
+  - ファイルサイズ制限対応（2MB以下）
+  - レート制限対応（0.5秒間隔）
+  - エラーハンドリングと詳細ログ
+- **統合設定システム** - YAML設定ファイルによる包括的制御
+- **モックテストフレームワーク** - 全Phaseの動作検証システム
+
+### Changed
+- **設計原則の明確化** - 安全性とロバスト性を運用コストより優先
+- **エラーメッセージの統一** - 詳細な対処方法を含む統一フォーマット
+- **ダッシュボード統合** - 既存サーバーとの自動連携強化
+
+### Technical Details
+- `tools/core/integrated_quality_pipeline.py`: メインパイプライン（1,000+ 行）
+- `config/pipeline_config.yaml`: 包括的設定ファイル
+- `tools/scripts/run_integrated_pipeline.sh`: Bash実行ラッパー
+- `docs/workflows/integrated_pipeline_phase3_6.md`: 統合仕様書
+
+### Performance
+- Phase 3: バリデーション（1.7秒）
+- Phase 4: キャラクター抽出（5枚成功、kana05データセット）
+- Phase 5: 品質評価（成功率48.7%）
+- Phase 6: ダッシュボード・Pushover送信（0.9秒）
+
 ## [v0.8.5] - 2025-08-04
 
 ### Added
