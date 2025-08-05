@@ -1,0 +1,291 @@
+# 統合パイプライン設定 (Phase 3-6)
+# トラッカー: INTEGRATE-3-6
+# 目的: 安全性とロバスト性を重視した統合パイプラインシステム
+
+# パイプライン基本設定
+pipeline:
+  name: "integrated_phase3_6"
+  version: "1.0.0"
+  description: "Phase 3-6統合パイプライン：状態管理・レジューム機能・Web対応ダッシュボード生成"
+
+# Phase定義
+phases:
+  phase3:
+    name: "実装後品質確認"
+    description: "入力バリデーション、設定確認、依存関係チェック"
+    validation:
+      - input_paths_exist
+      - config_integrity
+      - dependencies_available
+    timeout_seconds: 60
+    
+  phase4:
+    name: "キャラクター抽出実行"
+    description: "YOLO+SAMパイプラインによる抽出実行"
+    extractor: "sam_yolo_character_segment"
+    extraction_mode: "reproduce-auto"
+    quality_method: "balanced"
+    score_threshold: 0.07
+    timeout_seconds: 600
+    
+  phase5:
+    name: "品質評価・レポート生成"
+    description: "抽出結果の品質評価と詳細レポート生成"
+    metrics:
+      - extraction_success_rate
+      - quality_score_distribution
+      - processing_time_analysis
+      - error_pattern_analysis
+    timeout_seconds: 120
+    
+  phase6:
+    name: "ダッシュボード生成"
+    description: "Web対応HTMLダッシュボード生成と可視化"
+    dashboard:
+      template: "quality_dashboard_template.html"
+      output_format: "html"
+      features:
+        - quality_metrics_visualization
+        - image_gallery
+        - interactive_charts
+        - error_analysis_reports
+      web_server:
+        enabled: false  # 基本的にはファイル生成のみ
+        port: 8080
+        host: "localhost"
+    timeout_seconds: 60
+
+# パス設定
+paths:
+  # デフォルト入力パス（最も一般的に使用されるパス）
+  default_input: "/mnt/c/AItools/lora/train/yado/org/kana05/"
+  
+  # ワークスペースベースパス
+  workspace_base: "/mnt/c/AItools/lora/train/yado/tracker-workspace/"
+  
+  # 追加入力パス候補（フォールバック用）
+  input_alternatives:
+    - "/mnt/c/AItools/lora/train/yado/org/kana08/"
+    - "/mnt/c/AItools/lora/train/yado/org/kana03/"
+  
+  # テンプレートディレクトリ
+  templates_dir: "templates/"
+  
+  # ログディレクトリ
+  logs_dir: "logs/"
+
+# エラー処理設定
+error_handling:
+  # 最大リトライ回数
+  max_retries: 3
+  
+  # タイムアウト設定
+  default_timeout_seconds: 300
+  
+  # 復旧戦略
+  recovery_strategies:
+    - name: "retry_with_lower_quality"
+      description: "品質レベルを下げて再試行"
+      applicable_phases: ["phase4"]
+      
+    - name: "skip_problematic_images"
+      description: "問題のある画像をスキップして継続"
+      applicable_phases: ["phase4"]
+      
+    - name: "fallback_to_manual_mode"
+      description: "手動モードにフォールバック"
+      applicable_phases: ["phase4"]
+      
+    - name: "generate_partial_dashboard"
+      description: "部分的なダッシュボードを生成"
+      applicable_phases: ["phase6"]
+
+# バリデーション設定
+validation:
+  input_paths:
+    # 必須チェック項目
+    required_checks:
+      - path_exists
+      - is_directory
+      - readable_permissions
+      - contains_images
+    
+    # 警告レベルチェック項目
+    warning_checks:
+      - directory_not_empty
+      - sufficient_disk_space
+    
+    # サポートされる画像形式
+    supported_formats: [".jpg", ".jpeg", ".png", ".bmp", ".tiff"]
+  
+  configuration:
+    # 必須設定セクション
+    required_sections:
+      - pipeline
+      - phases
+      - paths
+      - error_handling
+    
+    # 必須フェーズ
+    required_phases:
+      - phase3
+      - phase4
+      - phase5
+      - phase6
+  
+  dependencies:
+    # 必須Pythonモジュール
+    required_python_modules:
+      - torch
+      - cv2
+      - ultralytics
+      - segment_anything
+      - yaml
+      - pathlib
+    
+    # 推奨システム要件
+    recommended_specs:
+      cuda_available: true
+      min_ram_gb: 8
+      min_vram_gb: 6
+      min_disk_space_gb: 10
+
+# 品質評価設定
+quality_evaluation:
+  # 成功基準
+  success_criteria:
+    min_success_rate_percent: 70
+    min_extracted_images: 1
+    max_processing_time_seconds: 600
+  
+  # 品質指標
+  quality_metrics:
+    - name: "extraction_success_rate"
+      weight: 0.4
+      description: "抽出成功率"
+      
+    - name: "quality_score_average"
+      weight: 0.3
+      description: "平均品質スコア"
+      
+    - name: "processing_efficiency"
+      weight: 0.2
+      description: "処理効率"
+      
+    - name: "error_rate"
+      weight: 0.1
+      description: "エラー率"
+
+# ダッシュボード設定
+dashboard:
+  # テーマ設定
+  theme:
+    primary_color: "#667eea"
+    secondary_color: "#764ba2"
+    success_color: "#27ae60"
+    warning_color: "#f39c12"
+    error_color: "#e74c3c"
+  
+  # 表示要素
+  display_elements:
+    - metrics_summary
+    - quality_charts
+    - image_gallery
+    - error_analysis
+    - system_information
+    - execution_timeline
+  
+  # チャート設定
+  charts:
+    quality_distribution:
+      type: "bar"
+      title: "品質スコア分布"
+      
+    success_rate_timeline:
+      type: "line"
+      title: "成功率推移"
+      
+    processing_time_analysis:
+      type: "scatter"
+      title: "処理時間分析"
+
+# ロギング設定
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file_rotation:
+    max_size_mb: 10
+    backup_count: 5
+  
+  # 詳細ログ出力対象
+  detailed_logging:
+    - validation_results
+    - extraction_progress
+    - quality_evaluation
+    - error_details
+
+# 実行環境設定
+execution:
+  # 並行処理設定
+  concurrent_processing:
+    enabled: false  # 安全性重視のためシーケンシャル実行
+    max_workers: 1
+  
+  # メモリ管理
+  memory_management:
+    enabled: true
+    max_memory_usage_percent: 80
+    cleanup_interval_seconds: 30
+  
+  # 一時ファイル管理
+  temporary_files:
+    cleanup_on_success: true
+    cleanup_on_failure: false
+    temp_dir: "/tmp/integrated_pipeline/"
+
+# セキュリティ設定
+security:
+  # パス制限
+  allowed_base_paths:
+    - "/mnt/c/AItools/lora/train/yado/"
+    - "/mnt/c/AItools/segment-anything/"
+  
+  # ファイル制限
+  max_file_size_mb: 50
+  max_total_size_gb: 10
+  
+  # 実行制限
+  max_execution_time_minutes: 30
+
+# 通知設定
+notifications:
+  # 完了通知
+  on_completion:
+    enabled: true
+    method: "windows_notify"
+    message_template: "統合パイプライン完了: {tracker_id} - 成功率: {success_rate}%"
+  
+  # エラー通知
+  on_error:
+    enabled: true
+    method: "windows_notify"
+    message_template: "統合パイプライン エラー: {tracker_id} - {error_summary}"
+  
+  # Pushover結果送信設定
+  pushover_results:
+    enabled: true
+    max_images: 10
+    image_size_limit_mb: 2.0
+    send_on_phase: "phase6"
+    rate_limit_seconds: 0.5
+
+# メタデータ
+metadata:
+  created_by: "Claude Code Integration System"
+  created_for_tracker: "INTEGRATE-3-6"
+  version: "1.0.0"
+  last_updated: "2025-08-05"
+  description: |
+    Phase 3-6を統合した堅牢なパイプラインシステム設定。
+    安全性とロバスト性を重視し、状態管理とレジューム機能を提供。
+    蓄積された修正による矛盾を防ぐ設計を採用。
