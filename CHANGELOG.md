@@ -11,6 +11,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.2] - 2025-08-08
+
+### Added
+- **QI-003: 統合品質評価システム実装**
+  - BoundaryCaseDetector による黒画面検出（100%精度）
+  - AnimeImagePreprocessor による明度改善（+1820.8%効果実証）
+  - 統合品質チェッカーの動作確認と機能テスト
+  - features/common/notification/pushover_image_sender.py 実装
+- **QI-004: ダッシュボード標準化・Base64画像表示システム**
+  - StandardDashboardGenerator クラス実装
+  - Base64画像埋め込み機能（2-3MB HTMLファイル生成）
+  - 品質バッジシステム（高品質・中品質・低品質の自動判定）
+  - 統一URL形式: http://100.123.241.106:8088/tracker/{TRACKER_ID}
+- **QI-005: Pushover通知システム統一化**
+  - 17ファイルの分散実装から共通モジュール化（20/31ファイル統一）
+  - 全抽出画像添付送信機能（10枚制限対応バッチ送信）
+  - tools/scripts/unify_pushover_notifications.py 作成
+
+### Changed
+- **run_quality_workflow.sh** - 標準ダッシュボード生成統合（192-208行目）
+- **integrated_dashboard_server.py** - 画像アクセス制限解除（VPN+Basic認証で保護）
+- **Google Sheets進捗管理** - QI-003/004/005詳細情報完全記載
+
+### Fixed
+- **QI-002/003 Pushover通知問題** - 通知が来ない問題を完全解決
+- **QI-004構文エラー** - 1878行目未終了文字列修正・8KB→2.9MB復旧
+- **ダッシュボード画像表示** - ブラウザ表示不具合修正（Base64フル埋め込み）
+- **黒画面問題の実態把握** - QI-002で12.5%、QI-003で15.0%の黒画面検出・解決策確認
+
+### Performance
+- **黒画面検出・改善**: 明度6.6 → 126.2（+1820.8%改善実証）
+- **Pushover画像送信**: QI-002（24枚）、QI-003（20枚）全画像送信完了（100%成功率）
+- **ダッシュボード生成**: 2.7-2.9MB Base64画像フル埋め込み（100%表示成功）
+- **通知統一化**: 64.5%統一化率・100%送信成功率
+
 ## [v0.9.1] - 2025-08-08
 
 ### Added

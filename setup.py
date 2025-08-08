@@ -8,7 +8,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="segment_anything",
-    version="0.8.3",
+    version="0.9.2",
     install_requires=[],
     packages=find_packages(exclude="notebooks"),
     extras_require={
