@@ -39,6 +39,18 @@ import urllib.request
 import psutil
 import gc
 
+# Pushover通知機能インポート
+try:
+    from features.common.notification.global_pushover import (
+        notify_success, 
+        notify_error, 
+        notify_process_complete
+    )
+    PUSHOVER_AVAILABLE = True
+except ImportError:
+    PUSHOVER_AVAILABLE = False
+    print("Warning: Pushover notification not available.")
+
 # 入力検証共通モジュール
 sys.path.append(str(Path(__file__).parent.parent.parent))
 from features.common.input_validation import (
@@ -1863,10 +1875,42 @@ class SAMYOLOCharacterSegmentor:
                 skip_count += 1
         
         # 処理結果の統計
-        print(f"\n📊 処理完了統計:")
+        print("\n📊 処理完了統計:")
         print(f"  ✅ 成功: {success_count}/{len(image_files)} 枚")
         print(f"  ⏭️ スキップ: {skip_count} 枚")
         print(f"  📈 再現率: {success_count/132*100:.1f}% (手動抽出132枚に対して)")
+        
+        # Pushover通知送信
+        if PUSHOVER_AVAILABLE:
+            try:
+                # 処理時間計算
+                total_time = time.time() - self.monitor.start_time if self.monitor.start_time else 0
+                
+                # 成功率計算
+                success_rate = (success_count / len(image_files) * 100) if len(image_files) > 0 else 0
+                
+                # 通知メッセージ作成
+                title = f"SAM+YOLO抽出完了: {os.path.basename(output_dir)}"
+                message = (
+                    f"✅ 成功: {success_count}/{len(image_files)} 枚 ({success_rate:.1f}%)\n"
+                    f"⏭️ スキップ: {skip_count} 枚\n"
+                    f"⏱️ 処理時間: {total_time/60:.1f}分\n"
+                    f"📁 出力: {output_dir}"
+                )
+                
+                # 通知送信
+                notify_process_complete(
+                    title=title,
+                    successful=success_count,
+                    total=len(image_files),
+                    duration=total_time
+                )
+                print("📮 Pushover通知を送信しました")
+                
+            except Exception as e:
+                print(f"⚠️ Pushover通知送信エラー: {e}")
+        else:
+            print("ℹ️ Pushover通知は無効です（設定ファイルなし）")
         
         # 総合パフォーマンス表示
         self.monitor.print_summary()
@@ -2405,33 +2449,124 @@ class SAMYOLOCharacterSegmentor:
 
 
 def main():
-    """
-    メイン関数（後方互換性のため残存）
-    """
-    # 新しいmain処理にリダイレクト
-    import sys
-    sys.argv[0] = __file__  # スクリプト名を設定
+    import argparse
+    import time
+    start_time = time.time()
     
-    # 古い引数形式を新しい形式に変換
-    if "--model-type" in sys.argv:
-        idx = sys.argv.index("--model-type")
-        sys.argv[idx] = "--model_type"
-    if "--sam-checkpoint" in sys.argv:
-        idx = sys.argv.index("--sam-checkpoint")
-        sys.argv[idx] = "--sam_checkpoint"
-    if "--yolo-model" in sys.argv:
-        idx = sys.argv.index("--yolo-model")
-        sys.argv[idx] = "--yolo_model"
-    if "--score-threshold" in sys.argv:
-        idx = sys.argv.index("--score-threshold")
-        sys.argv[idx] = "--score_threshold"
-    if "--anime-mode" in sys.argv:
-        idx = sys.argv.index("--anime-mode")
-        sys.argv[idx] = "--anime_yolo"
+    parser = argparse.ArgumentParser(description="SAM + YOLO キャラクター抽出")
+    parser.add_argument("--mode", choices=["batch", "reproduce-auto", "test"],
+                       default="batch", help="実行モード")
+    parser.add_argument("--input_dir", type=str, required=True,
+                       help="入力ディレクトリ")
+    parser.add_argument("--output_dir", type=str, required=True,
+                       help="出力ディレクトリ")
+    parser.add_argument("--quality_method", type=str, default="balanced",
+                       choices=["balanced", "confidence_priority", "size_priority", 
+                               "fullbody_priority", "central_priority"],
+                       help="品質評価手法")
+    parser.add_argument("--score_threshold", type=float, default=0.07,
+                       help="YOLO検出スコア閾値")
+    parser.add_argument("--max_files", type=int, default=None,
+                       help="処理する最大ファイル数")
+    parser.add_argument("--anime_mode", action="store_true", default=True,
+                       help="アニメ特化モード（デフォルト有効）")
+    parser.add_argument("--verbose", action="store_true",
+                       help="詳細ログ出力")
     
-    # 古い引数形式をサポートするため、後方互換性を提供
-    print("⚠️ 古いmain()関数が呼び出されました。新しい形式を使用してください。")
-    print("使用例: python sam_yolo_character_segment.py --mode reproduce-auto")
+    args = parser.parse_args()
+    
+    print("🚀 SAM + YOLO キャラクター抽出開始")
+    print(f"📥 入力: {args.input_dir}")
+    print(f"📤 出力: {args.output_dir}")
+    print(f"🎯 品質手法: {args.quality_method}")
+    print(f"📊 閾値: {args.score_threshold}")
+    if args.max_files:
+        print(f"📝 最大ファイル数: {args.max_files}")
+    print()
+    
+    try:
+        # 抽出実行
+        results = extract_characters_batch(
+            input_dir=args.input_dir,
+            output_dir=args.output_dir,
+            quality_method=args.quality_method,
+            score_threshold=args.score_threshold,
+            max_files=args.max_files,
+            anime_mode=args.anime_mode,
+            verbose=args.verbose
+        )
+        
+        # 処理時間計算
+        total_time = time.time() - start_time
+        
+        success_count = len([r for r in results if r['status'] == 'success'])
+        total_count = len(results)
+        failed_count = total_count - success_count
+        
+        print("\n" + "="*50)
+        print("📊 処理完了統計:")
+        print(f"✅ 成功: {success_count}/{total_count} ({success_count/total_count*100:.1f}%)")
+        print(f"❌ 失敗: {failed_count}")
+        print(f"⏱️ 総処理時間: {total_time:.2f}秒")
+        print(f"⚡ 平均処理時間: {total_time/total_count:.2f}秒/画像")
+        print("="*50)
+        
+        # 【重要】画像付きPushover通知送信
+        try:
+            from features.common.notification.pushover_image_sender import send_extraction_complete_with_images
+            
+            # タイトルを出力ディレクトリから生成
+            dir_name = os.path.basename(os.path.normpath(args.output_dir))
+            notification_title = f"SAM+YOLO抽出完了: {dir_name}"
+            
+            print(f"\n📱 全画像付きPushover通知送信開始...")
+            notification_success = send_extraction_complete_with_images(
+                title=notification_title,
+                extraction_dir=args.output_dir,
+                successful=success_count,
+                total=total_count,
+                failed=failed_count,
+                duration=total_time
+            )
+            
+            if notification_success:
+                print("✅ 全画像付き通知送信完了")
+            else:
+                print("⚠️ 画像付き通知送信で一部失敗")
+                
+        except ImportError as e:
+            print(f"⚠️ 画像付き通知モジュールのインポートに失敗: {e}")
+            # フォールバック: テキスト通知のみ
+            try:
+                from features.common.notification.global_pushover import notify_process_complete
+                notify_process_complete(
+                    title=f"SAM+YOLO抽出完了: {os.path.basename(args.output_dir)}",
+                    successful=success_count,
+                    total=total_count,
+                    failed=failed_count,
+                    duration=total_time
+                )
+                print("✅ テキスト通知送信完了（フォールバック）")
+            except ImportError:
+                print("⚠️ Pushover通知機能が利用できません")
+        except Exception as e:
+            print(f"⚠️ 通知送信エラー: {e}")
+        
+        return success_count > 0
+        
+    except Exception as e:
+        print(f"❌ 抽出処理中にエラーが発生: {e}")
+        import traceback
+        traceback.print_exc()
+        
+        # エラー通知
+        try:
+            from features.common.notification.global_pushover import notify_error
+            notify_error("SAM+YOLO抽出エラー", f"エラー: {str(e)}")
+        except:
+            pass
+        
+        return False
 
 
 if __name__ == "__main__":

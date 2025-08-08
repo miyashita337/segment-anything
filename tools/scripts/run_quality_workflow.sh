@@ -4,10 +4,39 @@
 
 set -e  # エラー時に停止
 
+# 🔍 環境チェック機能（再発防止）
+echo "🔍 実行環境チェック中..."
+
+# sam-env環境存在確認
+if [ ! -f "sam-env/bin/python3" ]; then
+    echo "❌ エラー: sam-env環境が見つかりません"
+    echo "   パス: sam-env/bin/python3"
+    echo "   実行: python3 -m venv sam-env && sam-env/bin/python3 -m pip install -e ."
+    exit 1
+fi
+
+# 重要パッケージ存在確認
+echo "🔍 重要パッケージ確認中..."
+if ! sam-env/bin/python3 -c "import cv2, click, numpy; print('✅ 必須パッケージ確認完了')" 2>/dev/null; then
+    echo "❌ エラー: 必須パッケージが不足しています"
+    echo "   実行: sam-env/bin/python3 -m pip install opencv-python click numpy"
+    exit 1
+fi
+
+# Pushover設定確認
+if [ ! -f "config/pushover.json" ]; then
+    echo "⚠️ 警告: Pushover設定ファイルが見つかりません"
+    echo "   パス: config/pushover.json" 
+    echo "   Pushover通知は無効になります"
+fi
+
+echo "✅ 環境チェック完了"
+echo ""
+
 TRACKER_ID=$1
 
 # config から動的にワークスペースパス取得
-WORKSPACE_CONFIG_OUTPUT=$(python3 -c "
+WORKSPACE_CONFIG_OUTPUT=$(sam-env/bin/python3 -c "
 import sys
 sys.path.insert(0, '$(dirname "$0")/../..')
 from config.workspace_config import WorkspaceConfig
@@ -34,9 +63,9 @@ if [ -z "$TRACKER_ID" ]; then
 fi
 
 # トラッカーID形式チェック（P1-005形式も許可）
-if [[ ! "$TRACKER_ID" =~ ^(PH[0-9]+-[0-9]{3}|P[0-9]+-[0-9]{3})$ ]]; then
+if [[ ! "$TRACKER_ID" =~ ^(PH[0-9]+-[0-9]{3}|P[0-9]+-[0-9]{3}|QI-[0-9]{3})$ ]]; then
     echo "❌ エラー: 無効なトラッカーID形式: $TRACKER_ID"
-    echo "正しい形式: PH{Phase番号}-{3桁連番} (例: PH2-001) または P{番号}-{3桁連番} (例: P1-005)"
+    echo "正しい形式: PH{Phase番号}-{3桁連番} (例: PH2-001), P{番号}-{3桁連番} (例: P1-005), または QI-{3桁連番} (例: QI-002)"
     exit 1
 fi
 
@@ -73,7 +102,7 @@ if [ "$SKIP_EXTRACTION" = false ]; then
     echo "⚠️  Windows ハングアップ防止のため、バックグラウンド実行します"
     
     # kana05の39枚を使用（Phase 1と同じデータセット）
-    INPUT_DIR="/mnt/c/AItools/lora/train/yado/org/kana05"
+    INPUT_DIR="/mnt/c/AItools/lora/train/yado/org/kana08"
     
     # 入力ディレクトリ存在チェック強化
     if [ ! -d "$INPUT_DIR" ]; then
@@ -108,7 +137,7 @@ if [ "$SKIP_EXTRACTION" = false ]; then
     EXTRACTION_LOG="${OUTPUT_DIR}/${TRACKER_ID}_extraction.log"
     
     # バックグラウンド実行開始
-    nohup python3 tools/core/sam_yolo_character_segment.py \
+    nohup sam-env/bin/python3 tools/core/sam_yolo_character_segment.py \
         --mode reproduce-auto \
         --input_dir "$INPUT_DIR" \
         --output_dir "${OUTPUT_DIR}/extraction/" \
@@ -147,7 +176,7 @@ fi
 
 # 3. 抽出結果レポート生成
 echo "📊 抽出結果レポート生成中..."
-python3 create_phase1_extraction_report.py \
+sam-env/bin/python3 create_phase1_extraction_report.py \
     --input_dir "${OUTPUT_DIR}/extraction/" \
     --output_file "${OUTPUT_DIR}/extraction_result.json"
 
@@ -156,30 +185,38 @@ echo "🔍 品質チェック3コマンド実行中..."
 
 # 4-1. 統合品質チェック
 echo "  📈 統合品質チェック実行..."
-python3 tools/unified_quality_checker.py \
+sam-env/bin/python3 tools/core/unified_quality_checker.py \
     --results "${OUTPUT_DIR}/extraction_result.json" \
     --output "${OUTPUT_DIR}/quality/unified_quality_report.json"
 
-# 4-2. ダッシュボード生成
-echo "  📊 ダッシュボード生成..."
-if [ -f "${OUTPUT_DIR}/quality/unified_quality_report.json" ]; then
-    python3 tools/quality_dashboard.py \
-        --report "${OUTPUT_DIR}/quality/unified_quality_report.json" \
-        --output "${OUTPUT_DIR}/dashboard/"
+# 4-2. 標準ダッシュボード生成（統一Base64画像表示）
+echo "  📊 標準ダッシュボード生成..."
+sam-env/bin/python3 features/common/dashboard_generator.py \
+    "$TRACKER_ID" \
+    "${OUTPUT_DIR}/extraction/" \
+    "$OUTPUT_DIR"
+
+# 標準ダッシュボード生成完了確認
+if [ -f "${OUTPUT_DIR}/dashboard/dashboard.html" ]; then
+    echo "✅ 標準ダッシュボード生成完了: http://100.123.241.106:8088/tracker/$TRACKER_ID"
+    
+    # ファイルサイズ表示
+    DASHBOARD_SIZE=$(du -h "${OUTPUT_DIR}/dashboard/dashboard.html" | cut -f1)
+    echo "  📄 ダッシュボードサイズ: $DASHBOARD_SIZE"
 else
-    echo "⚠️  統合品質レポートが見つかりません。ダッシュボード生成をスキップします。"
+    echo "⚠️  標準ダッシュボード生成に失敗しました"
 fi
 
 # 4-3. 客観指標テスト
 echo "  🎯 客観指標テスト実行..."
-python3 tools/run_objective_evaluation.py \
+sam-env/bin/python3 tools/core/run_objective_evaluation.py \
     --batch "${OUTPUT_DIR}/extraction/" \
     --output "${OUTPUT_DIR}/tests/objective_metrics_test.json"
 
 # 5. 改善効果測定（ベースライン比較）
 echo "📊 改善効果測定実行中..."
 if [ -d "${WORKSPACE_BASE}/baseline" ] && [ "$(ls -A ${WORKSPACE_BASE}/baseline)" ]; then
-    python3 generate_improvement_comparison.py \
+    sam-env/bin/python3 generate_improvement_comparison.py \
         --baseline "${WORKSPACE_BASE}/baseline/" \
         --current "${OUTPUT_DIR}/" \
         --output "${OUTPUT_DIR}/improvement_report.json"

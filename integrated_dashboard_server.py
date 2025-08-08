@@ -174,13 +174,7 @@ class IntegratedDashboardServer:
         if '..' in path:
             return web.Response(text="Forbidden", status=403)
         
-        # 抽出画像ファイルへの直接アクセスを拒否（グラフ画像は除外）
-        if self._is_extracted_image(path):
-            logger.warning(f"🚫 抽出画像への直接アクセスを拒否: {path}")
-            return web.Response(
-                text="🚫 Access Denied: Extracted images are protected for security reasons", 
-                status=403
-            )
+        # 抽出画像制限を無効化：VPN+Basic認証で既に保護済み
         
         # ワークスペース内のファイルを探す
         file_path = self.tracker_workspace / path
@@ -327,10 +321,26 @@ class IntegratedDashboardServer:
         phase2 = sorted([t for t in trackers.keys() if t.startswith('PH2-')])
         phase3 = sorted([t for t in trackers.keys() if t.startswith('PH3-')])
         integrate = sorted([t for t in trackers.keys() if t.startswith('INTEGRATE-')])
-        others = sorted([t for t in trackers.keys() if not t.startswith(('P1-', 'PH2-', 'PH3-', 'INTEGRATE-'))])
+        qi_trackers = sorted([t for t in trackers.keys() if t.startswith('QI-')])  # QIトラッカー追加
+        others = sorted([t for t in trackers.keys() if not t.startswith(('P1-', 'PH2-', 'PH3-', 'INTEGRATE-', 'QI-'))])
         
         # ナビゲーションアイテム生成
-        # INTEGRATE-3-6シリーズを最上位に配置（新規追加、重要度高）
+        # QIシリーズを最上位に配置（品質改善タスク）
+        if qi_trackers:
+            nav_items.append('<div class="nav-category">🔍 品質改善 (QI)</div>')
+            for tracker in qi_trackers:
+                active = 'active' if current_key.startswith(f"{tracker}/") else ''
+                # QIシリーズの説明を追加
+                tracker_desc = {
+                    'QI-001': 'コードリファクタリング',
+                    'QI-002': '抽出精度向上Ver.1',
+                    'QI-003': '抽出精度向上Ver.2',
+                    'QI-004': '抽出精度向上Ver.3',
+                    'QI-005': '抽出精度向上Ver.4'
+                }.get(tracker, tracker)
+                nav_items.append(f'<a href="/tracker/{tracker}" class="nav-item {active}" title="{tracker_desc}">{tracker}</a>')
+        
+        # INTEGRATE-3-6シリーズを次に配置（統合パイプライン）
         if integrate:
             nav_items.append('<div class="nav-category">🔬 統合パイプライン</div>')
             for tracker in integrate:

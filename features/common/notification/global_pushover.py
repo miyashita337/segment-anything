@@ -49,7 +49,15 @@ def load_pushover_config() -> Optional[Dict[str, Any]]:
         with open(config_path, 'r', encoding='utf-8') as f:
             config = json.load(f)
         
-        # segment-anything形式の設定
+        # segment-anything形式の設定（修正版）
+        if 'api_token' in config and 'user_key' in config:
+            return {
+                'api_token': config['api_token'],
+                'user_key': config['user_key'],
+                'enabled': config.get('enabled', True)
+            }
+        
+        # 旧形式サポート
         if 'token' in config and 'user' in config:
             return {
                 'api_token': config['token'],

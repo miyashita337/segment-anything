@@ -4,6 +4,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 日本語で応答してください。
 
+## 📌 重要: バージョニングルール（2025-08-08制定）
+
+**ユーザーから明示的な指示があるまで、以下のルールを厳守すること：**
+
+### バージョン管理方針
+- ✅ **マイナーバージョンのみ更新**: v0.9.1 → v0.9.2 → v0.9.3...
+- ❌ **ミドルバージョン更新禁止**: v0.9.x → v0.10.0（ユーザー指示があるまで禁止）
+- ❌ **メジャーバージョン更新禁止**: v0.x.x → v1.0.0（ユーザー指示があるまで禁止）
+
+### 適用対象
+- git commit時のバージョン番号
+- CHANGELOG.md更新時
+- リリースタグ作成時
+- package.json等の設定ファイル更新時
+
+### 例外条件
+ユーザーから以下のような明示的指示があった場合のみミドル/メジャーバージョンを更新：
+- 「次はv0.10.0でリリースして」
+- 「メジャーアップデートとして扱って」
+- 「ミドルバージョンを上げて」
+
 ## ⚠️ 重要: トラッカーワークフロー必須要件（4 回目仕様違反の恒久対策）
 
 ### 🚨 絶対厳守事項
@@ -65,6 +86,34 @@ export TRACKER_WORKSPACE_BASE="/mnt/c/AItools/lora/train/yado/tracker-workspace"
 - [ ] `${TRACKER_ID}/quality/` (品質レポート)
 - [ ] `${TRACKER_ID}/dashboard/` (HTML ダッシュボード)
 - [ ] `${TRACKER_ID}/tests/` (テスト結果)
+
+#### 🎯 **標準ダッシュボード要件（2025-08-08制定）**
+
+**全トラッカー完了時の必須ダッシュボード仕様:**
+
+- ✅ **URL形式**: `http://100.123.241.106:8088/tracker/{TRACKER_ID}`
+- ✅ **画像表示**: Base64埋め込み方式（完全なデータ、切り詰め禁止）
+- ✅ **品質評価**: 高品質・中品質・低品質バッジ表示
+- ✅ **統計情報**: 総画像数、品質スコア、成功画像数、要改善数
+- ✅ **自動生成**: `run_quality_workflow.sh`で自動実行
+
+**実装確認項目:**
+```bash
+# ダッシュボード生成確認
+ls ${TRACKER_WORKSPACE_BASE}/${TRACKER_ID}/dashboard/dashboard.html
+
+# ファイルサイズ確認（2MB以上で画像正常埋め込み）
+du -h ${TRACKER_WORKSPACE_BASE}/${TRACKER_ID}/dashboard/dashboard.html
+
+# アクセス確認
+curl -u admin:dashboard2025! http://100.123.241.106:8088/tracker/${TRACKER_ID}
+```
+
+**技術仕様:**
+- **生成システム**: `features/common/dashboard_generator.py`
+- **テンプレート**: 統一HTML5 + CSS3デザイン
+- **セキュリティ**: VPN + Basic認証で保護
+- **互換性**: 51個の既存ダッシュボードと統合
 
 #### ❌ **禁止表現（ワークスペース出力完了まで使用禁止）**
 
