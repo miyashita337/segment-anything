@@ -11,6 +11,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.1] - 2025-08-08
+
+### Added
+- **統合ダッシュボードサーバー拡張** - INTEGRATE-3-6シリーズ対応
+  - 8088ポートでの統合管理システム
+  - Tailscale経由の外部アクセス対応（100.123.241.106:8088）
+  - Phase 3カテゴリとINTEGRATE統合パイプライン表示
+- **WSL2ポートフォワーディング対応** - Windows/Mac/iPhoneからのアクセス改善
+- **INTEGRATE-3-6-05評価版** - kana08データセット最終評価
+
+### Changed
+- **YOLOモデル切り替え機能** - yolov8x.pt ⟷ yolov8x6_animeface.pt
+- **ワークフロードキュメント更新** - 8088統合サーバー運用方針明記
+- **ダッシュボード自動認識** - tracker-workspace配下の自動検出
+
+### Fixed
+- **Basic認証処理** - 8088サーバーの認証安定性向上
+- **ダッシュボード生成** - Base64埋め込みの最適化
+
+### Performance
+- INTEGRATE-3-6-05: 24/26枚成功（92.3%成功率）
+- 8088サーバー: 48個のダッシュボード統合管理
+
 ## [v0.9.0] - 2025-08-05
 
 ### Added

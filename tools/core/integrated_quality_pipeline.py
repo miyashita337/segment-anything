@@ -33,6 +33,13 @@ try:
 except ImportError:
     PUSHOVER_AVAILABLE = False
 
+# PH2-008: 復旧機能システム統合
+try:
+    from features.common.recovery_system import RecoveryManager, RecoveryState, AutoRecoverySystem
+    RECOVERY_AVAILABLE = True
+except ImportError:
+    RECOVERY_AVAILABLE = False
+
 
 @dataclass
 class ValidationResult:
@@ -266,11 +273,12 @@ class StateManager:
 class DashboardGenerator:
     """Phase 6: Web対応ダッシュボード生成"""
     
-    def __init__(self, config: Dict[str, Any], workspace_dir: Path, logger: logging.Logger):
+    def __init__(self, config: Dict[str, Any], workspace_dir: Path, logger: logging.Logger, tracker_id: str = ""):
         self.config = config
         self.workspace_dir = workspace_dir
         self.dashboard_dir = workspace_dir / "dashboard"
         self.logger = logger
+        self.tracker_id = tracker_id  # PH2-008: Pushover送信用
         
         # ダッシュボードディレクトリ作成
         self.dashboard_dir.mkdir(parents=True, exist_ok=True)
@@ -373,10 +381,19 @@ class DashboardGenerator:
         """個別画像をPushoverに送信"""
         try:
             import requests
-            from features.common.notification.global_pushover import load_pushover_config
+            import json
             
-            config = load_pushover_config()
-            if not config:
+            # 直接設定ファイルを読み込み
+            config_path = Path("config/pushover.json")
+            if not config_path.exists():
+                self.logger.error(f"Pushover設定ファイルが存在しません: {config_path}")
+                return False
+            
+            with open(config_path, 'r', encoding='utf-8') as f:
+                config = json.load(f)
+            
+            if not config.get('api_token') or not config.get('user_key'):
+                self.logger.error("Pushover設定にapi_tokenまたはuser_keyが不足しています")
                 return False
             
             url = "https://api.pushover.net/1/messages.json"
@@ -393,10 +410,17 @@ class DashboardGenerator:
                 files = {'attachment': f}
                 response = requests.post(url, data=data, files=files, timeout=30)
             
-            return response.status_code == 200
+            if response.status_code == 200:
+                self.logger.info(f"Pushover送信成功: {response.json()}")
+                return True
+            else:
+                self.logger.error(f"Pushover API エラー: {response.status_code} - {response.text}")
+                return False
             
         except Exception as e:
             self.logger.error(f"個別画像送信失敗: {str(e)}")
+            import traceback
+            self.logger.error(traceback.format_exc())
             return False
     
     def _generate_html_content(self, quality_data: Dict[str, Any]) -> str:
@@ -614,7 +638,16 @@ class IntegratedQualityPipeline:
         # コンポーネント初期化
         self.validator = ValidationEngine(self.logger)
         self.state_manager = StateManager(tracker_id, self.workspace_dir, self.logger)
-        self.dashboard_generator = DashboardGenerator(self.config, self.workspace_dir, self.logger)
+        self.dashboard_generator = DashboardGenerator(self.config, self.workspace_dir, self.logger, tracker_id)
+        
+        # PH2-008: 復旧機能システム統合
+        self.recovery_manager = None
+        self.recovery_state = None
+        if RECOVERY_AVAILABLE:
+            self.recovery_manager = RecoveryManager(tracker_id, self.workspace_dir)
+            self.logger.info("復旧機能システム統合完了")
+        else:
+            self.logger.warning("復旧機能システムは利用できません")
         
         self.logger.info(f"統合パイプライン初期化完了: {tracker_id}")
     
@@ -734,6 +767,78 @@ class IntegratedQualityPipeline:
                 phase_results=phase_results,
                 dashboard_url=None
             )
+
+    def execute_pipeline_with_recovery(self, resume: bool = False, max_retries: int = 3) -> PipelineResult:
+        """復旧機能付き統合パイプライン実行 (PH2-008)"""
+        if not RECOVERY_AVAILABLE:
+            self.logger.warning("復旧機能が利用できません、通常実行にフォールバック")
+            return self.execute_pipeline(resume)
+        
+        start_time = datetime.now()
+        
+        # 復旧セッション初期化
+        self.recovery_state = self.recovery_manager.initialize_recovery_session("pipeline_start")
+        
+        for attempt in range(max_retries + 1):
+            try:
+                self.logger.info(f"パイプライン実行試行 {attempt + 1}/{max_retries + 1}")
+                
+                # 通常のパイプライン実行
+                result = self.execute_pipeline(resume)
+                
+                if result.success:
+                    # 成功時はセッション終了
+                    self.recovery_manager.cleanup_recovery_session()
+                    self.logger.info("復旧機能付きパイプライン実行成功")
+                    return result
+                else:
+                    # 失敗時は復旧処理
+                    error_msg = f"パイプライン実行失敗 (試行 {attempt + 1})"
+                    if attempt < max_retries:
+                        can_recover = self.recovery_manager.handle_failure(
+                            self.recovery_state, error_msg
+                        )
+                        if can_recover:
+                            self.logger.info("復旧処理完了、再試行します")
+                            resume = True  # 次回はレジューム実行
+                            continue
+                    
+                    # 復旧不可能または最大試行回数到達
+                    self.logger.error("復旧不可能、処理を終了します")
+                    return result
+                    
+            except Exception as e:
+                error_msg = f"パイプライン実行中エラー: {str(e)}"
+                self.logger.error(error_msg)
+                
+                if attempt < max_retries and self.recovery_manager:
+                    can_recover = self.recovery_manager.handle_failure(
+                        self.recovery_state, error_msg
+                    )
+                    if can_recover:
+                        self.logger.info("例外からの復旧処理完了、再試行します")
+                        resume = True
+                        continue
+                
+                # 最終的な失敗
+                total_duration = (datetime.now() - start_time).total_seconds()
+                return PipelineResult(
+                    tracker_id=self.tracker_id,
+                    success=False,
+                    total_duration_seconds=total_duration,
+                    phase_results=[],
+                    dashboard_url=None
+                )
+        
+        # ここには到達しないはずですが安全のため
+        total_duration = (datetime.now() - start_time).total_seconds()
+        return PipelineResult(
+            tracker_id=self.tracker_id,
+            success=False,
+            total_duration_seconds=total_duration,
+            phase_results=[],
+            dashboard_url=None
+        )
     
     def _execute_phase3(self) -> PhaseResult:
         """Phase 3: 品質確認実行"""
@@ -821,7 +926,11 @@ class IntegratedQualityPipeline:
             extraction_dir.mkdir(parents=True, exist_ok=True)
             
             # 抽出パイプライン実行
-            input_path = self.config['paths'].get('default_input', '')
+            # PH2-008専用: kana08データセット使用
+            if self.tracker_id == "PH2-008":
+                input_path = "/mnt/c/AItools/lora/train/yado/org/kana08/"
+            else:
+                input_path = self.config['paths'].get('default_input', '')
             
             # 新アーキテクチャの抽出コマンド使用
             extraction_script = project_root / "features" / "extraction" / "commands" / "extract_character.py"
@@ -835,12 +944,17 @@ class IntegratedQualityPipeline:
             
             self.logger.info(f"抽出コマンド実行: {' '.join(cmd)}")
             
+            # PYTHONPATHを設定して実行
+            env = os.environ.copy()
+            env['PYTHONPATH'] = str(project_root)
+            
             result = subprocess.run(
                 cmd,
                 capture_output=True,
                 text=True,
                 timeout=1200,  # 20分タイムアウト
-                cwd=str(project_root)
+                cwd=str(project_root),
+                env=env
             )
             
             if result.returncode != 0:
@@ -992,7 +1106,7 @@ class IntegratedQualityPipeline:
             extraction_dir = self.workspace_dir / "extraction"
             if extraction_dir.exists() and PUSHOVER_AVAILABLE:
                 self.logger.info("Pushover結果送信開始...")
-                pushover_success = self.send_extraction_results_to_pushover(extraction_dir, max_images=10)
+                pushover_success = self.dashboard_generator.send_extraction_results_to_pushover(extraction_dir, max_images=10)
             
             # チェックポイント保存
             self.state_manager.save_checkpoint('phase6', {

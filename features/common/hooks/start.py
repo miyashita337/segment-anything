@@ -66,33 +66,33 @@ def get_performance_monitor():
     return performance_monitor
 
 def initialize_models():
-    """Initialize models for Phase 0 new structure compatibility."""
-    global sam_model, yolo_model, performance_monitor
+    """Initialize SAM and YOLO models with proper error handling."""
+    global _sam_model, _yolo_model
     
     try:
-        print("🚀 Phase 0対応モデル初期化開始...")
+        print("🔧 Initializing models...")
         
-        # SAM model initialization with load_model() call
+        # SAM model initialization
         sam_model = SAMModelWrapper()
         if not sam_model.load_model():
             raise RuntimeError("SAM model loading failed")
         print("✅ SAM model initialized and loaded")
         
-        # YOLO model initialization with load_model() call (QC成功版対応: 汎用モデル + アニメ特化閾値)
-        yolo_model = YOLOModelWrapper(model_path="yolov8x.pt", confidence_threshold=0.07)
+        # YOLO model initialization with load_model() call (汎用モデル + アニメ特化閾値)
+        yolo_model = YOLOModelWrapper(model_path="yolov8x6_animeface.pt", confidence_threshold=0.07)
         if not yolo_model.load_model():
             raise RuntimeError("YOLO model loading failed")
         print("✅ YOLO model initialized and loaded")
         
-        # Performance monitor initialization
-        performance_monitor = PerformanceMonitor()
-        print("✅ Performance monitor initialized")
+        # Store models globally
+        _sam_model = sam_model
+        _yolo_model = yolo_model
         
-        print("🎉 全モデル初期化完了（load_model()実行済み）")
+        print("🎯 Models initialization completed successfully")
         return True
         
     except Exception as e:
-        print(f"❌ モデル初期化失敗: {e}")
+        print(f"❌ Model initialization failed: {e}")
         return False
 
 if __name__ == "__main__":

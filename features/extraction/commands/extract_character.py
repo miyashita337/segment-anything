@@ -164,7 +164,7 @@ def extract_character(
         def process_single_file(file_path_str: str) -> Tuple[bool, str]:
             """単一ファイル処理（P1-019用）"""
             img_path = Path(file_path_str)
-            output_path_single = output_dir / f'extracted_{img_path.stem}.png'
+            output_path_single = output_dir / f'extracted_{img_path.stem}.jpg'
             
             try:
                 if verbose:
@@ -333,8 +333,14 @@ def process_single_image(
         if verbose:
             click.echo("🎯 QC成功版対応: 境界強調処理無効化")
 
-        # QC成功版完全再現: YOLO→SAM直接処理フロー
-        mask = generate_character_mask_qc_style(enhanced_bgr, enhanced_rgb, sam_model, yolo_model, verbose)
+        # QC成功版対応: 安定動作の従来方式に復元
+        quality_method = 'balanced'
+        
+        if perf_monitor and hasattr(perf_monitor, 'measure'):
+            with perf_monitor.measure('inference'):
+                mask = generate_character_mask(enhanced_bgr, sam_model, yolo_model, quality_method, sam_optimization_profile)
+        else:
+            mask = generate_character_mask(enhanced_bgr, sam_model, yolo_model, quality_method, sam_optimization_profile)
 
         if mask is not None:
             # 📊 品質監視システム + 条件付き3段階処理
