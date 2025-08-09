@@ -11,6 +11,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.4] - 2025-08-09
+
+### Added
+- **プロジェクト構造改善**: 新しい`deprecated/`ディレクトリ階層
+  - `deprecated/qc_legacy/` - データセット特化QCスクリプト群
+  - `deprecated/dashboard_legacy/` - 停止中ダッシュボードサーバー
+  - `deprecated/static_dashboards/` - 静的HTMLダッシュボード
+  - `deprecated/scripts_legacy/` - 背景抽出・一時スクリプト群
+- **QCシステム統合**: `tests/qc/`配下に統一品質チェックシステム
+  - `unified_batch_extraction.py` - 汎用バッチ抽出+品質チェック
+  - `compatible_extraction_system.py` - QC成功版互換システム
+- **GPT5連携**: `tools/scripts/gpt5_lora_quality_evaluator.py` - AI品質評価ツール
+- **ドキュメント構造化**: `docs/`配下に重要文書集約
+  - `docs/setup/` - Windows/WSL環境セットアップガイド
+  - 非同期システムレポート・改善文書の移動
+
+### Changed
+- **Pushover通知システム統一化**: DRY原則適用・重複排除
+- **linter環境安定性向上**: 仮想環境セットアップスクリプト改善
+- **YOLO wrapper機能拡張**: パフォーマンス・信頼性向上
+- **品質チェッカー機能拡張**: 境界ケース検出システム強化
+
+### Removed
+- **レガシーファイル整理**: ルートディレクトリの散在ファイル削除
+- **重複QCスクリプト**: データセット特化・属人的なスクリプト群
+- **停止中ダッシュボード**: 非稼働サーバーファイル
+- **一時ファイル**: セッション記録・背景抽出スクリプト群
+
+### Security
+- **APIキー保護強化**: `.gitignore`にAPI設定ファイル追加
+  - `config/api_keys.json` - Gemini APIキー等
+  - `config/google_api_monitoring.json` - API監視設定
+- **秘匿ファイル管理**: Git履歴からの漏洩防止
+
+### Performance  
+- **稼働中システム保護**: `integrated_dashboard_server.py`、`external_dashboard_server_8080.py`維持
+- **プロジェクト構造最適化**: 開発・保守効率向上
+- **品質保証体制**: QCシステム統合による品質向上
+
 ## [v0.9.3] - 2025-08-09
 
 ### Added
