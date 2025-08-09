@@ -11,6 +11,14 @@ from typing import Any, Dict, List, Optional, Tuple, NamedTuple
 from dataclasses import dataclass
 from enum import Enum
 import logging
+import sys
+import os
+
+# プロジェクトルートをパスに追加
+project_root = Path(__file__).parent.parent.parent.parent
+sys.path.insert(0, str(project_root))
+
+from features.common.file_utils import generate_output_filename, is_already_processed
 
 logger = logging.getLogger(__name__)
 
@@ -449,6 +457,40 @@ def detect_multiple_characters_from_image(image_path: Path,
     Returns:
         複数キャラクター検出結果
     """
+    # 重複処理チェック：既に_multi_char_detection処理済みの場合はスキップ
+    if "_multi_char_detection" in image_path.stem:
+        logger.warning(f"⚠️  Already processed for multi-char detection: {image_path}")
+        # 空の結果を返す（重複処理防止）
+        return MultipleCharacterResult(
+            is_multiple=False,
+            character_count=0,
+            detection_type=MultipleCharacterType.MULTIPLE_PERSONS,
+            confidence_score=0.0,
+            penalty_score=0.0,
+            primary_character_index=None,
+            characters=[],
+            improvement_suggestions=[],
+            technical_details={}
+        )
+    
+    # 既存の出力ファイルチェック
+    output_dir = str(image_path.parent)
+    existing_output = is_already_processed(str(image_path), output_dir, "multi_char_detection")
+    if existing_output:
+        logger.info(f"✅ Multi-char detection already completed: {existing_output}")
+        # 既存結果があるので、実際の結果を返すべきだが、今回は重複防止を優先
+        return MultipleCharacterResult(
+            is_multiple=False,
+            character_count=0,
+            detection_type=MultipleCharacterType.MULTIPLE_PERSONS,
+            confidence_score=0.0,
+            penalty_score=0.0,
+            primary_character_index=None,
+            characters=[],
+            improvement_suggestions=[],
+            technical_details={"skipped": "already_processed"}
+        )
+    
     # 画像読み込み
     image = cv2.imread(str(image_path))
     if image is None:
@@ -461,9 +503,13 @@ def detect_multiple_characters_from_image(image_path: Path,
     detector = MultipleCharacterDetector()
     result = detector.analyze_yolo_detections(yolo_detections, image.shape[:2])
     
-    # 可視化保存
+    # 可視化保存（重複サフィックス防止）
     if save_visualization and result.is_multiple:
-        vis_output = image_path.parent / f"{image_path.stem}_multi_char_detection.jpg"
+        # 重複サフィックス防止のファイル名生成
+        vis_filename = generate_output_filename(str(image_path), "multi_char_detection")
+        vis_output = image_path.parent / vis_filename
+        
+        logger.info(f"📊 Saving multi-char visualization: {vis_output}")
         detector.create_visualization(image, result, vis_output)
     
     return result

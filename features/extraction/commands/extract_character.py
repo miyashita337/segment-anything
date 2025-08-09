@@ -20,6 +20,7 @@ from features.common.memory_optimizer import BatchMemoryManager, optimize_for_la
 from features.common.retry_handler import image_retry_handler
 from features.common.stable_batch_processor import StableBatchProcessor
 from features.common.custom_types import ImageType, MaskType
+from features.common.file_utils import generate_output_filename, is_already_processed
 from features.processing.sam_optimization_config import SAMOptimizationConfig, create_optimized_sam_generator
 from features.evaluation.utils.face_detection import filter_non_character_masks
 from features.evaluation.utils.mask_quality_validator import validate_and_improve_mask
@@ -196,7 +197,17 @@ def extract_character(
         def process_single_file(file_path_str: str) -> Tuple[bool, str]:
             """単一ファイル処理（P1-019用）"""
             img_path = Path(file_path_str)
-            output_path_single = output_dir / f'extracted_{img_path.stem}.jpg'
+            
+            # 重複処理チェック
+            existing_output = is_already_processed(str(img_path), str(output_dir), "extracted")
+            if existing_output:
+                if verbose:
+                    click.echo(f"⏭️  Already extracted: {existing_output}")
+                return True, f"スキップ: {img_path.name}"
+            
+            # 重複サフィックス防止のファイル名生成
+            output_filename = generate_output_filename(str(img_path), "extracted")
+            output_path_single = output_dir / output_filename
             
             try:
                 if verbose:
