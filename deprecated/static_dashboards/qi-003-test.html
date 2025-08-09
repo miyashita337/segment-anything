@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QI-003 - 統合ダッシュボードサーバー</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        .sidebar-header {
+            padding: 20px;
+            background: #34495e;
+            border-bottom: 1px solid #1a252f;
+        }
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: 1.2em;
+            font-weight: 300;
+        }
+        .nav-category {
+            padding: 15px 20px 5px 20px;
+            font-size: 0.85em;
+            color: #95a5a6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        .nav-item {
+            display: block;
+            padding: 12px 20px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        .nav-item:hover {
+            background: #34495e;
+            border-left-color: #3498db;
+        }
+        .nav-item.active {
+            background: #3498db;
+            border-left-color: #2980b9;
+        }
+        .main-content {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+        .content-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .content-title {
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin: 0;
+        }
+        .refresh-btn {
+            margin-left: auto;
+            padding: 8px 16px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .refresh-btn:hover {
+            background: #2980b9;
+        }
+        .dashboard-frame {
+            position: absolute;
+            top: 50px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: none;
+            width: 100%;
+            height: calc(100% - 50px);
+        }
+        .server-info {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>🎯 ダッシュボード統合サーバー</h2>
+            <div style="font-size: 0.85em; opacity: 0.8; margin-top: 5px;">Port: 8088</div>
+        </div>
+        <nav>
+            <a href="/" class="nav-item ">🏠 メインダッシュボード</a><div class="nav-category">🔬 統合パイプライン</div><a href="/tracker/INTEGRATE-3-6" class="nav-item " title="INTEGRATE-3-6">INTEGRATE-3-6</a><a href="/tracker/INTEGRATE-3-6-01" class="nav-item " title="Phase 3-6統合初期版">INTEGRATE-3-6-01</a><a href="/tracker/INTEGRATE-3-6-02" class="nav-item " title="Phase 3-6改良版">INTEGRATE-3-6-02</a><a href="/tracker/INTEGRATE-3-6-03" class="nav-item " title="YOLO汎用版検証">INTEGRATE-3-6-03</a><a href="/tracker/INTEGRATE-3-6-04" class="nav-item " title="アニメ特化版検証">INTEGRATE-3-6-04</a><a href="/tracker/INTEGRATE-3-6-05" class="nav-item " title="INTEGRATE-3-6-05">INTEGRATE-3-6-05</a><div class="nav-category">📁 Phase 1</div><a href="/tracker/P1-005" class="nav-item ">P1-005</a><a href="/tracker/P1-006-hierarchical" class="nav-item ">P1-006-hierarchical</a><a href="/tracker/P1-007" class="nav-item ">P1-007</a><a href="/tracker/P1-008" class="nav-item ">P1-008</a><a href="/tracker/P1-009" class="nav-item ">P1-009</a><a href="/tracker/P1-010" class="nav-item ">P1-010</a><a href="/tracker/P1-011" class="nav-item ">P1-011</a><a href="/tracker/P1-012" class="nav-item ">P1-012</a><a href="/tracker/P1-013" class="nav-item ">P1-013</a><a href="/tracker/P1-014" class="nav-item ">P1-014</a><a href="/tracker/P1-015" class="nav-item ">P1-015</a><a href="/tracker/P1-016" class="nav-item ">P1-016</a><a href="/tracker/P1-017" class="nav-item ">P1-017</a><a href="/tracker/P1-021" class="nav-item ">P1-021</a><a href="/tracker/P1-023" class="nav-item ">P1-023</a><a href="/tracker/P1-A002" class="nav-item ">P1-A002</a><a href="/tracker/P1-A003" class="nav-item ">P1-A003</a><a href="/tracker/P1-A004" class="nav-item ">P1-A004</a><a href="/tracker/P1-B001" class="nav-item ">P1-B001</a><a href="/tracker/P1-B002" class="nav-item ">P1-B002</a><a href="/tracker/P1-B003" class="nav-item ">P1-B003</a><a href="/tracker/P1-B004" class="nav-item ">P1-B004</a><a href="/tracker/P1-DOC-UPDATE" class="nav-item ">P1-DOC-UPDATE</a><div class="nav-category">📁 Phase 2</div><a href="/tracker/PH2-001" class="nav-item ">PH2-001</a><a href="/tracker/PH2-001-RESTORED" class="nav-item ">PH2-001-RESTORED</a><a href="/tracker/PH2-002" class="nav-item ">PH2-002</a><a href="/tracker/PH2-004" class="nav-item ">PH2-004</a><a href="/tracker/PH2-005" class="nav-item ">PH2-005</a><a href="/tracker/PH2-006" class="nav-item ">PH2-006</a><a href="/tracker/PH2-007" class="nav-item ">PH2-007</a><a href="/tracker/PH2-008" class="nav-item ">PH2-008</a><div class="nav-category">📁 その他</div><a href="/tracker/DOC-001" class="nav-item ">DOC-001</a><a href="/tracker/MERGE-001" class="nav-item ">MERGE-001</a><a href="/tracker/QI-001" class="nav-item ">QI-001</a><a href="/tracker/QI-002" class="nav-item ">QI-002</a><a href="/tracker/QI-003" class="nav-item active">QI-003</a><a href="/tracker/QI-004" class="nav-item ">QI-004</a><a href="/tracker/baseline" class="nav-item ">baseline</a>
+        </nav>
+    </div>
+    
+    <div class="main-content">
+        <div class="content-header">
+            <h1 class="content-title">QI-003</h1>
+            <button class="refresh-btn" onclick="refreshDashboards()">🔄 再スキャン</button>
+        </div>
+        <iframe class="dashboard-frame" src="/QI-003/dashboard/dashboard.html" sandbox="allow-scripts allow-same-origin"></iframe>
+    </div>
+    
+    <div class="server-info">
+        🌐 http://localhost:8088
+    </div>
+    
+    <script>
+        async function refreshDashboards() {
+            try {
+                const response = await fetch('/refresh');
+                const data = await response.json();
+                if (data.status === 'success') {
+                    alert('✅ ダッシュボード再スキャン完了\n' + data.message);
+                    location.reload();
+                }
+            } catch (error) {
+                alert('❌ エラー: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

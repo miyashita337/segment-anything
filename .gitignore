@@ -90,6 +90,10 @@ config/*.config
 # Google Sheets API credentials
 config/google_sheets_auth.json
 
+# API設定ファイル（秘匿情報）
+config/api_keys.json
+config/google_api_monitoring.json
+
 # セキュリティ原則追加: プロジェクトルート直下画像出力禁止
 expanded_dataset/
 test_batches/
