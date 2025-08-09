@@ -93,6 +93,69 @@ class SAMModelWrapper:
         except Exception as e:
             print(f"❌ Mask generation failed: {e}")
             return []
+
+    def generate_masks_with_bbox_prompt(self, image: np.ndarray, bbox: List[int]) -> List[Dict[str, Any]]:
+        """
+        Generate masks using bounding box as prompt (hybrid approach)
+        
+        Args:
+            image: Input image (RGB format)
+            bbox: Bounding box [x, y, w, h] from YOLO detection
+            
+        Returns:
+            List of mask dictionaries
+        """
+        if not self.is_loaded:
+            raise RuntimeError("SAM model not loaded. Call load_model() first.")
+        
+        try:
+            # Convert bbox [x, y, w, h] to [x1, y1, x2, y2]
+            x, y, w, h = bbox
+            box_prompt = np.array([x, y, x + w, y + h])
+            
+            # Set image for predictor
+            self.sam.predictor.set_image(image)
+            
+            # Generate masks with box prompt
+            masks, scores, logits = self.sam.predictor.predict(
+                box=box_prompt,
+                multimask_output=True  # Generate multiple mask options
+            )
+            
+            # Format results similar to generate_masks output
+            formatted_masks = []
+            for i, (mask, score) in enumerate(zip(masks, scores)):
+                # Calculate mask properties
+                area = mask.sum()
+                y_indices, x_indices = np.where(mask)
+                if len(y_indices) > 0 and len(x_indices) > 0:
+                    x_min, x_max = x_indices.min(), x_indices.max()
+                    y_min, y_max = y_indices.min(), y_indices.max()
+                    bbox_result = [int(x_min), int(y_min), 
+                                  int(x_max - x_min), int(y_max - y_min)]
+                else:
+                    bbox_result = [0, 0, 0, 0]
+                
+                formatted_masks.append({
+                    'segmentation': mask,
+                    'area': int(area),
+                    'bbox': bbox_result,
+                    'predicted_iou': float(score),
+                    'stability_score': float(score),  # Use IoU as stability proxy
+                    'yolo_confidence': 1.0,  # High confidence since YOLO detected it
+                    'prompt_type': 'bbox'
+                })
+            
+            # Sort by area (largest first)
+            formatted_masks.sort(key=lambda x: x['area'], reverse=True)
+            
+            print(f"🎯 Hybrid SAM: BBox prompt生成 - {len(formatted_masks)}マスク")
+            return formatted_masks
+            
+        except Exception as e:
+            print(f"❌ BBox prompt mask generation failed: {e}")
+            # Fallback to grid-based generation
+            return self.generate_masks(image)
     
     def filter_character_masks(self, 
                              masks: List[Dict[str, Any]], 

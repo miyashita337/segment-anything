@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QI-006: 抽出画像確認ダッシュボード</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .grade-a { @apply bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-bold; }
+        .grade-b { @apply bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm font-bold; }
+        .grade-c { @apply bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-sm font-bold; }
+        .grade-d { @apply bg-orange-100 text-orange-800 px-2 py-1 rounded text-sm font-bold; }
+        .grade-f { @apply bg-red-100 text-red-800 px-2 py-1 rounded text-sm font-bold; }
+        .image-container { max-height: 300px; overflow: hidden; }
+        .image-container img { width: 100%; height: auto; object-fit: contain; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- ヘッダー -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">📸 QI-006: 抽出画像確認ダッシュボード</h1>
+            <p class="text-gray-600">修正したアルゴリズム（最大面積選択）による抽出結果とGPT-5品質評価</p>
+            <div class="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-blue-50 p-3 rounded-lg text-center">
+                    <h3 class="text-sm font-medium text-blue-600">抽出画像数</h3>
+                    <p class="text-xl font-bold text-blue-800">24枚</p>
+                </div>
+                <div class="bg-green-50 p-3 rounded-lg text-center">
+                    <h3 class="text-sm font-medium text-green-600">A/B高品質</h3>
+                    <p class="text-xl font-bold text-green-800">7枚</p>
+                </div>
+                <div class="bg-yellow-50 p-3 rounded-lg text-center">
+                    <h3 class="text-sm font-medium text-yellow-600">C注意必要</h3>
+                    <p class="text-xl font-bold text-yellow-800">8枚</p>
+                </div>
+                <div class="bg-red-50 p-3 rounded-lg text-center">
+                    <h3 class="text-sm font-medium text-red-600">D/F低品質</h3>
+                    <p class="text-xl font-bold text-red-800">9枚</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 抽出画像一覧 -->
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">🖼️ 抽出結果画像一覧</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0001.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0001.jpg" 
+                             alt="kana08_0001.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-a">A</span>
+                            <span class="text-xs text-gray-500">最適</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="高品質な単一キャラクター画像、LoRA学習に最適">高品質な単一キャラクター画像、LoRA学習に最適</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0002.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0002.jpg" 
+                             alt="kana08_0002.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-d">D</span>
+                            <span class="text-xs text-gray-500">不適合</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="画像品質が低く、LoRA学習には不適切">画像品質が低く、LoRA学習には不適切</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0003.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0003.jpg" 
+                             alt="kana08_0003.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-b">B</span>
+                            <span class="text-xs text-gray-500">適合</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="中程度の品質、LoRA学習に適している">中程度の品質、LoRA学習に適している</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0004.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0004.jpg" 
+                             alt="kana08_0004.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-c">C</span>
+                            <span class="text-xs text-gray-500">要注意</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="中程度の品質、LoRA学習に注意が必要">中程度の品質、LoRA学習に注意が必要</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0005.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0005.jpg" 
+                             alt="kana08_0005.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-b">B</span>
+                            <span class="text-xs text-gray-500">適合</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="中程度の品質、LoRA学習に適している">中程度の品質、LoRA学習に適している</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0006.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0006.jpg" 
+                             alt="kana08_0006.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-b">B</span>
+                            <span class="text-xs text-gray-500">適合</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="中程度の品質、LoRA学習に適している">中程度の品質、LoRA学習に適している</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0007.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0007.jpg" 
+                             alt="kana08_0007.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-c">C</span>
+                            <span class="text-xs text-gray-500">要注意</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="中程度の品質、LoRA学習に注意が必要">中程度の品質、LoRA学習に注意が必要</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0008.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0008.jpg" 
+                             alt="kana08_0008.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-c">C</span>
+                            <span class="text-xs text-gray-500">要注意</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="中程度の品質、LoRA学習に注意が必要">中程度の品質、LoRA学習に注意が必要</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0009.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0009.jpg" 
+                             alt="kana08_0009.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-d">D</span>
+                            <span class="text-xs text-gray-500">不適合</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="画像品質が低く、LoRA学習には不適切">画像品質が低く、LoRA学習には不適切</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0010.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0010.jpg" 
+                             alt="kana08_0010.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-c">C</span>
+                            <span class="text-xs text-gray-500">要注意</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="中程度の品質、LoRA学習に注意が必要">中程度の品質、LoRA学習に注意が必要</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0011.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0011.jpg" 
+                             alt="kana08_0011.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-a">A</span>
+                            <span class="text-xs text-gray-500">最適</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="高品質な単一キャラクター画像、LoRA学習に最適">高品質な単一キャラクター画像、LoRA学習に最適</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0012.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0012.jpg" 
+                             alt="kana08_0012.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-f">F</span>
+                            <span class="text-xs text-gray-500">不適合</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="画像サイズが小さすぎ、抽出失敗の可能性">画像サイズが小さすぎ、抽出失敗の可能性</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0013.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0013.jpg" 
+                             alt="kana08_0013.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-b">B</span>
+                            <span class="text-xs text-gray-500">適合</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="中程度の品質、LoRA学習に適している">中程度の品質、LoRA学習に適している</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0014.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0014.jpg" 
+                             alt="kana08_0014.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-a">A</span>
+                            <span class="text-xs text-gray-500">最適</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="高品質な単一キャラクター画像、LoRA学習に最適">高品質な単一キャラクター画像、LoRA学習に最適</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0015.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0015.jpg" 
+                             alt="kana08_0015.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-f">F</span>
+                            <span class="text-xs text-gray-500">不適合</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="画像サイズが小さすぎ、抽出失敗の可能性">画像サイズが小さすぎ、抽出失敗の可能性</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0016.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0016.jpg" 
+                             alt="kana08_0016.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-d">D</span>
+                            <span class="text-xs text-gray-500">不適合</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="画像品質が低く、LoRA学習には不適切">画像品質が低く、LoRA学習には不適切</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0017.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0017.jpg" 
+                             alt="kana08_0017.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-c">C</span>
+                            <span class="text-xs text-gray-500">要注意</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="中程度の品質、LoRA学習に注意が必要">中程度の品質、LoRA学習に注意が必要</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0018.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0018.jpg" 
+                             alt="kana08_0018.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-f">F</span>
+                            <span class="text-xs text-gray-500">不適合</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="画像サイズが小さすぎ、抽出失敗の可能性">画像サイズが小さすぎ、抽出失敗の可能性</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0019.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0019.jpg" 
+                             alt="kana08_0019.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-f">F</span>
+                            <span class="text-xs text-gray-500">不適合</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="画像サイズが小さすぎ、抽出失敗の可能性">画像サイズが小さすぎ、抽出失敗の可能性</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0020.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0020.jpg" 
+                             alt="kana08_0020.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-c">C</span>
+                            <span class="text-xs text-gray-500">要注意</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="中程度の品質、LoRA学習に注意が必要">中程度の品質、LoRA学習に注意が必要</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0021.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0021.jpg" 
+                             alt="kana08_0021.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-d">D</span>
+                            <span class="text-xs text-gray-500">不適合</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="画像品質が低く、LoRA学習には不適切">画像品質が低く、LoRA学習には不適切</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0022.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0022.jpg" 
+                             alt="kana08_0022.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-c">C</span>
+                            <span class="text-xs text-gray-500">要注意</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="中程度の品質、LoRA学習に注意が必要">中程度の品質、LoRA学習に注意が必要</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0023.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0023.jpg" 
+                             alt="kana08_0023.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-d">D</span>
+                            <span class="text-xs text-gray-500">不適合</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="画像品質が低く、LoRA学習には不適切">画像品質が低く、LoRA学習には不適切</p>
+                    </div>
+                </div>
+                <div class="border rounded-lg p-3 bg-gray-50">
+                    <h4 class="text-sm font-medium mb-2 truncate">kana08_0024.jpg</h4>
+                    <div class="image-container mb-2">
+                        <img src="images/kana08_0024.jpg" 
+                             alt="kana08_0024.jpg" 
+                             class="border rounded">
+                    </div>
+                    <div class="space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="grade-c">C</span>
+                            <span class="text-xs text-gray-500">要注意</span>
+                        </div>
+                        <p class="text-xs text-gray-600" title="中程度の品質、LoRA学習に注意が必要">中程度の品質、LoRA学習に注意が必要</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 修正アルゴリズム情報 -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mt-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">⚙️ 適用されたアルゴリズム修正</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="border-l-4 border-blue-500 pl-4">
+                    <h3 class="font-medium text-gray-800">最大面積選択</h3>
+                    <p class="text-sm text-gray-600">複数キャラクター検出時、最大面積のマスクを選択</p>
+                </div>
+                <div class="border-l-4 border-green-500 pl-4">
+                    <h3 class="font-medium text-gray-800">fullbody_priority</h3>
+                    <p class="text-sm text-gray-600">全身検出を優先する品質評価方式</p>
+                </div>
+                <div class="border-l-4 border-purple-500 pl-4">
+                    <h3 class="font-medium text-gray-800">YOLO→SAM Hybrid</h3>
+                    <p class="text-sm text-gray-600">YOLOのbboxをSAMプロンプトに使用</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- フッター -->
+        <div class="mt-8 text-center text-sm text-gray-500">
+            <p>QI-006: 複数キャラクター検出問題対応 - 抽出画像確認ダッシュボード</p>
+            <p>画像数: {len(image_files)}枚 | アルゴリズム: 最大面積選択 + fullbody_priority</p>
+        </div>
+    </div>
+</body>
+</html>

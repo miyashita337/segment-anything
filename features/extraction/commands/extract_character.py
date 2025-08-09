@@ -32,15 +32,18 @@ from pathlib import Path
 from PIL import Image
 from typing import Any, Optional, Tuple
 
-# 通知システム
+# 統一通知システム（global_pushover使用）
 try:
-    from features.extraction.extraction_notifier import (
-        ExtractionNotifier,
-        create_extraction_results_dict,
+    from features.common.notification.global_pushover import (
+        notify_success,
+        notify_error,
+        notify_process_complete,
+        notify_warning
     )
-    EXTRACTION_NOTIFIER_AVAILABLE = True
+    PUSHOVER_AVAILABLE = True
 except ImportError:
-    EXTRACTION_NOTIFIER_AVAILABLE = False
+    PUSHOVER_AVAILABLE = False
+    print("Warning: Pushover notification not available.")
 
 # Google Sheets自動更新
 try:
@@ -245,34 +248,20 @@ def extract_character(
             except Exception as e:
                 logger.warning(f"Google Sheets更新エラー: {e}")
         
-        # Pushover通知送信
-        if not no_notify and EXTRACTION_NOTIFIER_AVAILABLE and success_count > 0:
+        # Pushover通知送信（統一システム使用）
+        if not no_notify and PUSHOVER_AVAILABLE and success_count > 0:
             try:
-                notifier = ExtractionNotifier()
+                # 成功率計算
+                success_rate = (success_count / total_images * 100) if total_images > 0 else 0
                 
-                # 抽出結果辞書を作成
-                extraction_results = create_extraction_results_dict(
-                    total_images=total_images,
-                    successful_extractions=successful_extractions,
-                    processing_time=batch_processing_time,
-                    quality_method="fullbody_priority",
-                    output_dir=str(output_dir)
+                # 通知送信
+                notify_process_complete(
+                    title=f"キャラクター抽出完了: {output_dir.name}",
+                    successful=success_count,
+                    total=total_images,
+                    duration=batch_processing_time
                 )
-                
-                # 通知送信（デフォルトで画像付き）
-                include_images = not no_images
-                success = notifier.send_extraction_completion_notification(
-                    extraction_results, 
-                    include_images=include_images
-                )
-                
-                if success:
-                    if include_images:
-                        click.echo("📱 Pushover通知送信完了（成功画像付き）")
-                    else:
-                        click.echo("📱 Pushover通知送信完了")
-                else:
-                    click.echo("⚠️ Pushover通知送信失敗")
+                click.echo("📱 Pushover通知送信完了")
                     
             except Exception as e:
                 if verbose:
@@ -333,8 +322,8 @@ def process_single_image(
         if verbose:
             click.echo("🎯 QC成功版対応: 境界強調処理無効化")
 
-        # QC成功版対応: 安定動作の従来方式に復元
-        quality_method = 'balanced'
+        # ユーザー要望: fullbody_priorityを使用
+        quality_method = 'fullbody_priority'
         
         if perf_monitor and hasattr(perf_monitor, 'measure'):
             with perf_monitor.measure('inference'):
@@ -481,22 +470,38 @@ def generate_character_mask(image: ImageType, sam_model: Any, yolo_model: Any, q
         
         print(f"🔍 Image shape: {image_array.shape}")
             
-        # P1-020: SAM最適化システム統合
+        # Hybrid方式: YOLOでperson検出してSAMにbboxプロンプトを渡す
+        hybrid_masks = []
         try:
-            sam_optimizer = SAMOptimizationConfig()
-            # SAMModelWrapperから実際のSAMモデルを取得
-            actual_sam_model = getattr(sam_model, 'sam', None)
-            if actual_sam_model is None:
-                raise AttributeError("SAMModelWrapper.samが見つかりません")
-            optimized_generator = create_optimized_sam_generator(
-                actual_sam_model, 
-                sam_optimizer, 
-                sam_optimization_profile
-            )
-            all_masks = optimized_generator.generate(image_array)
-            print(f"🚀 P1-020最適化 ({sam_optimization_profile}) でマスク生成完了")
+            # YOLOで人物検出
+            persons = yolo_model.detect_persons(image_array)
+            if persons:
+                print(f"🎯 Hybrid方式: {len(persons)}人検出 → SAM bbox prompt")
+                
+                # 最大面積のpersonを選択（複数検出時）
+                if len(persons) > 1:
+                    persons.sort(key=lambda x: x['area'], reverse=True)
+                    print(f"   最大面積person選択: {persons[0]['area']}px")
+                
+                # 最大のbboxをSAMプロンプトに使用
+                best_person = persons[0]
+                bbox = best_person['bbox']  # [x, y, w, h]
+                
+                # SAM hybrid生成
+                hybrid_masks = sam_model.generate_masks_with_bbox_prompt(image_array, bbox)
+                
+                if hybrid_masks:
+                    print(f"✅ Hybrid成功: {len(hybrid_masks)}マスク生成")
+                    all_masks = hybrid_masks
+                else:
+                    print("⚠️ Hybrid失敗 → Grid方式にフォールバック")
+                    all_masks = sam_model.generate_masks(image_array)
+            else:
+                print("⚠️ YOLO検出なし → Grid方式を使用")
+                all_masks = sam_model.generate_masks(image_array)
+                
         except Exception as e:
-            print(f"⚠️ P1-020最適化エラー、通常SAMでフォールバック: {e}")
+            print(f"⚠️ Hybridエラー → Grid方式にフォールバック: {e}")
             all_masks = sam_model.generate_masks(image_array)
         
         if not all_masks:
@@ -553,37 +558,48 @@ def generate_character_mask(image: ImageType, sam_model: Any, yolo_model: Any, q
         return None
 
 def _select_best_mask_qc_method(masks: list) -> Optional[dict]:
-    """QC成功版アルゴリズム: 最高YOLOスコアのマスクを単純選択
+    """最大面積のマスクを選択（ユーザー要望対応）
     
-    P1-B004教訓: 複雑なスコアリングシステムは品質劣化の原因。
-    QC成功版の単純手法 (masks[np.argmax(scores)]) が100%成功を実現。
+    複数キャラクター検出時は最大面積のキャラクターを抽出する仕様。
+    信頼度ではなく面積ベースでの選択に修正。
     
     Args:
-        masks: List of mask candidates with YOLO scores
+        masks: List of mask candidates
         
     Returns:
-        Best mask or None
+        Best mask (largest area) or None
     """
     if not masks:
         return None
     
-    # Extract YOLO scores
-    scores = []
+    # Extract areas from all masks
+    areas = []
     for mask_data in masks:
-        score = mask_data.get('yolo_confidence', mask_data.get('yolo_score', 0.0))
-        scores.append(score)
+        area = mask_data.get('area', 0)
+        areas.append(area)
     
-    if not scores:
-        print("❌ YOLOスコアが見つかりません")
+    if not areas:
+        print("❌ マスクの面積情報が見つかりません")
         return None
     
-    # QC成功版: 最高スコアの単純選択
-    best_index = np.argmax(scores)
+    # 最大面積のマスクを選択
+    best_index = np.argmax(areas)
     best_mask = masks[best_index]
-    best_score = scores[best_index]
+    best_area = areas[best_index]
     
-    print(f"🎯 QC成功版アルゴリズム: 最高YOLOスコア {best_score:.3f} のマスクを選択")
-    print(f"   選択: マスク{best_index + 1}/{len(masks)} (面積: {best_mask.get('area', 0)}px)")
+    # 信頼度も参考として表示
+    confidence = best_mask.get('yolo_confidence', best_mask.get('yolo_score', 0.0))
+    
+    print(f"🎯 最大面積選択: 面積 {best_area}px のマスクを選択")
+    print(f"   選択: マスク{best_index + 1}/{len(masks)} (信頼度: {confidence:.3f})")
+    
+    # 他の候補の情報も表示（デバッグ用）
+    if len(masks) > 1:
+        print(f"   他候補: ", end="")
+        for i, area in enumerate(areas):
+            if i != best_index:
+                print(f"[{i+1}]{area}px ", end="")
+        print()
     
     return best_mask
 

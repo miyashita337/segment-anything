@@ -67,7 +67,7 @@ def get_performance_monitor():
 
 def initialize_models():
     """Initialize SAM and YOLO models with proper error handling."""
-    global _sam_model, _yolo_model
+    global sam_model, yolo_model, performance_monitor
     
     try:
         print("🔧 Initializing models...")
@@ -85,8 +85,9 @@ def initialize_models():
         print("✅ YOLO model initialized and loaded")
         
         # Store models globally
-        _sam_model = sam_model
-        _yolo_model = yolo_model
+        globals()['sam_model'] = sam_model
+        globals()['yolo_model'] = yolo_model
+        globals()['performance_monitor'] = performance_monitor
         
         print("🎯 Models initialization completed successfully")
         return True
