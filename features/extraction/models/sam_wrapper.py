@@ -76,20 +76,54 @@ class SAMModelWrapper:
     
     def generate_masks(self, image: np.ndarray) -> List[Dict[str, Any]]:
         """
-        Generate all possible masks for the given image
+        Generate all possible masks for the given image (with mask count limitation)
         
         Args:
             image: Input image (RGB format)
             
         Returns:
-            List of mask dictionaries with segmentation, area, bbox, etc.
+            List of mask dictionaries with segmentation, area, bbox, etc. (max 100)
         """
         if not self.is_loaded:
             raise RuntimeError("SAM model not loaded. Call load_model() first.")
         
         try:
+            # 🔧 根本修正: マスク生成
             masks = self.mask_generator.generate(image)
+            original_mask_count = len(masks)
+            
+            print(f"🎯 SAM生成結果: {original_mask_count}マスク")
+            
+            # 🚨 マスク数制限実装（最大10個）
+            MAX_MASKS = 10
+            if len(masks) > MAX_MASKS:
+                # 面積基準で上位マスクを選択
+                print(f"⚠️ マスク数制限: {len(masks)} → {MAX_MASKS}個に削減")
+                
+                # 面積を計算してソート
+                for mask in masks:
+                    if 'area' not in mask:
+                        mask['area'] = np.sum(mask['segmentation'])
+                
+                # 面積順でソート（降順）
+                masks = sorted(masks, key=lambda x: x['area'], reverse=True)
+                masks = masks[:MAX_MASKS]
+                
+                print(f"🔧 面積基準選択完了: 上位{MAX_MASKS}マスクを選択")
+                
+                # 削減統計
+                remaining_areas = [mask['area'] for mask in masks]
+                print(f"   選択範囲: 最大{max(remaining_areas):,}px - 最小{min(remaining_areas):,}px")
+            
+            print(f"✅ 最終マスク数: {len(masks)}個 (制限: {MAX_MASKS})")
+            
+            # マスクサイズの統計情報を表示
+            if masks:
+                mask_areas = [mask.get('area', np.sum(mask['segmentation'])) for mask in masks]
+                print(f"📊 マスク面積統計: 最小={min(mask_areas):,}, 最大={max(mask_areas):,}, 平均={int(np.mean(mask_areas)):,}")
+            
             return masks
+            
         except Exception as e:
             print(f"❌ Mask generation failed: {e}")
             return []

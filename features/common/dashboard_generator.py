@@ -81,7 +81,7 @@ class StandardDashboardGenerator:
         return stats
     
     def generate_image_cards_html(self, images: List[str]) -> str:
-        """画像カードHTMLを生成（完全なBase64データ）"""
+        """画像カードHTMLを生成（直接画像パス使用・トリミングなし）"""
         if not images:
             return '<div class="no-images">抽出された画像が見つかりませんでした</div>'
         
@@ -92,17 +92,19 @@ class StandardDashboardGenerator:
                 file_size = os.path.getsize(image_path)
                 quality, quality_label = self.get_image_quality(file_size)
                 
-                # 完全なBase64データを取得
-                base64_data = self.image_to_base64(image_path)
-                if not base64_data:
-                    continue
+                # ワークスペース相対パスを生成（統合サーバーでアクセス可能）
+                workspace_base = "/mnt/c/AItools/lora/train/yado/tracker-workspace"
+                if workspace_base in image_path:
+                    relative_path = image_path.replace(workspace_base + "/", "")
+                else:
+                    relative_path = image_path
                 
-                self.logger.debug(f"  🖼️  {filename}: Base64データ {len(base64_data)} 文字")
+                self.logger.debug(f"  🖼️  {filename}: 直接画像パス使用")
                 
                 image_cards += f"""
         <div class="image-card">
             <div class="image-container">
-                <img src="data:image/jpeg;base64,{base64_data}" alt="{filename}">
+                <img src="/{relative_path}" alt="{filename}" loading="lazy">
                 <div class="quality-badge {quality}">{quality_label}</div>
             </div>
             <div class="image-info">
@@ -149,10 +151,10 @@ class StandardDashboardGenerator:
         .quality-label {{ font-size: 1.2em; margin-top: 10px; }}
         .gallery {{ padding: 40px; background: #f8f9fa; }}
         .gallery h2 {{ text-align: center; margin-bottom: 30px; color: #2c3e50; font-size: 2em; }}
-        .images-grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }}
-        .image-card {{ background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }}
-        .image-container {{ position: relative; height: 200px; overflow: hidden; }}
-        .image-container img {{ width: 100%; height: 100%; object-fit: contain; background: #f8f9fa; }}
+        .images-grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 18px; }}
+        .image-card {{ background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }}
+        .image-container {{ position: relative; min-height: 200px; overflow: visible; }}
+        .image-container img {{ width: 50%; height: 50%; object-fit: contain; background: #f8f9fa; max-width: 50%; max-height: 50%; display: block; margin: 15px auto; }}
         .quality-badge {{ position: absolute; top: 10px; right: 10px; padding: 5px 10px; border-radius: 20px; color: white; font-weight: bold; font-size: 0.8em; }}
         .quality-badge.high {{ background: #27ae60; }}
         .quality-badge.medium {{ background: #f39c12; }}
