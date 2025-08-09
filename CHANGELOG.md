@@ -11,6 +11,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.6] - 2025-08-10
+
+### Added
+- **重複防止システム**: `features/common/file_utils.py` - 重複サフィックス自動防止機能
+  - `generate_output_filename()`: 重複サフィックス回避ファイル名生成
+  - `clean_duplicate_suffixes()`: 既存重複サフィックスクリーニング
+  - `is_already_processed()`: 処理済みファイル自動検出
+- **包括的テストスイート**: `tests/unit/test_duplicate_prevention.py` - 12テストケースによる品質保証
+- **クリーンアップツール**: `tools/utils/cleanup_duplicates.py` - 既存重複ファイル自動整理機能
+
+### Fixed
+- **重複処理根本解決**: `_multi_char_detection_multi_char_detection.jpg` パターンの完全除去
+  - QCC-011実績: 6時間処理時間 → 正常時間への大幅短縮
+  - 7個重複ファイルの適切処理（4個置換・3個削除）
+- **MultipleCharacterDetector改善**: 重複処理スキップ機能実装
+  - ファイル名重複チェック: `_multi_char_detection`含有ファイル自動スキップ
+  - 既存出力ファイル検出による重複処理完全防止
+- **extract_character.py最適化**: `generate_output_filename()`統合による出力ファイル名重複防止
+- **clean_duplicate_suffixes修正**: 正規表現パターン改善による正確なクリーニング
+
+### Changed
+- **処理効率大幅改善**: 重複処理除去により処理時間の劇的短縮
+- **QCC-011ダッシュボード更新**: 全57枚画像表示対応・重複サフィックスファイル0個達成
+- **品質保証強化**: 12/12テスト合格・実動作テスト完了
+
+### Technical Details
+- **最小限修正アプローチ**: SQLite等大規模変更を回避した軽量実装
+- **Google Sheets非競合**: 既存進捗管理システムと完全分離
+- **後方互換性**: 既存機能への影響ゼロ保証
+- **自動防止機能**: 今後の重複処理問題完全予防システム
+
 ## [v0.9.5] - 2025-08-10
 
 ### Added
