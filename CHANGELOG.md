@@ -11,6 +11,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.3] - 2025-08-09
+
+### Added
+- **QI-006: 複数キャラクター検出改善システム**
+  - 信頼度基準から面積基準への選択アルゴリズム変更
+  - YOLO bbox → SAM prompt のHybrid方式実装
+  - fullbody_priority品質評価メソッド採用
+  - GPT-5評価との統合ダッシュボード実装
+  - multiple_character_detector.py: 複数キャラクター検出分析機能
+  - アルゴリズムテストダッシュボード追加
+
+### Changed
+- **extract_character.py** - 最大面積マスク選択ロジック実装
+- **sam_wrapper.py** - generate_masks_with_bbox_promptメソッド追加
+- **start.py** - グローバル変数名修正（model初期化問題解決）
+
+### Fixed
+- **複数キャラクター重複問題** - kana08_0014.jpg等の5人重複キャラクター問題改善
+- **GPT-5評価精度** - 漫画キャラクター認識の限界把握と対策実装
+- **SAM predictor属性エラー** - Grid方式へのフォールバック動作確認
+
+### Performance
+- **kana08データセット**: 24枚の再抽出完了（修正アルゴリズム適用）
+- **Web統合ダッシュボード**: http://100.123.241.106:8088/tracker/QI-006 実装
+- **抽出品質改善**: 面積基準選択により下半身のみ抽出問題の特定（QI-007チケット作成）
+
 ## [v0.9.2] - 2025-08-08
 
 ### Added
