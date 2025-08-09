@@ -27,7 +27,7 @@ sys.path.insert(0, str(project_root))
 from features.evaluation.objective_evaluation_system import ObjectiveEvaluationSystem
 # 通知システム（利用可能な場合のみ）
 try:
-    from features.common.notification.notification import NotificationManager
+    from features.common.notification.global_pushover import notify_success, notify_error, notify_process_complete
 except ImportError:
     NotificationManager = None
 

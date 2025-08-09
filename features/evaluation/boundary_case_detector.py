@@ -31,6 +31,7 @@ class BoundaryType(Enum):
     QUALITY_BOUNDARY = "quality_boundary"  # 品質の境界
     CONTEXT_BOUNDARY = "context_boundary"  # 文脈の境界
     TECHNICAL_BOUNDARY = "technical_boundary"  # 技術的境界
+    MULTIPLE_CHARACTER_BOUNDARY = "multiple_character_boundary"  # 複数キャラクター境界  # 技術的境界
 
 
 @dataclass
@@ -241,6 +242,67 @@ class BoundaryCaseDetector:
             suggestions.append("ノイズ除去またはISO設定見直し")
             
         return len(reasons) > 0, "; ".join(reasons), suggestions
+
+    def detect_multiple_character_boundary(self, image_path: Path) -> Tuple[bool, str, List[str]]:
+        """
+        複数キャラクター境界ケース検出
+        
+        Args:
+            image_path: 画像パス
+            
+        Returns:
+            (境界ケースフラグ, 検出理由, 改善提案リスト)
+        """
+        try:
+            from features.evaluation.utils.multiple_character_detector import (
+                detect_multiple_characters_from_image
+            )
+            from features.extraction.models.yolo_wrapper import YOLOModelWrapper
+        except ImportError as e:
+            logger.warning(f"複数キャラクター検出機能無効: {e}")
+            return False, "", []
+        
+        suggestions = []
+        reasons = []
+        
+        try:
+            # YOLO Wrapper初期化
+            yolo_wrapper = YOLOModelWrapper()
+            if not yolo_wrapper.load_model():
+                return False, "YOLO model load failed", []
+            
+            # 複数キャラクター検出実行
+            multi_char_result = detect_multiple_characters_from_image(image_path, yolo_wrapper)
+            
+            # 境界ケース判定
+            if multi_char_result.is_multiple:
+                # ペナルティベースの境界判定
+                if multi_char_result.penalty_score > 0.3:  # 30%以上のペナルティで境界ケース
+                    reasons.append(
+                        f"複数キャラクター検出: {multi_char_result.character_count}体 "
+                        f"(タイプ: {multi_char_result.detection_type.value}, "
+                        f"ペナルティ: {multi_char_result.penalty_score:.2f})"
+                    )
+                    suggestions.extend(multi_char_result.improvement_suggestions)
+                    
+                    # 高ペナルティの場合の追加警告
+                    if multi_char_result.penalty_score > 0.7:
+                        suggestions.insert(0, "⚠️ 高ペナルティ: LoRA学習には不適切")
+                    
+                    return True, "; ".join(reasons), suggestions
+            
+            # 単一キャラクターまたは低ペナルティの場合は境界ケースでない
+            return False, "", []
+            
+        except Exception as e:
+            logger.error(f"複数キャラクター境界検出エラー {image_path}: {e}")
+            return False, f"検出エラー: {str(e)}", []
+        finally:
+            # リソース解放
+            try:
+                yolo_wrapper.unload_model()
+            except:
+                pass
         
     def calculate_boundary_confidence(self, quality_metrics: Dict[str, float], 
                                     case_type: BoundaryType) -> float:
@@ -312,35 +374,46 @@ class BoundaryCaseDetector:
             if 'error' in quality_metrics:
                 return None
                 
-            # 各種境界ケース検出
+            # 各種境界ケース検出（複数キャラクター検出を追加）
             detectors = [
-                (BoundaryType.POSE_BOUNDARY, self.detect_pose_boundary),
-                (BoundaryType.SIZE_BOUNDARY, self.detect_size_boundary),
-                (BoundaryType.QUALITY_BOUNDARY, self.detect_quality_boundary),
+                (BoundaryType.POSE_BOUNDARY, lambda: self.detect_pose_boundary(quality_metrics)),
+                (BoundaryType.SIZE_BOUNDARY, lambda: self.detect_size_boundary(quality_metrics)),
+                (BoundaryType.QUALITY_BOUNDARY, lambda: self.detect_quality_boundary(quality_metrics)),
+                (BoundaryType.MULTIPLE_CHARACTER_BOUNDARY, lambda: self.detect_multiple_character_boundary(image_path)),
             ]
             
             boundary_cases = []
             
             for case_type, detector_func in detectors:
-                is_boundary, reason, suggestions = detector_func(quality_metrics)
+                try:
+                    is_boundary, reason, suggestions = detector_func()
+                    
+                    if is_boundary:
+                        # 複数キャラクター境界ケースの場合は特別な信頼度計算
+                        if case_type == BoundaryType.MULTIPLE_CHARACTER_BOUNDARY:
+                            # 複数キャラクター検出結果から信頼度を取得
+                            confidence = self._extract_multi_char_confidence(reason)
+                        else:
+                            confidence = self.calculate_boundary_confidence(quality_metrics, case_type)
+                        
+                        boundary_case = BoundaryCase(
+                            image_path=str(image_path),
+                            case_type=case_type,
+                            confidence_score=confidence,
+                            quality_metrics=quality_metrics,
+                            detection_reason=reason,
+                            improvement_suggestions=suggestions,
+                            technical_details={
+                                'detector_version': '2.0',  # 複数キャラ対応版
+                                'analysis_timestamp': time.time(),
+                            }
+                        )
+                        
+                        boundary_cases.append(boundary_case)
                 
-                if is_boundary:
-                    confidence = self.calculate_boundary_confidence(quality_metrics, case_type)
-                    
-                    boundary_case = BoundaryCase(
-                        image_path=str(image_path),
-                        case_type=case_type,
-                        confidence_score=confidence,
-                        quality_metrics=quality_metrics,
-                        detection_reason=reason,
-                        improvement_suggestions=suggestions,
-                        technical_details={
-                            'detector_version': '1.0',
-                            'analysis_timestamp': time.time(),
-                        }
-                    )
-                    
-                    boundary_cases.append(boundary_case)
+                except Exception as e:
+                    logger.warning(f"境界検出器 {case_type.value} でエラー: {e}")
+                    continue
                     
             # 最高信頼度の境界ケースを返す
             if boundary_cases:
@@ -351,6 +424,30 @@ class BoundaryCaseDetector:
         except Exception as e:
             logger.error(f"画像処理エラー {image_path}: {e}")
             return None
+    
+    def _extract_multi_char_confidence(self, reason: str) -> float:
+        """
+        複数キャラクター検出理由からペナルティベース信頼度を抽出
+        
+        Args:
+            reason: 検出理由文字列
+            
+        Returns:
+            信頼度スコア (0-1)
+        """
+        try:
+            # 理由文字列からペナルティスコアを抽出
+            import re
+            penalty_match = re.search(r'ペナルティ:\s*([\d.]+)', reason)
+            if penalty_match:
+                penalty_score = float(penalty_match.group(1))
+                # ペナルティを信頼度に変換（ペナルティが高いほど信頼度も高い）
+                return min(penalty_score, 1.0)
+        except:
+            pass
+        
+        # デフォルト信頼度
+        return 0.7
             
     def process_directory(self, input_dir: Path) -> BoundaryAnalysisResult:
         """

@@ -240,7 +240,7 @@ class SimpleBatchRunner:
         
         # 通知送信
         message = "\n".join(message_lines)
-        send_pushover_notification(title, message, priority=priority)
+        notify_success(title, message, priority=priority)
         
         self.last_pushover_time = datetime.now()
         logger.info(f"Pushover通知送信: 進捗 {progress_rate:.1f}%")
@@ -381,7 +381,7 @@ class SimpleBatchRunner:
         if self.use_pushover:
             title = "🚀 バッチ処理開始"
             message = f"トラッカー: {self.tracker_id}\n画像数: {len(image_paths)}枚\n推定時間: {len(image_paths) * self.timeout_per_image / 3600:.1f}時間"
-            send_pushover_notification(title, message, priority=0, sound="cosmic")
+            notify_success(title, message, priority=0, sound="cosmic")
             logger.info("Pushover開始通知送信")
         
         # バッチ処理実行

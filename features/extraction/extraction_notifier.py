@@ -1,4 +1,15 @@
 """
+⚠️ DEPRECATED: このモジュールは廃止されました
+代わりに features.common.notification.global_pushover を使用してください
+
+from features.common.notification.global_pushover import (
+    notify_success,
+    notify_error,
+    notify_process_complete
+)
+"""
+
+"""
 抽出パイプライン用Pushover通知システム
 
 抽出完了時に成功画像のグリッドと統計情報を自動送信
@@ -13,7 +24,7 @@ from PIL import Image, ImageDraw, ImageFont
 from typing import Any, Dict, List, Optional
 
 try:
-    from features.common.notification.notification import PushoverNotifier
+    from features.common.notification.global_pushover import notify_success, notify_error, notify_process_complete
     PUSHOVER_AVAILABLE = True
 except ImportError:
     PUSHOVER_AVAILABLE = False

@@ -1,4 +1,15 @@
 """
+⚠️ DEPRECATED: このモジュールは廃止されました
+代わりに features.common.notification.global_pushover を使用してください
+
+from features.common.notification.global_pushover import (
+    notify_success,
+    notify_error,
+    notify_process_complete
+)
+"""
+
+"""
 通知システム（Pushover）
 """
 
@@ -293,7 +304,7 @@ def send_batch_notification(successful: int, total: int, failed: int, total_time
         bool: 送信成功かどうか
     """
     # 既存のPushoverNotifierを優先使用
-    notifier = PushoverNotifier()
+    # 統一通知システムを使用（インスタンス化不要）
     result = notifier.send_batch_complete(successful, total, failed, total_time)
     
     # 既存の方法で失敗した場合はglobal_pushoverを試行
@@ -315,22 +326,22 @@ def send_batch_notification(successful: int, total: int, failed: int, total_time
 # 便利な関数群を追加（global_pushoverとの互換性）
 def notify_success(title: str = "処理完了", message: str = "処理が正常に完了しました") -> bool:
     """成功通知"""
-    notifier = PushoverNotifier()
-    return notifier.send_notification(message, title, priority=0)
+    # 統一通知システムを使用（インスタンス化不要）
+    return notify_success(message, title, priority=0)
 
 def notify_error(title: str = "エラー発生", message: str = "処理中にエラーが発生しました") -> bool:
     """エラー通知"""
-    notifier = PushoverNotifier()
-    return notifier.send_notification(message, title, priority=1)
+    # 統一通知システムを使用（インスタンス化不要）
+    return notify_success(message, title, priority=1)
 
 def notify_warning(title: str = "警告", message: str = "注意が必要な状況が発生しました") -> bool:
     """警告通知"""
-    notifier = PushoverNotifier()
-    return notifier.send_notification(message, title, priority=0)
+    # 統一通知システムを使用（インスタンス化不要）
+    return notify_success(message, title, priority=0)
 
 
 # 使用例
 if __name__ == "__main__":
     # テスト通知
-    notifier = PushoverNotifier()
-    notifier.send_notification("テスト通知", "Character Extraction Test")
+    # 統一通知システムを使用（インスタンス化不要）
+    notify_success("テスト通知", "Character Extraction Test")

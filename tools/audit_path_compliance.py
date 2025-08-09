@@ -277,7 +277,7 @@ class PathComplianceAuditor:
         logger.info(f"📄 レポート保存: {output_path}")
         return output_path
         
-    def send_pushover_notification(self, summary: Dict[str, int]) -> bool:
+    def notify_success(self, summary: Dict[str, int]) -> bool:
         """
         Pushover通知送信
         
@@ -328,7 +328,8 @@ class PathComplianceAuditor:
                 priority = 0
                 
             # Pushover API リクエスト
-            response = requests.post('https://api.pushover.net/1/messages.json', data={
+            response = # TODO: global_pushover.pyに移行必要
+# requests.post('https://api.pushover.net/1/messages.json', data={
                 'token': config['api_token'],
                 'user': config['user_key'],
                 'title': title,
@@ -382,7 +383,7 @@ def main():
         
     # Pushover通知
     if not args.no_pushover and summary['total_issues'] > 0:
-        auditor.send_pushover_notification(summary)
+        auditor.notify_success(summary)
         
     # 終了コード設定
     if summary['high_issues'] > 0:

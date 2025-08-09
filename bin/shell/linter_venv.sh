@@ -2,7 +2,7 @@
 # 仮想環境を使用したlinterスクリプト
 
 # 仮想環境のPythonを使用（WSL/Windows対応）
-PYTHON="sam-env/Scripts/python.exe"
+PYTHON="sam-env/bin/python3"
 
 echo "🐍 Using Python: $PYTHON"
 

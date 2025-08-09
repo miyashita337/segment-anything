@@ -366,7 +366,7 @@ class DashboardGenerator:
                               f"総抽出数: {len(extracted_files)}枚")
             
             if not demo_mode:
-                send_pushover_notification(summary_title, summary_message, priority=0, sound="magic")
+                notify_success(summary_title, summary_message, priority=0, sound="magic")
             else:
                 self.logger.info(f"[DEMO] サマリー送信: {summary_title}")
             

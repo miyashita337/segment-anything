@@ -5,7 +5,7 @@ echo "🐍 仮想環境の有効化..."
 
 # Windowsの場合
 if [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "cygwin" ]] || [[ -n "$WINDIR" ]]; then
-    source sam-env/Scripts/activate
+    source sam-env/bin/activate
 else
     source sam-env/bin/activate
 fi

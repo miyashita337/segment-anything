@@ -11,7 +11,12 @@ from typing import Any, Dict, List, Optional
 from .base_command import BaseExtractionCommand, ExtractionConfig
 
 try:
-    from features.extraction.extraction_notifier import ExtractionNotifier
+    from features.common.notification.global_pushover import (
+    notify_success,
+    notify_error,
+    notify_process_complete
+)
+PUSHOVER_AVAILABLE = True
     NOTIFIER_AVAILABLE = True
 except ImportError:
     NOTIFIER_AVAILABLE = False
@@ -154,7 +159,7 @@ class BatchProcessor(BaseExtractionCommand):
     def _send_completion_notification(self, results: Dict[str, Any]):
         """Send completion notification."""
         try:
-            notifier = ExtractionNotifier()
+            # 統一通知システムを使用（インスタンス化不要）
             message = f"""バッチ処理完了 - P1-021
 成功: {results['successful']}/{results['total_images']} ({results['success_rate']:.1f}%)
 処理時間: {results['processing_time']:.1f}秒"""

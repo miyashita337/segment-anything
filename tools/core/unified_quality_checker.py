@@ -34,7 +34,7 @@ except ImportError:
 
 # Pushover通知機能追加
 try:
-    from features.common.notification.notification import PushoverNotifier
+    from features.common.notification.global_pushover import notify_success, notify_error, notify_process_complete
     PUSHOVER_AVAILABLE = True
 except ImportError:
     PUSHOVER_AVAILABLE = False
@@ -272,12 +272,12 @@ class UnifiedQualityChecker:
         return metrics
     
     def _check_mask_metrics(self, extraction_data: Dict, output_dir: Path) -> List[QualityMetric]:
-        """マスク品質メトリクスのチェック"""
+        """マスク品質メトリクスのチェック（真っ黒画像検出機能追加）"""
         metrics = []
         
         try:
             # 出力ディレクトリから抽出済み画像を検索
-            extracted_files = list(output_dir.glob("*_extracted.png"))
+            extracted_files = list(output_dir.glob("*_extracted.*"))  # png, jpg両対応
             
             if not extracted_files:
                 logger.warning("抽出済み画像が見つかりません")
@@ -290,18 +290,37 @@ class UnifiedQualityChecker:
                 ))
                 return metrics
             
-            # サンプル画像での品質チェック（最大5枚）
-            sample_files = extracted_files[:5]
-            mask_qualities = []
+            logger.info(f"抽出済み画像検出: {len(extracted_files)}枚")
             
-            for img_file in sample_files:
+            # 真っ黒画像検出とマスク品質チェック
+            mask_qualities = []
+            black_image_count = 0
+            empty_content_count = 0
+            valid_content_count = 0
+            
+            for img_file in extracted_files:
                 try:
                     # 画像読み込み
                     img = cv2.imread(str(img_file), cv2.IMREAD_UNCHANGED)
                     if img is None:
+                        logger.warning(f"画像読み込み失敗: {img_file.name}")
                         continue
                     
-                    # アルファチャンネルからマスク抽出
+                    # 真っ黒画像検出機能
+                    content_validation = self._validate_extraction_content(img)
+                    
+                    if not content_validation["valid"]:
+                        if content_validation["reason"] == "empty_content":
+                            empty_content_count += 1
+                            logger.warning(f"空コンテンツ検出: {img_file.name}")
+                        elif content_validation["reason"] == "too_dark":
+                            black_image_count += 1
+                            logger.warning(f"真っ黒画像検出: {img_file.name} (明度: {content_validation.get('brightness', 'N/A')})")
+                        continue
+                    
+                    valid_content_count += 1
+                    
+                    # 有効な画像のマスク品質分析
                     if img.shape[2] == 4:  # RGBA
                         mask = img[:, :, 3]
                     else:
@@ -317,6 +336,33 @@ class UnifiedQualityChecker:
                     logger.warning(f"マスク分析エラー ({img_file.name}): {e}")
                     continue
             
+            logger.info(f"内容検証結果: 有効={valid_content_count}, 真っ黒={black_image_count}, 空={empty_content_count}")
+            
+            # 真っ黒画像検出結果の指標追加
+            total_images = len(extracted_files)
+            true_success_rate = valid_content_count / total_images if total_images > 0 else 0.0
+            black_image_rate = black_image_count / total_images if total_images > 0 else 0.0
+            
+            metrics.append(QualityMetric(
+                name="真の抽出成功率",
+                value=true_success_rate,
+                threshold=0.7,
+                status="passed" if true_success_rate >= 0.7 else "failed",
+                category="enhanced_validation",
+                notes=f"内容検証済み: {valid_content_count}/{total_images}枚",
+                improvement_suggestions=["真っ黒画像の原因調査", "SAM後処理改善"] if true_success_rate < 0.7 else []
+            ))
+            
+            metrics.append(QualityMetric(
+                name="真っ黒画像検出率",
+                value=black_image_rate,
+                threshold=0.1,  # 10%未満が目標
+                status="passed" if black_image_rate < 0.1 else "failed",
+                category="enhanced_validation",
+                notes=f"真っ黒画像: {black_image_count}/{total_images}枚 ({black_image_rate:.1%})",
+                improvement_suggestions=["YOLO検出精度向上", "SAM プロンプト最適化"] if black_image_rate >= 0.1 else []
+            ))
+            
             if not mask_qualities:
                 metrics.append(QualityMetric(
                     name="マスク品質分析",
@@ -327,7 +373,7 @@ class UnifiedQualityChecker:
                 ))
                 return metrics
             
-            # 平均品質計算
+            # 平均品質計算（有効な画像のみ）
             avg_coverage = np.mean([m.get('coverage_ratio', 0) for m in mask_qualities])
             avg_compactness = np.mean([m.get('compactness', 0) for m in mask_qualities])
             avg_fill_ratio = np.mean([m.get('fill_ratio', 0) for m in mask_qualities])
@@ -342,7 +388,7 @@ class UnifiedQualityChecker:
                 threshold=adaptive_coverage_threshold,
                 status="passed" if avg_coverage >= adaptive_coverage_threshold else "failed",
                 category="mask",
-                notes=f"{len(sample_files)}枚のサンプル分析（適応的閾値: {adaptive_coverage_threshold:.3f}）",
+                notes=f"{len(mask_qualities)}枚の有効画像分析（適応的閾値: {adaptive_coverage_threshold:.3f}）",
                 improvement_suggestions=["検出範囲拡張"] if avg_coverage < adaptive_coverage_threshold else []
             ))
             
@@ -366,7 +412,7 @@ class UnifiedQualityChecker:
                 improvement_suggestions=["境界線精度向上"] if avg_fill_ratio < self.thresholds["fill_ratio"] else []
             ))
             
-            logger.info(f"マスク品質チェック完了: {len(mask_qualities)}枚分析")
+            logger.info(f"マスク品質チェック完了: {len(mask_qualities)}枚分析, 真っ黒画像{black_image_count}枚検出")
             
         except Exception as e:
             logger.error(f"マスク品質チェックエラー: {e}")
@@ -379,6 +425,64 @@ class UnifiedQualityChecker:
             ))
         
         return metrics
+
+    def _validate_extraction_content(self, img: np.ndarray) -> Dict[str, Any]:
+        """
+        抽出画像の内容検証（真っ黒画像検出）
+        
+        Args:
+            img: OpenCVで読み込まれた画像（BGR または BGRA）
+            
+        Returns:
+            検証結果辞書 {valid: bool, reason: str, brightness: float}
+        """
+        try:
+            # アルファチャンネルまたはマスクによる有効ピクセル抽出
+            if len(img.shape) == 3 and img.shape[2] == 4:  # RGBA
+                # アルファチャンネルによる有効領域特定
+                alpha_channel = img[:, :, 3]
+                valid_mask = alpha_channel > 0
+                
+                if not np.any(valid_mask):
+                    return {"valid": False, "reason": "empty_content", "brightness": 0.0}
+                
+                # 有効ピクセルのRGB値抽出
+                rgb_content = img[:, :, :3][valid_mask]
+                
+            else:  # RGB画像
+                # 黒以外のピクセルを有効とする
+                valid_mask = np.any(img > 0, axis=2)
+                
+                if not np.any(valid_mask):
+                    return {"valid": False, "reason": "empty_content", "brightness": 0.0}
+                
+                rgb_content = img[valid_mask]
+            
+            # 平均明度計算（0-255スケール）
+            avg_brightness = np.mean(rgb_content)
+            
+            # 真っ黒判定：平均明度が10未満
+            if avg_brightness < 10:
+                return {
+                    "valid": False, 
+                    "reason": "too_dark", 
+                    "brightness": float(avg_brightness),
+                    "valid_pixels": int(np.sum(valid_mask))
+                }
+            
+            # 極端に暗い場合の警告（10-30の範囲）
+            if avg_brightness < 30:
+                logger.warning(f"暗い画像検出: 平均明度={avg_brightness:.1f}")
+            
+            return {
+                "valid": True, 
+                "brightness": float(avg_brightness),
+                "valid_pixels": int(np.sum(valid_mask))
+            }
+            
+        except Exception as e:
+            logger.error(f"内容検証エラー: {e}")
+            return {"valid": False, "reason": "validation_error", "error": str(e)}
     
     def _calculate_adaptive_coverage_threshold(self, mask_qualities: List[Dict]) -> float:
         """
@@ -687,7 +791,12 @@ class UnifiedQualityChecker:
         print(f"🏆 総合判定: {report.status}")
         
         # カテゴリ別結果
-        categories = {"evaluation": "📈 評価指標", "mask": "🎭 マスク品質", "objective": "🎯 客観指標"}
+        categories = {
+            "evaluation": "📈 評価指標", 
+            "mask": "🎭 マスク品質", 
+            "objective": "🎯 客観指標",
+            "enhanced_validation": "🔍 強化検証"
+        }
         
         for category, title in categories.items():
             metrics = [m for m in (report.evaluation_metrics + report.mask_metrics + report.objective_metrics) 
@@ -740,7 +849,7 @@ class UnifiedQualityChecker:
         
         try:
             # Pushover通知クライアント初期化
-            notifier = PushoverNotifier()
+            # 統一通知システムを使用（インスタンス化不要）
             
             # 通知内容作成
             title = f"品質チェック完了: {report.dataset_name}"

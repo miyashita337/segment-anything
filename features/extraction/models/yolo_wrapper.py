@@ -272,6 +272,176 @@ class YOLOModelWrapper:
             return good_masks[0]  # Highest scored mask
         
         return None
+
+    def get_single_character_mask(self, 
+                                 masks: List[Dict[str, Any]], 
+                                 image: np.ndarray,
+                                 enforce_single_character: bool = True,
+                                 min_yolo_score: float = 0.1) -> Optional[Tuple[Dict[str, Any], Optional[Dict[str, Any]]]]:
+        """
+        単一キャラクター抽出（複数キャラクター検出・フィルタリング機能付き）
+        
+        Args:
+            masks: SAMマスク候補リスト
+            image: 入力画像
+            enforce_single_character: 単一キャラクター強制モード
+            min_yolo_score: 最小YOLOスコア閾値
+            
+        Returns:
+            (最適マスク, 複数キャラ検出結果) または (None, 検出結果)
+        """
+        try:
+            from features.evaluation.utils.multiple_character_detector import (
+                MultipleCharacterDetector, detect_multiple_characters_from_image
+            )
+        except ImportError as e:
+            print(f"⚠️ Multiple character detector not available: {e}")
+            # フォールバック: 従来の単一最適マスク選択
+            return self.get_best_character_mask(masks, image, min_yolo_score), None
+        
+        # 1. YOLO検出実行
+        yolo_detections = self.detect_persons(image)
+        
+        # 2. 複数キャラクター分析
+        detector = MultipleCharacterDetector()
+        multi_char_result = detector.analyze_yolo_detections(yolo_detections, image.shape[:2])
+        
+        print(f"🎯 複数キャラ分析: {multi_char_result.character_count}体検出, "
+              f"タイプ={multi_char_result.detection_type.value}, "
+              f"ペナルティ={multi_char_result.penalty_score:.2f}")
+        
+        # 3. 単一キャラクター強制モードの場合
+        if enforce_single_character and multi_char_result.is_multiple:
+            if multi_char_result.penalty_score > 0.7:
+                print(f"❌ 高ペナルティ({multi_char_result.penalty_score:.2f}): "
+                      f"LoRA学習に不適切な複数キャラ画像")
+                return None, multi_char_result
+            
+            # メインキャラクター抽出試行
+            if multi_char_result.primary_character_index is not None:
+                print(f"🔄 メインキャラクター(#{multi_char_result.primary_character_index + 1})に絞り込み試行")
+                # メインキャラのYOLO検出結果のみを使用
+                primary_detection = [multi_char_result.characters[multi_char_result.primary_character_index]]
+                
+                # メインキャラクターのマスクのみを評価
+                primary_yolo_detections = [yolo_detections[multi_char_result.primary_character_index]]
+                scored_masks = self.score_masks_with_detections(masks, image)
+                
+                # メインキャラとの重複が最も高いマスクを選択
+                best_mask = None
+                best_score = 0.0
+                
+                primary_bbox = primary_detection[0]['bbox']
+                for mask in scored_masks:
+                    overlap = self.calculate_overlap_score(mask['bbox'], primary_bbox)
+                    if overlap > best_score and mask['yolo_score'] >= min_yolo_score:
+                        best_score = overlap
+                        best_mask = mask
+                
+                if best_mask:
+                    print(f"✅ メインキャラマスク選択: 重複={best_score:.2f}, YOLO={best_mask['yolo_score']:.2f}")
+                    return best_mask, multi_char_result
+        
+        # 4. 通常の最適マスク選択（複数キャラでも許可モード）
+        scored_masks = self.score_masks_with_detections(masks, image)
+        good_masks = [m for m in scored_masks if m['yolo_score'] >= min_yolo_score]
+        
+        if good_masks:
+            selected_mask = good_masks[0]
+            # 複数キャラ情報を追加
+            selected_mask['multi_character_info'] = {
+                'is_multiple': multi_char_result.is_multiple,
+                'character_count': multi_char_result.character_count,
+                'penalty_score': multi_char_result.penalty_score,
+                'detection_type': multi_char_result.detection_type.value,
+            }
+            return selected_mask, multi_char_result
+        
+        return None, multi_char_result
+    
+    def filter_single_character_images(self, 
+                                     image_paths: List[Path],
+                                     penalty_threshold: float = 0.5,
+                                     save_reports: bool = False) -> Tuple[List[Path], List[Path], Dict[str, Any]]:
+        """
+        画像リストから単一キャラクター画像をフィルタリング
+        
+        Args:
+            image_paths: 画像パスリスト
+            penalty_threshold: ペナルティ閾値（これ以上は除外）
+            save_reports: レポート保存フラグ
+            
+        Returns:
+            (単一キャラ画像リスト, 複数キャラ画像リスト, 統計情報)
+        """
+        try:
+            from features.evaluation.utils.multiple_character_detector import (
+                detect_multiple_characters_from_image
+            )
+        except ImportError as e:
+            print(f"❌ Multiple character detector not available: {e}")
+            return image_paths, [], {'error': str(e)}
+        
+        single_char_images = []
+        multi_char_images = []
+        
+        stats = {
+            'total_images': len(image_paths),
+            'single_character': 0,
+            'multiple_character': 0,
+            'filtered_out': 0,
+            'detection_types': {},
+            'penalty_distribution': [],
+        }
+        
+        print(f"🔍 {len(image_paths)}枚の画像で単一キャラクターフィルタリング開始")
+        
+        for i, image_path in enumerate(image_paths):
+            try:
+                # 複数キャラクター検出実行
+                result = detect_multiple_characters_from_image(
+                    image_path, self, save_visualization=save_reports
+                )
+                
+                # 統計更新
+                stats['penalty_distribution'].append(result.penalty_score)
+                detection_type = result.detection_type.value
+                stats['detection_types'][detection_type] = stats['detection_types'].get(detection_type, 0) + 1
+                
+                # フィルタリング判定
+                if result.is_multiple and result.penalty_score > penalty_threshold:
+                    multi_char_images.append(image_path)
+                    stats['filtered_out'] += 1
+                    print(f"   🚫 {image_path.name}: ペナルティ{result.penalty_score:.2f} > 閾値{penalty_threshold}")
+                else:
+                    single_char_images.append(image_path)
+                    if result.is_multiple:
+                        stats['multiple_character'] += 1
+                        print(f"   ⚠️  {image_path.name}: 複数キャラだが許容範囲(ペナルティ{result.penalty_score:.2f})")
+                    else:
+                        stats['single_character'] += 1
+                        print(f"   ✅ {image_path.name}: 単一キャラクター")
+                
+                # 進捗表示
+                if (i + 1) % 10 == 0:
+                    progress = (i + 1) / len(image_paths) * 100
+                    print(f"   📊 進捗: {i + 1}/{len(image_paths)} ({progress:.1f}%)")
+                    
+            except Exception as e:
+                print(f"   ❌ {image_path.name}: 分析エラー - {e}")
+                # エラー時はデフォルトで許可
+                single_char_images.append(image_path)
+        
+        # 統計計算
+        if stats['penalty_distribution']:
+            stats['average_penalty'] = np.mean(stats['penalty_distribution'])
+            stats['max_penalty'] = max(stats['penalty_distribution'])
+            stats['filtering_rate'] = stats['filtered_out'] / stats['total_images'] * 100
+        
+        print(f"✅ フィルタリング完了: {stats['single_character']}枚採用, {stats['filtered_out']}枚除外 "
+              f"({stats['filtering_rate']:.1f}%除外率)")
+        
+        return single_char_images, multi_char_images, stats
     
     def _select_best_character_with_criteria(self, 
                                            masks: List[Dict[str, Any]], 
