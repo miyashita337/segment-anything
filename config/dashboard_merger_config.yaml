@@ -1,0 +1,90 @@
+# 汎用統合ダッシュボード設定ファイル
+# Universal Dashboard Merger Configuration
+
+# ベースワークスペースパス
+base_workspace_path: '/mnt/c/AItools/lora/train'
+
+# 対象作者リスト（自動検索対象）
+authors:
+  - yado
+  - aichi
+  - kiri
+  - zundamon
+
+# 品質判定閾値（KB単位）
+quality_thresholds:
+  high_size_kb: 100    # 100KB以上 → 高品質
+  medium_size_kb: 50   # 50KB以上 → 中品質
+  # 50KB未満 → 低品質
+
+# ダッシュボードサーバー設定
+dashboard_server:
+  host: '100.123.241.106'
+  port: 8088
+  auth_required: true
+  basic_auth:
+    username: 'admin'
+    password: 'dashboard2025!'
+
+# ファイル処理設定
+file_extensions:
+  - '.jpg'
+  - '.jpeg'
+  - '.png'
+  - '.webp'
+
+# 統合処理設定
+integration:
+  primary_author: 'yado'      # 統合先の基準作者
+  copy_to_primary: true       # 他作者の画像を基準作者ワークスペースにコピー
+  prefix_format: '{author}_'  # コピー時のプレフィックス形式
+
+# 作者プロファイル定義
+author_profiles:
+  yado:
+    icon: '👤'
+    description: 'バランス型・キャラクター重視'
+    characteristics: 'character_focused'
+    
+  aichi:
+    icon: '🎨'
+    description: '細密描写特化・高品質重視'
+    characteristics: 'precision_focused'
+    
+  kiri:
+    icon: '🎨'
+    description: '細密描写特化・高品質重視（元aichi）'
+    characteristics: 'precision_focused'
+    
+  zundamon:
+    icon: '⚡'
+    description: 'シンプルスタイル・効率重視'
+    characteristics: 'speed_optimized'
+
+# パス設定（環境別）
+path_configs:
+  development:
+    base_workspace_path: '/mnt/c/AItools/lora/train'
+    dashboard_server:
+      host: 'localhost'
+      port: 8088
+  
+  production:
+    base_workspace_path: '/mnt/c/AItools/lora/train'
+    dashboard_server:
+      host: '100.123.241.106'
+      port: 8088
+
+# ログ設定
+logging:
+  level: 'INFO'
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  
+# トラッカー特化設定（必要に応じて）
+tracker_specific:
+  # QCA-001の特別設定（例）
+  QCA-001:
+    title_suffix: ' - 作者別パラメータ適応システム検証'
+    authors_priority: ['yado', 'kiri']  # 表示順序指定
+    
+  # 他のトラッカー用設定も追加可能

@@ -25,12 +25,15 @@ sys.path.append(str(Path(__file__).parent.parent))
 try:
     from features.processing.postprocessing.postprocessing import calculate_mask_quality_metrics
     from features.evaluation.objective_metrics import ObjectiveMetricsSystem
+    from features.analysis.failure_pattern_analyzer import FailurePatternAnalyzer
     OBJECTIVE_METRICS_AVAILABLE = True
+    FAILURE_ANALYSIS_AVAILABLE = True
 except ImportError:
     # フォールバック実装
     def calculate_mask_quality_metrics(mask):
         return {"coverage_ratio": 0.0, "compactness": 0.0, "error": "Import failed"}
     OBJECTIVE_METRICS_AVAILABLE = False
+    FAILURE_ANALYSIS_AVAILABLE = False
 
 # Pushover通知機能追加
 try:
@@ -152,6 +155,7 @@ class UnifiedQualityChecker:
             evaluation_metrics = self._check_evaluation_metrics(extraction_data)
             mask_metrics = self._check_mask_metrics(extraction_data, results_path.parent)
             objective_metrics = self._check_objective_metrics(extraction_data)
+            pattern_analysis_metrics = self._analyze_failure_patterns(extraction_data, dataset_name)
             
             # 統合レポート作成
             report = self._create_unified_report(
@@ -159,7 +163,8 @@ class UnifiedQualityChecker:
                 extraction_data=extraction_data,
                 evaluation_metrics=evaluation_metrics,
                 mask_metrics=mask_metrics,
-                objective_metrics=objective_metrics
+                objective_metrics=objective_metrics,
+                pattern_analysis_metrics=pattern_analysis_metrics
             )
             
             return report
@@ -706,13 +711,136 @@ class UnifiedQualityChecker:
         
         return metrics
     
+    def _analyze_failure_patterns(self, extraction_data: Dict, dataset_name: str) -> List[QualityMetric]:
+        """失敗パターン分析の実行"""
+        metrics = []
+        
+        if not FAILURE_ANALYSIS_AVAILABLE:
+            metrics.append(QualityMetric(
+                name="失敗パターン分析",
+                value=0.0,
+                status="not_implemented",
+                category="pattern_analysis",
+                notes="失敗パターン分析モジュールが利用できません"
+            ))
+            return metrics
+        
+        try:
+            # 失敗画像と成功画像のディレクトリを特定
+            results_dir = Path(extraction_data.get("results_directory", "."))
+            failed_images_dir = results_dir / "failed" 
+            success_images_dir = results_dir / "success"
+            
+            # 失敗画像が存在しない場合はスキップ
+            if not failed_images_dir.exists() or len(list(failed_images_dir.glob("*.jpg"))) == 0:
+                metrics.append(QualityMetric(
+                    name="失敗パターン分析",
+                    value=1.0,
+                    status="passed",
+                    category="pattern_analysis",
+                    notes="失敗画像なし - 分析対象外"
+                ))
+                return metrics
+            
+            # 失敗パターン分析実行
+            analyzer = FailurePatternAnalyzer()
+            analysis_results = analyzer.analyze_failure_patterns(
+                failed_images_dir, 
+                success_images_dir if success_images_dir.exists() else None
+            )
+            
+            if not analysis_results:
+                metrics.append(QualityMetric(
+                    name="失敗パターン分析",
+                    value=0.0,
+                    status="error",
+                    category="pattern_analysis",
+                    notes="分析結果を取得できませんでした"
+                ))
+                return metrics
+            
+            # 分析結果からメトリクス生成
+            total_failed = analysis_results.get("total_failed_images", 0)
+            clustering = analysis_results.get("clustering", {})
+            anomalies = analysis_results.get("anomalies", {})
+            patterns = analysis_results.get("pattern_classification", {})
+            
+            # パターン識別率
+            n_clusters = clustering.get("n_clusters", 0)
+            pattern_identification_rate = min(1.0, n_clusters / max(1, total_failed / 5))  # 5枚に1パターンを期待
+            
+            metrics.append(QualityMetric(
+                name="失敗パターン識別率",
+                value=pattern_identification_rate,
+                threshold=0.6,
+                status="passed" if pattern_identification_rate >= 0.6 else "failed",
+                category="pattern_analysis",
+                notes=f"{n_clusters}個のパターンを{total_failed}枚から検出",
+                improvement_suggestions=["より多くの失敗サンプル収集", "特徴量エンジニアリング改善"] if pattern_identification_rate < 0.6 else []
+            ))
+            
+            # 異常検出精度
+            anomaly_rate = anomalies.get("anomaly_rate", 0.0) / 100.0  # パーセントから比率に変換
+            
+            metrics.append(QualityMetric(
+                name="異常検出率",
+                value=anomaly_rate,
+                threshold=0.15,  # 15%以下の異常検出を期待
+                status="passed" if anomaly_rate <= 0.15 else "failed",
+                category="pattern_analysis",
+                notes=f"{anomalies.get('n_anomalies', 0)}枚の異常画像検出 ({anomaly_rate:.1%})",
+                improvement_suggestions=["異常検出アルゴリズム調整", "前処理パイプライン見直し"] if anomaly_rate > 0.15 else []
+            ))
+            
+            # 主要失敗パターンの分析
+            dominant_patterns = []
+            for pattern_id, pattern_info in patterns.items():
+                if pattern_info["size"] >= total_failed * 0.2:  # 20%以上のパターン
+                    dominant_patterns.append(pattern_info["pattern_type"])
+            
+            pattern_coverage = len(dominant_patterns) / max(1, len(patterns)) if patterns else 0
+            
+            metrics.append(QualityMetric(
+                name="パターン分類カバー率",
+                value=pattern_coverage,
+                threshold=0.7,
+                status="passed" if pattern_coverage >= 0.7 else "failed",
+                category="pattern_analysis",
+                notes=f"主要パターン: {', '.join(dominant_patterns[:3])}",
+                improvement_suggestions=["分類アルゴリズム改善", "特徴量次元拡張"] if pattern_coverage < 0.7 else []
+            ))
+            
+            # 分析レポート保存
+            report_path = results_dir / f"failure_pattern_analysis_{dataset_name}.txt"
+            analyzer.generate_report(report_path)
+            
+            logger.info(f"失敗パターン分析完了: {total_failed}枚分析, {n_clusters}パターン検出")
+            
+        except Exception as e:
+            logger.error(f"失敗パターン分析エラー: {e}")
+            metrics.append(QualityMetric(
+                name="失敗パターン分析",
+                value=0.0,
+                status="error",
+                category="pattern_analysis",
+                notes=f"分析エラー: {str(e)}",
+                improvement_suggestions=["ログ確認", "依存関係確認"]
+            ))
+        
+        return metrics
+
     def _create_unified_report(self, dataset_name: str, extraction_data: Dict,
                              evaluation_metrics: List[QualityMetric],
                              mask_metrics: List[QualityMetric],
-                             objective_metrics: List[QualityMetric]) -> UnifiedQualityReport:
+                             objective_metrics: List[QualityMetric],
+                             pattern_analysis_metrics: List[QualityMetric] = None) -> UnifiedQualityReport:
         """統合レポート作成"""
         
-        all_metrics = evaluation_metrics + mask_metrics + objective_metrics
+        # パターン分析メトリクスを追加
+        if pattern_analysis_metrics is None:
+            pattern_analysis_metrics = []
+        
+        all_metrics = evaluation_metrics + mask_metrics + objective_metrics + pattern_analysis_metrics
         
         # 実装済み指標のみで計算
         implemented_metrics = [m for m in all_metrics if m.status not in ["not_implemented", "error"]]
@@ -795,12 +923,19 @@ class UnifiedQualityChecker:
             "evaluation": "📈 評価指標", 
             "mask": "🎭 マスク品質", 
             "objective": "🎯 客観指標",
+            "pattern_analysis": "🔍 失敗パターン分析",
             "enhanced_validation": "🔍 強化検証"
         }
         
         for category, title in categories.items():
-            metrics = [m for m in (report.evaluation_metrics + report.mask_metrics + report.objective_metrics) 
-                      if m.category == category]
+            # パターン分析メトリクスも含める
+            all_report_metrics = (report.evaluation_metrics + report.mask_metrics + 
+                                report.objective_metrics)
+            # pattern_analysis_metricsが存在する場合は追加
+            if hasattr(report, 'pattern_analysis_metrics') and report.pattern_analysis_metrics:
+                all_report_metrics += report.pattern_analysis_metrics
+            
+            metrics = [m for m in all_report_metrics if m.category == category]
             
             if not metrics:
                 continue

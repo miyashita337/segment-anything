@@ -62,10 +62,10 @@ if [ -z "$TRACKER_ID" ]; then
     exit 1
 fi
 
-# トラッカーID形式チェック（P1-005形式も許可）
-if [[ ! "$TRACKER_ID" =~ ^(PH[0-9]+-[0-9]{3}|P[0-9]+-[0-9]{3}|QI-[0-9]{3})$ ]]; then
-    echo "❌ エラー: 無効なトラッカーID形式: $TRACKER_ID"
-    echo "正しい形式: PH{Phase番号}-{3桁連番} (例: PH2-001), P{番号}-{3桁連番} (例: P1-005), または QI-{3桁連番} (例: QI-002)"
+# トラッカーID基本チェック（半角英数字記号のみ許可）
+if [[ ! "$TRACKER_ID" =~ ^[A-Za-z0-9_-]+$ ]]; then
+    echo "❌ エラー: 無効なトラッカーID文字: $TRACKER_ID"
+    echo "許可文字: 半角英数字・ハイフン・アンダースコア (例: PH2-001, QCC-011, TEST_001)"
     exit 1
 fi
 
@@ -136,11 +136,14 @@ if [ "$SKIP_EXTRACTION" = false ]; then
     
     EXTRACTION_LOG="${OUTPUT_DIR}/${TRACKER_ID}_extraction.log"
     
-    # バックグラウンド実行開始
-    nohup sam-env/bin/python3 tools/core/sam_yolo_character_segment.py \
+    # バックグラウンド実行開始（統一されたextract_character.py使用）
+    nohup sam-env/bin/python3 features/extraction/commands/extract_character.py \
         --mode reproduce-auto \
-        --input_dir "$INPUT_DIR" \
-        --output_dir "${OUTPUT_DIR}/extraction/" \
+        --batch \
+        --verbose \
+        --max-files 10 \
+        "$INPUT_DIR" \
+        -o "${OUTPUT_DIR}/extraction/" \
         > "$EXTRACTION_LOG" 2>&1 &
     
     EXTRACTION_PID=$!

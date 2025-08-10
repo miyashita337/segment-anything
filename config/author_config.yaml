@@ -1,0 +1,91 @@
+# 作者別パラメータ適応システム設定
+# Author Parameter Adaptation System Configuration
+
+# ベースパス設定
+base_paths:
+  workspace: '/mnt/c/AItools/lora/train'
+  
+# 作者プロファイル定義
+author_profiles:
+  yado:
+    characteristics: 'BALANCED'
+    sam_profile: 'character_focused'
+    yolo_confidence: 0.07
+    max_masks: 10
+    score_threshold: 0.07
+    description: 'yado作者: バランス型キャラクター重視・多作品対応'
+    processing_notes:
+      - 'kana03-09全作品に共通の絵柄'
+      - 'キャラクター抽出に特化した設定'
+      - '多様なシーン・ポーズに対応'
+      - '安定した品質・速度バランス'
+      
+  aichi:
+    characteristics: 'DETAIL_ORIENTED'
+    sam_profile: 'precision_focused'
+    yolo_confidence: 0.05
+    max_masks: 8
+    score_threshold: 0.05
+    description: 'aichi作者: 細密描写特化・高品質重視'
+    processing_notes:
+      - '細かい線画・詳細な描写'
+      - '高品質抽出を優先'
+      - '処理時間よりも品質重視'
+      - '背景との分離に注意'
+      
+  kiri:
+    characteristics: 'DETAIL_ORIENTED'
+    sam_profile: 'precision_focused'
+    yolo_confidence: 0.05
+    max_masks: 8
+    score_threshold: 0.05
+    description: 'kiri作者: 細密描写特化・高品質重視（元aichi）'
+    processing_notes:
+      - '細かい線画・詳細な描写'
+      - '高品質抽出を優先'
+      - '処理時間よりも品質重視'
+      - '背景との分離に注意'
+      
+  zundamon:
+    characteristics: 'SIMPLE_STYLE'
+    sam_profile: 'speed_optimized'
+    yolo_confidence: 0.08
+    max_masks: 6
+    score_threshold: 0.08
+    description: 'zundamon作者: シンプルスタイル・効率重視'
+    processing_notes:
+      - 'シンプルで明確な線画'
+      - '高速処理可能'
+      - '効率的なバッチ処理'
+      - '安定した基本品質'
+
+# デフォルト設定
+default_profile:
+  characteristics: 'BALANCED'
+  sam_profile: 'character_focused'
+  yolo_confidence: 0.07
+  max_masks: 8
+  score_threshold: 0.07
+  description: 'default: バランス型汎用設定'
+  processing_notes:
+    - '汎用バランス型設定'
+    - '標準的な抽出品質'
+    - '安定した処理性能'
+
+# 作者検出設定
+detection:
+  # パスパターン: /train/{作者名}/org/{作品名}/
+  path_patterns:
+    - '/train/{author}/'
+    - '/{author}/'
+  
+  # 検出対象作者リスト
+  known_authors: ['yado', 'aichi', 'kiri', 'zundamon']
+  
+  # フォールバック検索有効化
+  fallback_search: true
+
+# ログ設定
+logging:
+  level: 'DEBUG'
+  author_detection: true

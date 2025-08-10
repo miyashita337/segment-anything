@@ -22,6 +22,7 @@ from features.common.stable_batch_processor import StableBatchProcessor
 from features.common.custom_types import ImageType, MaskType
 from features.common.file_utils import generate_output_filename, is_already_processed
 from features.processing.sam_optimization_config import SAMOptimizationConfig, create_optimized_sam_generator
+from features.adaptation.author_parameter_adapter import AuthorParameterAdapter
 from features.evaluation.utils.face_detection import filter_non_character_masks
 from features.evaluation.utils.mask_quality_validator import validate_and_improve_mask
 from features.evaluation.utils.non_character_filter import apply_non_character_filter
@@ -77,6 +78,10 @@ logger = logging.getLogger(__name__)
               type=click.Choice(['standard', 'reproduce-auto']),
               default='standard',
               help='Processing mode: standard (normal) or reproduce-auto (workflow compatibility)')
+@click.option('--enable-author-adaptation', is_flag=True, default=True,
+              help='QCA-001: Enable automatic author-based parameter optimization')
+@click.option('--force-author', type=str,
+              help='QCA-001: Force specific author profile (yado, aichi, zundamon) instead of auto-detection')
 def extract_character(
     input_path: str,
     output_path: str,
@@ -88,7 +93,9 @@ def extract_character(
     max_files: Optional[int] = None,
     resume: bool = False,
     sam_optimization_profile: str = 'p1_020_optimized',
-    enable_advanced_pipeline: bool = False
+    enable_advanced_pipeline: bool = False,
+    enable_author_adaptation: bool = True,
+    force_author: Optional[str] = None
 ) -> None:
     """Extract anime character from manga image.
 
@@ -116,6 +123,13 @@ def extract_character(
     sam_model = get_sam_model()
     yolo_model = get_yolo_model()
     perf_monitor = get_performance_monitor()
+    
+    # QCA-001: 作者別パラメータ適応システムの初期化
+    author_adapter = None
+    if enable_author_adaptation:
+        author_adapter = AuthorParameterAdapter()
+        if verbose:
+            click.echo("🎯 QCA-001: 作者別パラメータ適応システム有効")
 
     # reproduce-autoモード: ワークフロー互換性のための特別処理
     if mode == 'reproduce-auto':
@@ -221,7 +235,10 @@ def extract_character(
                     yolo_model,
                     perf_monitor,
                     verbose,
-                    sam_optimization_profile
+                    sam_optimization_profile,
+                    enable_advanced_pipeline,
+                    author_adapter,
+                    force_author
                 )
                 
                 if mask is not None and output_path_single.exists():
@@ -365,7 +382,9 @@ def extract_character(
             perf_monitor,
             verbose,
             sam_optimization_profile,
-            enable_advanced_pipeline
+            enable_advanced_pipeline,
+            author_adapter,
+            force_author
         )
 
 @optimize_for_large_dataset
@@ -378,7 +397,9 @@ def process_single_image(
     perf_monitor: Any,
     verbose: bool = False,
     sam_optimization_profile: str = 'p1_020_optimized',
-    enable_advanced_pipeline: bool = False
+    enable_advanced_pipeline: bool = False,
+    author_adapter: Optional[AuthorParameterAdapter] = None,
+    force_author: Optional[str] = None
 ) -> Optional[MaskType]:
     """Process a single image for character extraction.
 
@@ -399,6 +420,29 @@ def process_single_image(
         if processed_bgr is None:
             return None
 
+        # QCA-001: 作者別パラメータ適応
+        author_params = None
+        detected_author = None
+        
+        if author_adapter:
+            if force_author:
+                # 強制指定された作者を使用
+                detected_author = force_author
+                author_params = author_adapter.get_optimized_parameters(force_author)
+                if verbose:
+                    click.echo(f"🎯 QCA-001: 強制指定作者 = {force_author}")
+            else:
+                # パスから作者を自動検出
+                detected_author = author_adapter.detect_author_from_path(str(input_path))
+                author_params = author_adapter.apply_author_optimization(str(input_path))
+                if verbose:
+                    click.echo(f"🔍 QCA-001: 検出作者 = {detected_author or 'default'}")
+                    
+            if author_params and verbose:
+                click.echo(f"⚙️ SAMプロファイル: {author_params['sam_profile']}")
+                click.echo(f"⚙️ YOLO信頼度: {author_params['yolo_confidence']}")
+                click.echo(f"⚙️ スコア閾値: {author_params['score_threshold']}")
+        
         # QC成功版対応: 境界強調前処理を無効化
         enhanced_rgb = processed_rgb
         enhanced_bgr = processed_bgr
@@ -411,9 +455,9 @@ def process_single_image(
         
         if perf_monitor and hasattr(perf_monitor, 'measure'):
             with perf_monitor.measure('inference'):
-                mask = generate_character_mask(enhanced_bgr, sam_model, yolo_model, quality_method, sam_optimization_profile)
+                mask = generate_character_mask(enhanced_bgr, sam_model, yolo_model, quality_method, sam_optimization_profile, author_params)
         else:
-            mask = generate_character_mask(enhanced_bgr, sam_model, yolo_model, quality_method, sam_optimization_profile)
+            mask = generate_character_mask(enhanced_bgr, sam_model, yolo_model, quality_method, sam_optimization_profile, author_params)
 
         if mask is not None:
             # 📊 品質監視システム + 条件付き3段階処理
@@ -533,7 +577,7 @@ def process_single_image(
         return None
 
 @image_retry_handler.retry
-def generate_character_mask(image: ImageType, sam_model: Any, yolo_model: Any, quality_method: str = 'balanced', sam_optimization_profile: str = 'p1_020_optimized') -> Optional[MaskType]:
+def generate_character_mask(image: ImageType, sam_model: Any, yolo_model: Any, quality_method: str = 'balanced', sam_optimization_profile: str = 'p1_020_optimized', author_params: Optional[dict] = None) -> Optional[MaskType]:
     """Generate character mask using SAM and YOLO models with enhanced quality evaluation.
     
     Args:
@@ -554,11 +598,21 @@ def generate_character_mask(image: ImageType, sam_model: Any, yolo_model: Any, q
         
         print(f"🔍 Image shape: {image_array.shape}")
             
+        # QCA-001: 作者別パラメータ適応
+        # YOLO信頼度・闾値を作者別に適応
+        yolo_confidence = 0.07  # デフォルト
+        score_threshold = 0.07  # デフォルト
+        
+        if author_params:
+            yolo_confidence = author_params.get('yolo_confidence', 0.07)
+            score_threshold = author_params.get('score_threshold', 0.07)
+            print(f"🎯 QCA-001: YOLO信頼度={yolo_confidence}, スコア闾値={score_threshold}")
+        
         # Hybrid方式: YOLOでperson検出してSAMにbboxプロンプトを渡す
         hybrid_masks = []
         try:
-            # YOLOで人物検出
-            persons = yolo_model.detect_persons(image_array)
+            # YOLOで人物検出（作者別パラメータ適用）
+            persons = yolo_model.detect_persons(image_array, confidence_threshold=yolo_confidence)
             if persons:
                 print(f"🎯 Hybrid方式: {len(persons)}人検出 → SAM bbox prompt")
                 

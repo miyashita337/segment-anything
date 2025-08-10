@@ -946,23 +946,49 @@ class SAMYOLOCharacterSegmentor:
     
     def generate_masks(self, image: np.ndarray) -> List[dict]:
         """
-        SAMを使用してマスクを生成
+        SAMを使用してマスクを生成（マスク数制限付き）
         
         Args:
             image: 入力画像 (RGB)
             
         Returns:
-            マスクのリスト
+            マスクのリスト（最大100個に制限）
         """
         self.monitor.start_stage("SAMマスク生成")
         print("SAMでマスクを生成中...")
+        
+        # 🔧 根本修正: マスク生成
         masks = self.mask_generator.generate(image)
-        print(f"生成されたマスク数: {len(masks)}")
+        original_mask_count = len(masks)
+        
+        print(f"🎯 SAM生成結果: {original_mask_count}マスク")
+        
+        # 🚨 マスク数制限実装（最大100個）
+        MAX_MASKS = 100
+        if len(masks) > MAX_MASKS:
+            # 面積基準で上位マスクを選択
+            print(f"⚠️ マスク数制限: {len(masks)} → {MAX_MASKS}個に削減")
+            
+            # 面積を計算してソート
+            for mask in masks:
+                mask['area'] = np.sum(mask['segmentation'])
+            
+            # 面積順でソート（降順）
+            masks = sorted(masks, key=lambda x: x['area'], reverse=True)
+            masks = masks[:MAX_MASKS]
+            
+            print(f"🔧 面積基準選択完了: 上位{MAX_MASKS}マスクを選択")
+            
+            # 削減統計
+            remaining_areas = [mask['area'] for mask in masks]
+            print(f"   選択範囲: 最大{max(remaining_areas):,}px - 最小{min(remaining_areas):,}px")
+        
+        print(f"✅ 最終マスク数: {len(masks)}個 (制限: {MAX_MASKS})")
         
         # マスクサイズの統計情報を表示
         if masks:
-            mask_areas = [np.sum(mask['segmentation']) for mask in masks]
-            print(f"マスク面積統計: 最小={min(mask_areas)}, 最大={max(mask_areas)}, 平均={int(np.mean(mask_areas))}")
+            mask_areas = [mask['area'] if 'area' in mask else np.sum(mask['segmentation']) for mask in masks]
+            print(f"📊 マスク面積統計: 最小={min(mask_areas):,}, 最大={max(mask_areas):,}, 平均={int(np.mean(mask_areas)):,}")
         
         self.monitor.end_stage()
         return masks

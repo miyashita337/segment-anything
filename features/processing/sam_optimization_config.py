@@ -32,6 +32,9 @@ class SAMOptimizationConfig:
     """
     SAM推論最適化設定管理クラス
     P1-016で特定されたボトルネックを解消する最適化設定を提供
+    
+    QCA-001: 作者別パラメータ適応システム対応
+    各作者の絵柄特性に合わせたSAMプロファイルを提供
     """
     
     # P1-016フィードバックループが推奨した最適化設定
@@ -86,6 +89,46 @@ class SAMOptimizationConfig:
             min_mask_region_area=150,  # 軽度強化
             description="P1-020バランス（品質維持・2倍高速化）",
             expected_speedup=2.0  # 50%短縮
+        ),
+        
+        # QCA-001: 作者別SAMプロファイル拡張
+        "character_focused": SAMOptimizationProfile(
+            name="character_focused",
+            points_per_side=18,      # yado作者用: キャラクター重視
+            crop_n_layers=0,
+            pred_iou_thresh=0.8,
+            stability_score_thresh=0.88,
+            box_nms_thresh=0.7,
+            crop_n_points_downscale_factor=1,
+            min_mask_region_area=120,
+            description="QCA-001: yado作者用キャラクター重視プロファイル",
+            expected_speedup=2.2
+        ),
+        
+        "precision_focused": SAMOptimizationProfile(
+            name="precision_focused",
+            points_per_side=24,      # aichi作者用: 細密描写特化
+            crop_n_layers=1,         # 高品質のためクロップ有効
+            pred_iou_thresh=0.85,    # 高精度設定
+            stability_score_thresh=0.92,
+            box_nms_thresh=0.75,
+            crop_n_points_downscale_factor=1,
+            min_mask_region_area=100,  # 細かい部分も検出
+            description="QCA-001: aichi作者用細密描写特化プロファイル",
+            expected_speedup=1.8  # 品質優先のためやや遅い
+        ),
+        
+        "speed_optimized": SAMOptimizationProfile(
+            name="speed_optimized",
+            points_per_side=14,      # zundamon作者用: 高速処理重視
+            crop_n_layers=0,
+            pred_iou_thresh=0.78,
+            stability_score_thresh=0.85,
+            box_nms_thresh=0.65,
+            crop_n_points_downscale_factor=2,
+            min_mask_region_area=200,
+            description="QCA-001: zundamon作者用高速処理プロファイル",
+            expected_speedup=2.8  # 最高速度
         )
     }
     
@@ -94,10 +137,22 @@ class SAMOptimizationConfig:
         self.current_profile = "p1_020_optimized"  # デフォルトは最適化版
         self.performance_history = []
         
-    def get_sam_config(self, profile_name: Optional[str] = None) -> Dict[str, Any]:
-        """指定プロファイルのSAM設定を取得"""
+    def get_sam_config(self, profile_name: Optional[str] = None, author_params: Optional[dict] = None) -> Dict[str, Any]:
+        """指定プロファイルのSAM設定を取得
+        
+        Args:
+            profile_name: 使用するプロファイル名
+            author_params: QCA-001 作者別パラメータ（優先適用）
+        """
         if profile_name is None:
             profile_name = self.current_profile
+            
+        # QCA-001: 作者別パラメータからSAMプロファイルを適用
+        if author_params and 'sam_profile' in author_params:
+            author_sam_profile = author_params['sam_profile']
+            if author_sam_profile in self.OPTIMIZATION_PROFILES:
+                profile_name = author_sam_profile
+                self.logger.info(f"🎯 QCA-001: 作者別SAMプロファイル適用 = {author_sam_profile}")
             
         if profile_name not in self.OPTIMIZATION_PROFILES:
             self.logger.warning(f"不明なプロファイル: {profile_name}, デフォルトを使用")
@@ -263,11 +318,19 @@ class SAMOptimizationConfig:
 
 # P1-016フィードバックループシステム統合用ヘルパー
 def create_optimized_sam_generator(sam_model, optimization_config: SAMOptimizationConfig, 
-                                  profile_name: Optional[str] = None):
-    """最適化されたSAMマスクジェネレーター作成"""
+                                  profile_name: Optional[str] = None,
+                                  author_params: Optional[dict] = None):
+    """最適化されたSAMマスクジェネレーター作成
+    
+    Args:
+        sam_model: SAMモデルインスタンス
+        optimization_config: SAM最適化設定
+        profile_name: 使用するプロファイル名
+        author_params: QCA-001 作者別パラメータ
+    """
     from segment_anything import SamAutomaticMaskGenerator
     
-    config = optimization_config.get_sam_config(profile_name)
+    config = optimization_config.get_sam_config(profile_name, author_params)
     
     return SamAutomaticMaskGenerator(
         model=sam_model,

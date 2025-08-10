@@ -52,22 +52,26 @@ class CheckpointManager:
         self.checkpoint_file = self.checkpoint_dir / "processing_checkpoint.json"
         self.logger = logging.getLogger(__name__)
         
-    def save_progress(self, processed_files: List[str], total_files: List[str], 
+    def save_progress(self, processed_files: List[str], original_total_files: List[str], 
                      current_stats: Dict[str, Any]) -> None:
         """処理進捗を保存"""
+        # 🔧 根本修正: original_total_filesを常に完全リストとして保持
+        remaining_files = [f for f in original_total_files if f not in processed_files]
+        
         checkpoint_data = {
             "processed_files": processed_files,
-            "total_files": total_files,
-            "remaining_files": [f for f in total_files if f not in processed_files],
+            "original_total_files": original_total_files,  # 🎯 完全ファイルリスト保持
+            "total_files": original_total_files,  # 後方互換性のため維持
+            "remaining_files": remaining_files,
             "stats": current_stats,
             "timestamp": time.time(),
-            "version": "P1-019-v1.0"
+            "version": "P1-019-v2.0"  # 🔄 バージョン更新
         }
         
         try:
             with open(self.checkpoint_file, 'w', encoding='utf-8') as f:
                 json.dump(checkpoint_data, f, indent=2, ensure_ascii=False)
-            self.logger.info(f"チェックポイント保存: {len(processed_files)}/{len(total_files)} 完了")
+            self.logger.info(f"🔧 根本修正版チェックポイント保存: {len(processed_files)}/{len(original_total_files)} 完了")
         except Exception as e:
             self.logger.error(f"チェックポイント保存エラー: {str(e)}")
     
@@ -80,10 +84,20 @@ class CheckpointManager:
             with open(self.checkpoint_file, 'r', encoding='utf-8') as f:
                 checkpoint_data = json.load(f)
             
-            # バージョンチェック
-            if checkpoint_data.get("version") != "P1-019-v1.0":
-                self.logger.warning("チェックポイントバージョン不一致、新規開始")
+            # バージョンチェック（v1.0とv2.0両方対応）
+            version = checkpoint_data.get("version", "P1-019-v1.0")
+            if version not in ["P1-019-v1.0", "P1-019-v2.0"]:
+                self.logger.warning(f"チェックポイントバージョン不一致: {version}、新規開始")
                 return None
+                
+            # 🔧 v2.0の新形式対応: original_total_filesが存在する場合は使用
+            if "original_total_files" in checkpoint_data:
+                checkpoint_data["total_files"] = checkpoint_data["original_total_files"]
+                checkpoint_data["remaining_files"] = [
+                    f for f in checkpoint_data["original_total_files"] 
+                    if f not in checkpoint_data["processed_files"]
+                ]
+                self.logger.info(f"🔧 v2.0形式検出: 完全ファイルリスト {len(checkpoint_data['original_total_files'])} 件復元")
                 
             self.logger.info(f"チェックポイント読み込み: {len(checkpoint_data['processed_files'])} 件処理済み")
             return checkpoint_data
@@ -151,7 +165,9 @@ class StableBatchProcessor:
         Returns:
             処理結果統計
         """
-        self.stats["total_files"] = len(files)
+        # 🔧 根本修正: 完全ファイルリストを保持
+        original_total_files = files  # 43枚完全リスト保持
+        self.stats["total_files"] = len(original_total_files)
         processed_files = []
         
         # チェックポイントから再開
@@ -160,12 +176,21 @@ class StableBatchProcessor:
             if checkpoint_data:
                 processed_files = checkpoint_data["processed_files"]
                 self.stats.update(checkpoint_data["stats"])
-                remaining_files = checkpoint_data["remaining_files"]
+                
+                # 🔧 v2.0対応: original_total_filesから残りファイル再計算
+                if "original_total_files" in checkpoint_data:
+                    remaining_files = [f for f in checkpoint_data["original_total_files"] 
+                                     if f not in processed_files]
+                    self.logger.info(f"🔧 v2.0形式: 完全リスト {len(checkpoint_data['original_total_files'])} から残り {len(remaining_files)} 件計算")
+                else:
+                    # v1.0互換性: 既存のremaining_files使用
+                    remaining_files = checkpoint_data["remaining_files"]
+                    
                 self.logger.info(f"📋 チェックポイントから再開: {len(processed_files)} 件完了済み")
             else:
-                remaining_files = files
+                remaining_files = original_total_files
         else:
-            remaining_files = files
+            remaining_files = original_total_files
             self.checkpoint_manager.clear_checkpoint()
         
         self.logger.info(f"🚀 安定バッチ処理開始: {len(remaining_files)} 件処理予定")
@@ -182,7 +207,7 @@ class StableBatchProcessor:
             if not is_healthy:
                 self.logger.warning(f"⚠️ プロセス健全性低下: {health_message}")
                 self.logger.info("💾 現在の進捗を保存して終了")
-                self._save_current_progress(processed_files, files)
+                self._save_current_progress(processed_files, original_total_files)
                 return self._generate_result(False, "健全性問題により中断")
             
             # マイクロバッチ内の各ファイル処理
@@ -229,11 +254,11 @@ class StableBatchProcessor:
                             break
             
             # マイクロバッチ完了後チェックポイント保存
-            self._save_current_progress(processed_files, files)
+            self._save_current_progress(processed_files, original_total_files)
             
             # 進捗表示
-            progress_percent = (len(processed_files) / len(files)) * 100
-            self.logger.info(f"📊 進捗: {len(processed_files)}/{len(files)} ({progress_percent:.1f}%)")
+            progress_percent = (len(processed_files) / len(original_total_files)) * 100
+            self.logger.info(f"📊 進捗: {len(processed_files)}/{len(original_total_files)} ({progress_percent:.1f}%)")
         
         # 処理完了
         self.checkpoint_manager.clear_checkpoint()
@@ -241,9 +266,10 @@ class StableBatchProcessor:
         
         return self._generate_result(True, "正常完了")
     
-    def _save_current_progress(self, processed_files: List[str], total_files: List[str]) -> None:
+    def _save_current_progress(self, processed_files: List[str], original_total_files: List[str]) -> None:
         """現在の進捗を保存"""
-        self.checkpoint_manager.save_progress(processed_files, total_files, self.stats)
+        # 🔧 根本修正: original_total_files（完全リスト）を渡す
+        self.checkpoint_manager.save_progress(processed_files, original_total_files, self.stats)
     
     def _generate_result(self, success: bool, message: str) -> Dict[str, Any]:
         """結果辞書生成"""
