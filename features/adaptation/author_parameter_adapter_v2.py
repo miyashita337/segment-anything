@@ -93,15 +93,6 @@ class AuthorParameterAdapterV2:
                     'description': 'yado作者: バランス型キャラクター重視・多作品対応',
                     'processing_notes': ['kana03-09全作品に共通の絵柄', 'キャラクター抽出に特化した設定']
                 },
-                'aichi': {
-                    'characteristics': 'DETAIL_ORIENTED',
-                    'sam_profile': 'precision_focused',
-                    'yolo_confidence': 0.05,
-                    'max_masks': 8,
-                    'score_threshold': 0.05,
-                    'description': 'aichi作者: 細密描写特化・高品質重視',
-                    'processing_notes': ['細かい線画・詳細な描写', '高品質抽出を優先']
-                },
                 'kiri': {
                     'characteristics': 'DETAIL_ORIENTED',
                     'sam_profile': 'precision_focused',
@@ -131,7 +122,7 @@ class AuthorParameterAdapterV2:
                 'processing_notes': ['汎用バランス型設定']
             },
             'detection': {
-                'known_authors': ['yado', 'aichi', 'kiri', 'zundamon'],
+                'known_authors': ['yado', 'kiri', 'zundamon'],
                 'fallback_search': True
             }
         }

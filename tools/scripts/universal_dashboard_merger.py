@@ -34,7 +34,7 @@ class UniversalDashboardMerger:
         # デフォルト設定
         return {
             'base_workspace_path': '/mnt/c/AItools/lora/train',
-            'authors': ['yado', 'aichi', 'kiri', 'zundamon'],
+            'authors': ['yado', 'kiri', 'zundamon'],
             'quality_thresholds': {
                 'high_size_kb': 100,
                 'medium_size_kb': 50
@@ -192,7 +192,6 @@ class UniversalDashboardMerger:
         """作者プロファイル説明取得"""
         profiles = {
             'yado': 'バランス型・キャラクター重視',
-            'aichi': '細密描写特化・高品質重視',
             'kiri': '細密描写特化・高品質重視（元aichi）',
             'zundamon': 'シンプルスタイル・効率重視'
         }
@@ -211,7 +210,7 @@ class UniversalDashboardMerger:
             if not author_images:
                 continue
                 
-            author_icon = {'yado': '👤', 'aichi': '🎨', 'kiri': '🎨', 'zundamon': '⚡'}.get(author, '🔧')
+            author_icon = {'yado': '👤', 'kiri': '🎨', 'zundamon': '⚡'}.get(author, '🔧')
             
             gallery_html += f'<div class="author-section"><h3>{author_icon} {author}作者（{stats["profile"]}）</h3><div class="images-grid">'
             
@@ -243,7 +242,7 @@ class UniversalDashboardMerger:
         # 作者統計HTML
         author_stats_html = ""
         for author, stats in author_stats.items():
-            author_icon = {'yado': '👤', 'aichi': '🎨', 'kiri': '🎨', 'zundamon': '⚡'}.get(author, '🔧')
+            author_icon = {'yado': '👤', 'kiri': '🎨', 'zundamon': '⚡'}.get(author, '🔧')
             author_stats_html += f'''
             <div class="author-stat">
                 <div class="author-stat-value">{stats["count"]}</div>

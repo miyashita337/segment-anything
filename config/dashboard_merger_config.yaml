@@ -7,7 +7,6 @@ base_workspace_path: '/mnt/c/AItools/lora/train'
 # 対象作者リスト（自動検索対象）
 authors:
   - yado
-  - aichi
   - kiri
   - zundamon
 
@@ -45,11 +44,6 @@ author_profiles:
     icon: '👤'
     description: 'バランス型・キャラクター重視'
     characteristics: 'character_focused'
-    
-  aichi:
-    icon: '🎨'
-    description: '細密描写特化・高品質重視'
-    characteristics: 'precision_focused'
     
   kiri:
     icon: '🎨'
