@@ -11,6 +11,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.8] - 2025-08-10
+
+### Fixed
+- **存在しないaichi作者の完全除去** - 設定ファイル・コード・ダッシュボードシステムからの一貫除去
+  - `config/author_config.yaml`: aichiプロファイル・known_authorsリストから除去
+  - `config/dashboard_merger_config.yaml`: aichi作者設定・アイコンマップから除去
+  - `features/adaptation/author_parameter_adapter.py`: 静的・動的設定からaichi完全除去
+  - `features/adaptation/author_parameter_adapter_v2.py`: フォールバック設定修正
+  - `tools/scripts/universal_dashboard_merger.py`: ダッシュボード統合システム正規化
+- **作者構成の正規化**: yado, kiri, zundamonの3作者に統一
+  - kiri作者が旧aichiの技術設定を継承（細密描写特化・YOLO信頼度0.05）
+  - 作者検出ロジック・プロファイル辞書・設定ファイルの一貫性確保
+  - 後方互換性維持（未知作者→default設定自動適用）
+
 ## [v0.9.7] - 2025-08-10
 
 ### Added
