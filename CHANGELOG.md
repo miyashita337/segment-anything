@@ -11,6 +11,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.9] - 2025-08-10
+
+### Added
+- **QCC-021: サンプルサイズ妥当性検証システム** - 統計学的根拠に基づく品質保証システム
+  - `features/analysis/sample_size_validator.py`: パワー分析・信頼区間による統計的妥当性検証
+  - Cohen's d効果サイズ・4種統計検定対応（1標本t・2標本t・対応t・比率検定）
+  - QCA-001実証: 14サンプル→393サンプル推奨（統計的精度向上のため）
+- **QCC-011確認済み: 失敗パターン分析システム4機能完全統合**
+  - `features/analysis/failure_pattern_analyzer.py`: DBSCAN・t-SNE・Isolation Forest・特徴抽出の統合分析
+  - 数百枚の失敗画像から共通パターンを自動検出・分類
+- **QCC-021統合検証システム**
+  - `tools/scripts/qcc021_qca001_validation.py`: QCA-001の実データでの統計的妥当性検証
+  - `tools/scripts/qcc021_dashboard_generator.py`: 専用可視化ダッシュボード生成
+  - 統計的警告・改善提案・QCA-001特化推奨事項の自動生成
+
+### Added - Testing Infrastructure
+- **包括的テストスイート実装**
+  - `tests/unit/test_qcc021_sample_size_validator.py`: 統計計算精度・エッジケース対応確認
+  - `tests/integration/test_qcc021_integration.py`: QCA-001統合動作・レポート生成テスト
+  - 効果サイズ変動・検出力計算・信頼区間幅算出の数学的妥当性検証
+
+### Technical Improvements
+- **統計学的精度向上**
+  - scipy.stats使用の正確な統計計算実装
+  - 非心t分布による検出力計算・多種統計検定対応
+  - カスタムシナリオ・効果サイズベンチマーク対応
+- **可視化システム強化**
+  - サンプルサイズ比較バー・統計指標カードの直感的表示
+  - ダッシュボードURL統一: `http://100.123.241.106:8088/tracker/{TRACKER_ID}`
+
 ## [v0.9.8] - 2025-08-10
 
 ### Fixed
