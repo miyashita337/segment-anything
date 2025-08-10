@@ -11,6 +11,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.7] - 2025-08-10
+
+### Added
+- **QCA-001: 作者別パラメータ適応システム** - ディレクトリ構造ベースの自動作者検出・最適化
+  - `features/adaptation/`: 作者別適応システムモジュール実装
+  - `AuthorParameterAdapter`: yado, kiri, zundamon作者プロファイル自動適用
+  - ディレクトリ構造解析: `/train/{author}/org/{work}/` パターンからの自動識別
+- **設定ファイルベースアーキテクチャ**: `config/author_config.yaml` - YAMLベースの動的設定管理
+  - ハードコーディング完全除去・横展開対応システム
+  - 後方互換性100%維持・フォールバック機能実装
+- **汎用ダッシュボード統合**: `tools/scripts/universal_dashboard_merger.py`
+  - 複数作者ワークスペース統合システム
+  - Base64画像表示・品質バッジ自動生成
+  - 統一URL形式: `http://100.123.241.106:8088/tracker/{TRACKER_ID}`
+
+### Changed
+- **作者別最適化パラメータ**:
+  - yado: バランス型・YOLO信頼度0.07
+  - kiri: 細密描写特化・YOLO信頼度0.05
+  - zundamon: シンプルスタイル・YOLO信頼度0.08
+- **統合テストスイート**: `tests/integration/test_qca001_author_adaptation.py` - 作者検出・パラメータ適用検証
+
+### Fixed
+- **設定システム**: AuthorParameterAdapterV2による動的設定読み込み
+- **ダッシュボード統合**: 17画像統合処理（yado: 14枚、kiri: 3枚）
+- **品質評価**: 高品質5枚、中品質6枚、品質スコア47.1%
+
 ## [v0.9.6] - 2025-08-10
 
 ### Added
