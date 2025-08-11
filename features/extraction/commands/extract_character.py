@@ -367,7 +367,7 @@ def extract_character(
             except Exception as e:
                 if verbose:
                     click.echo(f"⚠️ 通知送信エラー: {e}")
-        elif not no_notify and not EXTRACTION_NOTIFIER_AVAILABLE:
+        elif not no_notify and not PUSHOVER_AVAILABLE:
             if verbose:
                 click.echo("⚠️ 通知システムが利用できません")
         elif success_count == 0:

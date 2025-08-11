@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 標準ダッシュボード生成システム
-統一されたBase64画像表示 + 品質評価バッジ機能
+直接画像読み込み + 品質評価バッジ機能
 
 Created for: ダッシュボード生成ワークフロー標準化
 Author: Claude Code Integration System
@@ -9,7 +9,6 @@ Author: Claude Code Integration System
 
 import os
 import sys
-import base64
 import logging
 from pathlib import Path
 from typing import List, Tuple, Dict, Optional
@@ -19,6 +18,14 @@ from datetime import datetime
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
+# 統一統計計算モジュール（QCC-FIX-001対応）
+try:
+    from features.evaluation.statistics.success_rate import UnifiedSuccessRateCalculator, ExtractionStats
+    UNIFIED_STATS_AVAILABLE = True
+except ImportError as e:
+    logging.warning(f"統一統計モジュール未使用: {e}")
+    UNIFIED_STATS_AVAILABLE = False
+
 # ログ設定
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -27,9 +34,15 @@ logger = logging.getLogger(__name__)
 class StandardDashboardGenerator:
     """標準ダッシュボード生成クラス"""
     
-    def __init__(self, tracker_id: str):
+    def __init__(self, tracker_id: str, input_directories: List[str] = None):
         self.tracker_id = tracker_id
+        self.input_directories = input_directories or []
         self.logger = logger
+        # QCC-FIX-001: 統一統計計算機初期化
+        if UNIFIED_STATS_AVAILABLE and input_directories:
+            self.unified_calculator = UnifiedSuccessRateCalculator(tracker_id)
+        else:
+            self.unified_calculator = None
     
     @staticmethod
     def get_image_quality(file_size: int) -> Tuple[str, str]:
@@ -42,14 +55,13 @@ class StandardDashboardGenerator:
             return "low", "低品質"
     
     @staticmethod
-    def image_to_base64(image_path: str) -> str:
-        """画像をBase64エンコードして返す"""
-        try:
-            with open(image_path, 'rb') as img_file:
-                return base64.b64encode(img_file.read()).decode('utf-8')
-        except Exception as e:
-            logger.error(f"Base64エンコードエラー {image_path}: {e}")
-            return ""
+    def get_relative_image_path(image_path: str) -> str:
+        """ワークスペース相対パスを生成（統合サーバーでアクセス可能）"""
+        workspace_base = "/mnt/c/AItools/lora/train/yado/tracker-workspace"
+        if workspace_base in image_path:
+            return image_path.replace(workspace_base + "/", "")
+        else:
+            return image_path
     
     def collect_images(self, extraction_dir: str) -> List[str]:
         """抽出ディレクトリから画像ファイルを収集"""
@@ -66,22 +78,41 @@ class StandardDashboardGenerator:
         self.logger.info(f"📷 {len(images)}個の画像を検出: {self.tracker_id}")
         return images
     
-    def calculate_quality_stats(self, images: List[str]) -> Dict[str, int]:
-        """品質統計を計算"""
-        stats = {"high": 0, "medium": 0, "low": 0}
+    def calculate_quality_stats(self, images: List[str], extraction_dir: str = None) -> Dict[str, any]:
+        """
+        品質統計を計算（QCC-FIX-001: 統一統計対応）
+        統一成功率計算を優先し、ファイルサイズ評価は補助指標として使用
+        """
+        # 従来のファイルサイズベース品質分類
+        traditional_stats = {"high": 0, "medium": 0, "low": 0}
         
         for image_path in images:
             try:
                 file_size = os.path.getsize(image_path)
                 quality, _ = self.get_image_quality(file_size)
-                stats[quality] += 1
+                traditional_stats[quality] += 1
             except Exception:
-                stats["low"] += 1  # エラー時は低品質として扱う
+                traditional_stats["low"] += 1  # エラー時は低品質として扱う
         
-        return stats
+        # QCC-FIX-001: 統一統計計算（数学的正確性優先）
+        unified_stats = None
+        if self.unified_calculator and self.input_directories and extraction_dir:
+            try:
+                unified_stats = self.unified_calculator.calculate_unified_stats(
+                    self.input_directories, extraction_dir
+                )
+                self.logger.info(f"✅ {self.tracker_id}: 統一統計計算使用（QCC-FIX-001準拠）")
+            except Exception as e:
+                self.logger.warning(f"⚠️ 統一統計計算エラー、従来方式を使用: {e}")
+        
+        return {
+            "traditional": traditional_stats,
+            "unified": unified_stats,
+            "qcc_fix_001_compliant": unified_stats is not None
+        }
     
     def generate_image_cards_html(self, images: List[str]) -> str:
-        """画像カードHTMLを生成（直接画像パス使用・トリミングなし）"""
+        """画像カードHTMLを生成（直接画像パス使用）"""
         if not images:
             return '<div class="no-images">抽出された画像が見つかりませんでした</div>'
         
@@ -92,14 +123,10 @@ class StandardDashboardGenerator:
                 file_size = os.path.getsize(image_path)
                 quality, quality_label = self.get_image_quality(file_size)
                 
-                # ワークスペース相対パスを生成（統合サーバーでアクセス可能）
-                workspace_base = "/mnt/c/AItools/lora/train/yado/tracker-workspace"
-                if workspace_base in image_path:
-                    relative_path = image_path.replace(workspace_base + "/", "")
-                else:
-                    relative_path = image_path
+                # 相対パス取得
+                relative_path = self.get_relative_image_path(image_path)
                 
-                self.logger.debug(f"  🖼️  {filename}: 直接画像パス使用")
+                self.logger.debug(f"  🖼️  {filename}: 直接画像パス使用 (/{relative_path})")
                 
                 image_cards += f"""
         <div class="image-card">
@@ -154,7 +181,7 @@ class StandardDashboardGenerator:
         .images-grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 18px; }}
         .image-card {{ background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }}
         .image-container {{ position: relative; min-height: 200px; overflow: visible; }}
-        .image-container img {{ width: 50%; height: 50%; object-fit: contain; background: #f8f9fa; max-width: 50%; max-height: 50%; display: block; margin: 15px auto; }}
+        .image-container img {{ width: 100%; height: 200px; object-fit: contain; background: #f8f9fa; display: block; border-radius: 8px 8px 0 0; }}
         .quality-badge {{ position: absolute; top: 10px; right: 10px; padding: 5px 10px; border-radius: 20px; color: white; font-weight: bold; font-size: 0.8em; }}
         .quality-badge.high {{ background: #27ae60; }}
         .quality-badge.medium {{ background: #f39c12; }}
@@ -238,11 +265,24 @@ class StandardDashboardGenerator:
             self.logger.warning(f"⚠️ {self.tracker_id}: 画像が見つかりません")
             # 空のダッシュボードも生成
         
-        # 統計計算
-        quality_stats = self.calculate_quality_stats(images)
-        total_images = len(images)
-        success_count = quality_stats["high"] + quality_stats["medium"]
-        success_rate = (success_count / total_images * 100) if total_images > 0 else 0
+        # QCC-FIX-001: 統一統計計算
+        quality_stats = self.calculate_quality_stats(images, extraction_dir)
+        
+        # 統一統計が利用可能な場合は数学的に正確な値を使用
+        if quality_stats["qcc_fix_001_compliant"] and quality_stats["unified"]:
+            unified = quality_stats["unified"]
+            total_images = unified.total_input_images  # 実際の入力数（重複除去後）
+            success_count = unified.successful_extractions  # 数学的に正確な成功数
+            success_rate = unified.success_rate_percent  # Wilson信頼区間ベース
+            self.logger.info(f"✅ {self.tracker_id}: QCC-FIX-001準拠統計使用")
+            self.logger.info(f"   📊 数学的整合性: {success_count}/{total_images} = {success_rate:.2f}%")
+        else:
+            # フォールバック: 従来方式（ファイルサイズベース）
+            traditional = quality_stats["traditional"]
+            total_images = len(images)
+            success_count = traditional["high"] + traditional["medium"]
+            success_rate = (success_count / total_images * 100) if total_images > 0 else 0
+            self.logger.warning(f"⚠️ {self.tracker_id}: 従来統計使用（QCC-FIX-001未適用）")
         
         # 画像カードHTML生成
         image_cards = self.generate_image_cards_html(images)
@@ -253,9 +293,9 @@ class StandardDashboardGenerator:
             total_images=total_images,
             success_rate=success_rate,
             success_count=success_count,
-            high_count=quality_stats["high"],
-            medium_count=quality_stats["medium"],
-            low_count=quality_stats["low"],
+            high_count=quality_stats["traditional"]["high"] if "traditional" in quality_stats else 0,
+            medium_count=quality_stats["traditional"]["medium"] if "traditional" in quality_stats else 0,
+            low_count=quality_stats["traditional"]["low"] if "traditional" in quality_stats else 0,
             image_cards=image_cards,
             generation_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         )
@@ -281,9 +321,17 @@ class StandardDashboardGenerator:
             return False
 
 
-def create_standard_dashboard(tracker_id: str, extraction_dir: str, output_dir: str) -> bool:
-    """標準ダッシュボード生成のエントリーポイント"""
-    generator = StandardDashboardGenerator(tracker_id)
+def create_standard_dashboard(
+    tracker_id: str, 
+    extraction_dir: str, 
+    output_dir: str,
+    input_directories: List[str] = None
+) -> bool:
+    """
+    標準ダッシュボード生成のエントリーポイント
+    QCC-FIX-001対応: 入力ディレクトリ指定で統一統計計算
+    """
+    generator = StandardDashboardGenerator(tracker_id, input_directories)
     output_path = os.path.join(output_dir, "dashboard", "dashboard.html")
     return generator.generate_dashboard(extraction_dir, output_path)
 

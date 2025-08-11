@@ -276,8 +276,8 @@ class AuthorParameterAdapter:
         Returns:
             AuthorProfile: 作者プロファイル（不明時はデフォルト）
         """
-        if author_id and author_id in cls.AUTHOR_PROFILES:
-            profile = cls.AUTHOR_PROFILES[author_id]
+        if author_id and author_id in cls._LEGACY_AUTHOR_PROFILES:
+            profile = cls._LEGACY_AUTHOR_PROFILES[author_id]
             logger.info(f"📋 Author profile loaded: {author_id} - {profile.description}")
             return profile
         else:
@@ -344,7 +344,7 @@ class AuthorParameterAdapter:
         Returns:
             作者IDのリスト
         """
-        return list(cls.AUTHOR_PROFILES.keys())
+        return list(cls._LEGACY_AUTHOR_PROFILES.keys())
     
     @classmethod
     def get_author_statistics(cls) -> Dict[str, Any]:
@@ -355,18 +355,18 @@ class AuthorParameterAdapter:
             統計情報の辞書
         """
         stats = {
-            "total_authors": len(cls.AUTHOR_PROFILES),
+            "total_authors": len(cls._LEGACY_AUTHOR_PROFILES),
             "characteristics_distribution": {},
             "sam_profiles": {},
             "confidence_range": {
-                "min": min(p.yolo_confidence for p in cls.AUTHOR_PROFILES.values()),
-                "max": max(p.yolo_confidence for p in cls.AUTHOR_PROFILES.values()),
-                "avg": sum(p.yolo_confidence for p in cls.AUTHOR_PROFILES.values()) / len(cls.AUTHOR_PROFILES)
+                "min": min(p.yolo_confidence for p in cls._LEGACY_AUTHOR_PROFILES.values()),
+                "max": max(p.yolo_confidence for p in cls._LEGACY_AUTHOR_PROFILES.values()),
+                "avg": sum(p.yolo_confidence for p in cls._LEGACY_AUTHOR_PROFILES.values()) / len(cls._LEGACY_AUTHOR_PROFILES)
             }
         }
         
         # 特性分布
-        for profile in cls.AUTHOR_PROFILES.values():
+        for profile in cls._LEGACY_AUTHOR_PROFILES.values():
             char = profile.characteristics.value
             stats["characteristics_distribution"][char] = stats["characteristics_distribution"].get(char, 0) + 1
             

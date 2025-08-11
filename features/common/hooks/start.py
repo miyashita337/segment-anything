@@ -72,6 +72,12 @@ def initialize_models():
     try:
         print("🔧 Initializing models...")
         
+        # Performance monitor initialization (must be first)
+        if performance_monitor is None:
+            performance_monitor = PerformanceMonitor()
+            performance_monitor.start_monitoring()
+            print("✅ Performance monitor initialized")
+        
         # SAM model initialization
         sam_model = SAMModelWrapper()
         if not sam_model.load_model():
