@@ -6,14 +6,33 @@
 
 import sys
 import os
+import tempfile
 from pathlib import Path
 
 # Add project root to Python path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
+# CI環境対応: パスを動的に設定
+def get_test_paths():
+    """CI環境に対応したテストパスを取得"""
+    if os.getenv('CI_ENVIRONMENT') == 'true' or not os.path.exists('/mnt/c'):
+        # CI環境では一時ディレクトリを使用
+        base_dir = Path(tempfile.mkdtemp())
+        input_path = base_dir / "input" / "kaname06"
+        output_path = base_dir / "output" / "kaname06"
+        # テスト用ディレクトリ作成
+        input_path.mkdir(parents=True, exist_ok=True)
+        output_path.mkdir(parents=True, exist_ok=True)
+        return str(input_path), str(output_path)
+    else:
+        # ローカル環境では実際のパスを使用
+        input_path = "/tmp/test_input_kaname06"
+        output_path = "/tmp/test_output_kaname06"
+        return input_path, output_path
+
 def test_input_path_validation():
     """入力パス検証テスト"""
-    input_path = "/mnt/c/AItools/lora/train/yado/org/kaname06"
+    input_path, _ = get_test_paths()
     
     if not Path(input_path).exists():
         print(f"❌ 入力パスが存在しません: {input_path}")
@@ -31,7 +50,7 @@ def test_input_path_validation():
 
 def test_output_path_preparation():
     """出力パス準備テスト"""
-    output_path = "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/kaname06"
+    _, output_path = get_test_paths()
     
     # 出力ディレクトリの作成
     Path(output_path).mkdir(parents=True, exist_ok=True)

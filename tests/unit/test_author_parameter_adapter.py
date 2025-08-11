@@ -33,7 +33,7 @@ class TestAuthorParameterAdapter:
     def test_detect_author_from_path_yado(self):
         """yado作者の正確な検出テスト"""
         test_paths = [
-            "/mnt/c/AItools/lora/train/yado/org/kana05/kana05_0001.jpg",
+            "/any/path/train/yado/org/kana05/kana05_0001.jpg",  # CI環境でも動作する汎用パス
             "/some/path/train/yado/work/image.jpg",
             "/train/yado/test.png"
         ]
@@ -45,7 +45,7 @@ class TestAuthorParameterAdapter:
     def test_detect_author_from_path_kiri(self):
         """kiri作者の正確な検出テスト（元aichi）"""
         test_paths = [
-            "/mnt/c/AItools/lora/train/kiri/org/work01/image.jpg",
+            "/any/path/train/kiri/org/work01/image.jpg",
             "/path/train/kiri/subfolder/test.png",
             "/train/kiri/image.jpg"
         ]
@@ -57,7 +57,7 @@ class TestAuthorParameterAdapter:
     def test_detect_author_from_path_zundamon(self):
         """zundamon作者の正確な検出テスト"""
         test_paths = [
-            "/mnt/c/AItools/lora/train/zundamon/org/work02/image.jpg",
+            "/any/path/train/zundamon/org/work02/image.jpg",
             "/train/zundamon/test.png",
             "/some/train/zundamon/subfolder/image.png"
         ]
@@ -69,7 +69,7 @@ class TestAuthorParameterAdapter:
     def test_detect_author_from_path_unknown(self):
         """未知の作者パスのテスト"""
         test_paths = [
-            "/mnt/c/AItools/lora/train/unknown_author/work/image.jpg",
+            "/any/path/train/unknown_author/work/image.jpg",
             "/no/train/folder/image.jpg",
             "/train/not_an_author/image.jpg",
             "/completely/different/path/image.jpg"
@@ -156,7 +156,7 @@ class TestAuthorParameterAdapter:
     def test_apply_author_optimization_integration(self):
         """統合的な作者最適化適用テスト"""
         test_cases = [
-            ("/mnt/c/AItools/lora/train/yado/org/kana05/test.jpg", "yado", "character_focused"),
+            ("/any/path/train/yado/org/kana05/test.jpg", "yado", "character_focused"),
             ("/train/kiri/work/image.png", "kiri", "precision_focused"),
             ("/some/zundamon/test/image.jpg", "zundamon", "speed_optimized"),
             ("/unknown/path/image.jpg", "default", "balanced")  # デフォルト

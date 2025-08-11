@@ -35,7 +35,7 @@ class TestAutomatedQualityTesting(unittest.TestCase):
             self.base_workspace_path = self.temp_path
             self.is_ci_environment = True
         else:
-            self.base_workspace_path = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox")
+            self.base_workspace_path = Path("/tmp/test_workspace")
             self.is_ci_environment = False
         
         # 設定ファイル作成（CI環境対応）
