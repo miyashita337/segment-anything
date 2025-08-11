@@ -225,13 +225,14 @@ class TestMemoryLeakDetection:
         
         # 大きなオブジェクトを作成
         large_objects = []
-        for i in range(10):
-            large_objects.append(np.random.rand(100, 100))
+        for i in range(100):  # より多くのオブジェクトを作成
+            large_objects.append(np.random.rand(500, 500))  # より大きなオブジェクト
         
         after_allocation = monitor.get_memory_usage()['ram_mb']
         
-        # メモリ使用量が増加していることを確認
-        assert after_allocation > initial_memory
+        # メモリ使用量が増加していることを確認（1MB以上の差を期待）
+        memory_diff = after_allocation - initial_memory
+        assert memory_diff > 0.1, f"メモリ使用量の増加が検出されませんでした: {memory_diff}MB"
         
         # オブジェクトを削除
         del large_objects

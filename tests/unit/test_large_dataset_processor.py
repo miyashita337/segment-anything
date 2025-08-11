@@ -348,10 +348,9 @@ class TestLargeDatasetIntegration:
             
             mock_sam_yolo_success.side_effect = create_output_files
             
-            # 処理実行 - CI環境対応: output_dirを明示的に指定
+            # 処理実行 - CI環境対応: 正しいシグネチャを使用
             success = processor.process_large_dataset(
                 input_dir=temp_input_dir,
-                output_dir=output_dir,  # CI環境でも動作するtempディレクトリを使用
                 processing_params={'score_threshold': 0.05}
             )
             
@@ -376,13 +375,11 @@ class TestLargeDatasetIntegration:
         # 並列処理メソッドがTrueを返すようにモック
         mock_parallel.return_value = True
         
-        # CI環境対応: 確実にtempfileを使用
-        with tempfile.TemporaryDirectory() as output_dir:
-            success = processor.process_large_dataset(
-                input_dir=temp_input_dir,
-                output_dir=output_dir,  # CI環境でも動作するtempディレクトリを使用
-                processing_params={}
-            )
+        # 処理実行 - 正しいシグネチャを使用
+        success = processor.process_large_dataset(
+            input_dir=temp_input_dir,
+            processing_params={}
+        )
             
             # 並列処理メソッドが呼び出されたことを確認
             mock_parallel.assert_called_once()
