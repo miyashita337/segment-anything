@@ -4,6 +4,7 @@ P1-B004統合実行スクリプト
 extract_character.pyの--adaptive-croppingを環境問題回避で実行
 """
 
+import os
 import subprocess
 import sys
 import time

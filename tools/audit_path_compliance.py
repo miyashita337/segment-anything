@@ -328,8 +328,8 @@ class PathComplianceAuditor:
                 priority = 0
                 
             # Pushover API リクエスト
-            response = # TODO: global_pushover.pyに移行必要
-# requests.post('https://api.pushover.net/1/messages.json', data={
+            # TODO: global_pushover.pyに移行必要
+            # response = requests.post('https://api.pushover.net/1/messages.json', data={
                 'token': config['api_token'],
                 'user': config['user_key'],
                 'title': title,

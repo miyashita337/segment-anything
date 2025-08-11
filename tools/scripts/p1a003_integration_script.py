@@ -266,6 +266,11 @@ if __name__ == "__main__":
     
     def _generate_markdown_report(self, file_path: Path, report_data: Dict[str, Any]):
         """Markdownレポート生成"""
+        # 総合ステータス計算
+        success_phases = sum(1 for p in self.results['phases'].values() if p['status'] == 'SUCCESS')
+        total_phases = len(self.results['phases'])
+        temp_overall_status = "SUCCESS" if success_phases == total_phases else "PARTIAL_SUCCESS"
+        
         content = f"""# P1-A003: 自動テスト強化システム 統合レポート
 
 **統合ID**: {report_data['integration_id']}
