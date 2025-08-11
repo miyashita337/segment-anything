@@ -2,6 +2,18 @@
 
 Provides CLI interface for extracting anime characters from manga images.
 """
+import sys
+from pathlib import Path
+
+# Add project root to path for direct script execution
+# features/extraction/commands/extract_character.py -> need 3 parents up to get to project root
+project_root = Path(__file__).resolve().parent.parent.parent
+# But we're in segment-anything/features/extraction/commands, so need one more parent
+if project_root.name == 'features':
+    project_root = project_root.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
 import numpy as np
 import cv2
 import torch
