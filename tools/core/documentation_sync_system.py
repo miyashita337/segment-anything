@@ -76,8 +76,15 @@ class DocumentationSyncSystem:
         """初期化"""
         self.project_root = project_root
         
-        # PROGRESS_TRACKER.md準拠のワークスペース
-        self.workspace_root = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace")
+        # CI環境対応: CI環境では一時ディレクトリを使用
+        import os
+        if os.getenv('CI_ENVIRONMENT') == 'true' or not os.path.exists('/mnt/c'):
+            # CI環境では project_root 配下を使用
+            self.workspace_root = project_root / "workspace"
+        else:
+            # PROGRESS_TRACKER.md準拠のワークスペース（ローカル環境）
+            self.workspace_root = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace")
+        
         self.workspace_dir = self.workspace_root / "P1-A004"
         self.documentation_dir = self.workspace_dir / "documentation"
         
