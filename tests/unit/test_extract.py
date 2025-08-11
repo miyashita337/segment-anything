@@ -386,11 +386,12 @@ class TestCharacterExtraction(unittest.TestCase):
                 signal.signal(signal.SIGALRM, timeout_handler)
                 signal.alarm(15)  # 15秒タイムアウト
             
-            result = runner.invoke(extract_character, [
-                self.test_image_path,
-                '-o', output_path,
-                '--verbose' if not is_ci else ''  # CI環境では静かに実行
-            ])
+            # CLI引数を条件付きで構成
+            cli_args = [self.test_image_path, '-o', output_path]
+            if not is_ci:  # ローカル環境でのみverbose追加
+                cli_args.append('--verbose')
+            
+            result = runner.invoke(extract_character, cli_args)
             
             if is_ci:
                 signal.alarm(0)  # タイムアウト解除
