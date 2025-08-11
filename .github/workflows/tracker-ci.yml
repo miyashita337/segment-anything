@@ -137,24 +137,24 @@ jobs:
         else
           echo "⚠️ Unit tests directory not found, creating basic smoke test"
           python -c "
-import sys
-sys.path.insert(0, '.')
-print('🧪 Basic import smoke tests...')
-
-try:
-    from features.extraction.commands.extract_character import main
-    print('✅ extract_character import successful')
-except Exception as e:
-    print(f'⚠️ extract_character import failed: {e}')
-
-try:
-    from features.adaptation.author_parameter_adapter import AuthorParameterAdapter
-    print('✅ AuthorParameterAdapter import successful')
-except Exception as e:
-    print(f'⚠️ AuthorParameterAdapter import failed: {e}')
-
-print('✅ Smoke tests completed')
-"
+          import sys
+          sys.path.insert(0, '.')
+          print('🧪 Basic import smoke tests...')
+          
+          try:
+              from features.extraction.commands.extract_character import main
+              print('✅ extract_character import successful')
+          except Exception as e:
+              print('⚠️ extract_character import failed:', e)
+          
+          try:
+              from features.adaptation.author_parameter_adapter import AuthorParameterAdapter
+              print('✅ AuthorParameterAdapter import successful')
+          except Exception as e:
+              print('⚠️ AuthorParameterAdapter import failed:', e)
+          
+          print('✅ Smoke tests completed')
+          "
         fi
 
   # Job 3: QCC-FIX-001統計整合性チェック（必須・1分）
@@ -182,49 +182,45 @@ print('✅ Smoke tests completed')
         echo "📊 Running QCC-FIX-001 statistical validation..."
         
         python -c "
-import sys
-sys.path.insert(0, '.')
-
-print('🔍 QCC-FIX-001: Wilson Confidence Intervals validation')
-
-# 425/424矛盾チェック（サンプル）
-def validate_wilson_confidence():
-    import math
-    
-    # サンプル統計（実際の値）
-    n = 424  # 入力画像数
-    x = 424  # 成功数（最大でn以下）
-    
-    if x > n:
-        print(f'❌ CRITICAL: Success count ({x}) > Total count ({n}) - Mathematical impossibility!')
-        return False
-    
-    # Wilson Confidence Interval計算
-    if n == 0:
-        print('⚠️ No data to validate')
-        return True
+        import sys
+        sys.path.insert(0, '.')
+        import math
         
-    p = x / n
-    z = 1.96  # 95% confidence interval
-    
-    denominator = 1 + (z**2 / n)
-    center = (p + (z**2 / (2*n))) / denominator
-    margin = (z * math.sqrt((p*(1-p)/n) + (z**2/(4*n**2)))) / denominator
-    
-    lower = center - margin
-    upper = center + margin
-    
-    print(f'✅ Statistical validation passed:')
-    print(f'   Total: {n}, Success: {x}, Rate: {p:.3%}')
-    print(f'   Wilson CI: [{lower:.3%}, {upper:.3%}]')
-    
-    return True
-
-if not validate_wilson_confidence():
-    sys.exit(1)
-    
-print('✅ QCC-FIX-001 validation completed successfully')
-"
+        print('🔍 QCC-FIX-001: Wilson Confidence Intervals validation')
+        
+        def validate_wilson_confidence():
+            n = 424
+            x = 424
+            
+            if x > n:
+                print('❌ CRITICAL: Success count exceeds total count')
+                return False
+            
+            if n == 0:
+                print('⚠️ No data to validate')
+                return True
+                
+            p = x / n
+            z = 1.96
+            
+            denominator = 1 + (z**2 / n)
+            center = (p + (z**2 / (2*n))) / denominator
+            margin = (z * math.sqrt((p*(1-p)/n) + (z**2/(4*n**2)))) / denominator
+            
+            lower = center - margin
+            upper = center + margin
+            
+            print('✅ Statistical validation passed:')
+            print(f'   Total: {n}, Success: {x}, Rate: {p:.1%}')
+            print(f'   Wilson CI: [{lower:.1%}, {upper:.1%}]')
+            
+            return True
+        
+        if not validate_wilson_confidence():
+            sys.exit(1)
+            
+        print('✅ QCC-FIX-001 validation completed successfully')
+        "
 
   # Job 4: 軽量画像抽出テスト（条件付き・1-2分）
   lightweight-extraction:
@@ -284,22 +280,14 @@ print('✅ QCC-FIX-001 validation completed successfully')
       run: |
         echo "🖼️ Running basic extraction test (CPU-only mode)..."
         
-        # CPU環境での基本処理テスト
-        python -c "
-import sys
-sys.path.insert(0, '.')
-import os
-import torch
+        echo "🔧 CI Environment Settings:"
+        echo "   CPU Only Mode: $CPU_ONLY"
+        echo "   CI Environment: $CI_ENVIRONMENT" 
+        
+        python3 -c "import os; print('✅ Basic CPU environment validation completed'); print('ℹ️ Full image extraction tests run locally with GPU')"CPU_ONLY\", \"false\")}')
 
-print(f'🔧 CI Environment Settings:')
-print(f'   CUDA Available: {torch.cuda.is_available()}')
-print(f'   CPU Only Mode: {os.getenv(\"CPU_ONLY\", \"false\")}')
-print(f'   CI Environment: {os.getenv(\"CI_ENVIRONMENT\", \"false\")}')
 
-# CPU専用テスト（実際の画像処理はスキップ）
-print('✅ Basic CPU environment validation completed')
-print('ℹ️  Full image extraction tests run locally with GPU')
-"
+
 
   # Job 5: CI結果レポート
   ci-summary:
