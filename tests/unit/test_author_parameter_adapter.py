@@ -42,17 +42,17 @@ class TestAuthorParameterAdapter:
             author = AuthorParameterAdapter.detect_author_from_path(path)
             assert author == "yado", f"yado検出失敗: {path} -> {author}"
     
-    def test_detect_author_from_path_aichi(self):
-        """aichi作者の正確な検出テスト"""
+    def test_detect_author_from_path_kiri(self):
+        """kiri作者の正確な検出テスト（元aichi）"""
         test_paths = [
-            "/mnt/c/AItools/lora/train/aichi/org/work01/image.jpg",
-            "/path/train/aichi/subfolder/test.png",
-            "/train/aichi/image.jpg"
+            "/mnt/c/AItools/lora/train/kiri/org/work01/image.jpg",
+            "/path/train/kiri/subfolder/test.png",
+            "/train/kiri/image.jpg"
         ]
         
         for path in test_paths:
             author = AuthorParameterAdapter.detect_author_from_path(path)
-            assert author == "aichi", f"aichi検出失敗: {path} -> {author}"
+            assert author == "kiri", f"kiri検出失敗: {path} -> {author}"
     
     def test_detect_author_from_path_zundamon(self):
         """zundamon作者の正確な検出テスト"""
@@ -84,11 +84,11 @@ class TestAuthorParameterAdapter:
         # train/以外のパスでも作者名があれば検出
         test_paths = [
             "/some/yado/work/image.jpg",
-            "/path/to/aichi/subfolder/test.png",
+            "/path/to/kiri/subfolder/test.png",
             "/folder/zundamon/image.jpg"
         ]
         
-        expected_authors = ["yado", "aichi", "zundamon"]
+        expected_authors = ["yado", "kiri", "zundamon"]
         
         for path, expected in zip(test_paths, expected_authors):
             author = AuthorParameterAdapter.detect_author_from_path(path)
@@ -96,7 +96,7 @@ class TestAuthorParameterAdapter:
     
     def test_get_author_profile_valid(self):
         """有効な作者プロファイル取得テスト"""
-        for author_id in ["yado", "aichi", "zundamon"]:
+        for author_id in ["yado", "kiri", "zundamon"]:
             profile = AuthorParameterAdapter.get_author_profile(author_id)
             
             assert isinstance(profile, AuthorProfile)
@@ -131,16 +131,16 @@ class TestAuthorParameterAdapter:
         assert "yado作者" in params["description"]
         assert len(params["processing_notes"]) > 0
     
-    def test_get_optimized_parameters_aichi(self):
-        """aichi作者の最適化パラメータ取得テスト"""
-        params = AuthorParameterAdapter.get_optimized_parameters("aichi")
+    def test_get_optimized_parameters_kiri(self):
+        """kiri作者の最適化パラメータ取得テスト（元aichi）"""
+        params = AuthorParameterAdapter.get_optimized_parameters("kiri")
         
-        assert params["author_id"] == "aichi"
+        assert params["author_id"] == "kiri"
         assert params["sam_profile"] == "precision_focused"
         assert params["yolo_confidence"] == 0.05  # 細密描写のため低信頼度
         assert params["score_threshold"] == 0.05
         assert params["characteristics"] == "detail_oriented"
-        assert "aichi作者" in params["description"]
+        assert "kiri作者" in params["description"]
     
     def test_get_optimized_parameters_zundamon(self):
         """zundamon作者の最適化パラメータ取得テスト"""
@@ -157,7 +157,7 @@ class TestAuthorParameterAdapter:
         """統合的な作者最適化適用テスト"""
         test_cases = [
             ("/mnt/c/AItools/lora/train/yado/org/kana05/test.jpg", "yado", "character_focused"),
-            ("/train/aichi/work/image.png", "aichi", "precision_focused"),
+            ("/train/kiri/work/image.png", "kiri", "precision_focused"),
             ("/some/zundamon/test/image.jpg", "zundamon", "speed_optimized"),
             ("/unknown/path/image.jpg", "default", "balanced")  # デフォルト
         ]
@@ -175,7 +175,7 @@ class TestAuthorParameterAdapter:
         
         assert isinstance(authors, list)
         assert "yado" in authors
-        assert "aichi" in authors
+        assert "kiri" in authors
         assert "zundamon" in authors
         assert len(authors) == 3  # 現在対応している作者数
     
@@ -207,7 +207,7 @@ class TestAuthorParameterAdapter:
     
     def test_author_profile_consistency(self):
         """作者プロファイルの一貫性テスト"""
-        for author_id in ["yado", "aichi", "zundamon"]:
+        for author_id in ["yado", "kiri", "zundamon"]:
             profile = AuthorParameterAdapter.get_author_profile(author_id)
             params = AuthorParameterAdapter.get_optimized_parameters(author_id)
             
@@ -270,7 +270,7 @@ if __name__ == "__main__":
     # 基本的なテストを実行
     test_methods = [
         test_adapter.test_detect_author_from_path_yado,
-        test_adapter.test_detect_author_from_path_aichi, 
+        test_adapter.test_detect_author_from_path_kiri, 
         test_adapter.test_detect_author_from_path_zundamon,
         test_adapter.test_detect_author_from_path_unknown,
         test_adapter.test_get_author_profile_valid,
