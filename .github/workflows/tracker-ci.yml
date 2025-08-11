@@ -87,7 +87,7 @@ jobs:
       run: |
         echo "🐍 Validating Python syntax..."
         python -m py_compile features/extraction/commands/extract_character.py
-        python -m py_compile tools/core/sam_yolo_character_segment.py
+        python -m py_compile tools/deprecated/sam_yolo_character_segment.py
         echo "✅ Python syntax validation completed"
 
   # Job 2: 単体テスト（1-2分）
