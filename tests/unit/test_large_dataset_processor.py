@@ -380,9 +380,9 @@ class TestLargeDatasetIntegration:
             input_dir=temp_input_dir,
             processing_params={}
         )
-            
-            # 並列処理メソッドが呼び出されたことを確認
-            mock_parallel.assert_called_once()
+        
+        # 並列処理メソッドが呼び出されたことを確認
+        mock_parallel.assert_called_once()
     
     def test_nonexistent_directory_handling(self):
         """存在しないディレクトリの処理テスト"""
