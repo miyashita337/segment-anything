@@ -45,6 +45,12 @@ jobs:
       with:
         fetch-depth: 0
     
+    - name: Create WSL drive compatibility (Layer 0 fix)
+      run: |
+        sudo mkdir -p /mnt
+        sudo ln -sf "$GITHUB_WORKSPACE" /mnt/c
+        echo "✅ /mnt/c -> $GITHUB_WORKSPACE symlink created"
+    
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
@@ -103,6 +109,12 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+    
+    - name: Create WSL drive compatibility (Layer 0 fix)
+      run: |
+        sudo mkdir -p /mnt
+        sudo ln -sf "$GITHUB_WORKSPACE" /mnt/c
+        echo "✅ /mnt/c -> $GITHUB_WORKSPACE symlink created"
     
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
@@ -169,6 +181,12 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
     
+    - name: Create WSL drive compatibility (Layer 0 fix)
+      run: |
+        sudo mkdir -p /mnt
+        sudo ln -sf "$GITHUB_WORKSPACE" /mnt/c
+        echo "✅ /mnt/c -> $GITHUB_WORKSPACE symlink created"
+    
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
@@ -234,6 +252,12 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+    
+    - name: Create WSL drive compatibility (Layer 0 fix)
+      run: |
+        sudo mkdir -p /mnt
+        sudo ln -sf "$GITHUB_WORKSPACE" /mnt/c
+        echo "✅ /mnt/c -> $GITHUB_WORKSPACE symlink created"
     
     - name: Set up Python
       uses: actions/setup-python@v4
