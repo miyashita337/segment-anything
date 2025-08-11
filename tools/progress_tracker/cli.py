@@ -84,6 +84,82 @@ def cmd_create_task(args):
         return 1
 
 
+def cmd_create_task_enhanced(args):
+    """拡張タスク作成（詳細・優先度・日付対応）"""
+    try:
+        config = get_default_config()
+        manager = ProgressManager(config)
+        
+        # 基本タスク作成
+        task = manager.create_task(args.tracker_id, args.description or "")
+        
+        # 詳細情報がある場合は更新
+        if args.details:
+            try:
+                # Google Sheets クライアント直接操作で詳細情報を更新
+                client = manager.client
+                
+                # タスク行を特定
+                all_values = client.get_sheet_values('A:Z')
+                task_row = None
+                
+                for i, row in enumerate(all_values[1:], 2):  # ヘッダーをスキップ
+                    if row and len(row) > 0 and row[0] == args.tracker_id:
+                        task_row = i
+                        break
+                
+                if task_row:
+                    # 登録日付・更新日付の設定（指定された日付または現在日時）
+                    import datetime
+                    if args.registration_date:
+                        reg_date = args.registration_date
+                        update_date = args.registration_date
+                    else:
+                        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                        reg_date = now
+                        update_date = now
+                    
+                    # 優先度設定
+                    priority = args.priority or "高"
+                    
+                    # 概要設定（説明と同じにするか、別途指定）
+                    summary = args.summary or args.description or ""
+                    
+                    # Google Sheetsの列構造に基づいて更新
+                    # C列: 優先度, D列: 登録日付, E列: 更新日付, F列: 概要, G列: 詳細
+                    
+                    # 優先度更新
+                    client.update_sheet_values(f'C{task_row}', [[priority]])
+                    
+                    # 登録日付更新  
+                    client.update_sheet_values(f'D{task_row}', [[reg_date]])
+                    
+                    # 更新日付更新
+                    client.update_sheet_values(f'E{task_row}', [[update_date]])
+                    
+                    # 概要更新
+                    if summary:
+                        client.update_sheet_values(f'F{task_row}', [[summary]])
+                    
+                    # 詳細更新
+                    client.update_sheet_values(f'G{task_row}', [[args.details]])
+                    
+                    print(f"📋 拡張情報更新完了:")
+                    print(f"   優先度: {priority}")
+                    print(f"   登録日付: {reg_date}")
+                    print(f"   詳細: {len(args.details)}文字")
+                    
+            except Exception as e:
+                print(f"⚠️ 拡張情報更新エラー: {e}")
+                print("基本タスクは作成済みです")
+        
+        return 0
+        
+    except Exception as e:
+        print(f"❌ 拡張タスク作成エラー: {e}")
+        return 1
+
+
 def cmd_update_status(args):
     """ステータス更新"""
     try:
@@ -289,6 +365,69 @@ def cmd_import_quality_results(args):
         return 1
 
 
+def cmd_update_task_details(args):
+    """既存タスクの詳細情報更新"""
+    try:
+        config = get_default_config()
+        manager = ProgressManager(config)
+        
+        # Google Sheets クライアント取得
+        client = manager.client
+        
+        # タスク行を特定
+        all_values = client.get_sheet_values('A:Z')
+        task_row = None
+        
+        for i, row in enumerate(all_values[1:], 2):  # ヘッダーをスキップ
+            if row and len(row) > 0 and row[0] == args.tracker_id:
+                task_row = i
+                break
+        
+        if not task_row:
+            print(f"❌ タスクが見つかりません: {args.tracker_id}")
+            return 1
+        
+        # 更新項目の準備
+        import datetime
+        current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        
+        updates_made = []
+        
+        # 詳細情報の更新
+        if args.details:
+            client.update_sheet_values(f'G{task_row}', [[args.details]])
+            updates_made.append(f"詳細情報: {len(args.details)}文字")
+        
+        # 優先度の更新
+        if args.priority:
+            client.update_sheet_values(f'C{task_row}', [[args.priority]])
+            updates_made.append(f"優先度: {args.priority}")
+        
+        # 概要の更新
+        if args.summary:
+            client.update_sheet_values(f'F{task_row}', [[args.summary]])
+            updates_made.append(f"概要更新")
+        
+        # 登録日付の更新（指定がある場合のみ）
+        if args.registration_date:
+            client.update_sheet_values(f'D{task_row}', [[args.registration_date]])
+            updates_made.append(f"登録日付: {args.registration_date}")
+        
+        # 更新日付は必ず現在時刻に更新
+        client.update_sheet_values(f'E{task_row}', [[current_time]])
+        updates_made.append(f"更新日付: {current_time}")
+        
+        print(f"✅ タスク詳細更新成功: {args.tracker_id}")
+        for update in updates_made:
+            print(f"   📋 {update}")
+        
+        return 0
+        
+    except Exception as e:
+        print(f"❌ タスク詳細更新エラー: {e}")
+        return 1
+
+
 def main():
     """メイン処理"""
     parser = argparse.ArgumentParser(description="進捗管理システム CLI")
@@ -307,6 +446,16 @@ def main():
     create_parser.add_argument('tracker_id', help='トラッカーID (例: PH2-001)')
     create_parser.add_argument('--description', '-d', help='タスク説明')
     create_parser.set_defaults(func=cmd_create_task)
+    
+    # 拡張タスク作成コマンド
+    create_enhanced_parser = subparsers.add_parser('create-enhanced', help='拡張タスク作成（詳細・優先度・日付対応）')
+    create_enhanced_parser.add_argument('tracker_id', help='トラッカーID (例: PH2-001)')
+    create_enhanced_parser.add_argument('--description', '-d', help='タスク説明')
+    create_enhanced_parser.add_argument('--details', '--detail', help='詳細情報（長文対応）')
+    create_enhanced_parser.add_argument('--priority', '-p', choices=['高', '中', '低'], default='高', help='優先度 (デフォルト: 高)')
+    create_enhanced_parser.add_argument('--summary', '-s', help='概要（省略時は説明を使用）')
+    create_enhanced_parser.add_argument('--registration-date', '--reg-date', help='登録日付 (yyyy-mm-dd hh:mm:ss形式、省略時は現在時刻)')
+    create_enhanced_parser.set_defaults(func=cmd_create_task_enhanced)
     
     # ステータス更新コマンド
     update_parser = subparsers.add_parser('update', help='タスクステータス更新')
@@ -363,6 +512,15 @@ def main():
     import_parser.add_argument('tracker_id', help='トラッカーID')
     import_parser.add_argument('results_file', help='品質結果JSONファイルパス')
     import_parser.set_defaults(func=cmd_import_quality_results)
+    
+    # タスク詳細更新コマンド
+    update_details_parser = subparsers.add_parser('update-details', help='既存タスクの詳細情報更新')
+    update_details_parser.add_argument('tracker_id', help='トラッカーID')
+    update_details_parser.add_argument('--details', '--detail', help='詳細情報（長文対応）')
+    update_details_parser.add_argument('--priority', '-p', choices=['高', '中', '低'], help='優先度')
+    update_details_parser.add_argument('--summary', '-s', help='概要')
+    update_details_parser.add_argument('--registration-date', '--reg-date', help='登録日付 (yyyy-mm-dd hh:mm:ss形式)')
+    update_details_parser.set_defaults(func=cmd_update_task_details)
     
     # 接続監視コマンド
     status_parser = subparsers.add_parser('connection-status', help='API接続状況確認')
