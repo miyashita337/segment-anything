@@ -31,13 +31,29 @@ class YOLOModelWrapper:
                  confidence_threshold: float = 0.25,
                  device: Optional[str] = None):
         """
-        Initialize YOLO wrapper
+        Initialize YOLO wrapper with CI environment optimization
         
         Args:
             model_path: Path to YOLO model file
             confidence_threshold: Minimum confidence for detections
             device: Device to run on (cuda/cpu), auto-detect if None
         """
+        # CI環境検出・最適化
+        try:
+            from features.common.ci_environment import CIEnvironmentDetector
+            ci_config = CIEnvironmentDetector.detect_ci_environment()
+            
+            # CI環境での自動軽量化
+            if ci_config.is_ci:
+                model_path = ci_config.yolo_model  # yolov8n.pt (nano)
+                if confidence_threshold == 0.25:  # デフォルト値の場合のみ調整
+                    confidence_threshold = 0.1  # CI環境では少し緩め
+                device = "cpu" if ci_config.cpu_only else device
+                print(f"🔧 CI Environment detected - YOLO optimized: {model_path} (CPU-only: {ci_config.cpu_only})")
+        except ImportError:
+            # CI検出モジュール未使用の場合は従来通り
+            pass
+        
         self.model_path = model_path
         self.confidence_threshold = confidence_threshold
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
@@ -46,7 +62,7 @@ class YOLOModelWrapper:
         self.is_loaded = False
         
         # COCO class names for person detection
-        self.person_class_id = 0  # 'person' class in COCO dataset
+        self.person_class_id = 0  # 'person' class in COCO dataset  # 'person' class in COCO dataset
         
     def load_model(self) -> bool:
         """
@@ -292,7 +308,8 @@ class YOLOModelWrapper:
         """
         try:
             from features.evaluation.utils.multiple_character_detector import (
-                MultipleCharacterDetector, detect_multiple_characters_from_image
+                MultipleCharacterDetector,
+                detect_multiple_characters_from_image,
             )
         except ImportError as e:
             print(f"⚠️ Multiple character detector not available: {e}")
@@ -376,7 +393,7 @@ class YOLOModelWrapper:
         """
         try:
             from features.evaluation.utils.multiple_character_detector import (
-                detect_multiple_characters_from_image
+                detect_multiple_characters_from_image,
             )
         except ImportError as e:
             print(f"❌ Multiple character detector not available: {e}")
