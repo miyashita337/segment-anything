@@ -305,6 +305,7 @@ def send_batch_notification(successful: int, total: int, failed: int, total_time
     """
     # 既存のPushoverNotifierを優先使用
     # 統一通知システムを使用（インスタンス化不要）
+    notifier = PushoverNotifier()
     result = notifier.send_batch_complete(successful, total, failed, total_time)
     
     # 既存の方法で失敗した場合はglobal_pushoverを試行
