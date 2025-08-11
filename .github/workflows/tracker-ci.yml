@@ -1,6 +1,6 @@
 name: Tracker Integration CI
 
-# CI-INTEGRATION-001: GitHub Actions自動化・品質安定化
+# CI-INTEGRATION-001: GitHub Actions自動化・品質安定化・90%処理時間短縮
 # プルリクエスト時の自動テスト、統計整合性チェック、軽量画像抽出テストを実行
 on:
   pull_request:
