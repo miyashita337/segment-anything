@@ -2512,73 +2512,17 @@ def main():
     
     try:
         # 抽出実行
-        results = extract_characters_batch(
-            input_dir=args.input_dir,
-            output_dir=args.output_dir,
-            quality_method=args.quality_method,
-            score_threshold=args.score_threshold,
-            max_files=args.max_files,
-            anime_mode=args.anime_mode,
-            verbose=args.verbose
-        )
-        
-        # 処理時間計算
-        total_time = time.time() - start_time
-        
-        success_count = len([r for r in results if r['status'] == 'success'])
-        total_count = len(results)
-        failed_count = total_count - success_count
-        
-        print("\n" + "="*50)
-        print("📊 処理完了統計:")
-        print(f"✅ 成功: {success_count}/{total_count} ({success_count/total_count*100:.1f}%)")
-        print(f"❌ 失敗: {failed_count}")
-        print(f"⏱️ 総処理時間: {total_time:.2f}秒")
-        print(f"⚡ 平均処理時間: {total_time/total_count:.2f}秒/画像")
-        print("="*50)
-        
-        # 【重要】画像付きPushover通知送信
-        try:
-            from features.common.notification.pushover_image_sender import send_extraction_complete_with_images
-            
-            # タイトルを出力ディレクトリから生成
-            dir_name = os.path.basename(os.path.normpath(args.output_dir))
-            notification_title = f"SAM+YOLO抽出完了: {dir_name}"
-            
-            print(f"\n📱 全画像付きPushover通知送信開始...")
-            notification_success = send_extraction_complete_with_images(
-                title=notification_title,
-                extraction_dir=args.output_dir,
-                successful=success_count,
-                total=total_count,
-                failed=failed_count,
-                duration=total_time
-            )
-            
-            if notification_success:
-                print("✅ 全画像付き通知送信完了")
-            else:
-                print("⚠️ 画像付き通知送信で一部失敗")
-                
-        except ImportError as e:
-            print(f"⚠️ 画像付き通知モジュールのインポートに失敗: {e}")
-            # フォールバック: テキスト通知のみ
-            try:
-                from features.common.notification.global_pushover import notify_process_complete
-                notify_process_complete(
-                    title=f"SAM+YOLO抽出完了: {os.path.basename(args.output_dir)}",
-                    successful=success_count,
-                    total=total_count,
-                    failed=failed_count,
-                    duration=total_time
-                )
-                print("✅ テキスト通知送信完了（フォールバック）")
-            except ImportError:
-                print("⚠️ Pushover通知機能が利用できません")
-        except Exception as e:
-            print(f"⚠️ 通知送信エラー: {e}")
-        
-        return success_count > 0
+        # extract_characters_batch function has been deprecated and removed
+        results = {"error": "Deprecated function - extract_characters_batch not available"}
+        print("❌ このスクリプトは非推奨です。features/extraction/commands/extract_character.pyを使用してください")
+        return 1
+        # 以下のコードは無効化されています
+        """
+        # extract_characters_batch function deprecated and removed
+        pass
+        """
+        # 以下はdeprecated関数に依存したコードのため無効化されています
+        pass
         
     except Exception as e:
         print(f"❌ 抽出処理中にエラーが発生: {e}")
