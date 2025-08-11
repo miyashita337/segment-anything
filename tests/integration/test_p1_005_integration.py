@@ -4,6 +4,8 @@ P1-005: モザイク境界処理改善の統合テスト
 
 実際の画像を使った統合テストとキャラクター抽出システムとの統合確認
 """
+from pathshim import resolve  # Layer 2 AST conversion
+
 
 import unittest
 import cv2
@@ -42,7 +44,7 @@ class TestP1005Integration(unittest.TestCase):
                 cv2.imwrite(str(dummy_img_path), dummy_image)
         else:
             # ローカル環境では実際のパス使用
-            self.test_image_path = "/mnt/c/AItools/lora/train/yado/org/kaname07"
+            self.test_image_path = resolve("/mnt/c/AItools/lora/train/yado/org/kaname07")
         
     def test_real_image_processing(self):
         """実際の画像でのモザイク境界処理テスト"""
