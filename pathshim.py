@@ -154,7 +154,7 @@ def debug_path_info(p: Union[str, Path]) -> dict:
 
 # 使用例とテスト関数
 if __name__ == "__main__":
-    # テスト用パス
+    # テスト用パス（O3-Search 3層戦略検証用）
     test_paths = [
         "/mnt/c/AItools/lora/train/yado/org/kana08/",
         "/mnt/c/AItools/lora/train/yado/tracker-workspace/",
