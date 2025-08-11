@@ -124,8 +124,9 @@ jobs:
         # 軽量テスト用の最小限依存関係
         pip install pytest pytest-mock pytest-cov
         pip install numpy opencv-python-headless pyyaml pathlib typing-extensions
+        pip install click matplotlib Pillow psutil
         # PyTorchはCPU版を別途インストール
-        pip install torch --index-url https://download.pytorch.org/whl/cpu
+        pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
         echo "✅ Test dependencies installed"
     
     - name: Run unit tests
