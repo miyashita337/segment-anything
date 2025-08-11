@@ -9,6 +9,7 @@ import unittest
 import cv2
 import numpy as np
 import sys
+import os
 from pathlib import Path
 import tempfile
 
@@ -26,7 +27,22 @@ class TestP1006Integration(unittest.TestCase):
     
     def setUp(self):
         self.processor = EnhancedSolidFillProcessor()
-        self.test_image_path = "/mnt/c/AItools/lora/train/yado/org/kaname07"
+        
+        # CI環境対応：テスト画像パスの動的設定
+        if os.getenv('CI_ENVIRONMENT') == 'true' or not os.path.exists('/mnt/c'):
+            # CI環境では一時ディレクトリにダミー画像作成
+            self.temp_dir = tempfile.mkdtemp()
+            self.test_image_path = self.temp_dir
+            
+            # ダミー画像ファイル作成（テスト用）
+            for i in range(3):
+                dummy_img_path = Path(self.temp_dir) / f"kaname07_test_{i:04d}.jpg"
+                # 512x512のダミー画像作成
+                dummy_image = np.random.randint(0, 255, (512, 512, 3), dtype=np.uint8)
+                cv2.imwrite(str(dummy_img_path), dummy_image)
+        else:
+            # ローカル環境では実際のパス使用
+            self.test_image_path = "/mnt/c/AItools/lora/train/yado/org/kaname07"
         
     def test_real_image_solid_fill_processing(self):
         """実際の画像でのベタ塗り処理テスト"""
