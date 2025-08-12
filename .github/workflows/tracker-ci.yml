@@ -74,6 +74,10 @@ jobs:
         # バージョン固定でキャッシュ効率最大化
         echo "🚀 Installing linting tools with enhanced caching..."
         pip install --user flake8==6.1.0 black==23.11.0 mypy==1.7.1 isort==5.12.0
+        
+        # USER PATH を明示的に追加
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+        export PATH="$HOME/.local/bin:$PATH"
         echo "✅ Linting tools installed with enhanced caching"
     
     - name: Run code quality checks
@@ -158,6 +162,10 @@ jobs:
         pip install --user torch==2.1.1+cpu torchvision==0.16.1+cpu \
           --index-url https://download.pytorch.org/whl/cpu
         
+        # USER PATH を明示的に追加
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+        export PATH="$HOME/.local/bin:$PATH"
+        
         echo "✅ CI dependencies installed with enhanced caching (90% faster on cache hit)"
     
     - name: Run unit tests
@@ -238,6 +246,11 @@ jobs:
         # バージョン固定でキャッシュ効率最大化
         echo "🚀 Installing validation dependencies with enhanced caching..."
         pip install --user numpy==1.24.4 scipy==1.10.1 pandas==2.0.3
+        
+        # USER PATH を明示的に追加
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+        export PATH="$HOME/.local/bin:$PATH"
+        
         echo "✅ Validation dependencies installed with enhanced caching"
     
     - name: QCC-FIX-001 統計整合性チェック
