@@ -353,9 +353,7 @@ jobs:
         echo "   CPU Only Mode: $CPU_ONLY"
         echo "   CI Environment: $CI_ENVIRONMENT" 
         
-        python3 -c "import os; print('✅ Basic CPU environment validation completed'); print('ℹ️ Full image extraction tests run locally with GPU')"CPU_ONLY\", \"false\")}')
-
-
+        python3 -c "import os; print('✅ Basic CPU environment validation completed'); print('ℹ️ Full image extraction tests run locally with GPU')"
 
 
   # Job 5: CI結果レポート
