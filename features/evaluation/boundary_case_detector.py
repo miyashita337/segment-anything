@@ -124,7 +124,7 @@ class BoundaryCaseDetector:
             noise_level = np.std(magnitude_spectrum)
             
             # 5. 彩度（カラー画像の場合）
-            if len(image.shape) == 3:  # カラー画像チェック
+            if len(image.shape) == 3 and image.shape[2] == 3:  # カラー画像チェック
                 hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
                 saturation = np.mean(hsv[:, :, 1])
             else:
