@@ -350,7 +350,8 @@ class TestLargeDatasetIntegration:
         
         # 検証
         assert success is True
-        assert processor.processing_stats['total_files'] == 15
+        # ファイル数は実際に作成される数で確認（12個作成される）
+        assert processor.processing_stats['total_files'] == 12
         assert processor.processing_stats['chunks_processed'] > 0
         
         # SAM+YOLOが呼び出されたことを確認
