@@ -336,8 +336,12 @@ class TestLargeDatasetIntegration:
         processor = LargeDatasetProcessor("P1-015-TEST", config)
         
         # 処理実行 - CI環境対応: 正しいシグネチャを使用
-        # モックが正しい戻り値を返すように設定
-        mock_sam_yolo_success.return_value = True
+        # subprocess.runの結果を模擬（成功）
+        mock_result = Mock()
+        mock_result.returncode = 0
+        mock_result.stdout = "Processing completed successfully"
+        mock_result.stderr = ""
+        mock_sam_yolo_success.return_value = mock_result
         
         success = processor.process_large_dataset(
             input_dir=temp_input_dir,
