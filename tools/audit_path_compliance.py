@@ -307,7 +307,7 @@ class PathComplianceAuditor:
             
             if total_issues == 0:
                 title = "✅ パス準拠性監査 - 問題なし"
-                message = f"スキャン完了: {summary['total_files']}ファイル\\n問題は発見されませんでした！"
+                message = f"スキャン完了: {summary['total_files']}ファイル\n問題は発見されませんでした！"
                 priority = 0
             elif high_issues > 0:
                 title = "🚨 パス準拠性監査 - 高優先度問題あり"
@@ -328,20 +328,18 @@ class PathComplianceAuditor:
                 priority = 0
                 
             # Pushover API リクエスト
-            response = # TODO: global_pushover.pyに移行必要
-# requests.post('https://api.pushover.net/1/messages.json', data={
-                'token': config['api_token'],
-                'user': config['user_key'],
-                'title': title,
-                'message': message,
-                'priority': priority
-            }, timeout=10)
-            
-            if response.status_code == 200:
-                logger.info("✅ Pushover通知送信成功")
-                return True
-            else:
-                logger.error(f"❌ Pushover通知送信失敗: {response.status_code}")
+            # TODO: global_pushover.pyに移行必要
+            try:
+                from features.common.notification.global_pushover import send_pushover_notification
+                success = send_pushover_notification(message=message, title=title, priority=priority)
+                if success:
+                    logger.info("✅ Pushover通知送信成功")
+                    return True
+                else:
+                    logger.error("❌ Pushover通知送信失敗")
+                    return False
+            except ImportError:
+                logger.warning("⚠️ Pushover通知モジュールが見つかりません")
                 return False
                 
         except Exception as e:

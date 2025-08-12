@@ -1080,20 +1080,28 @@ class UnifiedQualityChecker:
             # 通知送信（画像付きまたは通常）
             if grid_image_path and Path(grid_image_path).exists():
                 # グリッド画像付き通知
-                success = notifier.send_notification_with_image(
-                    message=message,
-                    image_path=grid_image_path,
-                    title=title,
-                    priority=priority
-                )
+                try:
+                    from features.common.notification.global_pushover import send_pushover_notification
+                    success = send_pushover_notification(
+                        message=message,
+                        image_path=grid_image_path,
+                        title=title,
+                        priority=priority
+                    )
+                except ImportError:
+                    success = False
                 logger.info(f"📸 グリッド画像付き通知送信: {len(success_images)}枚")
             else:
                 # 通常通知
-                success = notifier.send_notification(
-                    message=message,
-                    title=title,
-                    priority=priority
-                )
+                try:
+                    from features.common.notification.global_pushover import send_pushover_notification
+                    success = send_pushover_notification(
+                        message=message,
+                        title=title,
+                        priority=priority
+                    )
+                except ImportError:
+                    success = False
             
             if success:
                 logger.info("✅ Pushover通知送信完了")

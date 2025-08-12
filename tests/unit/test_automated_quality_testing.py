@@ -4,12 +4,14 @@
 """
 
 import json
+import os
 import tempfile
 import unittest
 from datetime import datetime
 from pathlib import Path
 from unittest.mock import Mock, patch, MagicMock
 import sys
+import pytest
 
 # プロジェクトルート設定
 project_root = Path(__file__).parent.parent.parent
@@ -28,13 +30,28 @@ class TestAutomatedQualityTesting(unittest.TestCase):
         self.temp_dir = tempfile.mkdtemp()
         self.temp_path = Path(self.temp_dir)
         
-        # 設定ファイル作成
+        # CI環境では一時ディレクトリを使用、ローカル環境では本来のパスを使用
+        if os.getenv('CI_ENVIRONMENT') == 'true' or not os.path.exists('/mnt/c'):
+            self.base_workspace_path = self.temp_path
+            self.is_ci_environment = True
+        else:
+            self.base_workspace_path = Path("/tmp/test_workspace")
+            self.is_ci_environment = False
+        
+        # 設定ファイル作成（CI環境対応）
         self.config_path = self.temp_path / "test_config.json"
+        
+        # CI環境では一時ディレクトリを、ローカルでは実際のパスを使用
+        if self.is_ci_environment:
+            input_path = str(self.temp_path / "input")
+        else:
+            input_path = str(self.base_workspace_path / "input")
+            
         test_config = {
             "test_datasets": [
                 {
                     "name": "test_dataset",
-                    "input_path": str(self.temp_path / "input"),
+                    "input_path": input_path,
                     "baseline_file": "test_baseline.json",
                     "degradation_thresholds": {
                         "ab_evaluation_rate": -5.0,
@@ -50,15 +67,33 @@ class TestAutomatedQualityTesting(unittest.TestCase):
         with open(self.config_path, 'w') as f:
             json.dump(test_config, f)
         
-        # システム初期化
-        with patch('tools.core.automated_quality_testing.project_root', self.temp_path):
+        # システム初期化（CI環境対応）
+        with patch('tools.core.automated_quality_testing.project_root', self.base_workspace_path):
             self.system = AutomatedQualityTesting(config_path=self.config_path)
-            self.system.baseline_dir = self.temp_path / "baselines"
-            self.system.test_results_dir = self.temp_path / "test_results"
-            self.system.workspace_dir = self.temp_path / "workspace"
+            # CI環境では一時ディレクトリ配下を使用
+            self.system.baseline_dir = self.base_workspace_path / "baselines"
+            self.system.test_results_dir = self.base_workspace_path / "test_results" 
+            self.system.workspace_dir = self.base_workspace_path / "workspace"
             
-            # ディレクトリ作成
+            # ディレクトリ作成（CI環境では権限問題を回避）
             for dir_path in [self.system.baseline_dir, self.system.test_results_dir, self.system.workspace_dir]:
+                try:
+                    dir_path.mkdir(parents=True, exist_ok=True)
+                except PermissionError:
+                    # CI環境で権限エラーが発生した場合は一時ディレクトリにフォールバック
+                    if self.is_ci_environment:
+                        relative_path = dir_path.name
+                        fallback_path = self.temp_path / relative_path
+                        fallback_path.mkdir(parents=True, exist_ok=True)
+                        # システムの参照を更新
+                        if dir_path == self.system.baseline_dir:
+                            self.system.baseline_dir = fallback_path
+                        elif dir_path == self.system.test_results_dir:
+                            self.system.test_results_dir = fallback_path
+                        elif dir_path == self.system.workspace_dir:
+                            self.system.workspace_dir = fallback_path
+                    else:
+                        raise
                 dir_path.mkdir(parents=True, exist_ok=True)
     
     def test_config_loading(self):

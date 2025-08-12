@@ -2,14 +2,29 @@
 
 Provides CLI interface for extracting anime characters from manga images.
 """
+import sys
+from pathlib import Path
+
+# Add project root to path for direct script execution
+# features/extraction/commands/extract_character.py -> need 3 parents up to get to project root
+project_root = Path(__file__).resolve().parent.parent.parent
+# But we're in segment-anything/features/extraction/commands, so need one more parent
+if project_root.name == 'features':
+    project_root = project_root.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
 import numpy as np
 import cv2
-import random
 import torch
 
 import click
 import logging
+import random
 import time
+from features.adaptation.author_parameter_adapter import AuthorParameterAdapter
+from features.common.custom_types import ImageType, MaskType
+from features.common.file_utils import generate_output_filename, is_already_processed
 from features.common.hooks.start import (
     get_performance_monitor,
     get_sam_model,
@@ -19,10 +34,6 @@ from features.common.hooks.start import (
 from features.common.memory_optimizer import BatchMemoryManager, optimize_for_large_dataset
 from features.common.retry_handler import image_retry_handler
 from features.common.stable_batch_processor import StableBatchProcessor
-from features.common.custom_types import ImageType, MaskType
-from features.common.file_utils import generate_output_filename, is_already_processed
-from features.processing.sam_optimization_config import SAMOptimizationConfig, create_optimized_sam_generator
-from features.adaptation.author_parameter_adapter import AuthorParameterAdapter
 from features.evaluation.utils.face_detection import filter_non_character_masks
 from features.evaluation.utils.mask_quality_validator import validate_and_improve_mask
 from features.evaluation.utils.non_character_filter import apply_non_character_filter
@@ -30,6 +41,10 @@ from features.processing.postprocessing.auto_mask_correction import create_auto_
 from features.processing.postprocessing.postprocessing import calculate_mask_quality_metrics
 from features.processing.preprocessing.boundary_enhancer import BoundaryEnhancer
 from features.processing.preprocessing.preprocessing import preprocess_image_pipeline
+from features.processing.sam_optimization_config import (
+    SAMOptimizationConfig,
+    create_optimized_sam_generator,
+)
 from pathlib import Path
 from PIL import Image
 from typing import Any, Optional, Tuple
@@ -37,10 +52,10 @@ from typing import Any, Optional, Tuple
 # 統一通知システム（global_pushover使用）
 try:
     from features.common.notification.global_pushover import (
-        notify_success,
         notify_error,
         notify_process_complete,
-        notify_warning
+        notify_success,
+        notify_warning,
     )
     PUSHOVER_AVAILABLE = True
 except ImportError:
@@ -468,7 +483,7 @@ def process_single_image(
                 from features.processing.postprocessing.postprocessing import (
                     calculate_mask_quality_metrics,
                 )
-                
+
                 # 品質スコア計算（処理には影響させない）
                 metrics = calculate_mask_quality_metrics(mask)
                 quality_score = (

@@ -4,6 +4,7 @@
 """
 
 import base64
+import sys
 import time
 from pathlib import Path
 
@@ -188,4 +189,5 @@ def main():
 
 if __name__ == "__main__":
     success = main()
+    import sys  # 明示的import確保
     sys.exit(0 if success else 1)

@@ -24,7 +24,11 @@ from PIL import Image, ImageDraw, ImageFont
 from typing import Any, Dict, List, Optional
 
 try:
-    from features.common.notification.global_pushover import notify_success, notify_error, notify_process_complete
+    from features.common.notification.global_pushover import (
+        notify_error,
+        notify_process_complete,
+        notify_success,
+    )
     PUSHOVER_AVAILABLE = True
 except ImportError:
     PUSHOVER_AVAILABLE = False
@@ -40,6 +44,7 @@ class ExtractionNotifier:
         self.pushover = None
         if PUSHOVER_AVAILABLE:
             try:
+                from features.common.notification.notification import PushoverNotifier
                 self.pushover = PushoverNotifier()
                 logger.info("Pushover通知システム初期化完了")
             except Exception as e:

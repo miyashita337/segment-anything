@@ -16,9 +16,10 @@ try:
     notify_error,
     notify_process_complete
 )
-PUSHOVER_AVAILABLE = True
+    PUSHOVER_AVAILABLE = True
     NOTIFIER_AVAILABLE = True
 except ImportError:
+    PUSHOVER_AVAILABLE = False
     NOTIFIER_AVAILABLE = False
 
 try:
@@ -164,11 +165,14 @@ class BatchProcessor(BaseExtractionCommand):
 成功: {results['successful']}/{results['total_images']} ({results['success_rate']:.1f}%)
 処理時間: {results['processing_time']:.1f}秒"""
             
-            notifier.send_notification(
-                title="Character Extraction Complete",
-                message=message,
-                success_count=results['successful'],
-                total_count=results['total_images']
-            )
+            # Pushover通知送信
+            if NOTIFIER_AVAILABLE:
+                notify_process_complete(
+                    title="キャラクター抽出完了",
+                    successful=results['successful'],
+                    total=results['total_images'],
+                    failed=results['total_images'] - results['successful'],
+                    duration=results['processing_time']
+                )
         except Exception as e:
             self.logger.warning(f"Notification failed: {e}")

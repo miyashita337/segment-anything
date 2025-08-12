@@ -78,11 +78,21 @@ class AutomatedQualityTesting:
         """初期化"""
         self.project_root = project_root
         self.config_path = config_path or (project_root / "config" / "quality_testing.json")
-        # PROGRESS_TRACKER.md仕様準拠の正しいパス
-        self.workspace_root = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace")
-        self.workspace_dir = self.workspace_root / "P1-A003"
-        self.baseline_dir = self.workspace_root / "baseline"
-        self.test_results_dir = project_root / "test_results" / "quality"
+        
+        # CI環境対応: CI環境では一時ディレクトリを使用
+        import os
+        if os.getenv('CI_ENVIRONMENT') == 'true' or not os.path.exists('/mnt/c'):
+            # CI環境では project_root 配下を使用
+            self.workspace_root = project_root / "workspace"
+            self.workspace_dir = self.workspace_root / "P1-A003"
+            self.baseline_dir = self.workspace_root / "baseline"
+            self.test_results_dir = project_root / "test_results" / "quality"
+        else:
+            # PROGRESS_TRACKER.md仕様準拠の正しいパス（ローカル環境）
+            self.workspace_root = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace")
+            self.workspace_dir = self.workspace_root / "P1-A003"
+            self.baseline_dir = self.workspace_root / "baseline"
+            self.test_results_dir = project_root / "test_results" / "quality"
         
         # ディレクトリ作成
         for dir_path in [self.baseline_dir, self.test_results_dir, self.workspace_dir]:
@@ -93,11 +103,18 @@ class AutomatedQualityTesting:
         
     def _load_config(self) -> Dict[str, Any]:
         """設定読み込み"""
+        # CI環境対応: 入力パスを動的に設定
+        import os
+        if os.getenv('CI_ENVIRONMENT') == 'true' or not os.path.exists('/mnt/c'):
+            kana08_input_path = str(self.project_root / "test_input" / "kana08")
+        else:
+            kana08_input_path = "/mnt/c/AItools/lora/train/yado/org/kana08/"
+            
         default_config = {
             "test_datasets": [
                 {
                     "name": "kana08",
-                    "input_path": "/mnt/c/AItools/lora/train/yado/org/kana08/",
+                    "input_path": kana08_input_path,
                     "baseline_file": "kana08_baseline.json",
                     "degradation_thresholds": {
                         "ab_evaluation_rate": -5.0,  # 5%以上の低下で警告

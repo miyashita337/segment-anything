@@ -11,6 +11,8 @@ QCA-001: 作者別パラメータ適応システム統合テスト
 Created for: QCA-001 - 作者別パラメータ適応システム・ディレクトリ構造ベース自動最適化
 Author: Claude Code Integration System
 """
+from pathshim import resolve  # Layer 2 AST conversion
+
 
 import os
 import sys
@@ -296,8 +298,16 @@ def test_qca001_end_to_end_simulation():
     print("\n🔬 QCA-001 エンドツーエンド処理シミュレーション")
     print("=" * 60)
     
-    # 実際の処理フローをシミュレーション
-    test_image_path = "/mnt/c/AItools/lora/train/yado/org/kana05/kana05_0001.jpg"
+    # 実際の処理フローをシミュレーション（CI環境対応）
+    if os.getenv('CI_ENVIRONMENT') == 'true' or not os.path.exists('/mnt/c'):
+        # CI環境では一時ディレクトリ内にテスト画像作成
+        temp_dir = tempfile.mkdtemp()
+        test_image_path = os.path.join(temp_dir, "kana05_0001.jpg")
+        # ダミー画像ファイル作成（空ファイル）
+        Path(test_image_path).touch()
+    else:
+        # ローカル環境では実際のパス使用
+        test_image_path = resolve("/mnt/c/AItools/lora/train/yado/org/kana05/kana05_0001.jpg")
     
     # 1. 作者検出
     adapter = AuthorParameterAdapter()

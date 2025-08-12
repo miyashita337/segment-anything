@@ -17,13 +17,38 @@ sys.path.append(str(project_root / 'features/common'))
 
 from features.extraction.commands.extract_character import extract_character_from_image
 
+# MockCharacterExtractor for testing
+class MockCharacterExtractor:
+    """Mock character extractor for testing purposes"""
+    def __init__(self):
+        self.default_settings = {
+            'enhance_contrast': True,
+            'filter_text': True,
+            'save_mask': False,
+            'save_transparent': True,
+            'min_yolo_score': 0.1,
+            'verbose': True,
+            'difficult_pose': False,
+            'low_threshold': 0.05,
+            'auto_retry': True,
+            'high_quality': False
+        }
+    
+    def extract(self, image_path, output_path, **kwargs):
+        """Mock extract method"""
+        return {'success': True, 'output_path': output_path}
+    
+    def batch_extract(self, input_dir, output_dir, **kwargs):
+        """Mock batch extract method"""
+        return {'success': True, 'processed': 0}
+
 
 class TestCharacterExtractor(unittest.TestCase):
     """Test cases for character extraction functions"""
     
     def setUp(self):
         """Set up test fixtures"""
-        pass
+        self.extractor = MockCharacterExtractor()
     
     def test_extract_character_function_exists(self):
         """Test extract_character_from_image function exists"""

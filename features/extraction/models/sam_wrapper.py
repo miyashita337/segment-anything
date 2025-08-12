@@ -24,13 +24,28 @@ class SAMModelWrapper:
                  checkpoint_path: str = "sam_vit_h_4b8939.pth",
                  device: Optional[str] = None):
         """
-        Initialize SAM wrapper
+        Initialize SAM wrapper with CI environment optimization
         
         Args:
             model_type: SAM model type (vit_h, vit_l, vit_b)
             checkpoint_path: Path to SAM checkpoint file
             device: Device to run on (cuda/cpu), auto-detect if None
         """
+        # CI環境検出・最適化
+        try:
+            from features.common.ci_environment import CIEnvironmentDetector
+            ci_config = CIEnvironmentDetector.detect_ci_environment()
+            
+            # CI環境での自動軽量化
+            if ci_config.is_ci:
+                model_type = "vit_b"  # base版に軽量化
+                checkpoint_path = ci_config.sam_model  # sam_vit_b_01ec64.pth
+                device = "cpu" if ci_config.cpu_only else device
+                print(f"🔧 CI Environment detected - SAM optimized: {model_type} ({checkpoint_path}) (CPU-only: {ci_config.cpu_only})")
+        except ImportError:
+            # CI検出モジュール未使用の場合は従来通り
+            pass
+        
         self.model_type = model_type
         self.checkpoint_path = checkpoint_path
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")

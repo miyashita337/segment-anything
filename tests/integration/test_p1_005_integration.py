@@ -4,11 +4,14 @@ P1-005: モザイク境界処理改善の統合テスト
 
 実際の画像を使った統合テストとキャラクター抽出システムとの統合確認
 """
+from pathshim import resolve  # Layer 2 AST conversion
+
 
 import unittest
 import cv2
 import numpy as np
 import sys
+import os
 from pathlib import Path
 import tempfile
 
@@ -26,7 +29,22 @@ class TestP1005Integration(unittest.TestCase):
     
     def setUp(self):
         self.processor = EnhancedMosaicBoundaryProcessor()
-        self.test_image_path = "/mnt/c/AItools/lora/train/yado/org/kaname07"
+        
+        # CI環境対応：テスト画像パスの動的設定
+        if os.getenv('CI_ENVIRONMENT') == 'true' or not os.path.exists('/mnt/c'):
+            # CI環境では一時ディレクトリにダミー画像作成
+            self.temp_dir = tempfile.mkdtemp()
+            self.test_image_path = self.temp_dir
+            
+            # ダミー画像ファイル作成（テスト用）
+            for i in range(3):
+                dummy_img_path = Path(self.temp_dir) / f"kaname07_mosaic_test_{i:04d}.jpg"
+                # 512x512のダミー画像作成（モザイク境界テスト用）
+                dummy_image = np.random.randint(0, 255, (512, 512, 3), dtype=np.uint8)
+                cv2.imwrite(str(dummy_img_path), dummy_image)
+        else:
+            # ローカル環境では実際のパス使用
+            self.test_image_path = resolve("/mnt/c/AItools/lora/train/yado/org/kaname07")
         
     def test_real_image_processing(self):
         """実際の画像でのモザイク境界処理テスト"""

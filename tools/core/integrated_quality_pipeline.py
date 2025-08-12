@@ -28,7 +28,7 @@ sys.path.insert(0, str(project_root))
 
 # 必要な機能は直接実装または subprocess で呼び出し
 try:
-    from features.common.notification.global_pushover import notify_process_complete, send_pushover_notification
+    from features.common.notification.global_pushover import notify_process_complete, send_pushover_notification, notify_success
     PUSHOVER_AVAILABLE = True
 except ImportError:
     PUSHOVER_AVAILABLE = False
@@ -366,7 +366,8 @@ class DashboardGenerator:
                               f"総抽出数: {len(extracted_files)}枚")
             
             if not demo_mode:
-                notify_success(summary_title, summary_message, priority=0, sound="magic")
+                from features.common.notification.global_pushover import send_pushover_notification
+                send_pushover_notification(message=summary_message, title=summary_title, priority=0)
             else:
                 self.logger.info(f"[DEMO] サマリー送信: {summary_title}")
             
