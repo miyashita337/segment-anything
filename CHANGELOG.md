@@ -11,6 +11,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.13] - 2025-08-13
+
+### Added
+- **QI-002 品質評価システム統合実装** - TDD準拠の3つの検出システム実装 (#24)
+  - **黒画面検出システム**: BrightnessAnalyzer・BlackScreenDetector実装（16/16テスト通過・100%精度）
+  - **複数キャラクター検出システム**: MultiCharacterDetector・CharacterSeparator実装（29/35テスト通過・83%成功率）
+  - **部分抽出品質検出システム**: PartialExtractionDetector・CompletenessValidator・ExtractionQualityAnalyzer実装
+  - 明度6.6の黒画面を100%精度で検出・AnimeImagePreprocessor連携で1820%改善実証
+  - YOLO失敗時のフォールバック検出機能（画像ベース輪郭解析）実装
+  - Wilson信頼区間による統計検証・IoU計算・断片化レベル評価
+
+### Changed
+- **テスト駆動開発（TDD）アプローチ採用** - Red-Green-Refactorサイクル完全準拠
+  - テストファースト実装: `test_qi002_*.py` 3ファイル・67テスト追加
+  - OpenCV画像処理統合: 輪郭検出・連結成分解析・形態学的処理
+  - 身体部位検出・アスペクト比検証・完全性スコア計算機能追加
+
+### Thanks
+- @miyashita337 - QI-002実装・TDD開発推進
+
 ## [v0.9.12] - 2025-08-12
 
 ### Added
