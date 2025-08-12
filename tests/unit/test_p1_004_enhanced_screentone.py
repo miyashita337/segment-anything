@@ -250,9 +250,9 @@ class TestScreentonePatternClassifier(unittest.TestCase):
             'low_freq_power': 1000,
             'mid_freq_power': 300,
             'high_freq_power': 100,
-            'gradient_std': 20,
             'gradient_mean': 50,
-            'homogeneity': 0.8
+            'homogeneity': 0.8,
+            'local_variance_mean': 15.0  # gradient_stdの代わりに使用
         }
         
         self.noise_features = {
