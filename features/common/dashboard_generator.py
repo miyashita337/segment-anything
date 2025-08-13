@@ -130,8 +130,8 @@ class StandardDashboardGenerator:
         # 統計情報計算
         stats = self._calculate_statistics(quality_scores, black_screen_indices, total_images)
         
-        # Base64画像データ生成
-        base64_images = self._generate_base64_images(image_paths)
+        # 画像パス参照生成
+        image_references = self._generate_image_references(image_paths)
         
         # HTMLテンプレート
         html_template = f"""
@@ -211,7 +211,7 @@ class StandardDashboardGenerator:
         <div class="bg-white rounded-lg shadow-md p-6">
             <h2 class="text-xl font-semibold text-gray-800 mb-6">画像品質評価結果</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {self._generate_image_gallery(base64_images, quality_scores, quality_badges, black_screen_indices)}
+                {self._generate_image_gallery(image_references, quality_scores, quality_badges, black_screen_indices, image_paths)}
             </div>
         </div>
     </div>
@@ -253,57 +253,86 @@ class StandardDashboardGenerator:
             'low_quality_count': low_quality_count
         }
     
-    def _generate_base64_images(self, image_paths: List[str]) -> List[str]:
+    def _generate_image_references(self, image_paths: List[str]) -> List[str]:
         """
-        Base64画像データの生成
+        画像パス参照の生成（QI-004: 画像パス参照方式）
         
         Args:
             image_paths: 画像パスのリスト
             
         Returns:
-            Base64エンコードされた画像データのリスト
+            相対画像パスのリスト
         """
-        base64_images = []
+        image_references = []
         
         for i, image_path in enumerate(image_paths):
             try:
-                # テスト用のダミー画像生成（実際の実装では実画像を使用）
-                dummy_image = np.random.randint(0, 256, (800, 600, 3), dtype=np.uint8)
-                
-                # 画像をJPEGエンコード
-                _, buffer = cv2.imencode('.jpg', dummy_image)
-                
-                # Base64エンコード
-                base64_data = base64.b64encode(buffer).decode('utf-8')
-                base64_images.append(base64_data)
+                if isinstance(image_path, str) and Path(image_path).exists():
+                    # 実際の画像ファイルパスを相対パスに変換
+                    relative_path = self._convert_to_relative_path(image_path)
+                    image_references.append(relative_path)
+                    
+                    self.logger.debug(f"画像パス参照生成: {image_path} -> {relative_path}")
+                    
+                else:
+                    # パスが存在しない場合、プレースホルダーパス
+                    self.logger.warning(f"画像パスが存在しません: {image_path}")
+                    placeholder_path = "/static/placeholder.jpg"
+                    image_references.append(placeholder_path)
                 
             except Exception as e:
-                self.logger.warning(f"Failed to encode image {image_path}: {e}")
-                # フォールバック用の小さなプレースホルダー
-                placeholder = np.zeros((100, 100, 3), dtype=np.uint8)
-                _, buffer = cv2.imencode('.jpg', placeholder)
-                base64_data = base64.b64encode(buffer).decode('utf-8')
-                base64_images.append(base64_data)
+                self.logger.warning(f"Failed to generate image reference {image_path}: {e}")
+                # フォールバック用のプレースホルダーパス
+                placeholder_path = "/static/error.jpg"
+                image_references.append(placeholder_path)
         
-        return base64_images
+        return image_references
     
-    def _generate_image_gallery(self, base64_images: List[str], quality_scores: List[float], 
-                               quality_badges: List[str], black_screen_indices: List[int]) -> str:
+    def _convert_to_relative_path(self, image_path: str) -> str:
         """
-        画像ギャラリーのHTML生成
+        絶対パスを相対パス（Web用）に変換
         
         Args:
-            base64_images: Base64画像データ
+            image_path: 絶対画像パス
+            
+        Returns:
+            相対画像パス（Web用）
+        """
+        try:
+            # workspace配下の画像の場合
+            if "workspace" in image_path:
+                # workspace/QI-004/extraction/image.jpg -> /workspace/QI-004/extraction/image.jpg
+                workspace_index = image_path.find("workspace")
+                relative_path = "/" + image_path[workspace_index:]
+                return relative_path
+            
+            # 他の場合はファイル名のみ使用
+            filename = Path(image_path).name
+            return f"/images/{filename}"
+            
+        except Exception as e:
+            self.logger.warning(f"パス変換エラー: {e}")
+            return f"/images/{Path(image_path).name}"
+    
+    def _generate_image_gallery(self, image_references: List[str], quality_scores: List[float], 
+                               quality_badges: List[str], black_screen_indices: List[int], 
+                               image_paths: Optional[List[str]] = None) -> str:
+        """
+        画像ギャラリーのHTML生成（QI-004: 画像パス参照方式）
+        
+        Args:
+            image_references: 画像パス参照リスト
             quality_scores: 品質スコア
             quality_badges: 品質バッジ
             black_screen_indices: 黒画面インデックス
+            image_paths: 元の画像パスリスト（ファイル名表示用）
             
         Returns:
             画像ギャラリーHTML
         """
         gallery_html = ""
         
-        for i, (base64_img, score, badge) in enumerate(zip(base64_images, quality_scores, quality_badges)):
+        for i, (image_ref, score, badge) in enumerate(zip(image_references, quality_scores, quality_badges)):
             # バッジスタイルの決定
             badge_class = self._get_badge_class(badge)
             
@@ -312,16 +341,23 @@ class StandardDashboardGenerator:
             if i in black_screen_indices:
                 black_screen_warning = '<div class="bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded mb-2">⚠️ 黒画面検出</div>'
             
+            # QI-004: 実際のファイル名を表示
+            display_name = f"画像 {i+1}"
+            if image_paths and i < len(image_paths):
+                filename = Path(image_paths[i]).name
+                display_name = filename
+            
             gallery_html += f"""
             <div class="border rounded-lg p-4 bg-gray-50">
                 <div class="mb-3">
-                    <img src="data:image/jpeg;base64,{base64_img}" 
-                         alt="Image {i+1}" 
-                         class="image-container w-full max-h-96 object-contain">
+                    <img src="{image_ref}" 
+                         alt="{display_name}" 
+                         class="image-container w-full max-h-96 object-contain"
+                         onerror="this.src='/static/placeholder.jpg'">
                 </div>
                 {black_screen_warning}
                 <div class="flex justify-between items-center mb-2">
-                    <span class="font-semibold text-gray-700">画像 {i+1}</span>
+                    <span class="font-semibold text-gray-700">{display_name}</span>
                     <span class="{badge_class}">{badge}</span>
                 </div>
                 <div class="text-sm text-gray-600">
