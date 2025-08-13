@@ -102,8 +102,8 @@ class TestQI004SystemIntegration(unittest.TestCase):
             self.assertGreaterEqual(score, 0.0)
             self.assertLessEqual(score, 1.0)
         
-        # ダッシュボードサイズ確認（実画像Base64埋め込みで大きくなるはず）
-        self.assertGreater(result.dashboard_size_mb, 0.1)  # 最低100KB
+        # ダッシュボードサイズ確認（画像パス参照で小さくなるはず）
+        self.assertLess(result.dashboard_size_mb, 0.1)  # 100KB未満を期待
         
         # 読み込み時間確認
         self.assertGreater(result.load_time_seconds, 0.0)
@@ -142,16 +142,16 @@ class TestQI004SystemIntegration(unittest.TestCase):
         self.assertTrue(dashboard_path.exists())
         self.assertEqual(dashboard_path.name, "dashboard.html")
         
-        # ファイルサイズ確認（実画像埋め込みで大きくなるはず）
+        # ファイルサイズ確認（画像パス参照で小さくなるはず）
         file_size_mb = dashboard_path.stat().st_size / (1024 * 1024)
-        self.assertGreater(file_size_mb, 0.5)  # 最低500KB
+        self.assertLess(file_size_mb, 0.1)  # 100KB未満を期待
         
         # HTML内容確認
         html_content = dashboard_path.read_text(encoding='utf-8')
         
         # 基本構造確認
         self.assertIn(f"{self.tracker_id} 品質評価ダッシュボード", html_content)
-        self.assertIn("data:image/jpeg;base64,", html_content)  # Base64画像埋め込み確認
+        self.assertIn("/workspace/", html_content)  # 画像パス参照確認
         
         # 実ファイル名表示確認（QI-004要件）
         for image_path in self.test_images:
@@ -191,7 +191,7 @@ class TestQI004SystemIntegration(unittest.TestCase):
         
         # QI-004特有の最適化内容確認
         self.assertIn(f"{self.tracker_id}_ENTRY", content)
-        self.assertIn("data:image/jpeg;base64,", content)
+        self.assertIn("/workspace/", content)  # 画像パス参照確認
         
         # 実ファイル名表示確認
         for image_path in self.test_images:
@@ -299,8 +299,8 @@ class TestQI004SystemIntegration(unittest.TestCase):
         images_per_second = result.performance_metrics['images_per_second']
         self.assertGreater(images_per_second, 1.0)  # 1秒に1枚以上の効率
         
-        # ダッシュボードサイズ確認（画像数に比例して増加）
-        self.assertGreater(result.dashboard_size_mb, 1.0)  # 最低1MB
+        # ダッシュボードサイズ確認（画像パス参照で小さく維持）
+        self.assertLess(result.dashboard_size_mb, 0.5)  # 500KB未満を期待
 
 
 if __name__ == '__main__':

@@ -400,7 +400,7 @@ class QI004DashboardOptimizationSystem:
             dashboard_data, dashboard_dir
         )
         
-        # 5. ダッシュボードサイズ・読み込み時間測定
+        # 5. ダッシュボードサイズ・読み込み時間測定（画像パス参照で大幅縮小期待）
         dashboard_size_mb = dashboard_path.stat().st_size / (1024 * 1024)
         load_time = self._measure_dashboard_load_time(str(dashboard_path))
         

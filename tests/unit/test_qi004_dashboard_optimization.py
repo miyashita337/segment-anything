@@ -245,15 +245,15 @@ class TestQI004DashboardOptimizationSystem(unittest.TestCase):
     @patch('features.evaluation.qi004_dashboard_optimization_system.PushoverImageSender')
     @patch('features.evaluation.qi004_dashboard_optimization_system.StandardDashboardGenerator')
     def test_run_complete_optimization(self, mock_dashboard_gen, mock_pushover):
-        """完全最適化プロセステスト"""
+        """完全最適化プロセステスト（画像パス参照方式）"""
         # モック設定
         mock_dashboard_gen.return_value.generate_standard_dashboard.return_value = Path("test_dashboard.html")
         mock_pushover.return_value.send_extraction_complete_with_images.return_value = None
         
-        # 実際のダッシュボードファイル作成（サイズ測定用）
+        # 実際のダッシュボードファイル作成（画像パス参照で小サイズ）
         dashboard_path = Path(self.temp_dir) / "dashboard" / "dashboard.html"
         dashboard_path.parent.mkdir(exist_ok=True)
-        dashboard_path.write_text("<html><body>Test Dashboard</body></html>")
+        dashboard_path.write_text("<html><body><img src='/workspace/QI-004/extraction/test.jpg'></body></html>")
         
         # モックの戻り値を実際のファイルに変更
         mock_dashboard_gen.return_value.generate_standard_dashboard.return_value = dashboard_path
@@ -270,6 +270,8 @@ class TestQI004DashboardOptimizationSystem(unittest.TestCase):
         self.assertEqual(result.total_images, len(self.test_images))
         self.assertEqual(len(result.image_quality_scores), len(self.test_images))
         self.assertGreater(result.dashboard_size_mb, 0)
+        # 画像パス参照でサイズ大幅削減を期待
+        self.assertLess(result.dashboard_size_mb, 0.1)  # 100KB未満を期待
         self.assertGreater(result.load_time_seconds, 0)
         
         # パフォーマンス指標の確認
