@@ -211,7 +211,7 @@ class StandardDashboardGenerator:
         <div class="bg-white rounded-lg shadow-md p-6">
             <h2 class="text-xl font-semibold text-gray-800 mb-6">画像品質評価結果</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {self._generate_image_gallery(base64_images, quality_scores, quality_badges, black_screen_indices)}
+                {self._generate_image_gallery(base64_images, quality_scores, quality_badges, black_screen_indices, image_paths)}
             </div>
         </div>
     </div>
@@ -255,7 +255,7 @@ class StandardDashboardGenerator:
     
     def _generate_base64_images(self, image_paths: List[str]) -> List[str]:
         """
-        Base64画像データの生成
+        Base64画像データの生成（QI-004: 実画像対応版）
         
         Args:
             image_paths: 画像パスのリスト
@@ -267,15 +267,29 @@ class StandardDashboardGenerator:
         
         for i, image_path in enumerate(image_paths):
             try:
-                # テスト用のダミー画像生成（実際の実装では実画像を使用）
-                dummy_image = np.random.randint(0, 256, (800, 600, 3), dtype=np.uint8)
-                
-                # 画像をJPEGエンコード
-                _, buffer = cv2.imencode('.jpg', dummy_image)
-                
-                # Base64エンコード
-                base64_data = base64.b64encode(buffer).decode('utf-8')
-                base64_images.append(base64_data)
+                # QI-004: 実際の画像ファイルを読み込み
+                if isinstance(image_path, str) and Path(image_path).exists():
+                    # 実際の画像ファイルを読み込み
+                    with open(image_path, 'rb') as f:
+                        image_data = f.read()
+                    
+                    # Base64エンコード
+                    base64_data = base64.b64encode(image_data).decode('utf-8')
+                    base64_images.append(base64_data)
+                    
+                    self.logger.debug(f"実画像をBase64エンコード: {image_path}")
+                    
+                else:
+                    # パスが存在しない場合、ダミー画像生成
+                    self.logger.warning(f"画像パスが存在しません: {image_path}")
+                    dummy_image = np.random.randint(0, 256, (800, 600, 3), dtype=np.uint8)
+                    
+                    # 画像をJPEGエンコード
+                    _, buffer = cv2.imencode('.jpg', dummy_image)
+                    
+                    # Base64エンコード
+                    base64_data = base64.b64encode(buffer).decode('utf-8')
+                    base64_images.append(base64_data)
                 
             except Exception as e:
                 self.logger.warning(f"Failed to encode image {image_path}: {e}")
@@ -288,15 +302,17 @@ class StandardDashboardGenerator:
         return base64_images
     
     def _generate_image_gallery(self, base64_images: List[str], quality_scores: List[float], 
-                               quality_badges: List[str], black_screen_indices: List[int]) -> str:
+                               quality_badges: List[str], black_screen_indices: List[int], 
+                               image_paths: Optional[List[str]] = None) -> str:
         """
-        画像ギャラリーのHTML生成
+        画像ギャラリーのHTML生成（QI-004: 実ファイル名表示対応）
         
         Args:
             base64_images: Base64画像データ
             quality_scores: 品質スコア
             quality_badges: 品質バッジ
             black_screen_indices: 黒画面インデックス
+            image_paths: 画像パスリスト（QI-004追加）
             
         Returns:
             画像ギャラリーHTML
@@ -312,16 +328,22 @@ class StandardDashboardGenerator:
             if i in black_screen_indices:
                 black_screen_warning = '<div class="bg-red-100 border border-red-400 text-red-700 px-3 py-2 rounded mb-2">⚠️ 黒画面検出</div>'
             
+            # QI-004: 実際のファイル名を表示
+            display_name = f"画像 {i+1}"
+            if image_paths and i < len(image_paths):
+                filename = Path(image_paths[i]).name
+                display_name = filename
+            
             gallery_html += f"""
             <div class="border rounded-lg p-4 bg-gray-50">
                 <div class="mb-3">
                     <img src="data:image/jpeg;base64,{base64_img}" 
-                         alt="Image {i+1}" 
+                         alt="{display_name}" 
                          class="image-container w-full max-h-96 object-contain">
                 </div>
                 {black_screen_warning}
                 <div class="flex justify-between items-center mb-2">
-                    <span class="font-semibold text-gray-700">画像 {i+1}</span>
+                    <span class="font-semibold text-gray-700">{display_name}</span>
                     <span class="{badge_class}">{badge}</span>
                 </div>
                 <div class="text-sm text-gray-600">
