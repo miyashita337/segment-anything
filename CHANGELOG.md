@@ -11,6 +11,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.15] - 2025-08-14
+
+### Added
+- **統計的有意性検定システム（QCC-022）**: ウェルチのt検定による科学的品質比較システムを実装
+  - `statistical_quality_analyzer.py`: 統計的品質分析エンジン
+  - `statistical_validator.py`: ウェルチのt検定・Cohen's d効果サイズ計算
+  - `statistical_reporter.py`: HTML/JSONレポート生成システム
+- **Google Sheets統計列自動更新システム**: X-AB列に統計情報を自動記録
+  - `statistical_integration.py`: Google Sheets統合システム
+  - `baseline_detector.py`: ローリングベースライン特定システム
+  - `data_generator.py`: extraction_result.json実データ生成
+- **QI-004ダッシュボード標準化システム**: 統一ダッシュボード生成機能
+  - `qi004_dashboard_optimization_system.py`: 最適化エンジン
+  - `qi004_dashboard_generator.py`: ダッシュボード生成スクリプト
+
+### Fixed
+- **QI-004画像表示問題**: Base64埋め込みから画像パス参照方式への変更により表示問題を解決
+
+### Changed
+- `dashboard_generator.py`: 画像参照方式の改善とパフォーマンス最適化
+
+### 🎯 主要な成果
+- 品質改善の統計的検証が可能に（p値、効果サイズ、信頼区間）
+- Google Sheetsでの自動統計追跡実現（QCC-021 vs QCC-022実証：p値0.503、改善率66%）
+- ダッシュボード表示の安定性向上
+
 ## [v0.9.14] - 2025-08-13
 
 ### Added
