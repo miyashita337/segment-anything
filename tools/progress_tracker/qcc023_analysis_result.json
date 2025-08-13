@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "current_tracker": "PH2-006",
+  "baseline_tracker": "PH2-005",
+  "enhanced_cohens_d": {
+    "cohens_d": 0.06729089831465186,
+    "glass_delta": 0.06923566764730356,
+    "confidence_interval": [
+      -0.8286526103414817,
+      0.9581237058329637
+    ],
+    "practical_significance": "実用的意義なし",
+    "interpretation_level": "ほぼ変化なし（改善）",
+    "sample_size_adequacy": "サンプルサイズ大幅不足",
+    "effect_magnitude": "微小効果 (0 < |d| < 0.2)",
+    "beginner_explanation": "📊 Cohen's d = 0.067 の意味:\n\n【実際の数値】\n・PH2-005: 平均 0.808\n・PH2-006: 平均 0.809 \n・改善率: +0.2%\n\n【Cohen's dの解釈】\nCohen's d は「2つのグループの平均の差を標準偏差で割った値」です。\nd = 0.067 ということは、PH2-006はPH2-005より0.1標準偏差分高くなります。\n\n【実用的な意味】\n・効果サイズ: 微小効果 (0 < |d| < 0.2)\n・実用的意義: 実用的意義なし\n\n【日常的な例え】\nほとんど差がない（身長の1cm程度の差）"
+  },
+  "t_test_result": {
+    "statistic": -0.1562424952913962,
+    "p_value": 0.8775073324337043,
+    "degrees_of_freedom": 18.80129099212674,
+    "effect_size": -0.06729089831465186,
+    "is_significant": 
