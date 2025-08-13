@@ -317,7 +317,7 @@ class StandardDashboardGenerator:
                 <div class="mb-3">
                     <img src="data:image/jpeg;base64,{base64_img}" 
                          alt="Image {i+1}" 
-                         class="image-container w-full h-48 object-cover">
+                         class="image-container w-full max-h-96 object-contain">
                 </div>
                 {black_screen_warning}
                 <div class="flex justify-between items-center mb-2">
