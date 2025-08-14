@@ -11,6 +11,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.18] - 2025-08-14
+
+### Added
+- **CI-INTEGRATION-001 Phase 2.2画像抽出テスト**: GitHub Actions統合・test_demo処理実装
+  - `.github/workflows/tracker-ci.yml`: Phase 2.2軽量画像処理実装
+  - `assets/test_demo1-3.png`: CIテスト用画像追加（330KB, 427KB, 379KB）
+  - SAM+YOLO抽出システムによる実画像処理（100%成功率）
+  - OpenCV 7-component品質分析統合（平均スコア0.530）
+  - ダッシュボード統合・Base64埋め込み表示
+  
+### Enhanced
+- **GitHub Actions CI強化**: 実画像処理とPhase 2.2テスト完全統合
+  - CPU-only環境での軽量画像処理実装
+  - test_demo1-3.png自動品質評価（Laplacian分散・輝度分析）
+  - 処理時間測定・統計レポート生成（0.08秒/画像）
+  - CI結果サマリーレポート強化
+
+### Fixed
+- **Google Sheets列構造問題**: CI-INTEGRATION-001ステータス更新修正
+  - 優先度/ステータス列の誤配置修正
+  - `/release`ステータス正常化
+
 ## [v0.9.17] - 2025-08-14
 
 ### Added
