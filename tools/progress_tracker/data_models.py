@@ -64,24 +64,20 @@ class ProgressColumns:
         'M': 'extraction_pipeline' # 抽出パイプライン
     }
     
-    # 10指標列（N-W列）
-    METRICS_COLUMNS = {
-        'N': 'lca',                 # LCA (バウンディングボックス精度)
-        'O': 'ab_evaluation_rate',  # A/B評価率
-        'P': 'fps',                 # FPS (処理速度)
-        'Q': 'c_plus_rate',         # C以上評価率
-        'R': 'avg_coverage_rate',   # 平均カバレッジ率
-        'S': 'avg_compactness',     # 平均コンパクトネス
-        'T': 'avg_fill_rate',       # 平均フィル率
-        'U': 'sci',                 # SCI (Semantic Completeness Index)
-        'V': 'pla',                 # PLA (Pixel-Level Accuracy)
-        'W': 'ple'                  # PLE (Progressive Learning Efficiency)
+    # 統計分析列（X-AC列）
+    STATISTICAL_COLUMNS = {
+        'X': 'current_score',           # Current品質スコア
+        'Y': 'baseline_score',          # BaseLine品質スコア
+        'Z': 'p_value',                 # p値（統計的有意性）
+        'AA': 'effect_size',            # 効果サイズ（Cohen's d）
+        'AB': 'improvement_rate',       # 改善率（%）
+        'AC': 'statistical_significance' # 統計的有意性
     }
     
     @classmethod
     def get_all_columns(cls) -> Dict[str, str]:
         """全列定義を取得"""
-        return {**cls.FIXED_COLUMNS, **cls.DYNAMIC_COLUMNS, **cls.METRICS_COLUMNS}
+        return {**cls.FIXED_COLUMNS, **cls.DYNAMIC_COLUMNS, **cls.STATISTICAL_COLUMNS}
     
     @classmethod
     def get_column_letter(cls, field_name: str) -> Optional[str]:
@@ -100,60 +96,49 @@ class ProgressColumns:
 
 
 @dataclass 
-class MetricsRecord:
-    """10指標レコード"""
-    lca: Optional[float] = None                 # LCA (バウンディングボックス精度)
-    ab_evaluation_rate: Optional[float] = None  # A/B評価率
-    fps: Optional[float] = None                 # FPS (処理速度)
-    c_plus_rate: Optional[float] = None         # C以上評価率
-    avg_coverage_rate: Optional[float] = None   # 平均カバレッジ率
-    avg_compactness: Optional[float] = None     # 平均コンパクトネス
-    avg_fill_rate: Optional[float] = None       # 平均フィル率
-    sci: Optional[float] = None                 # SCI (Semantic Completeness Index)
-    pla: Optional[float] = None                 # PLA (Pixel-Level Accuracy)
-    ple: Optional[float] = None                 # PLE (Progressive Learning Efficiency)
+class StatisticalRecord:
+    """統計分析レコード（X-AC列）"""
+    current_score: Optional[float] = None           # Current品質スコア
+    baseline_score: Optional[float] = None          # BaseLine品質スコア
+    p_value: Optional[float] = None                 # p値（統計的有意性）
+    effect_size: Optional[float] = None             # 効果サイズ（Cohen's d）
+    improvement_rate: Optional[float] = None        # 改善率（%）
+    statistical_significance: Optional[str] = None  # 統計的有意性
     
     def to_sheets_row(self) -> List[str]:
-        """10指標をGoogle Sheets行データに変換"""
+        """統計分析データをGoogle Sheets行データに変換"""
         return [
-            f"{self.lca:.3f}" if self.lca is not None else "",
-            f"{self.ab_evaluation_rate:.3f}" if self.ab_evaluation_rate is not None else "",
-            f"{self.fps:.3f}" if self.fps is not None else "",
-            f"{self.c_plus_rate:.3f}" if self.c_plus_rate is not None else "",
-            f"{self.avg_coverage_rate:.3f}" if self.avg_coverage_rate is not None else "",
-            f"{self.avg_compactness:.3f}" if self.avg_compactness is not None else "",
-            f"{self.avg_fill_rate:.3f}" if self.avg_fill_rate is not None else "",
-            f"{self.sci:.3f}" if self.sci is not None else "",
-            f"{self.pla:.3f}" if self.pla is not None else "",
-            f"{self.ple:.3f}" if self.ple is not None else ""
+            f"{self.current_score:.3f}" if self.current_score is not None else "",
+            f"{self.baseline_score:.3f}" if self.baseline_score is not None else "",
+            f"{self.p_value:.4f}" if self.p_value is not None else "",
+            f"{self.effect_size:.3f}" if self.effect_size is not None else "",
+            f"{self.improvement_rate:.1f}%" if self.improvement_rate is not None else "",
+            self.statistical_significance if self.statistical_significance else ""
         ]
     
     @classmethod
-    def from_sheets_row(cls, row: List[str], start_col: int = 12) -> 'MetricsRecord':
-        """Google Sheets行データから10指標作成"""
-        # デフォルト値設定（M-V列、12-21インデックス）
-        metrics_row = row[start_col:start_col+10] if len(row) > start_col else []
-        defaults = [""] * 10
-        metrics_row = metrics_row + defaults[len(metrics_row):]
+    def from_sheets_row(cls, row: List[str], start_col: int = 23) -> 'StatisticalRecord':
+        """Google Sheets行データから統計分析データ作成（X-AC列、23-28インデックス）"""
+        stats_row = row[start_col:start_col+6] if len(row) > start_col else []
+        defaults = [""] * 6
+        stats_row = stats_row + defaults[len(stats_row):]
         
         def safe_float(value: str) -> Optional[float]:
             """安全なfloat変換"""
             try:
-                return float(value) if value else None
+                # %記号を除去して変換
+                clean_value = value.replace('%', '') if value else ''
+                return float(clean_value) if clean_value else None
             except ValueError:
                 return None
         
         return cls(
-            lca=safe_float(metrics_row[0]),
-            ab_evaluation_rate=safe_float(metrics_row[1]),
-            fps=safe_float(metrics_row[2]),
-            c_plus_rate=safe_float(metrics_row[3]),
-            avg_coverage_rate=safe_float(metrics_row[4]),
-            avg_compactness=safe_float(metrics_row[5]),
-            avg_fill_rate=safe_float(metrics_row[6]),
-            sci=safe_float(metrics_row[7]),
-            pla=safe_float(metrics_row[8]),
-            ple=safe_float(metrics_row[9])
+            current_score=safe_float(stats_row[0]),
+            baseline_score=safe_float(stats_row[1]),
+            p_value=safe_float(stats_row[2]),
+            effect_size=safe_float(stats_row[3]),
+            improvement_rate=safe_float(stats_row[4]),
+            statistical_significance=stats_row[5] if stats_row[5] else None
         )
 
 
@@ -176,15 +161,15 @@ class TaskRecord:
     dashboard_generation: ComponentStatus = ComponentStatus.EMPTY
     extraction_pipeline: ComponentStatus = ComponentStatus.EMPTY
     
-    # 10指標統合
-    metrics: Optional[MetricsRecord] = None
+    # 統計分析統合
+    statistics: Optional[StatisticalRecord] = None
     
     def __post_init__(self):
         """初期化後処理"""
         # 日付フィールドはデフォルトで空文字のまま（手動設定または更新時のみ設定）
-        # メトリクスも空で初期化
-        if self.metrics is None:
-            self.metrics = MetricsRecord()
+        # 統計分析データも空で初期化
+        if self.statistics is None:
+            self.statistics = StatisticalRecord()
     
     def update_status(self, new_status: TaskStatus) -> None:
         """ステータス更新"""
@@ -200,7 +185,7 @@ class TaskRecord:
             raise ValueError(f"Unknown component: {component}")
     
     def to_sheets_row(self) -> List[str]:
-        """Google Sheets行データに変換（23列：A-W）"""
+        """Google Sheets行データに変換（基本13列：A-M + 統計6列：X-AC）"""
         base_row = [
             self.tracker_id,
             self.priority.value,
@@ -217,10 +202,13 @@ class TaskRecord:
             self.extraction_pipeline.value
         ]
         
-        # 10指標追加（N-W列）
-        metrics_row = self.metrics.to_sheets_row() if self.metrics else [""] * 10
+        # N-W列（削除済み領域）は空で埋める
+        empty_nw_columns = [""] * 10
         
-        return base_row + metrics_row
+        # X-AC列統計分析データ追加
+        statistics_row = self.statistics.to_sheets_row() if self.statistics else [""] * 6
+        
+        return base_row + empty_nw_columns + statistics_row
     
     @staticmethod
     def _parse_date_flexible(date_str: str) -> Optional[datetime]:
@@ -250,13 +238,13 @@ class TaskRecord:
 
     @classmethod
     def from_sheets_row(cls, row: List[str]) -> 'TaskRecord':
-        """Google Sheets行データから作成（23列対応）"""
-        # デフォルト値設定（23列分）
-        defaults = [""] * 23
+        """Google Sheets行データから作成（拡張列対応）"""
+        # デフォルト値設定（29列分：A-M + N-W(空) + X-AC）
+        defaults = [""] * 29
         row = row + defaults[len(row):]
         
-        # メトリクス部分を抽出（N-W列、インデックス13-22）
-        metrics = MetricsRecord.from_sheets_row(row, start_col=13)
+        # 統計分析部分を抽出（X-AC列、インデックス23-28）
+        statistics = StatisticalRecord.from_sheets_row(row, start_col=23)
         
         # 優先度の安全な変換
         def safe_priority(value: str) -> PriorityLevel:
@@ -280,7 +268,7 @@ class TaskRecord:
             integration_script=ComponentStatus(row[10]) if row[10] else ComponentStatus.EMPTY,
             dashboard_generation=ComponentStatus(row[11]) if row[11] else ComponentStatus.EMPTY,
             extraction_pipeline=ComponentStatus(row[12]) if row[12] else ComponentStatus.EMPTY,
-            metrics=metrics
+            statistics=statistics
         )
 
 

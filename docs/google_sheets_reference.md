@@ -47,19 +47,15 @@
 | L | dashboard_generation | ダッシュボード生成 | 完了, 失敗, 未実行, 実行中 |
 | M | extraction_pipeline | 抽出パイプライン | 完了, 失敗, 未実行, 実行中 |
 
-### 10指標列（N-W列）
-| 列 | 指標名 | 正式名称 | 説明 | 範囲 |
-|---|---|---|---|---|
-| N | lca | LCA (Largest-Character Accuracy) | バウンディングボックス精度 | 0.0-1.0 |
-| O | ab_evaluation_rate | A/B評価率 | 高品質評価の割合 | 0.0-1.0 |
-| P | fps | FPS | 処理速度（フレーム/秒） | 0.0+ |
-| Q | c_plus_rate | C以上評価率 | 標準以上品質の割合 | 0.0-1.0 |
-| R | avg_coverage_rate | 平均カバレッジ率 | マスクカバレッジ平均 | 0.0-1.0 |
-| S | avg_compactness | 平均コンパクトネス | 形状コンパクト性平均 | 0.0-1.0 |
-| T | avg_fill_rate | 平均フィル率 | マスク充填率平均 | 0.0-1.0 |
-| U | sci | SCI (Semantic Completeness Index) | 意味完全性指標 | 0.0-1.0 |
-| V | pla | PLA (Pixel-Level Accuracy) | ピクセル精度 | 0.0-1.0 |
-| W | ple | PLE (Progressive Learning Efficiency) | 学習効率指標 | 0.0-1.0 |
+### 統計分析列（X-AC列）
+| 列 | 指標名 | 説明 | 範囲 |
+|---|---|---|---|
+| X | current_score | Current品質スコア | 0.0-1.0 |
+| Y | baseline_score | BaseLine品質スコア | 0.0-1.0 |
+| Z | p_value | p値（統計的有意性） | 0.0-1.0 |
+| AA | effect_size | 効果サイズ（Cohen's d） | -∞ to +∞ |
+| AB | improvement_rate | 改善率（%） | -100% to +∞ |
+| AC | statistical_significance | 統計的有意性 | 有意/非有意 |
 
 ---
 
