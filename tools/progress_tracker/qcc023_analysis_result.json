@@ -20,4 +20,26 @@
     "p_value": 0.8775073324337043,
     "degrees_of_freedom": 18.80129099212674,
     "effect_size": -0.06729089831465186,
-    "is_significant": 
+    "is_significant": false,
+    "interpretation": "統計的に有意な差は認められません。 有意性なし (p >= 0.10)、効果なし（d = -0.067）"
+  },
+  "analysis_timestamp": "2025-08-14T12:52:51.925817",
+  "sample_sizes": {
+    "current": 10,
+    "baseline": 12
+  },
+  "descriptive_stats": {
+    "current": {
+      "mean": 0.8094227702268378,
+      "std": 0.02807919020815602,
+      "min": 0.7707113947468173,
+      "max": 0.8552023203582665
+    },
+    "baseline": {
+      "mean": 0.8075941787315987,
+      "std": 0.02641111954829816,
+      "min": 0.7707113947468173,
+      "max": 0.8552023203582665
+    }
+  }
+}
