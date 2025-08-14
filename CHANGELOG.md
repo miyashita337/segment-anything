@@ -11,6 +11,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.17] - 2025-08-14
+
+### Added
+- **QCC-023強化版Cohen's d エフェクトサイズ計算システム**: 高精度統計分析機能を実装
+  - `qcc023_enhanced_cohens_d.py`: Glass's Δ対応不等分散エフェクトサイズ計算
+  - 95%信頼区間計算（Hedges'g補正付き）
+  - 実用的意義判定機能（閾値ベース自動評価）
+  - 初心者向け統計解釈システム（日常例を使用した分かりやすい説明）
+  - Welch's t検定統合（不等分散対応t検定）
+  - 自動統計分析レポート生成（マークダウン＋JSON形式）
+
+### Enhanced
+- **統計分析システムの精度向上**: 学術レベルの統計手法を導入
+  - 不等分散データ対応（Glass's Δによる偏差補正）
+  - サンプルサイズ妥当性評価機能
+  - 効果サイズ分類システム（Cohen基準準拠）
+  - 統計的有意性と実用的意義の分離評価
+
+### Fixed
+- **JSON serialization エラー修正**: numpy型のPython標準型変換対応
+  - `TypeError: Object of type bool_ is not JSON serializable` の解決
+  - numpy.bool_型の自動変換機能追加
+
+### Technical Details
+- **QCC-023実証結果**: Cohen's d = 0.067（微小効果、実用的意義なし）
+- **比較対象**: PH2-006 vs PH2-005（ベースライン）
+- **データ品質**: 24枚画像、平均品質スコア 0.568
+- **ダッシュボード**: 標準仕様準拠、Base64画像表示対応
+
 ## [v0.9.16] - 2025-08-14
 
 ### Added

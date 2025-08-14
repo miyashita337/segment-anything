@@ -489,7 +489,10 @@ def main():
                 'interpretation': t_test.interpretation
             }
             
-            json.dump(result_serializable, f, indent=2, ensure_ascii=False)
+            # numpy型をPython標準型に変換
+            import json
+            json_str = json.dumps(result_serializable, indent=2, ensure_ascii=False, default=lambda x: x.item() if hasattr(x, 'item') else str(x))
+            f.write(json_str)
         
         print(f"💾 JSON結果保存: {json_path}")
     else:

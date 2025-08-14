@@ -192,22 +192,23 @@ sam-env/bin/python3 tools/core/unified_quality_checker.py \
     --results "${OUTPUT_DIR}/extraction_result.json" \
     --output "${OUTPUT_DIR}/quality/unified_quality_report.json"
 
-# 4-2. 標準ダッシュボード生成（統一Base64画像表示）
-echo "  📊 標準ダッシュボード生成..."
-sam-env/bin/python3 features/common/dashboard_generator.py \
+# 4-2. 統合ダッシュボード生成（一元化されたシステム）
+echo "  📊 統合ダッシュボード生成..."
+sam-env/bin/python3 tools/scripts/unified_dashboard_wrapper.py \
     "$TRACKER_ID" \
     "${OUTPUT_DIR}/extraction/" \
     "$OUTPUT_DIR"
 
-# 標準ダッシュボード生成完了確認
+# 統合ダッシュボード生成完了確認
 if [ -f "${OUTPUT_DIR}/dashboard/dashboard.html" ]; then
-    echo "✅ 標準ダッシュボード生成完了: http://100.123.241.106:8088/tracker/$TRACKER_ID"
+    echo "✅ 統合ダッシュボード生成完了: http://100.123.241.106:8088/tracker/$TRACKER_ID"
     
     # ファイルサイズ表示
     DASHBOARD_SIZE=$(du -h "${OUTPUT_DIR}/dashboard/dashboard.html" | cut -f1)
     echo "  📄 ダッシュボードサイズ: $DASHBOARD_SIZE"
+    echo "  🎯 システム: 統合ダッシュボード（一元化）"
 else
-    echo "⚠️  標準ダッシュボード生成に失敗しました"
+    echo "⚠️  統合ダッシュボード生成に失敗しました"
 fi
 
 # 4-3. 客観指標テスト
