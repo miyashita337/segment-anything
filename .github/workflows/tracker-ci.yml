@@ -12,6 +12,11 @@ on:
       - 'core/**'
       - 'requirements*.txt'
       - '.github/workflows/**'
+  push:
+    branches: [ 'feature/QCC-023' ]
+    paths:
+      - '.github/workflows/tracker-ci.yml'
+      - '.ci_force_trigger'
   workflow_dispatch:
     inputs:
       tracker_id:
