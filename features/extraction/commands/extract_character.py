@@ -257,7 +257,8 @@ def extract_character(
                     sam_optimization_profile,
                     enable_advanced_pipeline,
                     author_adapter,
-                    force_author
+                    force_author,
+                    adaptive_cropping
                 )
                 
                 if mask is not None and output_path_single.exists():
@@ -403,7 +404,8 @@ def extract_character(
             sam_optimization_profile,
             enable_advanced_pipeline,
             author_adapter,
-            force_author
+            force_author,
+            adaptive_cropping
         )
 
 @optimize_for_large_dataset
@@ -418,7 +420,8 @@ def process_single_image(
     sam_optimization_profile: str = 'p1_020_optimized',
     enable_advanced_pipeline: bool = False,
     author_adapter: Optional[AuthorParameterAdapter] = None,
-    force_author: Optional[str] = None
+    force_author: Optional[str] = None,
+    adaptive_cropping: bool = False
 ) -> Optional[MaskType]:
     """Process a single image for character extraction.
 
@@ -474,9 +477,9 @@ def process_single_image(
         
         if perf_monitor and hasattr(perf_monitor, 'measure'):
             with perf_monitor.measure('inference'):
-                mask = generate_character_mask(enhanced_bgr, sam_model, yolo_model, quality_method, sam_optimization_profile, author_params)
+                mask = generate_character_mask(enhanced_bgr, sam_model, yolo_model, quality_method, sam_optimization_profile, author_params, adaptive_cropping, verbose)
         else:
-            mask = generate_character_mask(enhanced_bgr, sam_model, yolo_model, quality_method, sam_optimization_profile, author_params)
+            mask = generate_character_mask(enhanced_bgr, sam_model, yolo_model, quality_method, sam_optimization_profile, author_params, adaptive_cropping, verbose)
 
         if mask is not None:
             # 📊 品質監視システム + 条件付き3段階処理
@@ -596,7 +599,7 @@ def process_single_image(
         return None
 
 @image_retry_handler.retry
-def generate_character_mask(image: ImageType, sam_model: Any, yolo_model: Any, quality_method: str = 'balanced', sam_optimization_profile: str = 'p1_020_optimized', author_params: Optional[dict] = None) -> Optional[MaskType]:
+def generate_character_mask(image: ImageType, sam_model: Any, yolo_model: Any, quality_method: str = 'balanced', sam_optimization_profile: str = 'p1_020_optimized', author_params: Optional[dict] = None, adaptive_cropping: bool = False, verbose: bool = False) -> Optional[MaskType]:
     """Generate character mask using SAM and YOLO models with enhanced quality evaluation.
     
     Args:
