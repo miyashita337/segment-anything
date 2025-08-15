@@ -1,0 +1,28 @@
+description: Image extraction quality evaluation results
+image_display:
+  lazy_loading: true
+  max_size_mb: 0.1
+  method: path_reference
+  quality_compression: 85
+  thumbnail_size:
+  - 400
+  - 400
+layout:
+  custom_css: null
+  enable_responsive: true
+  grid_columns: 3
+  template: standard
+plugins:
+  enabled_plugins:
+  - image_quality
+  - statistics
+  plugin_settings: {}
+quality_analysis:
+  enable_graph_generation: true
+  enable_image_analysis: true
+  enable_statistical_analysis: true
+  quality_thresholds:
+    high: 0.8
+    low: 0.3
+    medium: 0.6
+title: Quality Evaluation Dashboard

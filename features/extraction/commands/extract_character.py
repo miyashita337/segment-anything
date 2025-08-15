@@ -37,6 +37,7 @@ from features.common.stable_batch_processor import StableBatchProcessor
 from features.evaluation.utils.face_detection import filter_non_character_masks
 from features.evaluation.utils.mask_quality_validator import validate_and_improve_mask
 from features.evaluation.utils.non_character_filter import apply_non_character_filter
+from features.processing.adaptive_cropping import AdaptiveCropper
 from features.processing.postprocessing.auto_mask_correction import create_auto_mask_corrector
 from features.processing.postprocessing.postprocessing import calculate_mask_quality_metrics
 from features.processing.preprocessing.boundary_enhancer import BoundaryEnhancer
@@ -97,6 +98,8 @@ logger = logging.getLogger(__name__)
               help='QCA-001: Enable automatic author-based parameter optimization')
 @click.option('--force-author', type=str,
               help='QCA-001: Force specific author profile (yado, aichi, zundamon) instead of auto-detection')
+@click.option('--adaptive-cropping', is_flag=True, default=False,
+              help='P1-B004: Enable adaptive cropping to prevent multiple character contamination')
 def extract_character(
     input_path: str,
     output_path: str,
@@ -110,7 +113,8 @@ def extract_character(
     sam_optimization_profile: str = 'p1_020_optimized',
     enable_advanced_pipeline: bool = False,
     enable_author_adaptation: bool = True,
-    force_author: Optional[str] = None
+    force_author: Optional[str] = None,
+    adaptive_cropping: bool = False
 ) -> None:
     """Extract anime character from manga image.
 
@@ -630,6 +634,51 @@ def generate_character_mask(image: ImageType, sam_model: Any, yolo_model: Any, q
             persons = yolo_model.detect_persons(image_array, confidence_threshold=yolo_confidence)
             if persons:
                 print(f"🎯 Hybrid方式: {len(persons)}人検出 → SAM bbox prompt")
+                
+                # P1-B004: 適応的クロッピング処理
+                if adaptive_cropping and len(persons) > 1:
+                    try:
+                        from features.processing.adaptive_cropping import DetectionBox
+                        adaptive_cropper = AdaptiveCropper()
+                        
+                        # YOLO検出結果をDetectionBoxに変換
+                        detection_boxes = []
+                        for person in persons:
+                            x1, y1, x2, y2 = person[:4]
+                            confidence = person[4] if len(person) > 4 else 0.5
+                            detection_box = DetectionBox(
+                                x=int(x1), y=int(y1), 
+                                w=int(x2-x1), h=int(y2-y1),
+                                confidence=float(confidence),
+                                source='yolo'
+                            )
+                            detection_boxes.append(detection_box)
+                        
+                        # 最も信頼度の高い検出をベースに適応的クロッピング実行
+                        optimized_persons = []
+                        if detection_boxes:
+                            primary_detection = max(detection_boxes, key=lambda x: x.confidence)
+                            optimized_bbox = adaptive_cropper.adaptive_crop(image_array, primary_detection)
+                            
+                            if optimized_bbox:
+                                # DetectionBoxをYOLO形式に変換
+                                optimized_person = [
+                                    optimized_bbox.x, optimized_bbox.y,
+                                    optimized_bbox.x + optimized_bbox.w,
+                                    optimized_bbox.y + optimized_bbox.h,
+                                    optimized_bbox.confidence
+                                ]
+                                optimized_persons = [optimized_person]
+                        if optimized_persons:
+                            persons = optimized_persons
+                            print(f"🔄 P1-B004適応的クロッピング: {len(detection_boxes)}→{len(optimized_persons)}人に最適化")
+                        else:
+                            print("⚠️ P1-B004適応的クロッピング処理失敗、元の検出結果を使用")
+                    except Exception as e:
+                        print(f"❌ P1-B004適応的クロッピングエラー: {e}")
+                        if verbose:
+                            import traceback
+                            traceback.print_exc()
                 
                 # 最大面積のpersonを選択（複数検出時）
                 if len(persons) > 1:
