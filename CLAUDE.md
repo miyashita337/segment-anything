@@ -29,7 +29,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### 🚨 絶対厳守事項
 
-**全トラッカータスク（P1-005, PH2-001 等）は以下が必須完了要件です：**
+**全トラッカータスク（P1-010, PHS-005 等）は以下が必須完了要件です：**
 
 1. **ワークスペース出力必須**: `/mnt/c/AItools/lora/train/{作者名}/tracker-workspace/{TRACKER_ID}/`
 2. **品質ワークフロー実行必須**: `./tools/scripts/run_quality_workflow.sh {TRACKER_ID}`
@@ -40,7 +40,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - [ ] `spec/OUTPUT_PATH_STANDARDS.md` の確認
 - [ ] `docs/workflows/output_directory_config.md` の確認
-- [ ] 既存完了トラッカー（P1-A001, P1-A002 等）のパターン確認
+- [ ] 既存完了トラッカー（OPT-023, OPT-024 等）のパターン確認
 - [ ] `features/common/output_path_manager.py` の使用検討
 - [ ] ワークスペース構造の事前設計
 
@@ -268,7 +268,7 @@ P1-XXX (実装) → 品質チェック → 抽出パイプライン → ダッ�
 どの選択肢で進めるべきでしょうか？
 ```
 
-#### 🎯 **P1-013での学習事項（重大バグ事例）**
+#### 🎯 **OPTET-011での学習事項（重大バグ事例）**
 
 - **問題**: デモテキストファイルを出力して「完了」と報告
 - **原因**: 技術的困難（モジュールエラー）を独断で回避
@@ -297,6 +297,8 @@ P1-XXX (実装) → 品質チェック → 抽出パイプライン → ダッ�
 - **🔗 Google Sheets 進捗管理**: [`docs/google_sheets_reference.md`](docs/google_sheets_reference.md) を参照
 - **⚙️ GitHub Actions 統合**: [`docs/github_actions_reference.md`](docs/github_actions_reference.md) を参照
 - **📋 技術仕様**: [`docs/technical_specifications.md`](docs/technical_specifications.md) を参照
+- **🎯 トラッカーID標準化**: [`docs/tracker_id_standardization_report.md`](docs/tracker_id_standardization_report.md) を参照
+- **📝 トラッカー命名ガイドライン**: [`docs/tracker_naming_guidelines.md`](docs/tracker_naming_guidelines.md) を参照
 - **📦 依存関係管理**: [`docs/dependency_reference.md`](docs/dependency_reference.md) を参照
 - **🏗️ プロジェクト構造**: [`docs/project_structure_reference.md`](docs/project_structure_reference.md) を参照
 
@@ -404,7 +406,7 @@ python features/extraction/commands/quick_interactive.py image.jpg --points 750,
 # 【大規模バッチ】完全自動パイプライン実行（大量処理向け）
 python tools/core/run_auto_pipeline.py
 
-# 【実績使用】現在のトラッカータスクで使用中（P1-011で実証済み）
+# 【実績使用】現在のトラッカータスクで使用中（OPTET-010で実証済み）
 python tools/core/sam_yolo_character_segment.py --mode reproduce-auto \
   --input_dir /mnt/c/AItools/lora/train/yado/org/kana05/ \
   --output_dir ${TRACKER_WORKSPACE_BASE}/${TRACKER_ID}/extraction/

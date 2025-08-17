@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-P1-A002: 品質基準統一システム
+OPT-024: 品質基準統一システム
 データセット横断的な評価基準の統一実装
 
 PROGRESS_TRACKER.md準拠のワークフロー実装:
@@ -130,7 +130,7 @@ class UnifiedQualityStandardSystem:
         
         # PROGRESS_TRACKER.md準拠の正しいパス
         self.workspace_root = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/workspace")
-        self.workspace_dir = self.workspace_root / "P1-A002"
+        self.workspace_dir = self.workspace_root / "OPT-024"
         self.workspace_dir.mkdir(parents=True, exist_ok=True)
         
         # 標準設定パス
@@ -144,7 +144,7 @@ class UnifiedQualityStandardSystem:
         # 品質基準読み込み
         self.standard = self._load_or_create_standard()
         
-        print(f"🎯 P1-A002: 品質基準統一システム初期化完了")
+        print(f"🎯 OPT-024: 品質基準統一システム初期化完了")
         print(f"ワークスペース: {self.workspace_dir}")
     
     def _load_or_create_standard(self) -> QualityStandard:
@@ -440,7 +440,7 @@ def main():
     """メイン実行"""
     import argparse
     
-    parser = argparse.ArgumentParser(description="P1-A002: 品質基準統一システム")
+    parser = argparse.ArgumentParser(description="OPT-024: 品質基準統一システム")
     parser.add_argument("--dataset", help="データセット名")
     parser.add_argument("--results", help="結果ファイルパス")
     parser.add_argument("--compare", action="store_true", help="データセット比較モード")
@@ -487,7 +487,7 @@ def main():
         print(f"   平均統一スコア: {report['summary']['average_unified_score']:.3f}")
     
     else:
-        print("🎯 P1-A002: 品質基準統一システム")
+        print("🎯 OPT-024: 品質基準統一システム")
         print("使用例:")
         print("  python unified_quality_standard.py --dataset kana08 --results results.json")
         print("  python unified_quality_standard.py --compare")

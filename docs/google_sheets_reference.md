@@ -29,7 +29,7 @@
 ### 基本情報列（A-G列）
 | 列 | フィールド名 | 説明 | 例 |
 |---|---|---|---|
-| A | tracker_id | トラッカーID | P1-005, PH2-001 |
+| A | tracker_id | トラッカーID | P1-010, PHS-005 |
 | B | priority | 優先度 | 優先度最高, 優先度高, 優先度中, 優先度低 |
 | C | status | ステータス | 着手前, 着手中, /release |
 | D | created_date | 登録日付 | 2025-07-28 |
@@ -103,10 +103,10 @@
 python3 tools/progress_tracker/cli.py status
 
 # タスク更新
-python3 tools/progress_tracker/cli.py update P1-005 "/release"
+python3 tools/progress_tracker/cli.py update P1-010 "/release"
 
 # 指標更新
-python3 tools/progress_tracker/cli.py update-metrics P1-005 --lca 0.85 --pla 0.67
+python3 tools/progress_tracker/cli.py update-metrics P1-010 --current 0.85 --baseline 0.67
 
 # 接続確認
 python3 tools/progress_tracker/cli.py connection-status
@@ -123,8 +123,8 @@ python3 tools/progress_tracker/cli.py connection-status
 
 ### 2025-07-28
 - 23列システム（A-W）への拡張完了
-- PLA（V列）、PLE（W列）指標追加
-- P1-005での動作確認完了
+- 統計指標追加（X-AC列: Current/BaseLine/p値/効果サイズ/改善率/統計的有意性）
+- P1-010での動作確認完了
 
 ### 2025-07-27  
 - 初期21列システム（A-U）運用開始

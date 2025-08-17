@@ -5,7 +5,7 @@
 安全性とロバスト性を重視した統合パイプラインシステム。
 状態管理、レジューム機能、Web対応ダッシュボード生成を提供。
 
-Created for: INTEGRATE-3-6
+Created for: INTETETETETETETETET-010
 Author: Claude Code Integration System
 """
 
@@ -33,7 +33,7 @@ try:
 except ImportError:
     PUSHOVER_AVAILABLE = False
 
-# PH2-008: 復旧機能システム統合
+# PHS-013: 復旧機能システム統合
 try:
     from features.common.recovery_system import RecoveryManager, RecoveryState, AutoRecoverySystem
     RECOVERY_AVAILABLE = True
@@ -278,7 +278,7 @@ class DashboardGenerator:
         self.workspace_dir = workspace_dir
         self.dashboard_dir = workspace_dir / "dashboard"
         self.logger = logger
-        self.tracker_id = tracker_id  # PH2-008: Pushover送信用
+        self.tracker_id = tracker_id  # PHS-013: Pushover送信用
         
         # ダッシュボードディレクトリ作成
         self.dashboard_dir.mkdir(parents=True, exist_ok=True)
@@ -600,7 +600,7 @@ class DashboardGenerator:
                     <p>実行環境: Python 3.x</p>
                     <p>CUDA: {"利用可能" if self._check_cuda() else "利用不可"}</p>
                     <p>パイプライン: Phase 3-6 統合版</p>
-                    <p>バージョン: INTEGRATE-3-6</p>
+                    <p>バージョン: INTETETETETETETETET-010</p>
                 </div>
             </div>
         </div>
@@ -641,7 +641,7 @@ class IntegratedQualityPipeline:
         self.state_manager = StateManager(tracker_id, self.workspace_dir, self.logger)
         self.dashboard_generator = DashboardGenerator(self.config, self.workspace_dir, self.logger, tracker_id)
         
-        # PH2-008: 復旧機能システム統合
+        # PHS-013: 復旧機能システム統合
         self.recovery_manager = None
         self.recovery_state = None
         if RECOVERY_AVAILABLE:
@@ -770,7 +770,7 @@ class IntegratedQualityPipeline:
             )
 
     def execute_pipeline_with_recovery(self, resume: bool = False, max_retries: int = 3) -> PipelineResult:
-        """復旧機能付き統合パイプライン実行 (PH2-008)"""
+        """復旧機能付き統合パイプライン実行 (PHS-013)"""
         if not RECOVERY_AVAILABLE:
             self.logger.warning("復旧機能が利用できません、通常実行にフォールバック")
             return self.execute_pipeline(resume)
@@ -927,8 +927,8 @@ class IntegratedQualityPipeline:
             extraction_dir.mkdir(parents=True, exist_ok=True)
             
             # 抽出パイプライン実行
-            # PH2-008専用: kana08データセット使用
-            if self.tracker_id == "PH2-008":
+            # PHS-013専用: kana08データセット使用
+            if self.tracker_id == "PHS-013":
                 input_path = "/mnt/c/AItools/lora/train/yado/org/kana08/"
             else:
                 input_path = self.config['paths'].get('default_input', '')

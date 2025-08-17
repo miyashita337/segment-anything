@@ -25,8 +25,8 @@ root_path = WorkspaceConfig.get_workspace_root()
 # 結果: Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/workspace")
 
 # 特定トラッカーのワークスペースパス
-tracker_path = WorkspaceConfig.get_tracker_workspace("P1-005")
-# 結果: Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/workspace/P1-005")
+tracker_path = WorkspaceConfig.get_tracker_workspace("P1-010")
+# 結果: Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010")
 ```
 
 ### シェルスクリプトから使用

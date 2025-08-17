@@ -46,7 +46,7 @@ class WorkspaceStructure:
     def _validate_tracker_id(self, tracker_id: str) -> bool:
         """トラッカーID形式検証 - Google Sheets A列の全フォーマットをサポート"""
         # Google Sheets A列で管理される全フォーマットをサポート:
-        # P1-XXX, PH2-XXX, T-XXX, BAT-XXX, CLAUDE-OPT-XXX, P1-A002-1, P1-B001 等
+        # P1-XXX, PH2-XXX, T-XXX, BAT-XXX, CLAUDE-OPT-XXX, OPT-024-1, OPT-030 等
         if not tracker_id or not isinstance(tracker_id, str):
             return False
         
@@ -74,7 +74,7 @@ class OutputPathManager:
         初期化
         
         Args:
-            tracker_id: トラッカーID (例: PH2-002, baseline)
+            tracker_id: トラッカーID (例: PHS-006, baseline)
             base_path: カスタムベースパス（テスト用）
         """
         self.tracker_id = tracker_id
@@ -115,7 +115,7 @@ class OutputPathManager:
             
         Example:
             get_output_path(OutputCategory.DASHBOARD, filename="report.html")
-            → /workspace/PH2-002/dashboard/report.html
+            → /workspace/PHS-006/dashboard/report.html
         """
         # ベースパス構築
         path = self.get_tracker_root()
@@ -314,7 +314,7 @@ if __name__ == "__main__":
     print("=== Output Path Manager Test ===")
     
     # 基本使用例
-    manager = OutputPathManager("PH2-002")
+    manager = OutputPathManager("PHS-006")
     print(f"Manager: {manager}")
     
     # パス生成例

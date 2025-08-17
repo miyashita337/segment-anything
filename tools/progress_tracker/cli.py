@@ -443,13 +443,13 @@ def main():
     
     # タスク作成コマンド
     create_parser = subparsers.add_parser('create', help='新規タスク作成')
-    create_parser.add_argument('tracker_id', help='トラッカーID (例: PH2-001)')
+    create_parser.add_argument('tracker_id', help='トラッカーID (例: PHS-005)')
     create_parser.add_argument('--description', '-d', help='タスク説明')
     create_parser.set_defaults(func=cmd_create_task)
     
     # 拡張タスク作成コマンド
     create_enhanced_parser = subparsers.add_parser('create-enhanced', help='拡張タスク作成（詳細・優先度・日付対応）')
-    create_enhanced_parser.add_argument('tracker_id', help='トラッカーID (例: PH2-001)')
+    create_enhanced_parser.add_argument('tracker_id', help='トラッカーID (例: PHS-005)')
     create_enhanced_parser.add_argument('--description', '-d', help='タスク説明')
     create_enhanced_parser.add_argument('--details', '--detail', help='詳細情報（長文対応）')
     create_enhanced_parser.add_argument('--priority', '-p', choices=['高', '中', '低'], default='高', help='優先度 (デフォルト: 高)')

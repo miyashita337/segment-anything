@@ -165,7 +165,7 @@ class GoogleSheetsClient:
         print("="*60)
         print(f"📋 SpreadSheet URL:")
         print(f"   https://docs.google.com/spreadsheets/d/{self.config.spreadsheet_id}/edit")
-        print(f"\n📝 手動でPH2-002のステータスを以下に変更してください:")
+        print(f"\n📝 手動でPHS-006のステータスを以下に変更してください:")
         print(f"   着手中 → 実装完了")
         print(f"\n💡 問題の原因:")
         print(f"   設定シート名: '{self.config.sheet_name}'")

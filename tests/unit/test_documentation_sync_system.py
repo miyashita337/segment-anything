@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-P1-A004: ドキュメント整備システム ユニットテスト
+OPT-029: ドキュメント整備システム ユニットテスト
 
 ドキュメント同期システムの動作確認テスト実装
 """
@@ -333,7 +333,7 @@ def another_function(param: str) -> int:
         assert "## Parameters" in template
         assert "## Returns" in template
         assert "## Examples" in template
-        assert "P1-A004 Documentation Sync System" in template
+        assert "OPT-029 Documentation Sync System" in template
     
     @patch('pathlib.Path.glob')
     @patch('builtins.open', new_callable=mock_open)

@@ -9,7 +9,7 @@
 
 ```yaml
 evaluation_hierarchy:
-  primary: "客観的3指標システム（PLA/SCI/PLE）"
+  primary: "統計的品質指標システム（Current/BaseLine/p値/効果サイズ）"
   secondary: "人間評価（最終品質検証）"
   
   ratio: "客観90% : 人間10%"

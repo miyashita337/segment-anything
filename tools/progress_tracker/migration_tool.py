@@ -157,17 +157,17 @@ class MarkdownMigrationTool:
             # 基本的なPhase 2タスクを作成
             initial_tasks = [
                 {
-                    'tracker_id': 'PH2-001',
+                    'tracker_id': 'PHS-005',
                     'description': 'システム全体性能評価・ボトルネック特定',
                     'status': TaskStatus.RELEASE
                 },
                 {
-                    'tracker_id': 'PH2-002', 
+                    'tracker_id': 'PHS-006', 
                     'description': 'アーキテクチャ最適化・安定性確保',
                     'status': TaskStatus.QUALITY_CHECK
                 },
                 {
-                    'tracker_id': 'PH2-003',
+                    'tracker_id': 'PHS-007',
                     'description': 'Google Sheets進捗管理システム実装',
                     'status': TaskStatus.IN_PROGRESS
                 }

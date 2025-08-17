@@ -134,9 +134,9 @@ python3 tools/quality_dashboard.py --report path/to/report.json --verbose
 ### **実用例**
 
 ```bash
-# P1-B001 ダッシュボード生成
+# OPT-030 ダッシュボード生成
 python3 tools/quality_dashboard.py \
-  --report /mnt/c/AItools/lora/train/yado/tracker-workspace/P1-B001/unified_quality_report.json
+  --report /mnt/c/AItools/lora/train/yado/tracker-workspace/OPT-030/unified_quality_report.json
 
 # 最新レポートの自動検出
 python3 tools/quality_dashboard.py \
@@ -191,7 +191,7 @@ netstat -tulpn | grep :8088
 ダッシュボードファイル:
   メイン: 
     - dashboard.html              # インタラクティブHTML
-    - quality_monitoring_dashboard.html  # P1-B001監視用
+    - quality_monitoring_dashboard.html  # OPT-030監視用
 
   グラフ画像:
     - radar_chart.png            # 総合指標レーダーチャート
@@ -213,9 +213,9 @@ netstat -tulpn | grep :8088
 基本URL: http://localhost:8088/tracker/{トラッカーID}
 
 例:
-  - P1-B001: http://localhost:8088/tracker/P1-B001
-  - PH2-007: http://localhost:8088/tracker/PH2-007
-  - P1-A001: http://localhost:8088/tracker/P1-A001
+  - OPT-030: http://localhost:8088/tracker/OPT-030
+  - PHS-012: http://localhost:8088/tracker/PHS-012
+  - OPT-023: http://localhost:8088/tracker/OPT-023
 
 統合ビュー: http://localhost:8088/
 全トラッカー一覧: http://localhost:8088/list
@@ -333,7 +333,7 @@ print('Dependencies OK')
 
 品質評価:
   - features/evaluation/objective_metrics.py  # 客観指標テスト
-  - features/common/quality_monitoring.py     # P1-B001監視システム
+  - features/common/quality_monitoring.py     # OPT-030監視システム
 
 設定・設計:
   - features/common/output_path_manager.py    # 出力パス管理

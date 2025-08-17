@@ -45,7 +45,7 @@ class WorkspaceConfig:
         特定トラッカーのワークスペースパス取得
         
         Args:
-            tracker_id: トラッカーID（例: P1-005, PH2-001）
+            tracker_id: トラッカーID（例: P1-010, PHS-005）
             
         Returns:
             完全なトラッカーワークスペースパス
@@ -107,7 +107,7 @@ class WorkspaceConfig:
             'workspace_root': str(workspace_root),
             'from_environment': 'TRACKER_WORKSPACE_BASE' in os.environ,
             'path_valid': cls.validate_workspace_path(),
-            'example_tracker_path': str(workspace_root / "P1-005")
+            'example_tracker_path': str(workspace_root / "P1-010")
         }
 
 

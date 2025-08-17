@@ -316,59 +316,39 @@ class IntegratedDashboardServer:
                 trackers[tracker] = []
             trackers[tracker].append(key)
         
-        # Phase別に整理
-        phase1 = sorted([t for t in trackers.keys() if t.startswith('P1-')])
-        phase2 = sorted([t for t in trackers.keys() if t.startswith('PH2-')])
-        phase3 = sorted([t for t in trackers.keys() if t.startswith('PH3-')])
-        integrate = sorted([t for t in trackers.keys() if t.startswith('INTEGRATE-')])
-        qi_trackers = sorted([t for t in trackers.keys() if t.startswith('QI-')])  # QIトラッカー追加
-        others = sorted([t for t in trackers.keys() if not t.startswith(('P1-', 'PH2-', 'PH3-', 'INTEGRATE-', 'QI-'))])
+        # 新ID体系別に整理
+        qual_trackers = sorted([t for t in trackers.keys() if t.startswith('QUAL-')])  # 品質管理
+        optm_trackers = sorted([t for t in trackers.keys() if t.startswith('OPTM-')])  # 最適化
+        test_trackers = sorted([t for t in trackers.keys() if t.startswith('TEST-')])  # テスト
+        intg_trackers = sorted([t for t in trackers.keys() if t.startswith('INTG-')])  # 統合
+        others = sorted([t for t in trackers.keys() if not t.startswith(('QUAL-', 'OPTM-', 'TEST-', 'INTG-'))])
         
-        # ナビゲーションアイテム生成
-        # QIシリーズを最上位に配置（品質改善タスク）
-        if qi_trackers:
-            nav_items.append('<div class="nav-category">🔍 品質改善 (QI)</div>')
-            for tracker in qi_trackers:
-                active = 'active' if current_key.startswith(f"{tracker}/") else ''
-                # QIシリーズの説明を追加
-                tracker_desc = {
-                    'QI-001': 'コードリファクタリング',
-                    'QI-002': '抽出精度向上Ver.1',
-                    'QI-003': '抽出精度向上Ver.2',
-                    'QI-004': '抽出精度向上Ver.3',
-                    'QI-005': '抽出精度向上Ver.4'
-                }.get(tracker, tracker)
-                nav_items.append(f'<a href="/tracker/{tracker}" class="nav-item {active}" title="{tracker_desc}">{tracker}</a>')
-        
-        # INTEGRATE-3-6シリーズを次に配置（統合パイプライン）
-        if integrate:
-            nav_items.append('<div class="nav-category">🔬 統合パイプライン</div>')
-            for tracker in integrate:
-                active = 'active' if current_key.startswith(f"{tracker}/") else ''
-                # INTEGRATE-3-6シリーズの説明を追加
-                tracker_desc = {
-                    'INTEGRATE-3-6-01': 'Phase 3-6統合初期版',
-                    'INTEGRATE-3-6-02': 'Phase 3-6改良版',
-                    'INTEGRATE-3-6-03': 'YOLO汎用版検証',
-                    'INTEGRATE-3-6-04': 'アニメ特化版検証'
-                }.get(tracker, tracker)
-                nav_items.append(f'<a href="/tracker/{tracker}" class="nav-item {active}" title="{tracker_desc}">{tracker}</a>')
-        
-        if phase1:
-            nav_items.append('<div class="nav-category">📁 Phase 1</div>')
-            for tracker in phase1:
+        # ナビゲーションアイテム生成（新ID体系）
+        # 品質管理を最上位に配置
+        if qual_trackers:
+            nav_items.append('<div class="nav-category">🔍 品質管理 (QUAL)</div>')
+            for tracker in qual_trackers:
                 active = 'active' if current_key.startswith(f"{tracker}/") else ''
                 nav_items.append(f'<a href="/tracker/{tracker}" class="nav-item {active}">{tracker}</a>')
         
-        if phase2:
-            nav_items.append('<div class="nav-category">📁 Phase 2</div>')
-            for tracker in phase2:
+        # 統合パイプラインを次に配置
+        if intg_trackers:
+            nav_items.append('<div class="nav-category">🔬 統合パイプライン (INTG)</div>')
+            for tracker in intg_trackers:
                 active = 'active' if current_key.startswith(f"{tracker}/") else ''
                 nav_items.append(f'<a href="/tracker/{tracker}" class="nav-item {active}">{tracker}</a>')
         
-        if phase3:
-            nav_items.append('<div class="nav-category">📁 Phase 3</div>')
-            for tracker in phase3:
+        # テスト関連
+        if test_trackers:
+            nav_items.append('<div class="nav-category">🧪 テスト (TEST)</div>')
+            for tracker in test_trackers:
+                active = 'active' if current_key.startswith(f"{tracker}/") else ''
+                nav_items.append(f'<a href="/tracker/{tracker}" class="nav-item {active}">{tracker}</a>')
+        
+        # 最適化関連
+        if optm_trackers:
+            nav_items.append('<div class="nav-category">⚡ 最適化 (OPTM)</div>')
+            for tracker in optm_trackers:
                 active = 'active' if current_key.startswith(f"{tracker}/") else ''
                 nav_items.append(f'<a href="/tracker/{tracker}" class="nav-item {active}">{tracker}</a>')
         

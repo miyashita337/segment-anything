@@ -27,7 +27,7 @@ flowchart TB
     Success -->|❌未達| Issue
     Success -->|✅達成| Evaluation[⑥評価フェーズ]
 
-    Evaluation --> AutoEval[🤖Claude Code客観的評価<br/>PLA・SCI・PLE指標]
+    Evaluation --> AutoEval[🤖Claude Code客観的評価<br/>統計的品質指標]
     Evaluation --> HumanEval[👤人間による目視評価<br/>A/B評価50%以上]
 
     HumanEval --> EvalPass{評価基準達成?}
@@ -187,7 +187,7 @@ flowchart TB
 - **調査結果に基づく安全な実装**（重複回避・デグレード防止）
 - 既存テンプレート（[batch_extraction_template.md](./batch_extraction_template.md)）の活用
 - [spec.md](../../spec.md) 準拠の実装
-- PH2-002で実装されたスケーラビリティ改善の活用
+- PHS-006で実装されたスケーラビリティ改善の活用
 
 #### 🤖 Claude Code の実装責任範囲
 
@@ -225,7 +225,7 @@ flowchart TB
 #### Claude Code による自動化
 
 - 抽出パイプラインの実行管理
-- PH2-002並列処理システムの活用
+- PHS-006並列処理システムの活用
 - Pushover によるスマホ通知（処理開始・完了時）
 - Google Sheetsでの進捗状況リアルタイム更新
 
@@ -241,13 +241,16 @@ flowchart TB
 
 #### 🤖 Claude Code による客観的評価（メイン）
 
-**判定基準**: **PLA・SCI・PLE指標による総合評価**
+**判定基準**: **統計的品質指標による総合評価**
 
 > **詳細**: [`docs/technical_specifications.md`](../technical_specifications.md) を参照
 
-- **PLA (Pixel-Level Accuracy)**: ピクセル単位精度
-- **SCI (Semantic Completeness Index)**: 構造完全性
-- **PLE (Progressive Learning Efficiency)**: 学習効率性
+- **Current Score**: 現在品質スコア
+- **BaseLine Score**: ベースライン品質スコア  
+- **p値**: 統計的有意性検定結果
+- **効果サイズ (Cohen's d)**: 改善効果の大きさ
+- **改善率**: ベースラインからの改善パーセンテージ
+- **統計的有意性**: 有意/非有意の判定
 - 統合品質チェッカーによる自動評価実行
 
 #### 👤 人間による目視評価（最終確認）
@@ -274,7 +277,7 @@ flowchart TB
 | ------------------------ | ------------------ | --------------------------- |
 | **ローカルテスト成功率** | 90%以上            | 出力画像数 ÷ 入力画像数     |
 | **人間評価基準**         | A/B 評価 50%以上   | A/B 評価数 ÷ 総出力数       |
-| **客観的品質指標**       | PLA≥0.75, SCI≥0.7 | 統合品質チェッカーによる測定 |
+| **客観的品質指標**       | p値≤0.05, |効果サイズ|≥0.2 | 統合品質チェッカーによる測定 |
 | **タスク粒度**           | 1 つずつ実行       | Google Sheets 管理          |
 | **進捗可視性**           | リアルタイム更新   | Google Sheets 自動反映      |
 
@@ -299,7 +302,7 @@ flowchart TB
 ### 品質優先
 
 - 基準未達時は確実に差し戻し
-- 客観的指標（PLA・SCI・PLE）による定量評価
+- 統計的指標（Current/BaseLine比較・p値・効果サイズ）による定量評価
 - 人間の最終判定を最優先
 
 ### 可視性確保
@@ -311,7 +314,7 @@ flowchart TB
 ### 効率性重視
 
 - Claude Codeによる高度な自動化
-- PH2-002並列処理システムの活用
+- PHS-006並列処理システムの活用
 - 人間の作業を重要な判断・評価に集中
 
 ### 継続性確保
@@ -328,7 +331,7 @@ flowchart TB
 
 #### 必須要素
 1. **トラッカーID採番**
-   - 形式: `{Phase}-{連番3桁}` (例: PH1-001, T-001)
+   - 形式: `{Phase}-{連番3桁}` (例: PHS-001, TETETETETETETETETET-010)
    - 重複防止: 自動チェック機能
 
 2. **優先度設定**
@@ -347,7 +350,7 @@ flowchart TB
 ```bash
 # 単一タスク起票
 python tools/task_ticket.py \
-  --tracker-id "PH3-001" \
+  --tracker-id "PHS-014" \
   --priority "優先度高" \
   --description "設定ファイル管理システムの実装"
 
@@ -376,7 +379,7 @@ python tools/task_ticket.py --interactive
 
 2. **起票テンプレート**
 ```yaml
-tracker_id: PH3-001
+tracker_id: PHS-014
 priority: 優先度中
 title: 設定ファイル管理システムの実装
 description: |
@@ -387,7 +390,7 @@ success_criteria:
   - バージョン管理機能の実装
   - 設定変更履歴の可視化
 estimated_hours: 8
-dependencies: [PH2-008]
+dependencies: [PHS-013]
 ```
 
 3. **禁止事項**
