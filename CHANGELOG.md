@@ -11,6 +11,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.20] - 2025-08-17
+
+### Added
+- **BASELINE-RECALC-001 完全トラッカーID標準化システム実装**: 137個のトラッカーIDを機能別カテゴリに完全移行
+  - `docs/tracker_id_standardization_report.md`: 完全標準化レポート
+  - `docs/tracker_naming_guidelines.md`: 新命名規則ガイドライン  
+  - `integrated_dashboard_server.py`: ダッシュボードナビゲーション更新（QUAL/INTG/TEST/OPTM分類）
+  - **Google Sheets統合**: 137トラッカーのA列・O列（BaseLine）完全更新
+  - **統計指標完全移行**: PLA/SCI/PLE → Current/BaseLine/p値/効果サイズ/改善率/統計的有意性
+
+### Fixed  
+- **ドキュメント整合性修正**: 7ファイルで古い指標・誤記・旧ID形式を修正
+  - `docs/daily_user_tasks.md`: 品質チェック基準をp値/効果サイズに更新
+  - `CHANGELOG.md`: OPTETETETETETETET誤記を正しいP1-XXX形式に修正
+  - `docs/google_sheets_reference.md`: 統計指標への完全移行記録
+  - `docs/checklists/tracker_workflow_checklist.md`: 旧ID例をP1-XXX形式に統一
+  - `config/README.md`: サンプルコードの新ID形式対応
+  - `docs/human_evaluation_integration.md`: 統計的品質指標システムへの更新
+  - `docs/P1-017_critical_usability_improvements.md`: トラッカーIDと指標の統一
+
+### Changed
+- **機能別カテゴリ統一**: 全トラッカーIDを4カテゴリに分類
+  - `QUAL-XXX`: 品質管理・評価システム（旧QI-XXX系）
+  - `INTG-XXX`: 統合・CI/CDシステム（旧P1-XXX, PH2-XXX系）
+  - `TEST-XXX`: テスト・検証システム（旧T-XXX系）
+  - `OPTM-XXX`: 最適化・パフォーマンス（旧CLAUDE-OPT-XXX, BAT-XXX系）
+
 ## [v0.9.19] - 2025-08-16
 
 ### Added
