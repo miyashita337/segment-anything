@@ -31,9 +31,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **全トラッカータスク（P1-005, PH2-001 等）は以下が必須完了要件です：**
 
-1. **ワークスペース出力必須**: `/mnt/c/AItools/lora/train/yado/tracker-workspace/{TRACKER_ID}/`
+1. **ワークスペース出力必須**: `/mnt/c/AItools/lora/train/{作者名}/tracker-workspace/{TRACKER_ID}/`
 2. **品質ワークフロー実行必須**: `./tools/scripts/run_quality_workflow.sh {TRACKER_ID}`
-3. **ダッシュボード生成必須**: `workspace/{TRACKER_ID}/dashboard/dashboard.html`
+3. **ダッシュボード生成必須**: `tracker-workspace/{TRACKER_ID}/dashboard/dashboard.html`
 4. **実装だけでは未完了**: 機能実装 ≠ タスク完了
 
 ### 📋 実行前必須確認（プリフライト・チェック）
@@ -56,7 +56,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # 以下がすべて存在することを確認
-ls /mnt/c/AItools/lora/train/yado/tracker-workspace/{TRACKER_ID}/
+ls /mnt/c/AItools/lora/train/{作者名}/tracker-workspace/{TRACKER_ID}/
 ├── extraction/          # 抽出結果
 ├── quality/            # 品質レポート
 ├── dashboard/          # HTMLダッシュボード
@@ -105,8 +105,8 @@ ls ${TRACKER_WORKSPACE_BASE}/${TRACKER_ID}/dashboard/dashboard.html
 # ファイルサイズ確認（2MB以上で画像正常埋め込み）
 du -h ${TRACKER_WORKSPACE_BASE}/${TRACKER_ID}/dashboard/dashboard.html
 
-# アクセス確認
-curl -u admin:dashboard2025! http://100.123.241.106:8088/tracker/${TRACKER_ID}
+# アクセス確認（認証情報詳細はPRINCIPLE.mdを参照）
+# curl -u admin:[PASSWORD] http://100.123.241.106:8088/tracker/${TRACKER_ID}
 ```
 
 **技術仕様:**
