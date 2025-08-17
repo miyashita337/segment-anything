@@ -24,7 +24,7 @@ TRACKER_WORKSPACE = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace")
 
 # Basic認証設定
 BASIC_AUTH_USERNAME = "admin"
-BASIC_AUTH_PASSWORD = "dashboard2025!"
+BASIC_AUTH_PASSWORD = "secure_track_2025_q3_8f9a"
 
 class IntegratedDashboardServer:
     def __init__(self, port=8088):
