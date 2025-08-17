@@ -45,7 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [v0.9.18] - 2025-08-14
 
 ### Added
-- **INTETETETETETETETETET-010 Phase 2.2画像抽出テスト**: GitHub Actions統合・test_demo処理実装
+- **CI-INTEGRATION-001 Phase 2.2画像抽出テスト**: GitHub Actions統合・test_demo処理実装
   - `.github/workflows/tracker-ci.yml`: Phase 2.2軽量画像処理実装
   - `assets/test_demo1-3.png`: CIテスト用画像追加（330KB, 427KB, 379KB）
   - SAM+YOLO抽出システムによる実画像処理（100%成功率）
@@ -780,7 +780,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 環境変数`TRACKER_WORKSPACE_BASE`による動的設定変更対応
   - 3つの主要ファイル統合（output_path_manager.py, validate_tracker_completion.py, run_quality_workflow.sh）
   - バリデーション・設定確認機能付き
-- **OPTETETETETETETET-010自動マスク修正機能**: `features/processing/postprocessing/auto_mask_correction.py`実装
+- **P1-010自動マスク修正機能**: `features/processing/postprocessing/auto_mask_correction.py`実装
   - 適応的マスク拡張による品質改善
   - エッジ保持フィルタリングシステム
   - 手足切断防止処理
@@ -1298,8 +1298,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **[P1-002] Partial Extraction Detection System**: `PartialExtractionDetector` for detecting incomplete character extractions (face-only, limb truncation)
 - **[P1-003] Enhanced Full Body Detection**: `EnhancedFullBodyDetector` with multi-metric evaluation (aspect ratio, body structure, edge distribution, semantic regions)
 - **[P1-004] Advanced Screen Tone Detection**: `EnhancedScreentoneDetector` (857 lines) with FFT, Gabor, LBP, Wavelet, and Spatial feature extraction
-- **[OPTETETETETETETET-010] Mosaic Boundary Processing**: `EnhancedMosaicBoundaryProcessor` with multi-scale and rotation-invariant detection
-- **[OPTETETETETETET-010] Solid Fill Area Processing**: `EnhancedSolidFillProcessor` with RGB/HSV/LAB color space analysis and adaptive clustering
+- **[P1-010] Mosaic Boundary Processing**: `EnhancedMosaicBoundaryProcessor` with multi-scale and rotation-invariant detection
+- **[P1-006] Solid Fill Area Processing**: `EnhancedSolidFillProcessor` with RGB/HSV/LAB color space analysis and adaptive clustering
 
 ### Changed
 - **Quality Evaluation System**: Integrated all Phase 1 improvements into character extraction pipeline

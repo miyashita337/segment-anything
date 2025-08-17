@@ -66,7 +66,7 @@ P1-016で構築されたフィードバックループシステムの分析結�
 ### Phase 1: 緊急バッチ制御修正
 ```bash
 # 新パラメータ追加
-./tools/scripts/run_quality_workflow.sh P1-017 --max-files 10 --stable-mode
+./tools/scripts/run_quality_workflow.sh OPTET-015 --max-files 10 --stable-mode
 ```
 
 ### Phase 2: SAM設定最適化
@@ -168,6 +168,6 @@ class StableBatchProcessor:
 
 ---
 
-**緊急度**: P1-016の30%成功率改善のため最高優先度で即座実装開始  
+**緊急度**: OPTET-014の30%成功率改善のため最高優先度で即座実装開始  
 **期待価値**: フィードバックループシステムの実用化完成  
-**次段階**: P1-017完了後、大規模データセット（50-100枚）適用可能
+**次段階**: OPTET-015完了後、大規模データセット（50-100枚）適用可能

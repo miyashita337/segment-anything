@@ -72,9 +72,9 @@ python tools/objective_quality_evaluation.py --batch results_batch/ --generate-r
 python tools/daily_progress_tracker.py --date today --full-analysis
 
 # 出力例確認項目:
-# - PLA平均値が目標（0.75）以上か？
-# - SCI平均値が目標（0.70）以上か？  
-# - PLE値が改善傾向（0.05以上）か？
+# - Current Scoreがベースラインより改善しているか？
+# - p値が0.05以下（統計的有意）か？
+# - 効果サイズ（Cohen's d）が0.2以上か？
 # - アラートが発生していないか？
 ```
 
@@ -215,9 +215,9 @@ python tools/system_recovery.py --guided
   - [ ] 画像ファイル非コミット確認
 
 夕方の確認:
-  - [ ] PLA目標値（0.75）以上達成
-  - [ ] SCI目標値（0.70）以上達成
-  - [ ] PLE改善傾向（0.05以上）確認
+  - [ ] Current Scoreがベースライン以上
+  - [ ] p値が0.05以下（統計的有意性）
+  - [ ] 効果サイズ（Cohen's d）が0.2以上
   - [ ] アラート未発生確認
   - [ ] Git変更適切にコミット
 ```
