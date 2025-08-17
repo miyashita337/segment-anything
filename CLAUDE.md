@@ -105,8 +105,8 @@ ls ${TRACKER_WORKSPACE_BASE}/${TRACKER_ID}/dashboard/dashboard.html
 # ファイルサイズ確認（2MB以上で画像正常埋め込み）
 du -h ${TRACKER_WORKSPACE_BASE}/${TRACKER_ID}/dashboard/dashboard.html
 
-# アクセス確認
-curl -u admin:secure_track_2025_q3_8f9a http://100.123.241.106:8088/tracker/${TRACKER_ID}
+# アクセス確認（認証情報詳細はPRINCIPLE.mdを参照）
+# curl -u admin:[PASSWORD] http://100.123.241.106:8088/tracker/${TRACKER_ID}
 ```
 
 **技術仕様:**
