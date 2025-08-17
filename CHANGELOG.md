@@ -11,6 +11,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.19] - 2025-08-16
+
+### Added
+- **P1-021 週次ソースコード肥大化解決システム**: 完全自動実行システム実装
+  - `bin/shell/weekly_cleanup_cron.sh`: cron用自動実行スクリプト（毎週日曜午前2時）
+  - `tools/scripts/weekly_cleanup.py`: Python実装の本体クリーンアップ処理
+  - `docs/workflows/weekly_cleanup_usage.md`: 詳細使用方法ドキュメント
+  - ファイル肥大化防止・7日以上古いログ自動削除機能
+  - アクティブプロセス検出時の安全な処理スキップ
+  - 詳細実行ログ・エラーログ・Pushover通知システム
+
+### Enhanced  
+- **Google Sheets進捗管理システム**: 旧10指標システムの完全移行
+  - 統計分析列（X-AC列）への移行完了：Current/BaseLine/p値/効果サイズ/改善率/統計的有意性
+  - レガシー指標列（N-W列）の非推奨化・使用停止
+  - `deprecated/metrics_legacy/`への旧システム移動
+
+### Removed
+- **METRICS-CLEANUP-001**: 旧10指標システム削除・統計分析システム移行
+  - レガシー10指標（LCA/A/B評価率/FPS等）の完全廃止
+  - `calculate_p1_a001_metrics.py` → `deprecated/metrics_legacy/`移動
+  - 新統計指標（OpenCV 7-component + 統計分析）への完全移行
+
+### Fixed
+- **統計分析データ整合性**: `tests/unit/test_statistical_record.py`追加
+  - 新統計システムの単体テスト実装
+  - データモデル一貫性の確保
+
+### Thanks
+- [@miyashita337](https://github.com/miyashita337) for P1-021 weekly cleanup automation and metrics system migration
+
 ## [v0.9.18] - 2025-08-14
 
 ### Added

@@ -94,8 +94,8 @@ logger = logging.getLogger(__name__)
               type=click.Choice(['standard', 'reproduce-auto']),
               default='standard',
               help='Processing mode: standard (normal) or reproduce-auto (workflow compatibility)')
-@click.option('--enable-author-adaptation', is_flag=True, default=True,
-              help='QCA-001: Enable automatic author-based parameter optimization')
+@click.option('--enable-author-adaptation', is_flag=True, default=False,
+              help='QCA-001: Enable automatic author-based parameter optimization (BASELINE-RECALC-001: disabled by default)')
 @click.option('--force-author', type=str,
               help='QCA-001: Force specific author profile (yado, aichi, zundamon) instead of auto-detection')
 @click.option('--adaptive-cropping', is_flag=True, default=False,
@@ -110,7 +110,7 @@ def extract_character(
     no_images: bool = False,
     max_files: Optional[int] = None,
     resume: bool = False,
-    sam_optimization_profile: str = 'p1_020_optimized',
+    sam_optimization_profile: str = 'original',  # BASELINE-RECALC-001: use original profile for true baseline
     enable_advanced_pipeline: bool = False,
     enable_author_adaptation: bool = True,
     force_author: Optional[str] = None,
@@ -417,7 +417,7 @@ def process_single_image(
     yolo_model: Any,
     perf_monitor: Any,
     verbose: bool = False,
-    sam_optimization_profile: str = 'p1_020_optimized',
+    sam_optimization_profile: str = 'original',  # BASELINE-RECALC-001: use original profile for true baseline
     enable_advanced_pipeline: bool = False,
     author_adapter: Optional[AuthorParameterAdapter] = None,
     force_author: Optional[str] = None,
