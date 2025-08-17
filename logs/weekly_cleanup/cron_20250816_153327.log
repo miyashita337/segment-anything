@@ -1,0 +1,32 @@
+🧹 P1-021: 週次クリーンアップ開始 - Sat Aug 16 15:33:27 JST 2025
+📁 プロジェクトルート: /mnt/c/AItools/segment-anything
+🐍 Python: Python 3.10.12
+🔍 テスト実行: python3 /mnt/c/AItools/segment-anything/tools/scripts/weekly_cleanup.py --dry-run --verbose
+💾 実行前ディスク使用量: 498G
+🚀 クリーンアップ実行開始...
+💾 実行後ディスク使用量: 498G
+⏰ 完了時刻: Sat Aug 16 15:40:32 JST 2025
+⚠️ エラーログが記録されました:
+   /mnt/c/AItools/segment-anything/logs/weekly_cleanup/error_20250816_153327.log
+📋 エラー概要:
+   2025-08-16 15:33:27,390 - INFO - 🧹 P1-021: 週次ソースコード肥大化解決開始
+   2025-08-16 15:33:27,390 - INFO - 🔍 DRY-RUN MODE: 実際の削除は行いません
+   2025-08-16 15:33:27,391 - INFO - 📋 ログファイル整理開始...
+   2025-08-16 15:33:27,403 - INFO -   📄 削除: P1-010_extraction.log (930.0 B)
+   2025-08-16 15:33:27,404 - INFO -   📄 削除: phase1_extraction.log (105.6 KB)
+   2025-08-16 15:33:27,405 - INFO -   📄 削除: qc_extraction.log (17.1 KB)
+   2025-08-16 15:33:27,406 - INFO -   📄 削除: qc_extraction_output.log (34.8 KB)
+   2025-08-16 15:33:27,414 - INFO - ✅ ログファイル整理完了: 4ファイル, 158.3 KB 解放
+   2025-08-16 15:33:27,414 - INFO - 🗂️ 一時ファイル除去開始...
+   2025-08-16 15:33:27,424 - INFO -   📁 ディレクトリ削除: __pycache__
+   ... (省略)
+📱 Pushover通知送信試行...
+=
+
+🧹 P1-021 週次クリーンアップ完了レポート
+   実行日時: Sat Aug 16 15:40:32 JST 2025
+   終了コード: 1
+   ログファイル: /mnt/c/AItools/segment-anything/logs/weekly_cleanup/cron_20250816_153327.log
+   エラーログ: /mnt/c/AItools/segment-anything/logs/weekly_cleanup/error_20250816_153327.log
+=
+
