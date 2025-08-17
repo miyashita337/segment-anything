@@ -355,12 +355,13 @@ class UniversalStatisticalAnalyzer:
             logger.error(f"❌ 統計分析エラー: {e}")
             raise
     
-    def update_google_sheets(self, tracker_id: str, stats_result: Dict[str, Any]) -> bool:
+    def update_google_sheets(self, tracker_id: str, baseline_tracker: str, stats_result: Dict[str, Any]) -> bool:
         """
         Google Sheets N-S列更新
         
         Args:
             tracker_id: トラッカーID
+            baseline_tracker: ベースライントラッカーID
             stats_result: 統計分析結果
             
         Returns:
@@ -383,7 +384,7 @@ class UniversalStatisticalAnalyzer:
             # N-S列更新（N:Current, O:BaseLine, P:p値, Q:Cohen's d, R:改善率, S:統計的有意性）
             updates = [
                 (f'N{tracker_row}', [[f"{stats_result['current_mean']:.3f}"]]),     # Current
-                (f'O{tracker_row}', [[f"{stats_result['baseline_mean']:.3f}"]]),    # BaseLine  
+                (f'O{tracker_row}', [[baseline_tracker]]),                          # BaseLine (トラッカーID)  
                 (f'P{tracker_row}', [[f"{stats_result['p_value']:.4f}"]]),          # p値
                 (f'Q{tracker_row}', [[f"{stats_result['cohens_d']:.3f}"]]),         # Cohen's d
                 (f'R{tracker_row}', [[f"{stats_result['improvement_rate']:.1f}%"]]), # 改善率
@@ -489,7 +490,7 @@ class UniversalStatisticalAnalyzer:
             )
             
             # 6. Google Sheets更新
-            self.update_google_sheets(current_tracker, stats_result)
+            self.update_google_sheets(current_tracker, baseline_tracker, stats_result)
             
             # 7. 結果構築
             result = UniversalStatisticalResult(
