@@ -187,7 +187,7 @@ flowchart TB
 - **調査結果に基づく安全な実装**（重複回避・デグレード防止）
 - 既存テンプレート（[batch_extraction_template.md](./batch_extraction_template.md)）の活用
 - [spec.md](../../spec.md) 準拠の実装
-- PH2-002で実装されたスケーラビリティ改善の活用
+- PHS-006で実装されたスケーラビリティ改善の活用
 
 #### 🤖 Claude Code の実装責任範囲
 
@@ -225,7 +225,7 @@ flowchart TB
 #### Claude Code による自動化
 
 - 抽出パイプラインの実行管理
-- PH2-002並列処理システムの活用
+- PHS-006並列処理システムの活用
 - Pushover によるスマホ通知（処理開始・完了時）
 - Google Sheetsでの進捗状況リアルタイム更新
 
@@ -311,7 +311,7 @@ flowchart TB
 ### 効率性重視
 
 - Claude Codeによる高度な自動化
-- PH2-002並列処理システムの活用
+- PHS-006並列処理システムの活用
 - 人間の作業を重要な判断・評価に集中
 
 ### 継続性確保
@@ -328,7 +328,7 @@ flowchart TB
 
 #### 必須要素
 1. **トラッカーID採番**
-   - 形式: `{Phase}-{連番3桁}` (例: PH1-001, T-001)
+   - 形式: `{Phase}-{連番3桁}` (例: PHS-001, TETETETETETETETETET-010)
    - 重複防止: 自動チェック機能
 
 2. **優先度設定**
@@ -347,7 +347,7 @@ flowchart TB
 ```bash
 # 単一タスク起票
 python tools/task_ticket.py \
-  --tracker-id "PH3-001" \
+  --tracker-id "PHS-014" \
   --priority "優先度高" \
   --description "設定ファイル管理システムの実装"
 
@@ -376,7 +376,7 @@ python tools/task_ticket.py --interactive
 
 2. **起票テンプレート**
 ```yaml
-tracker_id: PH3-001
+tracker_id: PHS-014
 priority: 優先度中
 title: 設定ファイル管理システムの実装
 description: |
@@ -387,7 +387,7 @@ success_criteria:
   - バージョン管理機能の実装
   - 設定変更履歴の可視化
 estimated_hours: 8
-dependencies: [PH2-008]
+dependencies: [PHS-013]
 ```
 
 3. **禁止事項**

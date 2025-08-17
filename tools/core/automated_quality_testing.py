@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 自動テスト強化システム
-P1-A003: 品質劣化の事前検出
+OPT-028: 品質劣化の事前検出
 
 機能:
 1. 回帰テスト自動実行
@@ -84,13 +84,13 @@ class AutomatedQualityTesting:
         if os.getenv('CI_ENVIRONMENT') == 'true' or not os.path.exists('/mnt/c'):
             # CI環境では project_root 配下を使用
             self.workspace_root = project_root / "workspace"
-            self.workspace_dir = self.workspace_root / "P1-A003"
+            self.workspace_dir = self.workspace_root / "OPT-028"
             self.baseline_dir = self.workspace_root / "baseline"
             self.test_results_dir = project_root / "test_results" / "quality"
         else:
             # PROGRESS_TRACKER.md仕様準拠の正しいパス（ローカル環境）
             self.workspace_root = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace")
-            self.workspace_dir = self.workspace_root / "P1-A003"
+            self.workspace_dir = self.workspace_root / "OPT-028"
             self.baseline_dir = self.workspace_root / "baseline"
             self.test_results_dir = project_root / "test_results" / "quality"
         

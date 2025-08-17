@@ -1,5 +1,5 @@
 """
-Pushover画像送信統一システム (QI-003/QI-005統合)
+Pushover画像送信統一システム (QTY-018/QTY-020統合)
 
 仕様:
 - 17ファイルの分散Pushover実装を統一（unification_script実行）
@@ -30,7 +30,7 @@ class PushoverImageSender:
     """
     Pushover画像送信統一システム
     
-    QI-005要件:
+    QTY-020要件:
     - 統一化されたPushover実装
     - バッチ送信機能（10枚制限対応）
     - 画像メタデータ付き送信

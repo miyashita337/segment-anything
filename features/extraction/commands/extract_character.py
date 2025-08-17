@@ -82,12 +82,12 @@ logger = logging.getLogger(__name__)
 @click.option('--verbose', is_flag=True, help='Enable verbose output')
 @click.option('--no-notify', is_flag=True, help='Disable Pushover notification')
 @click.option('--no-images', is_flag=True, help='Disable success images in notification')
-@click.option('--max-files', type=int, help='P1-018: Maximum number of files to process in batch mode')
-@click.option('--resume', is_flag=True, help='P1-019: Resume from checkpoint if available')
+@click.option('--max-files', type=int, help='OPTET-016: Maximum number of files to process in batch mode')
+@click.option('--resume', is_flag=True, help='OPT-017: Resume from checkpoint if available')
 @click.option('--sam-optimization-profile', 
               type=click.Choice(['original', 'p1_020_optimized', 'p1_020_balanced', 'p1_020_aggressive']),
               default='p1_020_optimized',
-              help='P1-020: SAM optimization profile for 93% speed improvement')
+              help='OPT-018: SAM optimization profile for 93% speed improvement')
 @click.option('--enable-advanced-pipeline', is_flag=True, 
               help='Enable 3-stage improvement pipeline (experimental, use with caution)')
 @click.option('--mode', 
@@ -95,11 +95,11 @@ logger = logging.getLogger(__name__)
               default='standard',
               help='Processing mode: standard (normal) or reproduce-auto (workflow compatibility)')
 @click.option('--enable-author-adaptation', is_flag=True, default=False,
-              help='QCA-001: Enable automatic author-based parameter optimization (BASELINE-RECALC-001: disabled by default)')
+              help='QTY-002: Enable automatic author-based parameter optimization (BSL-001: disabled by default)')
 @click.option('--force-author', type=str,
-              help='QCA-001: Force specific author profile (yado, aichi, zundamon) instead of auto-detection')
+              help='QTY-002: Force specific author profile (yado, aichi, zundamon) instead of auto-detection')
 @click.option('--adaptive-cropping', is_flag=True, default=False,
-              help='P1-B004: Enable adaptive cropping to prevent multiple character contamination')
+              help='OPT-033: Enable adaptive cropping to prevent multiple character contamination')
 def extract_character(
     input_path: str,
     output_path: str,
@@ -110,7 +110,7 @@ def extract_character(
     no_images: bool = False,
     max_files: Optional[int] = None,
     resume: bool = False,
-    sam_optimization_profile: str = 'original',  # BASELINE-RECALC-001: use original profile for true baseline
+    sam_optimization_profile: str = 'original',  # BSL-001: use original profile for true baseline
     enable_advanced_pipeline: bool = False,
     enable_author_adaptation: bool = True,
     force_author: Optional[str] = None,
@@ -124,7 +124,7 @@ def extract_character(
         batch: Process directory of images if True
         verbose: Enable detailed logging if True
     """
-    # 🚀 性能最適化: 決定論的実行を無効化（QCC-011性能テスト用）
+    # 🚀 性能最適化: 決定論的実行を無効化（QTY-003性能テスト用）
     random.seed(42)
     np.random.seed(42)
     torch.manual_seed(42)
@@ -143,12 +143,12 @@ def extract_character(
     yolo_model = get_yolo_model()
     perf_monitor = get_performance_monitor()
     
-    # QCA-001: 作者別パラメータ適応システムの初期化
+    # QTY-002: 作者別パラメータ適応システムの初期化
     author_adapter = None
     if enable_author_adaptation:
         author_adapter = AuthorParameterAdapter()
         if verbose:
-            click.echo("🎯 QCA-001: 作者別パラメータ適応システム有効")
+            click.echo("🎯 QTY-002: 作者別パラメータ適応システム有効")
 
     # reproduce-autoモード: ワークフロー互換性のための特別処理
     if mode == 'reproduce-auto':
@@ -191,34 +191,34 @@ def extract_character(
         for ext in image_extensions:
             image_files.extend(input_dir.glob(ext))
         
-        # P1-018: max_files制限適用
+        # OPTET-016: max_files制限適用
         original_count = len(image_files)
         if max_files and max_files > 0:
             if max_files < len(image_files):
                 image_files = image_files[:max_files]
                 if verbose:
-                    click.echo(f"🔢 P1-018バッチサイズ制御: {original_count}枚 → {max_files}枚に制限")
+                    click.echo(f"🔢 OPTET-016バッチサイズ制御: {original_count}枚 → {max_files}枚に制限")
         
         total_images = len(image_files)
         
         if verbose:
             click.echo(f"🚀 バッチ処理開始: {total_images}枚の画像を処理します...")
 
-        # P1-019: StableBatchProcessor初期化
+        # OPT-017: StableBatchProcessor初期化
         checkpoint_dir = output_dir / ".checkpoint"
         stable_processor = StableBatchProcessor(
             checkpoint_dir=str(checkpoint_dir),
-            micro_batch_size=3  # P1-019: マイクロバッチサイズ
+            micro_batch_size=3  # OPT-017: マイクロバッチサイズ
         )
         
         if verbose:
-            click.echo("🔄 P1-019安定バッチ処理システム初期化完了")
+            click.echo("🔄 OPT-017安定バッチ処理システム初期化完了")
 
         # Google Sheets: 抽出開始状態更新
         if GOOGLE_SHEETS_HOOK_AVAILABLE:
             try:
                 dataset_name = input_dir.name
-                update_extraction_status("PH2-002", "start", 
+                update_extraction_status("PHS-006", "start", 
                                         dataset_name=dataset_name, 
                                         total_images=total_images)
                 if verbose:
@@ -228,7 +228,7 @@ def extract_character(
 
         # 単一ファイル処理関数の定義
         def process_single_file(file_path_str: str) -> Tuple[bool, str]:
-            """単一ファイル処理（P1-019用）"""
+            """単一ファイル処理（OPT-017用）"""
             img_path = Path(file_path_str)
             
             # 重複処理チェック
@@ -270,7 +270,7 @@ def extract_character(
             except Exception as e:
                 return False, f"エラー: {img_path.name} - {str(e)}"
 
-        # P1-019: StableBatchProcessorでバッチ処理実行
+        # OPT-017: StableBatchProcessorでバッチ処理実行
         file_paths = [str(f) for f in image_files]
         batch_result = stable_processor.process_with_checkpoint(
             files=file_paths,
@@ -280,7 +280,7 @@ def extract_character(
         )
         
         if verbose:
-            click.echo(f"🎯 P1-019バッチ処理完了: {batch_result.get('message', 'Unknown')}")
+            click.echo(f"🎯 OPT-017バッチ処理完了: {batch_result.get('message', 'Unknown')}")
             stats = batch_result.get('stats', {})
             if stats:
                 click.echo(f"📊 統計: 成功 {stats.get('success_count', 0)}件, "
@@ -360,7 +360,7 @@ def extract_character(
         # Google Sheets: 抽出完了状態更新
         if GOOGLE_SHEETS_HOOK_AVAILABLE:
             try:
-                update_extraction_status("PH2-002", "complete", 
+                update_extraction_status("PHS-006", "complete", 
                                         dataset_name=dataset_name, 
                                         total_images=total_images,
                                         success_count=success_count)
@@ -417,7 +417,7 @@ def process_single_image(
     yolo_model: Any,
     perf_monitor: Any,
     verbose: bool = False,
-    sam_optimization_profile: str = 'original',  # BASELINE-RECALC-001: use original profile for true baseline
+    sam_optimization_profile: str = 'original',  # BSL-001: use original profile for true baseline
     enable_advanced_pipeline: bool = False,
     author_adapter: Optional[AuthorParameterAdapter] = None,
     force_author: Optional[str] = None,
@@ -442,7 +442,7 @@ def process_single_image(
         if processed_bgr is None:
             return None
 
-        # QCA-001: 作者別パラメータ適応
+        # QTY-002: 作者別パラメータ適応
         author_params = None
         detected_author = None
         
@@ -452,13 +452,13 @@ def process_single_image(
                 detected_author = force_author
                 author_params = author_adapter.get_optimized_parameters(force_author)
                 if verbose:
-                    click.echo(f"🎯 QCA-001: 強制指定作者 = {force_author}")
+                    click.echo(f"🎯 QTY-002: 強制指定作者 = {force_author}")
             else:
                 # パスから作者を自動検出
                 detected_author = author_adapter.detect_author_from_path(str(input_path))
                 author_params = author_adapter.apply_author_optimization(str(input_path))
                 if verbose:
-                    click.echo(f"🔍 QCA-001: 検出作者 = {detected_author or 'default'}")
+                    click.echo(f"🔍 QTY-002: 検出作者 = {detected_author or 'default'}")
                     
             if author_params and verbose:
                 click.echo(f"⚙️ SAMプロファイル: {author_params['sam_profile']}")
@@ -620,7 +620,7 @@ def generate_character_mask(image: ImageType, sam_model: Any, yolo_model: Any, q
         
         print(f"🔍 Image shape: {image_array.shape}")
             
-        # QCA-001: 作者別パラメータ適応
+        # QTY-002: 作者別パラメータ適応
         # YOLO信頼度・闾値を作者別に適応
         yolo_confidence = 0.07  # デフォルト
         score_threshold = 0.07  # デフォルト
@@ -628,7 +628,7 @@ def generate_character_mask(image: ImageType, sam_model: Any, yolo_model: Any, q
         if author_params:
             yolo_confidence = author_params.get('yolo_confidence', 0.07)
             score_threshold = author_params.get('score_threshold', 0.07)
-            print(f"🎯 QCA-001: YOLO信頼度={yolo_confidence}, スコア闾値={score_threshold}")
+            print(f"🎯 QTY-002: YOLO信頼度={yolo_confidence}, スコア闾値={score_threshold}")
         
         # Hybrid方式: YOLOでperson検出してSAMにbboxプロンプトを渡す
         hybrid_masks = []
@@ -638,14 +638,14 @@ def generate_character_mask(image: ImageType, sam_model: Any, yolo_model: Any, q
             if persons:
                 print(f"🎯 Hybrid方式: {len(persons)}人検出 → SAM bbox prompt")
                 
-                # P1-B004: 適応的クロッピング処理（複数キャラクター検出時）
+                # OPT-033: 適応的クロッピング処理（複数キャラクター検出時）
                 if adaptive_cropping and len(persons) > 1:
                     try:
                         from features.processing.adaptive_cropping import DetectionBox
                         adaptive_cropper = AdaptiveCropper()
                         
                         if verbose:
-                            print(f"🔧 P1-B004: 適応的クロッピング実行（{len(persons)}人検出）")
+                            print(f"🔧 OPT-033: 適応的クロッピング実行（{len(persons)}人検出）")
                         
                         # YOLO検出結果をDetectionBoxに変換
                         detection_boxes = []
@@ -674,13 +674,13 @@ def generate_character_mask(image: ImageType, sam_model: Any, yolo_model: Any, q
                                     'yolo_score': optimized_bbox.confidence
                                 }]
                                 if verbose:
-                                    print(f"✅ P1-B004: クロッピング最適化完了 - 他キャラ混入を67-83%削減")
+                                    print(f"✅ OPT-033: クロッピング最適化完了 - 他キャラ混入を67-83%削減")
                             else:
                                 if verbose:
-                                    print("⚠️ P1-B004: 適応的クロッピング失敗 - デフォルト処理継続")
+                                    print("⚠️ OPT-033: 適応的クロッピング失敗 - デフォルト処理継続")
                     except Exception as e:
                         if verbose:
-                            print(f"⚠️ P1-B004エラー: {e} - デフォルト処理継続")
+                            print(f"⚠️ OPT-033エラー: {e} - デフォルト処理継続")
                 
                 # 最大面積のpersonを選択（複数検出時）
                 if len(persons) > 1:
@@ -810,7 +810,7 @@ def _select_best_mask_qc_method(masks: list) -> Optional[dict]:
 def _select_best_mask_with_fallback(masks: list, image_shape: tuple, primary_method: str = 'balanced') -> Optional[dict]:
     """QC成功版マスク選択（複雑フォールバックシステム削除）
     
-    P1-B004教訓により複雑なフォールバックシステムを削除。
+    OPT-033教訓により複雑なフォールバックシステムを削除。
     QC成功版の単純手法が100%成功のため、それを直接使用。
     
     Args:
@@ -1004,7 +1004,7 @@ def save_extracted_character(image: ImageType, mask: MaskType, output_path: Path
     """
     QC成功版保存方式: シンプルな白背景マスク適用（100%成功実績）
     
-    P1-B004教訓: 複雑な境界強化・検証・黒背景処理は品質劣化の原因。
+    OPT-033教訓: 複雑な境界強化・検証・黒背景処理は品質劣化の原因。
     QC成功版の単純な白背景処理が100%成功を実現。
     
     Args:
