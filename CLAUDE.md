@@ -29,7 +29,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### 🚨 絶対厳守事項
 
-**全トラッカータスク（OPTETETETETETETET-010, PHS-005 等）は以下が必須完了要件です：**
+**全トラッカータスク（P1-010, PHS-005 等）は以下が必須完了要件です：**
 
 1. **ワークスペース出力必須**: `/mnt/c/AItools/lora/train/{作者名}/tracker-workspace/{TRACKER_ID}/`
 2. **品質ワークフロー実行必須**: `./tools/scripts/run_quality_workflow.sh {TRACKER_ID}`

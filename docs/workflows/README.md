@@ -27,7 +27,7 @@ flowchart TB
     Success -->|❌未達| Issue
     Success -->|✅達成| Evaluation[⑥評価フェーズ]
 
-    Evaluation --> AutoEval[🤖Claude Code客観的評価<br/>PLA・SCI・PLE指標]
+    Evaluation --> AutoEval[🤖Claude Code客観的評価<br/>統計的品質指標]
     Evaluation --> HumanEval[👤人間による目視評価<br/>A/B評価50%以上]
 
     HumanEval --> EvalPass{評価基準達成?}
@@ -241,13 +241,16 @@ flowchart TB
 
 #### 🤖 Claude Code による客観的評価（メイン）
 
-**判定基準**: **PLA・SCI・PLE指標による総合評価**
+**判定基準**: **統計的品質指標による総合評価**
 
 > **詳細**: [`docs/technical_specifications.md`](../technical_specifications.md) を参照
 
-- **PLA (Pixel-Level Accuracy)**: ピクセル単位精度
-- **SCI (Semantic Completeness Index)**: 構造完全性
-- **PLE (Progressive Learning Efficiency)**: 学習効率性
+- **Current Score**: 現在品質スコア
+- **BaseLine Score**: ベースライン品質スコア  
+- **p値**: 統計的有意性検定結果
+- **効果サイズ (Cohen's d)**: 改善効果の大きさ
+- **改善率**: ベースラインからの改善パーセンテージ
+- **統計的有意性**: 有意/非有意の判定
 - 統合品質チェッカーによる自動評価実行
 
 #### 👤 人間による目視評価（最終確認）
@@ -274,7 +277,7 @@ flowchart TB
 | ------------------------ | ------------------ | --------------------------- |
 | **ローカルテスト成功率** | 90%以上            | 出力画像数 ÷ 入力画像数     |
 | **人間評価基準**         | A/B 評価 50%以上   | A/B 評価数 ÷ 総出力数       |
-| **客観的品質指標**       | PLA≥0.75, SCI≥0.7 | 統合品質チェッカーによる測定 |
+| **客観的品質指標**       | p値≤0.05, |効果サイズ|≥0.2 | 統合品質チェッカーによる測定 |
 | **タスク粒度**           | 1 つずつ実行       | Google Sheets 管理          |
 | **進捗可視性**           | リアルタイム更新   | Google Sheets 自動反映      |
 
@@ -299,7 +302,7 @@ flowchart TB
 ### 品質優先
 
 - 基準未達時は確実に差し戻し
-- 客観的指標（PLA・SCI・PLE）による定量評価
+- 統計的指標（Current/BaseLine比較・p値・効果サイズ）による定量評価
 - 人間の最終判定を最優先
 
 ### 可視性確保
