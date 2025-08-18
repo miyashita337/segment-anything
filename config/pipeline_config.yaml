@@ -1,5 +1,5 @@
 # 統合パイプライン設定 (Phase 3-6)
-# トラッカー: INTETETETETETETETET-010
+# トラッカー: INTEGRATE-3-6
 # 目的: 安全性とロバスト性を重視した統合パイプラインシステム
 
 # パイプライン基本設定
@@ -55,15 +55,18 @@ phases:
         host: "localhost"
     timeout_seconds: 60
 
-# パス設定 (QUAL-033: 厳密パス検証対応)
+# パス設定
 paths:
-  # ⚠️ デフォルト入力パス・フォールバックは無効化されています
-  # 明示的にパスを指定する必要があります
-  # default_input: # QUAL-033で無効化
-  # input_alternatives: # QUAL-033で無効化
+  # デフォルト入力パス（最も一般的に使用されるパス）
+  default_input: "/mnt/c/AItools/lora/train/yado/org/kana05/"
   
-  # ワークスペースベースパス（動的に設定されます）
-  # workspace_base は config/workspace_config.py で管理
+  # ワークスペースベースパス
+  workspace_base: "/mnt/c/AItools/lora/train/yado/tracker-workspace/"
+  
+  # 追加入力パス候補（フォールバック用）
+  input_alternatives:
+    - "/mnt/c/AItools/lora/train/yado/org/kana08/"
+    - "/mnt/c/AItools/lora/train/yado/org/kana03/"
   
   # テンプレートディレクトリ
   templates_dir: "templates/"
@@ -279,7 +282,7 @@ notifications:
 # メタデータ
 metadata:
   created_by: "Claude Code Integration System"
-  created_for_tracker: "INTETETETETETETETET-010"
+  created_for_tracker: "INTEGRATE-3-6"
   version: "1.0.0"
   last_updated: "2025-08-05"
   description: |
