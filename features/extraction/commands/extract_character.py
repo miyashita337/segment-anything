@@ -23,6 +23,10 @@ import logging
 import random
 import time
 from features.adaptation.author_parameter_adapter import AuthorParameterAdapter
+
+# QUAL-033: 厳密パス検証システム統合
+from features.common.strict_path_validator import StrictPathValidator, validate_strict_paths, InputValidationError
+from features.common.interactive_path_input import InteractivePathInput, interactive_setup
 from features.common.custom_types import ImageType, MaskType
 from features.common.file_utils import generate_output_filename, is_already_processed
 from features.common.hooks.start import (
@@ -100,6 +104,12 @@ logger = logging.getLogger(__name__)
               help='QTY-002: Force specific author profile (yado, aichi, zundamon) instead of auto-detection')
 @click.option('--adaptive-cropping', is_flag=True, default=False,
               help='OPT-033: Enable adaptive cropping to prevent multiple character contamination')
+@click.option('--strict-validation', is_flag=True, default=True,
+              help='QUAL-033: Enable strict path validation (disable defaults/fallbacks)')
+@click.option('--interactive', is_flag=True, default=False,
+              help='QUAL-033: Enable interactive mode for path input')
+@click.option('--require-author-structure', is_flag=True, default=False,
+              help='QUAL-033: Require /train/{author}/org/{work}/ path structure')
 def extract_character(
     input_path: str,
     output_path: str,
@@ -114,7 +124,10 @@ def extract_character(
     enable_advanced_pipeline: bool = False,
     enable_author_adaptation: bool = True,
     force_author: Optional[str] = None,
-    adaptive_cropping: bool = False
+    adaptive_cropping: bool = False,
+    strict_validation: bool = True,
+    interactive: bool = False,
+    require_author_structure: bool = False
 ) -> None:
     """Extract anime character from manga image.
 
@@ -123,7 +136,72 @@ def extract_character(
         output_path: Path to save extracted character
         batch: Process directory of images if True
         verbose: Enable detailed logging if True
+        strict_validation: Enable strict path validation (QUAL-033)
+        interactive: Enable interactive mode for path input
+        require_author_structure: Require author structure validation
     """
+    # QUAL-033: 厳密パス検証システム
+    if verbose:
+        click.echo("🔍 QUAL-033: 厳密パス検証システム開始")
+    
+    try:
+        # インタラクティブモードの処理
+        if interactive:
+            if verbose:
+                click.echo("🎯 対話的パス入力モード有効")
+            
+            setup_result = interactive_setup("キャラクター抽出パス設定")
+            if setup_result['cancelled']:
+                click.echo("❌ ユーザーによってキャンセルされました")
+                return
+            
+            if not setup_result['success']:
+                for error in setup_result['errors']:
+                    click.echo(f"❌ {error}", err=True)
+                return
+            
+            # 対話結果をパラメータに反映
+            input_path = str(setup_result['paths']['input_path'])
+            output_path = str(setup_result['paths']['output_path'])
+            
+            if verbose:
+                click.echo(f"✅ 対話入力完了: 入力={input_path}, 出力={output_path}")
+        
+        # 厳密パス検証実行
+        validated_input_path, validated_output_path = validate_strict_paths(
+            input_path=input_path,
+            output_path=output_path,
+            strict_mode=strict_validation,
+            interactive_mode=False,  # 既に対話処理済み
+            require_author_structure=require_author_structure
+        )
+        
+        # 検証済みパスを使用
+        input_path = str(validated_input_path)
+        output_path = str(validated_output_path)
+        
+        if verbose:
+            click.echo(f"✅ パス検証完了: 入力={input_path}, 出力={output_path}")
+            
+    except InputValidationError as e:
+        click.echo(f"❌ パス検証失敗:\n{e}", err=True)
+        
+        if strict_validation:
+            click.echo("💡 ヒント: --no-strict-validation でデフォルト動作に戻せます", err=True)
+        
+        # インタラクティブモードの提案
+        if not interactive:
+            click.echo("💡 ヒント: --interactive で対話的入力が利用できます", err=True)
+        
+        return
+    
+    except Exception as e:
+        click.echo(f"❌ 予期しないエラー: {e}", err=True)
+        if verbose:
+            import traceback
+            click.echo(traceback.format_exc(), err=True)
+        return
+
     # 🚀 性能最適化: 決定論的実行を無効化（QTY-003性能テスト用）
     random.seed(42)
     np.random.seed(42)

@@ -101,47 +101,74 @@ if [ "$SKIP_EXTRACTION" = false ]; then
     echo "🚀 抽出パイプライン開始（バックグラウンド実行）"
     echo "⚠️  Windows ハングアップ防止のため、バックグラウンド実行します"
     
-    # kana05の39枚を使用（Phase 1と同じデータセット）
-    INPUT_DIR="/mnt/c/AItools/lora/train/yado/org/kana08"
+    # QUAL-033: 厳密パス検証システム統合
+    echo ""
+    echo "🔍 QUAL-033 厳密パス検証システム"
+    echo "   デフォルトパスは無効化されています。明示的にパスを指定してください。"
+    echo ""
     
-    # 入力ディレクトリ存在チェック強化
-    if [ ! -d "$INPUT_DIR" ]; then
-        echo "❌ エラー: 入力ディレクトリが存在しません"
-        echo "   パス: $INPUT_DIR"
+    # 入力ディレクトリの対話的入力
+    while true; do
+        echo "📁 画像入力ディレクトリを指定してください:"
+        echo "   例: /mnt/c/AItools/lora/train/yado/org/kana08/"
+        echo "   例: /mnt/c/AItools/lora/train/kiri/org/work01/"
         echo ""
-        echo "🔧 対処方法:"
-        echo "   1. パスの確認: ls $(dirname "$INPUT_DIR")"
-        echo "   2. 正しいパスの指定"
-        echo "   3. 必要に応じてディレクトリ作成"
+        read -p "🔍 入力パス > " INPUT_DIR
+        
+        # 空入力チェック
+        if [ -z "$INPUT_DIR" ]; then
+            echo "❌ エラー: パスの入力が必要です（デフォルト値は無効化されています）"
+            echo ""
+            continue
+        fi
+        
+        # 入力ディレクトリ存在チェック（QUAL-033準拠）
+        if [ ! -d "$INPUT_DIR" ]; then
+            echo "❌ エラー: 入力ディレクトリが存在しません"
+            echo "   パス: $INPUT_DIR"
+            echo ""
+            echo "🔧 対処方法:"
+            echo "   1. パスの確認: ls $(dirname "$INPUT_DIR")"
+            echo "   2. 正しいパスの指定"
+            echo "   3. 必要に応じてディレクトリ作成"
+            echo ""
+            echo "⚠️ 注意: 存在しないパスでの強制実行は品質保証違反です"
+            echo ""
+            continue
+        fi
+        
+        # 画像ファイル存在チェック（QUAL-033準拠）
+        IMAGE_COUNT=$(find "$INPUT_DIR" -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" | wc -l)
+        if [ "$IMAGE_COUNT" -eq 0 ]; then
+            echo "❌ エラー: 入力ディレクトリに画像ファイルが見つかりません"
+            echo "   パス: $INPUT_DIR"
+            echo "   サポート形式: jpg, jpeg, png"
+            echo ""
+            echo "🔧 対処方法:"
+            echo "   1. ディレクトリ内容確認: ls $INPUT_DIR"
+            echo "   2. サポートされている画像形式で画像を配置"
+            echo "   3. ファイル名・拡張子の確認"
+            echo ""
+            continue
+        fi
+        
+        # 検証成功
+        echo "✅ 入力パス検証成功: $INPUT_DIR"
+        echo "✅ 画像ファイル: $IMAGE_COUNT 枚を検出"
         echo ""
-        echo "⚠️ 注意: 存在しないパスでの強制実行は品質保証違反です"
-        exit 1
-    fi
-    
-    # 画像ファイル存在チェック
-    IMAGE_COUNT=$(find "$INPUT_DIR" -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" | wc -l)
-    if [ "$IMAGE_COUNT" -eq 0 ]; then
-        echo "❌ エラー: 入力ディレクトリに画像ファイルが見つかりません"
-        echo "   パス: $INPUT_DIR"
-        echo "   サポート形式: jpg, jpeg, png"
-        echo ""
-        echo "🔧 対処方法:"
-        echo "   1. ディレクトリ内容確認: ls $INPUT_DIR"
-        echo "   2. サポートされている画像形式で画像を配置"
-        echo "   3. ファイル名・拡張子の確認"
-        exit 1
-    fi
-    
-    echo "✅ 入力検証完了: $IMAGE_COUNT 枚の画像を検出"
+        break
+    done
     
     EXTRACTION_LOG="${OUTPUT_DIR}/${TRACKER_ID}_extraction.log"
     
-    # バックグラウンド実行開始（統一されたextract_character.py使用）
+    # バックグラウンド実行開始（QUAL-033厳密検証統合）
     nohup sam-env/bin/python3 features/extraction/commands/extract_character.py \
         --mode reproduce-auto \
         --batch \
         --verbose \
         --max-files 10 \
+        --strict-validation \
+        --require-author-structure \
         "$INPUT_DIR" \
         -o "${OUTPUT_DIR}/extraction/" \
         > "$EXTRACTION_LOG" 2>&1 &
