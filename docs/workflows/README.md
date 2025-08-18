@@ -98,6 +98,9 @@ flowchart TB
    
    # 廃止済み機能の確認
    grep -r "TODO\|FIXME\|deprecated" . --include="*.py" | grep "機能名"
+   
+   # QUAL-033: 厳密パス検証対応確認
+   python3 features/extraction/commands/extract_character.py --help | grep strict-validation
    ```
 
 2. **✅ 影響範囲分析**

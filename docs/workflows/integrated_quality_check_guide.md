@@ -27,6 +27,21 @@
 
 ## 🚀 標準実行ワークフロー
 
+### ステップ0: キャラクター抽出実行（前提条件）
+
+**QUAL-033対応バッチ抽出**（品質チェック前の必須ステップ）:
+
+```bash
+# 厳密パス検証付きバッチ抽出（QUAL-033必須）
+python3 features/extraction/commands/extract_character.py \
+  /path/to/input/images/ \
+  -o /path/to/output/extraction/ \
+  --batch \
+  --verbose \
+  --strict-validation \
+  --max-files 100
+```
+
 ### ステップ1: 統合品質チェック実行
 
 ```bash
@@ -155,10 +170,10 @@ python3 features/evaluation/objective_metrics.py --test ple
 
 ## 🚨 品質問題・対応ガイド
 
-### P1-B004 教訓：品質閾値・3段階処理の過適用問題
+### OPT-033 教訓：品質閾値・3段階処理の過適用問題
 
 **発見日**: 2025-08-03  
-**問題**: P1-B004実装時、品質向上を狙った複雑システムが逆に品質劣化を引き起こした
+**問題**: OPT-033実装時、品質向上を狙った複雑システムが逆に品質劣化を引き起こした
 
 #### 📊 品質閾値問題（解決済み）
 - **問題**: 50%品質閾値により良好な抽出結果（QC成功版100%）が「低品質」判定される

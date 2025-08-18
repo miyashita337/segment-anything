@@ -104,8 +104,10 @@ logger = logging.getLogger(__name__)
               help='QTY-002: Force specific author profile (yado, aichi, zundamon) instead of auto-detection')
 @click.option('--adaptive-cropping', is_flag=True, default=False,
               help='OPT-033: Enable adaptive cropping to prevent multiple character contamination')
+@click.option('--no-strict-validation', is_flag=True, default=False,
+              help='QUAL-033: Disable strict path validation (NOT RECOMMENDED - use only for debugging)')
 @click.option('--strict-validation', is_flag=True, default=True,
-              help='QUAL-033: Enable strict path validation (disable defaults/fallbacks)')
+              help='QUAL-033: Enable strict path validation (ALWAYS ON by default - QUAL-033 requirement)')
 @click.option('--interactive', is_flag=True, default=False,
               help='QUAL-033: Enable interactive mode for path input')
 @click.option('--require-author-structure', is_flag=True, default=False,
@@ -125,6 +127,7 @@ def extract_character(
     enable_author_adaptation: bool = True,
     force_author: Optional[str] = None,
     adaptive_cropping: bool = False,
+    no_strict_validation: bool = False,
     strict_validation: bool = True,
     interactive: bool = False,
     require_author_structure: bool = False
@@ -140,9 +143,23 @@ def extract_character(
         interactive: Enable interactive mode for path input
         require_author_structure: Require author structure validation
     """
-    # QUAL-033: 厳密パス検証システム
+    # QUAL-033: 厳密パス検証システム - 強制有効化
+    if no_strict_validation:
+        if not interactive:  # 非対話モードでは強制終了
+            click.echo("❌ QUAL-033: --no-strict-validation は非対話モードでは禁止されています", err=True)
+            click.echo("   対話モード（--interactive）でのみ無効化可能です", err=True)
+            sys.exit(1)
+        else:
+            click.echo("⚠️  QUAL-033: 厳密パス検証が無効化されています（デバッグ目的のみ）", err=True)
+            strict_validation = False
+    
+    # 強制的に厳密検証を有効化（QUAL-033要件）
+    if strict_validation is False and not no_strict_validation:
+        strict_validation = True
+    
     if verbose:
-        click.echo("🔍 QUAL-033: 厳密パス検証システム開始")
+        validation_status = "有効" if strict_validation else "無効（デバッグモード）"
+        click.echo(f"🔍 QUAL-033: 厳密パス検証システム開始 - {validation_status}")
     
     try:
         # インタラクティブモードの処理
