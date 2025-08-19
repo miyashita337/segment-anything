@@ -96,23 +96,41 @@ PROGRESS_FILE="docs/request/[dataset_name]_extraction_progress_$(date +%Y%m%d).m
 
 ### ステップ 5: バッチ抽出実行
 
-#### オプション 1: test_phase2_simple.py 使用（推奨）
+#### 🎯 推奨方法: extract_character.py（QUAL-033対応）
 
-- バックグラウンド実行
+**新アーキテクチャバッチ抽出**（厳密パス検証統合）:
 
 ```bash
-nohup python3 tools/test_phase2_simple.py \
-  --input_dir "$INPUT_DIR" \
-  --output_dir "$OUTPUT_DIR" \
-  --score_threshold 0.07
+# バッチ処理（厳密検証有効 - QUAL-033必須）
+python3 features/extraction/commands/extract_character.py \
+  "$INPUT_DIR" \
+  -o "$OUTPUT_DIR" \
+  --batch \
+  --verbose \
+  --strict-validation \
+  --max-files 50
 ```
 
-#### オプション 2: run_batch_extraction.py 使用
+**バックグラウンド実行**:
+```bash
+nohup python3 features/extraction/commands/extract_character.py \
+  "$INPUT_DIR" \
+  -o "$OUTPUT_DIR" \
+  --batch \
+  --verbose \
+  --strict-validation \
+  --max-files 50 \
+  > extraction_$(date +%Y%m%d_%H%M%S).log 2>&1 &
+```
+
+#### レガシー方法（非推奨）
+
+⚠️ **以下は古い実装です。QUAL-033対応のため上記を使用してください。**
 
 ```bash
-python3 temp/scripts/migration/run_batch_extraction.py \
-  --input_dir "$INPUT_DIR" \
-  --output_dir "$OUTPUT_DIR"
+# 旧実装（非推奨）
+python3 tools/test_phase2_simple.py --input_dir "$INPUT_DIR" --output_dir "$OUTPUT_DIR" --score_threshold 0.07
+python3 temp/scripts/migration/run_batch_extraction.py --input_dir "$INPUT_DIR" --output_dir "$OUTPUT_DIR"
 ```
 
 ### ステップ 6: 結果確認
