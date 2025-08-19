@@ -14,7 +14,7 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../'))
 
-from tools.analysis.stash_diff_analyzer import (
+from tools.trackers.QUAL_035_stash_analysis.stash_diff_analyzer import (
     StashDiffAnalyzer, ChangeType, RecommendedAction
 )
 

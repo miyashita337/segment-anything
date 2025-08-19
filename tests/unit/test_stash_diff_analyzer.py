@@ -15,7 +15,7 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../'))
 
-from tools.analysis.stash_diff_analyzer import (
+from tools.trackers.QUAL_035_stash_analysis.stash_diff_analyzer import (
     StashDiffAnalyzer, ChangeType, RecommendedAction, FileAnalysis
 )
 
@@ -484,10 +484,10 @@ class TestFileAnalysisDataclass(unittest.TestCase):
 class TestMainFunction(unittest.TestCase):
     """main関数のテスト"""
     
-    @patch('tools.analysis.stash_diff_analyzer.StashDiffAnalyzer')
+    @patch('tools.trackers.QUAL_035_stash_analysis.stash_diff_analyzer.StashDiffAnalyzer')
     def test_main_success(self, mock_analyzer_class):
         """main関数成功のテスト"""
-        from tools.analysis.stash_diff_analyzer import main
+        from tools.trackers.QUAL_035_stash_analysis.stash_diff_analyzer import main
         
         # Mock設定
         mock_analyzer = mock_analyzer_class.return_value
@@ -505,10 +505,10 @@ class TestMainFunction(unittest.TestCase):
         mock_analyzer.save_analysis_results.assert_called_once()
         mock_analyzer.generate_summary_report.assert_called_once()
     
-    @patch('tools.analysis.stash_diff_analyzer.StashDiffAnalyzer')
+    @patch('tools.trackers.QUAL_035_stash_analysis.stash_diff_analyzer.StashDiffAnalyzer')
     def test_main_failure(self, mock_analyzer_class):
         """main関数失敗のテスト"""
-        from tools.analysis.stash_diff_analyzer import main
+        from tools.trackers.QUAL_035_stash_analysis.stash_diff_analyzer import main
         
         # Mock設定（失敗）
         mock_analyzer = mock_analyzer_class.return_value

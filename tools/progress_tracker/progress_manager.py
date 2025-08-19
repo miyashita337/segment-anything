@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-進捗管理システムメインクラス
+進捗管理システムメインクラス修正版
 Google Sheetsとの連携による進捗追跡機能
+v0.9.21 - QUAL-034対応（MetricsRecord -> StatisticalRecord）
 """
 
 import logging
@@ -10,7 +11,7 @@ from pathlib import Path
 from typing import List, Optional, Dict, Any
 
 from .data_models import (
-    TaskRecord, TaskStatus, ComponentStatus, MetricsRecord,
+    TaskRecord, TaskStatus, ComponentStatus, StatisticalRecord,
     ProgressTrackerConfig, ProgressTrackerError
 )
 from .sheets_client import GoogleSheetsClient
@@ -299,50 +300,52 @@ class ProgressManager:
             logger.error(f"ステータスサマリー表示エラー: {e}")
             print(f"❌ ステータスサマリー表示エラー: {e}")
     
-    def update_task_metrics(self, tracker_id: str, metrics_dict: Dict[str, float]) -> TaskRecord:
-        """10指標データ更新"""
+    def update_task_metrics(self, tracker_id: str, stats_dict: Dict[str, float]) -> TaskRecord:
+        """統計指標データ更新 (旧10指標システムから新統計指標システムへ移行)"""
         try:
             task = self.get_task(tracker_id)
             if not task:
                 raise ProgressTrackerError(f"タスクが見つかりません: {tracker_id}")
             
-            # メトリクス辞書からMetricsRecordを作成
-            metrics = MetricsRecord(
-                lca=metrics_dict.get('LCA'),
-                ab_evaluation_rate=metrics_dict.get('A/B評価率'), 
-                fps=metrics_dict.get('FPS'),
-                c_plus_rate=metrics_dict.get('C以上評価率'),
-                avg_coverage_rate=metrics_dict.get('平均カバレッジ率'),
-                avg_compactness=metrics_dict.get('平均コンパクトネス'),
-                avg_fill_rate=metrics_dict.get('平均フィル率'),
-                sci=metrics_dict.get('SCI (Semantic Completeness Index)'),
-                pla=metrics_dict.get('PLA (Pixel-Level Accuracy)'),
-                ple=metrics_dict.get('PLE (Progressive Learning Efficiency)')
+            # 統計辞書からStatisticalRecordを作成
+            statistical_record = StatisticalRecord(
+                current_score=stats_dict.get('current_score'),
+                baseline_score=stats_dict.get('baseline_score'),
+                p_value=stats_dict.get('p_value'),
+                cohens_d=stats_dict.get('cohens_d'),
+                improvement_rate=stats_dict.get('improvement_rate'),
+                statistical_significance=stats_dict.get('statistical_significance')
             )
             
-            task.metrics = metrics
+            task.statistical_record = statistical_record
             task.updated_date = datetime.now()
             
             self.client.update_task(task)
             
-            logger.info(f"メトリクス更新: {tracker_id}")
+            logger.info(f"統計指標更新: {tracker_id}")
             return task
             
         except Exception as e:
-            raise ProgressTrackerError(f"メトリクス更新失敗: {e}")
+            raise ProgressTrackerError(f"統計指標更新失敗: {e}")
     
     def update_from_quality_checker_results(self, tracker_id: str, quality_results: Dict[str, Any]) -> TaskRecord:
         """統合品質チェッカー結果から自動更新"""
         try:
             # 品質チェッカーの結果形式を解析
-            metrics_dict = {}
+            stats_dict = {}
             
-            if 'metrics' in quality_results:
-                for metric in quality_results['metrics']:
-                    if isinstance(metric, dict) and 'name' in metric and 'value' in metric:
-                        metrics_dict[metric['name']] = metric['value']
+            if 'statistical_analysis' in quality_results:
+                stats_analysis = quality_results['statistical_analysis']
+                stats_dict = {
+                    'current_score': stats_analysis.get('current_score'),
+                    'baseline_score': stats_analysis.get('baseline_score'),
+                    'p_value': stats_analysis.get('p_value'),
+                    'cohens_d': stats_analysis.get('cohens_d'),
+                    'improvement_rate': stats_analysis.get('improvement_rate'),
+                    'statistical_significance': stats_analysis.get('statistical_significance')
+                }
             
-            return self.update_task_metrics(tracker_id, metrics_dict)
+            return self.update_task_metrics(tracker_id, stats_dict)
             
         except Exception as e:
             raise ProgressTrackerError(f"品質チェッカー結果更新失敗: {e}")
