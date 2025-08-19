@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "stash_backup": "tracker-id-standardization-backup-20250817_174144",
+  "file_backup": "/tmp/tracker_lightweight_backup_20250817_174145",
+  "replacements": {
+    "important_files": 325,
+    "directories": 16312,
+    "total": 16637
+  },
+  "timestamp": "2025-08-17T17:41:52.469942"
+}

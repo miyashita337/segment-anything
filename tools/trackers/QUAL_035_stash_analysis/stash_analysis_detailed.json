@@ -1,0 +1,3043 @@
+{
+  "docs/ASYNC_SYSTEM_FINAL_REPORT.md": {
+    "file_path": "docs/ASYNC_SYSTEM_FINAL_REPORT.md",
+    "lines_added": 193,
+    "lines_removed": 193,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "docs/P1-017_critical_usability_improvements.md": {
+    "file_path": "docs/P1-017_critical_usability_improvements.md",
+    "lines_added": 8,
+    "lines_removed": 8,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "docs/P1-018_batch_size_control.md": {
+    "file_path": "docs/P1-018_batch_size_control.md",
+    "lines_added": 26,
+    "lines_removed": 26,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "docs/P1-019_process_stability.md": {
+    "file_path": "docs/P1-019_process_stability.md",
+    "lines_added": 29,
+    "lines_removed": 29,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "docs/P1-020_sam_optimization.md": {
+    "file_path": "docs/P1-020_sam_optimization.md",
+    "lines_added": 34,
+    "lines_removed": 34,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "docs/PUSHOVER_UNIFICATION_PLAN.md": {
+    "file_path": "docs/PUSHOVER_UNIFICATION_PLAN.md",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  },
+  "docs/QI-002_ROOT_CAUSE_PREVENTION.md": {
+    "file_path": "docs/QI-002_ROOT_CAUSE_PREVENTION.md",
+    "lines_added": 3,
+    "lines_removed": 3,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新",
+      "小規模変更 (+3/-3)"
+    ],
+    "sample_changes": []
+  },
+  "docs/checklists/tracker_workflow_checklist.md": {
+    "file_path": "docs/checklists/tracker_workflow_checklist.md",
+    "lines_added": 3,
+    "lines_removed": 3,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新",
+      "小規模変更 (+3/-3)"
+    ],
+    "sample_changes": []
+  },
+  "docs/daily_user_tasks.md": {
+    "file_path": "docs/daily_user_tasks.md",
+    "lines_added": 6,
+    "lines_removed": 6,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "docs/google_sheets_reference.md": {
+    "file_path": "docs/google_sheets_reference.md",
+    "lines_added": 5,
+    "lines_removed": 5,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "docs/human_evaluation_integration.md": {
+    "file_path": "docs/human_evaluation_integration.md",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  },
+  "docs/issues/issue-regression-001-discussion.md": {
+    "file_path": "docs/issues/issue-regression-001-discussion.md",
+    "lines_added": 149,
+    "lines_removed": 149,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "docs/issues/issue-regression-001-github.md": {
+    "file_path": "docs/issues/issue-regression-001-github.md",
+    "lines_added": 143,
+    "lines_removed": 143,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "docs/issues/issue-regression-001-spec.md": {
+    "file_path": "docs/issues/issue-regression-001-spec.md",
+    "lines_added": 283,
+    "lines_removed": 283,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新",
+      "大規模変更 (+283/-283)"
+    ],
+    "sample_changes": []
+  },
+  "docs/phase1_mosaic_boundary_analysis.md": {
+    "file_path": "docs/phase1_mosaic_boundary_analysis.md",
+    "lines_added": 64,
+    "lines_removed": 64,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "docs/phase1_solid_fill_analysis.md": {
+    "file_path": "docs/phase1_solid_fill_analysis.md",
+    "lines_added": 82,
+    "lines_removed": 82,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "docs/pushover_batch_notification.md": {
+    "file_path": "docs/pushover_batch_notification.md",
+    "lines_added": 162,
+    "lines_removed": 162,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "docs/workflows/COMMAND_SUCCESS_PATTERNS.md": {
+    "file_path": "docs/workflows/COMMAND_SUCCESS_PATTERNS.md",
+    "lines_added": 5,
+    "lines_removed": 5,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "docs/workflows/OUTPUT_DIRECTORY_UNIFIED.md": {
+    "file_path": "docs/workflows/OUTPUT_DIRECTORY_UNIFIED.md",
+    "lines_added": 197,
+    "lines_removed": 197,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "docs/workflows/README.md": {
+    "file_path": "docs/workflows/README.md",
+    "lines_added": 7,
+    "lines_removed": 10,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "docs/workflows/dashboard_management_unified.md": {
+    "file_path": "docs/workflows/dashboard_management_unified.md",
+    "lines_added": 284,
+    "lines_removed": 284,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新",
+      "大規模変更 (+284/-284)"
+    ],
+    "sample_changes": []
+  },
+  "docs/workflows/environment_check_guide.md": {
+    "file_path": "docs/workflows/environment_check_guide.md",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  },
+  "docs/workflows/google_sheets_setup.md": {
+    "file_path": "docs/workflows/google_sheets_setup.md",
+    "lines_added": 261,
+    "lines_removed": 261,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新",
+      "大規模変更 (+261/-261)"
+    ],
+    "sample_changes": []
+  },
+  "docs/workflows/integrated_pipeline_phase3_6.md": {
+    "file_path": "docs/workflows/integrated_pipeline_phase3_6.md",
+    "lines_added": 4,
+    "lines_removed": 4,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新",
+      "小規模変更 (+4/-4)"
+    ],
+    "sample_changes": []
+  },
+  "docs/workflows/integrated_quality_check_guide.md": {
+    "file_path": "docs/workflows/integrated_quality_check_guide.md",
+    "lines_added": 364,
+    "lines_removed": 364,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新",
+      "大規模変更 (+364/-364)"
+    ],
+    "sample_changes": []
+  },
+  "docs/workflows/ph2_004_resource_management.md": {
+    "file_path": "docs/workflows/ph2_004_resource_management.md",
+    "lines_added": 2,
+    "lines_removed": 2,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新",
+      "小規模変更 (+2/-2)"
+    ],
+    "sample_changes": []
+  },
+  "docs/workflows/pushover_notification_standards.md": {
+    "file_path": "docs/workflows/pushover_notification_standards.md",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  },
+  "docs/workflows/quality_evaluation_guide.md": {
+    "file_path": "docs/workflows/quality_evaluation_guide.md",
+    "lines_added": 1233,
+    "lines_removed": 1233,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新",
+      "大規模変更 (+1233/-1233)"
+    ],
+    "sample_changes": []
+  },
+  "docs/workflows/weekly_cleanup_usage.md": {
+    "file_path": "docs/workflows/weekly_cleanup_usage.md",
+    "lines_added": 2,
+    "lines_removed": 2,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新",
+      "小規模変更 (+2/-2)"
+    ],
+    "sample_changes": []
+  },
+  "features/adaptation/author_parameter_adapter.py": {
+    "file_path": "features/adaptation/author_parameter_adapter.py",
+    "lines_added": 2,
+    "lines_removed": 2,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+2/-2)"
+    ],
+    "sample_changes": []
+  },
+  "features/adaptation/author_parameter_adapter_v2.py": {
+    "file_path": "features/adaptation/author_parameter_adapter_v2.py",
+    "lines_added": 2,
+    "lines_removed": 2,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+2/-2)"
+    ],
+    "sample_changes": []
+  },
+  "features/analysis/failure_pattern_analyzer.py": {
+    "file_path": "features/analysis/failure_pattern_analyzer.py",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  },
+  "features/analysis/sample_size_validator.py": {
+    "file_path": "features/analysis/sample_size_validator.py",
+    "lines_added": 4,
+    "lines_removed": 4,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+4/-4)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/backup_config.py": {
+    "file_path": "features/common/backup_config.py",
+    "lines_added": 138,
+    "lines_removed": 138,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "features/common/backup_manager.py": {
+    "file_path": "features/common/backup_manager.py",
+    "lines_added": 319,
+    "lines_removed": 319,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+319/-319)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/ci_environment.py": {
+    "file_path": "features/common/ci_environment.py",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/dashboard_generator.py": {
+    "file_path": "features/common/dashboard_generator.py",
+    "lines_added": 6,
+    "lines_removed": 6,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "features/common/error_handling.py": {
+    "file_path": "features/common/error_handling.py",
+    "lines_added": 334,
+    "lines_removed": 334,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+334/-334)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/file_utils.py": {
+    "file_path": "features/common/file_utils.py",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/io_optimizer.py": {
+    "file_path": "features/common/io_optimizer.py",
+    "lines_added": 3,
+    "lines_removed": 3,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+3/-3)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/lazy_import_manager.py": {
+    "file_path": "features/common/lazy_import_manager.py",
+    "lines_added": 3,
+    "lines_removed": 3,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+3/-3)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/memory_monitor.py": {
+    "file_path": "features/common/memory_monitor.py",
+    "lines_added": 2,
+    "lines_removed": 2,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+2/-2)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/memory_optimizer.py": {
+    "file_path": "features/common/memory_optimizer.py",
+    "lines_added": 349,
+    "lines_removed": 349,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.7200000000000001,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+349/-349)",
+      "重要システムファイル"
+    ],
+    "sample_changes": []
+  },
+  "features/common/ph2_004_gpu_safety_system.py": {
+    "file_path": "features/common/ph2_004_gpu_safety_system.py",
+    "lines_added": 3,
+    "lines_removed": 3,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+3/-3)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/ph2_004_resource_optimizer.py": {
+    "file_path": "features/common/ph2_004_resource_optimizer.py",
+    "lines_added": 520,
+    "lines_removed": 520,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+520/-520)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/ph2_005_scalability_engine.py": {
+    "file_path": "features/common/ph2_005_scalability_engine.py",
+    "lines_added": 581,
+    "lines_removed": 581,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+581/-581)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/quality_monitoring.py": {
+    "file_path": "features/common/quality_monitoring.py",
+    "lines_added": 395,
+    "lines_removed": 395,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+395/-395)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/queue_manager.py": {
+    "file_path": "features/common/queue_manager.py",
+    "lines_added": 397,
+    "lines_removed": 397,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+397/-397)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/recovery_system.py": {
+    "file_path": "features/common/recovery_system.py",
+    "lines_added": 3,
+    "lines_removed": 3,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+3/-3)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/resource_manager.py": {
+    "file_path": "features/common/resource_manager.py",
+    "lines_added": 456,
+    "lines_removed": 456,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+456/-456)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/resource_monitor.py": {
+    "file_path": "features/common/resource_monitor.py",
+    "lines_added": 3,
+    "lines_removed": 3,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+3/-3)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/scalability.py": {
+    "file_path": "features/common/scalability.py",
+    "lines_added": 504,
+    "lines_removed": 504,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+504/-504)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/stability_manager.py": {
+    "file_path": "features/common/stability_manager.py",
+    "lines_added": 4,
+    "lines_removed": 4,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+4/-4)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/stable_batch_processor.py": {
+    "file_path": "features/common/stable_batch_processor.py",
+    "lines_added": 346,
+    "lines_removed": 346,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+346/-346)"
+    ],
+    "sample_changes": []
+  },
+  "features/common/system_architecture.py": {
+    "file_path": "features/common/system_architecture.py",
+    "lines_added": 325,
+    "lines_removed": 325,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+325/-325)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/boundary_case_detector.py": {
+    "file_path": "features/evaluation/boundary_case_detector.py",
+    "lines_added": 5,
+    "lines_removed": 5,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/detectors/__init__.py": {
+    "file_path": "features/evaluation/detectors/__init__.py",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/detectors/black_screen_detector.py": {
+    "file_path": "features/evaluation/detectors/black_screen_detector.py",
+    "lines_added": 2,
+    "lines_removed": 2,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+2/-2)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/detectors/brightness_analyzer.py": {
+    "file_path": "features/evaluation/detectors/brightness_analyzer.py",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/detectors/character_separator.py": {
+    "file_path": "features/evaluation/detectors/character_separator.py",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/detectors/multi_character_detector.py": {
+    "file_path": "features/evaluation/detectors/multi_character_detector.py",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/detectors/partial_extraction_detector.py": {
+    "file_path": "features/evaluation/detectors/partial_extraction_detector.py",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/duplicate_detector.py": {
+    "file_path": "features/evaluation/duplicate_detector.py",
+    "lines_added": 2,
+    "lines_removed": 2,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+2/-2)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/explainable_quality.py": {
+    "file_path": "features/evaluation/explainable_quality.py",
+    "lines_added": 633,
+    "lines_removed": 633,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+633/-633)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/hierarchical_quality.py": {
+    "file_path": "features/evaluation/hierarchical_quality.py",
+    "lines_added": 533,
+    "lines_removed": 533,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+533/-533)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/integrated_quality_monitor.py": {
+    "file_path": "features/evaluation/integrated_quality_monitor.py",
+    "lines_added": 545,
+    "lines_removed": 545,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.7200000000000001,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+545/-545)",
+      "重要システムファイル"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/qi003_integrated_quality_system.py": {
+    "file_path": "features/evaluation/qi003_integrated_quality_system.py",
+    "lines_added": 8,
+    "lines_removed": 8,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/qi004_dashboard_optimization_system.py": {
+    "file_path": "features/evaluation/qi004_dashboard_optimization_system.py",
+    "lines_added": 19,
+    "lines_removed": 19,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/realtime_dashboard/__init__.py": {
+    "file_path": "features/evaluation/realtime_dashboard/__init__.py",
+    "lines_added": 10,
+    "lines_removed": 10,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/realtime_dashboard/dashboard_server.py": {
+    "file_path": "features/evaluation/realtime_dashboard/dashboard_server.py",
+    "lines_added": 390,
+    "lines_removed": 390,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+390/-390)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/realtime_dashboard/monitoring_system.py": {
+    "file_path": "features/evaluation/realtime_dashboard/monitoring_system.py",
+    "lines_added": 637,
+    "lines_removed": 637,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+637/-637)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/realtime_dashboard/web_dashboard.py": {
+    "file_path": "features/evaluation/realtime_dashboard/web_dashboard.py",
+    "lines_added": 719,
+    "lines_removed": 719,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+719/-719)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/statistical_quality_analyzer.py": {
+    "file_path": "features/evaluation/statistical_quality_analyzer.py",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/statistics/success_rate.py": {
+    "file_path": "features/evaluation/statistics/success_rate.py",
+    "lines_added": 4,
+    "lines_removed": 4,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+4/-4)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/utils/character_quality_assessor.py": {
+    "file_path": "features/evaluation/utils/character_quality_assessor.py",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/utils/completeness_validator.py": {
+    "file_path": "features/evaluation/utils/completeness_validator.py",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/utils/enhanced_aspect_ratio_analyzer.py": {
+    "file_path": "features/evaluation/utils/enhanced_aspect_ratio_analyzer.py",
+    "lines_added": 665,
+    "lines_removed": 665,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+665/-665)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/utils/enhanced_mosaic_boundary_processor.py": {
+    "file_path": "features/evaluation/utils/enhanced_mosaic_boundary_processor.py",
+    "lines_added": 702,
+    "lines_removed": 702,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+702/-702)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/utils/enhanced_solid_fill_processor.py": {
+    "file_path": "features/evaluation/utils/enhanced_solid_fill_processor.py",
+    "lines_added": 763,
+    "lines_removed": 763,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+763/-763)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/utils/extraction_quality_analyzer.py": {
+    "file_path": "features/evaluation/utils/extraction_quality_analyzer.py",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/utils/true_success_analyzer.py": {
+    "file_path": "features/evaluation/utils/true_success_analyzer.py",
+    "lines_added": 307,
+    "lines_removed": 307,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+307/-307)"
+    ],
+    "sample_changes": []
+  },
+  "features/evaluation/utils/visual_verification_system.py": {
+    "file_path": "features/evaluation/utils/visual_verification_system.py",
+    "lines_added": 314,
+    "lines_removed": 314,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+314/-314)"
+    ],
+    "sample_changes": []
+  },
+  "features/extraction/commands/batch_processor.py": {
+    "file_path": "features/extraction/commands/batch_processor.py",
+    "lines_added": 2,
+    "lines_removed": 2,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+2/-2)"
+    ],
+    "sample_changes": []
+  },
+  "features/extraction/commands/extract_character.py": {
+    "file_path": "features/extraction/commands/extract_character.py",
+    "lines_added": 1,
+    "lines_removed": 79,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.7200000000000001,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "重要システムファイル"
+    ],
+    "sample_changes": []
+  },
+  "features/extraction/commands/extract_character_refactored.py": {
+    "file_path": "features/extraction/commands/extract_character_refactored.py",
+    "lines_added": 133,
+    "lines_removed": 133,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "features/extraction/integrated_precision_pipeline.py": {
+    "file_path": "features/extraction/integrated_precision_pipeline.py",
+    "lines_added": 669,
+    "lines_removed": 669,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+669/-669)"
+    ],
+    "sample_changes": []
+  },
+  "features/extraction/models/yolo_wrapper.py": {
+    "file_path": "features/extraction/models/yolo_wrapper.py",
+    "lines_added": 7,
+    "lines_removed": 7,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "features/processing/adaptive_cropping.py": {
+    "file_path": "features/processing/adaptive_cropping.py",
+    "lines_added": 6,
+    "lines_removed": 6,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "features/processing/differential_processor.py": {
+    "file_path": "features/processing/differential_processor.py",
+    "lines_added": 693,
+    "lines_removed": 693,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+693/-693)"
+    ],
+    "sample_changes": []
+  },
+  "features/processing/feedback_loop_system.py": {
+    "file_path": "features/processing/feedback_loop_system.py",
+    "lines_added": 652,
+    "lines_removed": 652,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+652/-652)"
+    ],
+    "sample_changes": []
+  },
+  "features/processing/large_dataset_processor.py": {
+    "file_path": "features/processing/large_dataset_processor.py",
+    "lines_added": 402,
+    "lines_removed": 402,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+402/-402)"
+    ],
+    "sample_changes": []
+  },
+  "features/processing/multi_gpu_processor.py": {
+    "file_path": "features/processing/multi_gpu_processor.py",
+    "lines_added": 474,
+    "lines_removed": 474,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+474/-474)"
+    ],
+    "sample_changes": []
+  },
+  "features/processing/multi_gpu_sam_integration.py": {
+    "file_path": "features/processing/multi_gpu_sam_integration.py",
+    "lines_added": 384,
+    "lines_removed": 384,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+384/-384)"
+    ],
+    "sample_changes": []
+  },
+  "features/processing/postprocessing/auto_mask_correction.py": {
+    "file_path": "features/processing/postprocessing/auto_mask_correction.py",
+    "lines_added": 314,
+    "lines_removed": 314,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+314/-314)"
+    ],
+    "sample_changes": []
+  },
+  "features/processing/sam_optimization_config.py": {
+    "file_path": "features/processing/sam_optimization_config.py",
+    "lines_added": 358,
+    "lines_removed": 358,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+358/-358)"
+    ],
+    "sample_changes": []
+  },
+  "features/processing/sam_postprocessing_pipeline.py": {
+    "file_path": "features/processing/sam_postprocessing_pipeline.py",
+    "lines_added": 657,
+    "lines_removed": 657,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+657/-657)"
+    ],
+    "sample_changes": []
+  },
+  "tests/integration/test_ci_integration.py": {
+    "file_path": "tests/integration/test_ci_integration.py",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+1/-1)",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/integration/test_p1_005_integration.py": {
+    "file_path": "tests/integration/test_p1_005_integration.py",
+    "lines_added": 4,
+    "lines_removed": 4,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+4/-4)",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/integration/test_p1_006_integration.py": {
+    "file_path": "tests/integration/test_p1_006_integration.py",
+    "lines_added": 4,
+    "lines_removed": 4,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+4/-4)",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/integration/test_p1_007_integration.py": {
+    "file_path": "tests/integration/test_p1_007_integration.py",
+    "lines_added": 460,
+    "lines_removed": 460,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+460/-460)",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/integration/test_p1_015_integration.py": {
+    "file_path": "tests/integration/test_p1_015_integration.py",
+    "lines_added": 415,
+    "lines_removed": 415,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+415/-415)",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/integration/test_qca001_author_adaptation.py": {
+    "file_path": "tests/integration/test_qca001_author_adaptation.py",
+    "lines_added": 8,
+    "lines_removed": 8,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/integration/test_qcc021_integration.py": {
+    "file_path": "tests/integration/test_qcc021_integration.py",
+    "lines_added": 21,
+    "lines_removed": 21,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/integration/test_qcc022_integration.py": {
+    "file_path": "tests/integration/test_qcc022_integration.py",
+    "lines_added": 2,
+    "lines_removed": 2,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+2/-2)",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/integration/test_qcc_fix_001_integration.py": {
+    "file_path": "tests/integration/test_qcc_fix_001_integration.py",
+    "lines_added": 9,
+    "lines_removed": 9,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/integration/test_qi004_integration.py": {
+    "file_path": "tests/integration/test_qi004_integration.py",
+    "lines_added": 11,
+    "lines_removed": 11,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/test_api_improvements.py": {
+    "file_path": "tests/test_api_improvements.py",
+    "lines_added": 116,
+    "lines_removed": 116,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_author_parameter_adapter.py": {
+    "file_path": "tests/unit/test_author_parameter_adapter.py",
+    "lines_added": 4,
+    "lines_removed": 4,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+4/-4)",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_auto_mask_correction.py": {
+    "file_path": "tests/unit/test_auto_mask_correction.py",
+    "lines_added": 247,
+    "lines_removed": 247,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_duplicate_prevention.py": {
+    "file_path": "tests/unit/test_duplicate_prevention.py",
+    "lines_added": 2,
+    "lines_removed": 2,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+2/-2)",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_large_dataset_processor.py": {
+    "file_path": "tests/unit/test_large_dataset_processor.py",
+    "lines_added": 435,
+    "lines_removed": 435,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+435/-435)",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_p1_005_mosaic_boundary.py": {
+    "file_path": "tests/unit/test_p1_005_mosaic_boundary.py",
+    "lines_added": 433,
+    "lines_removed": 433,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+433/-433)",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_p1_006_solid_fill.py": {
+    "file_path": "tests/unit/test_p1_006_solid_fill.py",
+    "lines_added": 410,
+    "lines_removed": 410,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+410/-410)",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_p1_007_aspect_ratio.py": {
+    "file_path": "tests/unit/test_p1_007_aspect_ratio.py",
+    "lines_added": 449,
+    "lines_removed": 449,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+449/-449)",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_p1_021_modular_architecture.py": {
+    "file_path": "tests/unit/test_p1_021_modular_architecture.py",
+    "lines_added": 285,
+    "lines_removed": 285,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+285/-285)",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_p1_a001_recovery.py": {
+    "file_path": "tests/unit/test_p1_a001_recovery.py",
+    "lines_added": 357,
+    "lines_removed": 357,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+357/-357)",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_p1_b004_adaptive_cropping.py": {
+    "file_path": "tests/unit/test_p1_b004_adaptive_cropping.py",
+    "lines_added": 4,
+    "lines_removed": 4,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+4/-4)",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_ph2_004_resource_monitor.py": {
+    "file_path": "tests/unit/test_ph2_004_resource_monitor.py",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+1/-1)",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_qcc021_sample_size_validator.py": {
+    "file_path": "tests/unit/test_qcc021_sample_size_validator.py",
+    "lines_added": 6,
+    "lines_removed": 6,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_qi002_black_screen_detection.py": {
+    "file_path": "tests/unit/test_qi002_black_screen_detection.py",
+    "lines_added": 6,
+    "lines_removed": 6,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_qi002_multi_character_detection.py": {
+    "file_path": "tests/unit/test_qi002_multi_character_detection.py",
+    "lines_added": 5,
+    "lines_removed": 5,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_qi002_partial_extraction_quality.py": {
+    "file_path": "tests/unit/test_qi002_partial_extraction_quality.py",
+    "lines_added": 5,
+    "lines_removed": 5,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_qi003_integrated_quality_system.py": {
+    "file_path": "tests/unit/test_qi003_integrated_quality_system.py",
+    "lines_added": 11,
+    "lines_removed": 11,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_qi004_dashboard_optimization.py": {
+    "file_path": "tests/unit/test_qi004_dashboard_optimization.py",
+    "lines_added": 11,
+    "lines_removed": 11,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_statistical_record.py": {
+    "file_path": "tests/unit/test_statistical_record.py",
+    "lines_added": 7,
+    "lines_removed": 7,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tests/unit/test_statistical_validator.py": {
+    "file_path": "tests/unit/test_statistical_validator.py",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+1/-1)",
+      "テストファイル"
+    ],
+    "sample_changes": []
+  },
+  "tools/GOVERNANCE_RULES.md": {
+    "file_path": "tools/GOVERNANCE_RULES.md",
+    "lines_added": 185,
+    "lines_removed": 185,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "tools/MANAGER_USAGE.md": {
+    "file_path": "tools/MANAGER_USAGE.md",
+    "lines_added": 173,
+    "lines_removed": 173,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "tools/README.md": {
+    "file_path": "tools/README.md",
+    "lines_added": 84,
+    "lines_removed": 84,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "tools/README_sheets_reader.md": {
+    "file_path": "tools/README_sheets_reader.md",
+    "lines_added": 169,
+    "lines_removed": 169,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "tools/automation/README.md": {
+    "file_path": "tools/automation/README.md",
+    "lines_added": 185,
+    "lines_removed": 185,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "tools/automation/async_batched_extraction_runner.py": {
+    "file_path": "tools/automation/async_batched_extraction_runner.py",
+    "lines_added": 750,
+    "lines_removed": 750,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+750/-750)"
+    ],
+    "sample_changes": []
+  },
+  "tools/automation/batched_extraction_runner.py": {
+    "file_path": "tools/automation/batched_extraction_runner.py",
+    "lines_added": 494,
+    "lines_removed": 494,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+494/-494)"
+    ],
+    "sample_changes": []
+  },
+  "tools/automation/parallel_tracker_runner.py": {
+    "file_path": "tools/automation/parallel_tracker_runner.py",
+    "lines_added": 575,
+    "lines_removed": 575,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+575/-575)"
+    ],
+    "sample_changes": []
+  },
+  "tools/automation/vscode_recovery.md": {
+    "file_path": "tools/automation/vscode_recovery.md",
+    "lines_added": 70,
+    "lines_removed": 70,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "tools/batch/batch_task_ticketing.py": {
+    "file_path": "tools/batch/batch_task_ticketing.py",
+    "lines_added": 248,
+    "lines_removed": 248,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/batch/kana08_enhanced_stable_batch.py": {
+    "file_path": "tools/batch/kana08_enhanced_stable_batch.py",
+    "lines_added": 373,
+    "lines_removed": 373,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+373/-373)"
+    ],
+    "sample_changes": []
+  },
+  "tools/batch/kana08_stable_batch_restored.py": {
+    "file_path": "tools/batch/kana08_stable_batch_restored.py",
+    "lines_added": 2,
+    "lines_removed": 2,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+2/-2)"
+    ],
+    "sample_changes": []
+  },
+  "tools/core/documentation_sync_system.py": {
+    "file_path": "tools/core/documentation_sync_system.py",
+    "lines_added": 640,
+    "lines_removed": 640,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+640/-640)"
+    ],
+    "sample_changes": []
+  },
+  "tools/core/enhanced_sam_pipeline.py": {
+    "file_path": "tools/core/enhanced_sam_pipeline.py",
+    "lines_added": 683,
+    "lines_removed": 683,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+683/-683)"
+    ],
+    "sample_changes": []
+  },
+  "tools/core/google_sheets_updater.py": {
+    "file_path": "tools/core/google_sheets_updater.py",
+    "lines_added": 872,
+    "lines_removed": 872,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+872/-872)"
+    ],
+    "sample_changes": []
+  },
+  "tools/core/p1_011_queue_extraction.py": {
+    "file_path": "tools/core/p1_011_queue_extraction.py",
+    "lines_added": 421,
+    "lines_removed": 421,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+421/-421)"
+    ],
+    "sample_changes": []
+  },
+  "tools/core/p1_011_queue_test.py": {
+    "file_path": "tools/core/p1_011_queue_test.py",
+    "lines_added": 223,
+    "lines_removed": 223,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/core/p1_016_integration_script.py": {
+    "file_path": "tools/core/p1_016_integration_script.py",
+    "lines_added": 480,
+    "lines_removed": 480,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+480/-480)"
+    ],
+    "sample_changes": []
+  },
+  "tools/core/p1_016_simple_test.py": {
+    "file_path": "tools/core/p1_016_simple_test.py",
+    "lines_added": 114,
+    "lines_removed": 114,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/core/test_integrated_pipeline.py": {
+    "file_path": "tools/core/test_integrated_pipeline.py",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  },
+  "tools/fix_japanese_fonts.py": {
+    "file_path": "tools/fix_japanese_fonts.py",
+    "lines_added": 6,
+    "lines_removed": 6,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/legacy/read_google_sheets.py": {
+    "file_path": "tools/legacy/read_google_sheets.py",
+    "lines_added": 441,
+    "lines_removed": 441,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+441/-441)"
+    ],
+    "sample_changes": []
+  },
+  "tools/legacy/read_google_sheets_demo.py": {
+    "file_path": "tools/legacy/read_google_sheets_demo.py",
+    "lines_added": 374,
+    "lines_removed": 374,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+374/-374)"
+    ],
+    "sample_changes": []
+  },
+  "tools/legacy/read_sheets_with_api.py": {
+    "file_path": "tools/legacy/read_sheets_with_api.py",
+    "lines_added": 335,
+    "lines_removed": 335,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+335/-335)"
+    ],
+    "sample_changes": []
+  },
+  "tools/manager.py": {
+    "file_path": "tools/manager.py",
+    "lines_added": 691,
+    "lines_removed": 691,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+691/-691)"
+    ],
+    "sample_changes": []
+  },
+  "tools/progress_tracker/add_qi_details.py": {
+    "file_path": "tools/progress_tracker/add_qi_details.py",
+    "lines_added": 17,
+    "lines_removed": 17,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/progress_tracker/baseline_detector.py": {
+    "file_path": "tools/progress_tracker/baseline_detector.py",
+    "lines_added": 4,
+    "lines_removed": 4,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+4/-4)"
+    ],
+    "sample_changes": []
+  },
+  "tools/progress_tracker/data_generator.py": {
+    "file_path": "tools/progress_tracker/data_generator.py",
+    "lines_added": 5,
+    "lines_removed": 5,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/progress_tracker/opencv_quality_generator.py": {
+    "file_path": "tools/progress_tracker/opencv_quality_generator.py",
+    "lines_added": 2,
+    "lines_removed": 2,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+2/-2)"
+    ],
+    "sample_changes": []
+  },
+  "tools/progress_tracker/progress_manager.py": {
+    "file_path": "tools/progress_tracker/progress_manager.py",
+    "lines_added": 347,
+    "lines_removed": 347,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+347/-347)"
+    ],
+    "sample_changes": []
+  },
+  "tools/progress_tracker/qcc022_real_data_analysis_report.md": {
+    "file_path": "tools/progress_tracker/qcc022_real_data_analysis_report.md",
+    "lines_added": 5,
+    "lines_removed": 5,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "tools/progress_tracker/qcc022_statistical_runner.py": {
+    "file_path": "tools/progress_tracker/qcc022_statistical_runner.py",
+    "lines_added": 23,
+    "lines_removed": 23,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/progress_tracker/qcc023_analysis_result.json": {
+    "file_path": "tools/progress_tracker/qcc023_analysis_result.json",
+    "lines_added": 3,
+    "lines_removed": 3,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+3/-3)"
+    ],
+    "sample_changes": []
+  },
+  "tools/progress_tracker/qcc023_enhanced_cohens_d.py": {
+    "file_path": "tools/progress_tracker/qcc023_enhanced_cohens_d.py",
+    "lines_added": 20,
+    "lines_removed": 20,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/progress_tracker/qcc023_enhanced_cohens_d_report.md": {
+    "file_path": "tools/progress_tracker/qcc023_enhanced_cohens_d_report.md",
+    "lines_added": 14,
+    "lines_removed": 14,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "tools/progress_tracker/qcc023_vs_ph2006_analysis_report.md": {
+    "file_path": "tools/progress_tracker/qcc023_vs_ph2006_analysis_report.md",
+    "lines_added": 14,
+    "lines_removed": 14,
+    "change_type": "documentation",
+    "recommended_action": "integrate",
+    "confidence": 0.7,
+    "reasons": [
+      "ドキュメント更新"
+    ],
+    "sample_changes": []
+  },
+  "tools/progress_tracker/statistical_integration.py": {
+    "file_path": "tools/progress_tracker/statistical_integration.py",
+    "lines_added": 6,
+    "lines_removed": 6,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/progress_tracker/universal_dashboard_generator.py": {
+    "file_path": "tools/progress_tracker/universal_dashboard_generator.py",
+    "lines_added": 6,
+    "lines_removed": 6,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/progress_tracker/universal_statistical_analyzer.py": {
+    "file_path": "tools/progress_tracker/universal_statistical_analyzer.py",
+    "lines_added": 5,
+    "lines_removed": 5,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/progress_tracker/update_dates.py": {
+    "file_path": "tools/progress_tracker/update_dates.py",
+    "lines_added": 49,
+    "lines_removed": 49,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/quality_dashboard_generator.py": {
+    "file_path": "tools/quality_dashboard_generator.py",
+    "lines_added": 4,
+    "lines_removed": 4,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+4/-4)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/BASELINE-RECALC-001/baseline_recalc_batch.py": {
+    "file_path": "tools/scripts/BASELINE-RECALC-001/baseline_recalc_batch.py",
+    "lines_added": 9,
+    "lines_removed": 9,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/auto_maintenance.py": {
+    "file_path": "tools/scripts/auto_maintenance.py",
+    "lines_added": 250,
+    "lines_removed": 250,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/correct_annotation_extractor.py": {
+    "file_path": "tools/scripts/correct_annotation_extractor.py",
+    "lines_added": 252,
+    "lines_removed": 252,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+252/-252)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/fix_chart_font.py": {
+    "file_path": "tools/scripts/fix_chart_font.py",
+    "lines_added": 65,
+    "lines_removed": 65,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/get_task_details.py": {
+    "file_path": "tools/scripts/get_task_details.py",
+    "lines_added": 82,
+    "lines_removed": 82,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/gpt5_lora_quality_evaluator.py": {
+    "file_path": "tools/scripts/gpt5_lora_quality_evaluator.py",
+    "lines_added": 3,
+    "lines_removed": 3,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+3/-3)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/merge_qca001_dashboards.py": {
+    "file_path": "tools/scripts/merge_qca001_dashboards.py",
+    "lines_added": 14,
+    "lines_removed": 14,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/optimized_extraction_test.py": {
+    "file_path": "tools/scripts/optimized_extraction_test.py",
+    "lines_added": 138,
+    "lines_removed": 138,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1_011_dashboard.py": {
+    "file_path": "tools/scripts/p1_011_dashboard.py",
+    "lines_added": 465,
+    "lines_removed": 465,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+465/-465)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1_011_monitor.py": {
+    "file_path": "tools/scripts/p1_011_monitor.py",
+    "lines_added": 90,
+    "lines_removed": 90,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1_011_real_extraction.py": {
+    "file_path": "tools/scripts/p1_011_real_extraction.py",
+    "lines_added": 155,
+    "lines_removed": 155,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1_012_real_extraction.py": {
+    "file_path": "tools/scripts/p1_012_real_extraction.py",
+    "lines_added": 169,
+    "lines_removed": 169,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1_013_background_extraction.py": {
+    "file_path": "tools/scripts/p1_013_background_extraction.py",
+    "lines_added": 231,
+    "lines_removed": 231,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1_013_real_extraction.py": {
+    "file_path": "tools/scripts/p1_013_real_extraction.py",
+    "lines_added": 218,
+    "lines_removed": 218,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1_014_multi_gpu_execution.py": {
+    "file_path": "tools/scripts/p1_014_multi_gpu_execution.py",
+    "lines_added": 216,
+    "lines_removed": 216,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1_015_large_dataset_execution.py": {
+    "file_path": "tools/scripts/p1_015_large_dataset_execution.py",
+    "lines_added": 257,
+    "lines_removed": 257,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+257/-257)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1_a001_release.py": {
+    "file_path": "tools/scripts/p1_a001_release.py",
+    "lines_added": 158,
+    "lines_removed": 158,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1_b004_dashboard_final.py": {
+    "file_path": "tools/scripts/p1_b004_dashboard_final.py",
+    "lines_added": 442,
+    "lines_removed": 442,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+442/-442)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1_b004_dashboard_generator.py": {
+    "file_path": "tools/scripts/p1_b004_dashboard_generator.py",
+    "lines_added": 16,
+    "lines_removed": 16,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1_b004_demo.py": {
+    "file_path": "tools/scripts/p1_b004_demo.py",
+    "lines_added": 14,
+    "lines_removed": 14,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1_b004_direct_execution.py": {
+    "file_path": "tools/scripts/p1_b004_direct_execution.py",
+    "lines_added": 174,
+    "lines_removed": 174,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1_b004_emergency_generation.py": {
+    "file_path": "tools/scripts/p1_b004_emergency_generation.py",
+    "lines_added": 220,
+    "lines_removed": 220,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1_b004_integrated_extraction.py": {
+    "file_path": "tools/scripts/p1_b004_integrated_extraction.py",
+    "lines_added": 166,
+    "lines_removed": 166,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1_b004_lightweight_extraction.py": {
+    "file_path": "tools/scripts/p1_b004_lightweight_extraction.py",
+    "lines_added": 212,
+    "lines_removed": 212,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1_b004_quality_report.py": {
+    "file_path": "tools/scripts/p1_b004_quality_report.py",
+    "lines_added": 148,
+    "lines_removed": 148,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1_b004_real_extraction_fixed.py": {
+    "file_path": "tools/scripts/p1_b004_real_extraction_fixed.py",
+    "lines_added": 172,
+    "lines_removed": 172,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1a001_integration_script.py": {
+    "file_path": "tools/scripts/p1a001_integration_script.py",
+    "lines_added": 496,
+    "lines_removed": 496,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+496/-496)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1a002_dashboard_generator.py": {
+    "file_path": "tools/scripts/p1a002_dashboard_generator.py",
+    "lines_added": 622,
+    "lines_removed": 622,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+622/-622)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1a002_extraction_pipeline.py": {
+    "file_path": "tools/scripts/p1a002_extraction_pipeline.py",
+    "lines_added": 334,
+    "lines_removed": 334,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+334/-334)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1a002_integration_script.py": {
+    "file_path": "tools/scripts/p1a002_integration_script.py",
+    "lines_added": 356,
+    "lines_removed": 356,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+356/-356)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1a003_dashboard_generator.py": {
+    "file_path": "tools/scripts/p1a003_dashboard_generator.py",
+    "lines_added": 523,
+    "lines_removed": 523,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+523/-523)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1a003_integration_script.py": {
+    "file_path": "tools/scripts/p1a003_integration_script.py",
+    "lines_added": 363,
+    "lines_removed": 363,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+363/-363)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1a004_dashboard_generator.py": {
+    "file_path": "tools/scripts/p1a004_dashboard_generator.py",
+    "lines_added": 696,
+    "lines_removed": 696,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+696/-696)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/p1a004_integration_script.py": {
+    "file_path": "tools/scripts/p1a004_integration_script.py",
+    "lines_added": 542,
+    "lines_removed": 542,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+542/-542)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/ph2_002_dashboard_generator.py": {
+    "file_path": "tools/scripts/ph2_002_dashboard_generator.py",
+    "lines_added": 783,
+    "lines_removed": 783,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+783/-783)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/ph2_004_dashboard_generator.py": {
+    "file_path": "tools/scripts/ph2_004_dashboard_generator.py",
+    "lines_added": 480,
+    "lines_removed": 480,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+480/-480)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/ph2_004_resource_integration.py": {
+    "file_path": "tools/scripts/ph2_004_resource_integration.py",
+    "lines_added": 276,
+    "lines_removed": 276,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+276/-276)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/ph2_004_resource_optimization.py": {
+    "file_path": "tools/scripts/ph2_004_resource_optimization.py",
+    "lines_added": 6,
+    "lines_removed": 6,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/ph2_004_standalone_test.py": {
+    "file_path": "tools/scripts/ph2_004_standalone_test.py",
+    "lines_added": 259,
+    "lines_removed": 259,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+259/-259)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/ph2_005_dashboard_generator.py": {
+    "file_path": "tools/scripts/ph2_005_dashboard_generator.py",
+    "lines_added": 634,
+    "lines_removed": 634,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+634/-634)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/ph2_005_scalability_test.py": {
+    "file_path": "tools/scripts/ph2_005_scalability_test.py",
+    "lines_added": 432,
+    "lines_removed": 432,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+432/-432)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/ph2_006_dashboard_generator.py": {
+    "file_path": "tools/scripts/ph2_006_dashboard_generator.py",
+    "lines_added": 678,
+    "lines_removed": 678,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+678/-678)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/ph2_006_monitoring_simple_test.py": {
+    "file_path": "tools/scripts/ph2_006_monitoring_simple_test.py",
+    "lines_added": 122,
+    "lines_removed": 122,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/ph2_006_monitoring_test.py": {
+    "file_path": "tools/scripts/ph2_006_monitoring_test.py",
+    "lines_added": 488,
+    "lines_removed": 488,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+488/-488)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/ph2_008_recovery_extraction.py": {
+    "file_path": "tools/scripts/ph2_008_recovery_extraction.py",
+    "lines_added": 19,
+    "lines_removed": 19,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/pushover_individual_sender_integrate_3_6_03.py": {
+    "file_path": "tools/scripts/pushover_individual_sender_integrate_3_6_03.py",
+    "lines_added": 6,
+    "lines_removed": 6,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/pushover_sender_integrate_3_6_01.py": {
+    "file_path": "tools/scripts/pushover_sender_integrate_3_6_01.py",
+    "lines_added": 4,
+    "lines_removed": 4,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+4/-4)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/pushover_sender_integrate_3_6_02.py": {
+    "file_path": "tools/scripts/pushover_sender_integrate_3_6_02.py",
+    "lines_added": 4,
+    "lines_removed": 4,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+4/-4)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/pushover_sender_integrate_3_6_03.py": {
+    "file_path": "tools/scripts/pushover_sender_integrate_3_6_03.py",
+    "lines_added": 5,
+    "lines_removed": 5,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/qcc021_dashboard_generator.py": {
+    "file_path": "tools/scripts/qcc021_dashboard_generator.py",
+    "lines_added": 15,
+    "lines_removed": 15,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/qcc021_qca001_validation.py": {
+    "file_path": "tools/scripts/qcc021_qca001_validation.py",
+    "lines_added": 29,
+    "lines_removed": 29,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/qi004_dashboard_generator.py": {
+    "file_path": "tools/scripts/qi004_dashboard_generator.py",
+    "lines_added": 14,
+    "lines_removed": 14,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/qi006_dashboard_generator.py": {
+    "file_path": "tools/scripts/qi006_dashboard_generator.py",
+    "lines_added": 10,
+    "lines_removed": 10,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/qi006_dashboard_with_images.py": {
+    "file_path": "tools/scripts/qi006_dashboard_with_images.py",
+    "lines_added": 13,
+    "lines_removed": 13,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/qi006_gpt5_dashboard_integration.py": {
+    "file_path": "tools/scripts/qi006_gpt5_dashboard_integration.py",
+    "lines_added": 8,
+    "lines_removed": 8,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/qi006_gpt5_pushover_notification.py": {
+    "file_path": "tools/scripts/qi006_gpt5_pushover_notification.py",
+    "lines_added": 6,
+    "lines_removed": 6,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/qi006_multi_character_detection.py": {
+    "file_path": "tools/scripts/qi006_multi_character_detection.py",
+    "lines_added": 9,
+    "lines_removed": 9,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/qi006_tracker_dashboard_with_images.py": {
+    "file_path": "tools/scripts/qi006_tracker_dashboard_with_images.py",
+    "lines_added": 13,
+    "lines_removed": 13,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/run_quality_workflow.sh": {
+    "file_path": "tools/scripts/run_quality_workflow.sh",
+    "lines_added": 30,
+    "lines_removed": 57,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/sam_yolo_comparison_analyzer.py": {
+    "file_path": "tools/scripts/sam_yolo_comparison_analyzer.py",
+    "lines_added": 332,
+    "lines_removed": 332,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+332/-332)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/sam_yolo_parameter_optimizer.py": {
+    "file_path": "tools/scripts/sam_yolo_parameter_optimizer.py",
+    "lines_added": 2,
+    "lines_removed": 2,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+2/-2)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/sequential_sam_yolo_extraction.py": {
+    "file_path": "tools/scripts/sequential_sam_yolo_extraction.py",
+    "lines_added": 3,
+    "lines_removed": 3,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+3/-3)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/simple_continue_extraction.py": {
+    "file_path": "tools/scripts/simple_continue_extraction.py",
+    "lines_added": 3,
+    "lines_removed": 3,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+3/-3)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/simplified_sam_optimizer.py": {
+    "file_path": "tools/scripts/simplified_sam_optimizer.py",
+    "lines_added": 213,
+    "lines_removed": 213,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/status_update_hook.py": {
+    "file_path": "tools/scripts/status_update_hook.py",
+    "lines_added": 255,
+    "lines_removed": 255,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+255/-255)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/universal_dashboard_merger.py": {
+    "file_path": "tools/scripts/universal_dashboard_merger.py",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  },
+  "tools/scripts/weekly_cleanup.py": {
+    "file_path": "tools/scripts/weekly_cleanup.py",
+    "lines_added": 5,
+    "lines_removed": 5,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/testing/test_priority_integration.py": {
+    "file_path": "tools/testing/test_priority_integration.py",
+    "lines_added": 199,
+    "lines_removed": 199,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/utils/analyze_active_tasks.py": {
+    "file_path": "tools/utils/analyze_active_tasks.py",
+    "lines_added": 437,
+    "lines_removed": 437,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+437/-437)"
+    ],
+    "sample_changes": []
+  },
+  "tools/utils/cleanup_duplicates.py": {
+    "file_path": "tools/utils/cleanup_duplicates.py",
+    "lines_added": 5,
+    "lines_removed": 5,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ"
+    ],
+    "sample_changes": []
+  },
+  "tools/utils/validate_tracker_completion.py": {
+    "file_path": "tools/utils/validate_tracker_completion.py",
+    "lines_added": 292,
+    "lines_removed": 292,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "大規模変更 (+292/-292)"
+    ],
+    "sample_changes": []
+  },
+  "tools/validation/statistical_validator.py": {
+    "file_path": "tools/validation/statistical_validator.py",
+    "lines_added": 1,
+    "lines_removed": 1,
+    "change_type": "format_only",
+    "recommended_action": "discard",
+    "confidence": 0.9,
+    "reasons": [
+      "フォーマット・インデント変更のみ",
+      "小規模変更 (+1/-1)"
+    ],
+    "sample_changes": []
+  }
+}
