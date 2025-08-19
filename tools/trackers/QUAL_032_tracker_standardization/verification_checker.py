@@ -18,7 +18,7 @@ class ReplacementVerificationChecker:
         
     def load_mapping(self):
         """マッピング読み込み"""
-        with open("tools/analysis/tracker_id_mapping.json", 'r', encoding='utf-8') as f:
+        with open("tools/trackers/QUAL_032_tracker_standardization/tracker_id_mapping.json", 'r', encoding='utf-8') as f:
             data = json.load(f)
             self.old_ids = set(data['id_mapping'].keys())
             self.new_ids = set(data['id_mapping'].values())
@@ -141,7 +141,7 @@ class ReplacementVerificationChecker:
         try:
             result = subprocess.run([
                 'python3', '-c', 
-                'import sys; sys.path.insert(0, "."); from tools.analysis.tracker_id_mapping_generator import generate_tracker_mapping; print("✅ Import OK")'
+                'import sys; sys.path.insert(0, "."); from tools.trackers.QUAL_032_tracker_standardization.tracker_id_mapping_generator import generate_tracker_mapping; print("✅ Import OK")'
             ], cwd=self.base_dir, capture_output=True, text=True, timeout=30)
             
             tests["python_import"] = {

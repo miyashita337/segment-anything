@@ -110,7 +110,7 @@ def generate_tracker_mapping():
         "category_counts": {code: counters[code] for code in category_codes.values()}
     }
     
-    output_file = "tools/analysis/tracker_id_mapping.json"
+    output_file = "tools/trackers/QUAL_032_tracker_standardization/tracker_id_mapping.json"
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
     

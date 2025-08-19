@@ -17,7 +17,7 @@ from typing import Dict, List, Tuple, Set
 class TrackerReplacementEngine:
     """安全なトラッカーID置換エンジン"""
     
-    def __init__(self, mapping_file: str = "tools/analysis/tracker_id_mapping.json"):
+    def __init__(self, mapping_file: str = "tools/trackers/QUAL_032_tracker_standardization/tracker_id_mapping.json"):
         self.mapping_file = mapping_file
         self.mapping = {}
         self.reverse_mapping = {}

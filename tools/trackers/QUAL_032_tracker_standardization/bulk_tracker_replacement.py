@@ -20,7 +20,7 @@ from typing import Dict, List, Tuple
 
 class BulkTrackerReplacer:
     def __init__(self):
-        self.mapping_file = "/tmp/tracker_function_mapping.json"
+        self.mapping_file = "tools/trackers/QUAL_032_tracker_standardization/tracker_function_mapping.json"
         self.target_dirs = [
             "/mnt/c/AItools/segment-anything/",
             "/mnt/c/AItools/lora/train/yado/"

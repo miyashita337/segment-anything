@@ -40,7 +40,7 @@ class LightweightTrackerReplacement:
     
     def load_mapping(self):
         """マッピング読み込み"""
-        with open("tools/analysis/tracker_id_mapping.json", 'r', encoding='utf-8') as f:
+        with open("tools/trackers/QUAL_032_tracker_standardization/tracker_id_mapping.json", 'r', encoding='utf-8') as f:
             data = json.load(f)
             self.mapping = data['id_mapping']
         print(f"✅ マッピング読み込み: {len(self.mapping)}件")

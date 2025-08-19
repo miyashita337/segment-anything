@@ -23,7 +23,7 @@ except ImportError as e:
 
 class GoogleSheetsCompleteUpdater:
     def __init__(self):
-        self.mapping_file = "/tmp/tracker_function_mapping.json"
+        self.mapping_file = "tools/trackers/QUAL_032_tracker_standardization/tracker_function_mapping.json"
         self.replacement_map = {}
         self.config = get_default_config()
         self.client = GoogleSheetsClient(self.config)
