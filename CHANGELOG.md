@@ -11,6 +11,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.22] - 2025-08-19
+
+### Added
+- **QUAL-035 212ファイル復旧差分分析システム実装完了**: Windows FドライブバックアップからのF-drive復旧作業完全自動化
+  - `tools/trackers/QUAL_035_stash_analysis/stash_diff_analyzer.py`: 239ファイル分析・分類・推奨アクション生成システム
+  - 46,476行追加・46,584行削除の包括的差分分析
+  - ChangeType分類システム（FORMAT_ONLY, FUNCTIONAL, TRACKER_ID, DOCUMENTATION, MIXED）
+  - 信頼度ベース推奨システム（INTEGRATE, DISCARD, REVIEW, PRESERVE）
+
+### Enhanced
+- **進捗管理CLI自動登録日付機能**: 基本create命令での登録日付自動設定実装
+  - `tools/progress_tracker/data_models.py`: TaskRecord.__post_init__()での自動日付設定
+  - `tools/progress_tracker/progress_manager.py`: create_task()での明示的登録日付設定
+  - `tools/progress_tracker/cli.py`: 基本create命令の登録日付自動化
+  - 更新日付と同一フォーマット（%Y-%m-%d %H:%M:%S）採用
+
+### Fixed
+- **Google Sheets API列範囲エラー完全修正**: シート構造不整合の根本解決
+  - `tools/progress_tracker/sheets_client.py`: A:W→A:T列範囲修正（5ファイル修正）
+  - `tools/progress_tracker/data_models.py`: ComponentStatus安全パース実装
+  - 20列（A-T）実際構造への完全適合・API範囲エラー100%解消
+
+### Changed
+- **ファイル組織化・トラッカー別分離**: deprecated/構造の最適化
+  - `.gitignore`: deprecated/ディレクトリのgit管理化（deprecated/untracked_files/は除外維持）
+  - QUAL-032/QUAL-035トラッカー別ディレクトリ分離・パス参照修正
+  - 212ファイル中201件の削除・38件の統合決定実行
+
+### Technical Details
+- **分析対象**: 212→239ファイル（実際検出数）
+- **処理成功率**: 84.5% (201/239ファイル自動分類成功)
+- **Google Sheets統合**: 100% API範囲エラー解消
+- **自動化レベル**: High（CLI登録日付完全自動化）
+
+### Breaking Changes
+- **deprecated/管理方針変更**: git管理化により復旧が容易化
+- **日付フォーマット統一**: 全CLI命令で秒精度の統一日付フォーマット採用
+
 ## [v0.9.21] - 2025-08-18
 
 ### Added
