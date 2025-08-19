@@ -34,7 +34,7 @@ class ProgressManager:
         """シート初期化確認"""
         try:
             # ヘッダー行確認（23列）
-            headers = self.client.get_sheet_values("A1:W1")
+            headers = self.client.get_sheet_values("A1:T1")
             if not headers:
                 logger.info("シートを初期化しています...")
                 self.client.initialize_sheet()

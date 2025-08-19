@@ -71,7 +71,7 @@ class BaselineDetector:
         """
         try:
             # Google Sheetsから全データ取得
-            all_values = self.sheets_client.get_sheet_values('A:W')  # A-W列まで取得
+            all_values = self.sheets_client.get_sheet_values('A:T')  # A-T列まで取得
             
             if not all_values or len(all_values) < 2:
                 print("❌ Google Sheetsデータ取得失敗")

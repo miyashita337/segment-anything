@@ -33,8 +33,8 @@ class ProgressManager:
     def _ensure_sheet_initialized(self) -> None:
         """シート初期化確認"""
         try:
-            # ヘッダー行確認（23列）
-            headers = self.client.get_sheet_values("A1:W1")
+            # ヘッダー行確認（20列、T列まで）
+            headers = self.client.get_sheet_values("A1:T1")
             if not headers:
                 logger.info("シートを初期化しています...")
                 self.client.initialize_sheet()
@@ -50,11 +50,13 @@ class ProgressManager:
             if existing_task:
                 raise ProgressTrackerError(f"タスクが既に存在します: {tracker_id}")
             
-            # 新規タスク作成
+            # 新規タスク作成（登録日付を明示的に設定）
+            from datetime import datetime
             task = TaskRecord(
                 tracker_id=tracker_id,
                 description=description,
-                status=TaskStatus.NOT_STARTED
+                status=TaskStatus.NOT_STARTED,
+                created_date=datetime.now()  # 明示的に登録日付設定
             )
             
             # Google Sheetsに追加

@@ -166,8 +166,11 @@ class TaskRecord:
     
     def __post_init__(self):
         """初期化後処理"""
-        # 日付フィールドはデフォルトで空文字のまま（手動設定または更新時のみ設定）
-        # 統計分析データも空で初期化
+        # 登録日付が未設定の場合、作成時刻を自動設定
+        if self.created_date is None:
+            self.created_date = datetime.now()
+        
+        # 統計分析データの初期化
         if self.statistics is None:
             self.statistics = StatisticalRecord()
     
@@ -185,30 +188,32 @@ class TaskRecord:
             raise ValueError(f"Unknown component: {component}")
     
     def to_sheets_row(self) -> List[str]:
-        """Google Sheets行データに変換（基本13列：A-M + 統計6列：X-AC）"""
-        base_row = [
-            self.tracker_id,
-            self.priority.value,
-            self.status.value,
-            self.created_date.strftime('%Y-%m-%d %H:%M:%S') if self.created_date else "",
-            self.updated_date.strftime('%Y-%m-%d %H:%M:%S') if self.updated_date else "",
-            self.description,
-            self.details,  # 詳細フィールド追加
-            self.operation_check.value,
-            self.unit_test.value,
-            self.quality_evaluation.value,
-            self.integration_script.value,
-            self.dashboard_generation.value,
-            self.extraction_pipeline.value
+        """Google Sheets行データに変換（20列：A-T、実際の構造に合わせて）"""
+        # 実際のシート構造: A=ID, B=優先度, C=ステータス, D=登録日, E=更新日, F=概要, ...
+        row = [
+            self.tracker_id,                                                       # A
+            self.priority.value,                                                   # B  
+            self.status.value,                                                     # C  
+            self.created_date.strftime('%Y-%m-%d %H:%M:%S') if self.created_date else "",  # D
+            self.updated_date.strftime('%Y-%m-%d %H:%M:%S') if self.updated_date else "",  # E
+            self.description,                                                      # F
+            self.operation_check.value,                                           # G
+            self.unit_test.value,                                                 # H
+            self.quality_evaluation.value,                                        # I
+            self.integration_script.value,                                        # J
+            self.dashboard_generation.value,                                      # K
+            self.extraction_pipeline.value,                                       # L
+            "",  # M - LCA
+            "",  # N - A/B評価率
+            "",  # O - FPS
+            "",  # P - C以上評価率
+            "",  # Q - 平均カバレッジ率
+            "",  # R - 平均コンパクトネス
+            "",  # S - 平均フィル率
+            ""   # T - SCI, PLA
         ]
         
-        # N-W列（削除済み領域）は空で埋める
-        empty_nw_columns = [""] * 10
-        
-        # X-AC列統計分析データ追加
-        statistics_row = self.statistics.to_sheets_row() if self.statistics else [""] * 6
-        
-        return base_row + empty_nw_columns + statistics_row
+        return row
     
     @staticmethod
     def _parse_date_flexible(date_str: str) -> Optional[datetime]:
@@ -238,36 +243,48 @@ class TaskRecord:
 
     @classmethod
     def from_sheets_row(cls, row: List[str]) -> 'TaskRecord':
-        """Google Sheets行データから作成（拡張列対応）"""
-        # デフォルト値設定（29列分：A-M + N-W(空) + X-AC）
-        defaults = [""] * 29
+        """Google Sheets行データから作成（20列：A-T）"""
+        # デフォルト値設定（20列分：A-T）
+        defaults = [""] * 20
         row = row + defaults[len(row):]
         
-        # 統計分析部分を抽出（X-AC列、インデックス23-28）
-        statistics = StatisticalRecord.from_sheets_row(row, start_col=23)
+        # 統計データは現在無効化（列構造に合わない）
+        statistics = None  # StatisticalRecord.from_sheets_row(row, start_col=23)
         
-        # 優先度の安全な変換
+        # 安全な変換関数群
         def safe_priority(value: str) -> PriorityLevel:
             """優先度の安全な変換"""
+            if not value:
+                return PriorityLevel.MEDIUM
             for priority in PriorityLevel:
                 if priority.value == value:
                     return priority
             return PriorityLevel.MEDIUM  # デフォルト
         
+        def safe_component_status(value: str) -> ComponentStatus:
+            """コンポーネントステータスの安全な変換"""
+            if not value or not value.strip():
+                return ComponentStatus.EMPTY
+            try:
+                return ComponentStatus(value.strip())
+            except ValueError:
+                # 無効な値の場合はEMPTYを返す
+                return ComponentStatus.EMPTY
+        
         return cls(
-            tracker_id=row[0],
-            priority=safe_priority(row[1]),
-            status=TaskStatus(row[2]) if row[2] else TaskStatus.NOT_STARTED,
-            created_date=cls._parse_date_flexible(row[3]) if row[3] else None,
-            updated_date=cls._parse_date_flexible(row[4]) if row[4] else None,
-            description=row[5],
-            details=row[6],  # 詳細フィールド追加
-            operation_check=ComponentStatus(row[7]) if row[7] else ComponentStatus.EMPTY,
-            unit_test=ComponentStatus(row[8]) if row[8] else ComponentStatus.EMPTY,
-            quality_evaluation=ComponentStatus(row[9]) if row[9] else ComponentStatus.EMPTY,
-            integration_script=ComponentStatus(row[10]) if row[10] else ComponentStatus.EMPTY,
-            dashboard_generation=ComponentStatus(row[11]) if row[11] else ComponentStatus.EMPTY,
-            extraction_pipeline=ComponentStatus(row[12]) if row[12] else ComponentStatus.EMPTY,
+            tracker_id=row[0],                                                    # A
+            priority=safe_priority(row[1]),                                      # B (実際のシート構造に合わせて)
+            status=TaskStatus(row[2]) if row[2] else TaskStatus.NOT_STARTED,     # C 
+            created_date=cls._parse_date_flexible(row[3]) if row[3] else None,   # D
+            updated_date=cls._parse_date_flexible(row[4]) if row[4] else None,   # E
+            description=row[5],                                                   # F
+            details="",  # 詳細は別途管理
+            operation_check=safe_component_status(row[6]) if len(row) > 6 else ComponentStatus.EMPTY,
+            unit_test=safe_component_status(row[7]) if len(row) > 7 else ComponentStatus.EMPTY,
+            quality_evaluation=safe_component_status(row[8]) if len(row) > 8 else ComponentStatus.EMPTY,
+            integration_script=safe_component_status(row[9]) if len(row) > 9 else ComponentStatus.EMPTY,
+            dashboard_generation=safe_component_status(row[10]) if len(row) > 10 else ComponentStatus.EMPTY,
+            extraction_pipeline=safe_component_status(row[11]) if len(row) > 11 else ComponentStatus.EMPTY,
             statistics=statistics
         )
 
