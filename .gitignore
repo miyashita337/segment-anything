@@ -101,3 +101,22 @@ phase1_panel_detection/
 visualizations/
 
 PRINCIPLE.md
+
+# Claude Code integration files
+.claude/
+.serena/
+
+# Dashboard server logs
+dashboard_server.log
+integrated_dashboard_server.log
+
+# Backup files
+*.backup
+*.nav_backup
+
+# Documentation reports
+tracker_id_bulk_replacement_report.md
+tracker_standardization_backup.md
+
+# Deprecated directory
+deprecated/
