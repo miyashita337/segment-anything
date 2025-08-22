@@ -467,6 +467,11 @@ python -c "import torch; print(f'CUDA: {torch.cuda.is_available()}, Device count
 python tools/progress_tracker/cli.py status  # 現在の進捗確認
 python tools/progress_tracker/cli.py update  # 進捗更新
 
+# 権限管理（INCI-001新機能）
+python tools/progress_tracker/cli.py permission-status    # 現在の実行権限確認
+python tools/progress_tracker/cli.py set-permission LEVEL # 権限レベル設定 (READ_ONLY/PLAN_ONLY/EXECUTE_STEP_BY_STEP/EXECUTE_FULL)
+python tools/progress_tracker/cli.py permission-audit     # 権限変更履歴確認
+
 # 自動更新フック設定
 export GOOGLE_SHEETS_HOOK_ENABLED=true
 # 実行時に自動的にGoogle Sheetsに進捗が反映される

@@ -59,6 +59,11 @@ python3 tools/progress_tracker/cli.py update-metrics [タスクID] --pla 0.85 --
 
 # 設定確認
 python3 tools/progress_tracker/cli.py check-config
+
+# 権限管理（INCI-001新機能）
+python3 tools/progress_tracker/cli.py permission-status    # 現在の実行権限確認
+python3 tools/progress_tracker/cli.py set-permission LEVEL # 権限レベル設定 (READ_ONLY/PLAN_ONLY/EXECUTE_STEP_BY_STEP/EXECUTE_FULL)
+python3 tools/progress_tracker/cli.py permission-audit     # 権限変更履歴確認
 ```
 - 「完了」をクリック
 
@@ -245,6 +250,43 @@ python tools/progress_tracker/workflow_integration.py PH2-001 --mode complete
    - サービスアカウントにのみ必要最小限の権限を付与
    - 個人アカウントでの共有は避ける
    - 定期的にアクセスログを確認
+
+## 🔒 権限管理（INCI-001新機能）
+
+Claude実行権限管理システムが統合されています。
+
+### 権限レベル
+- **READ_ONLY**: 読み取りのみ（計画・状況確認）
+- **PLAN_ONLY**: 計画モードのみ（実行なし）
+- **EXECUTE_STEP_BY_STEP**: 段階実行（各操作に確認必要）
+- **EXECUTE_FULL**: 完全実行権限（デフォルト）
+
+### 権限管理コマンド
+```bash
+# 現在の権限レベル確認
+python3 tools/progress_tracker/cli.py permission-status
+
+# 権限レベル設定
+python3 tools/progress_tracker/cli.py set-permission READ_ONLY     # 読み取り専用
+python3 tools/progress_tracker/cli.py set-permission PLAN_ONLY     # 計画のみ
+python3 tools/progress_tracker/cli.py set-permission EXECUTE_STEP_BY_STEP  # 段階実行
+python3 tools/progress_tracker/cli.py set-permission EXECUTE_FULL  # 完全権限（デフォルト）
+
+# 権限変更履歴確認
+python3 tools/progress_tracker/cli.py permission-audit
+```
+
+### 環境変数設定
+```bash
+# 権限管理有効化（デフォルト: false）
+export CLAUDE_PERMISSION_ENABLED=true
+
+# 権限レベル設定（環境変数）
+export CLAUDE_PERMISSION_LEVEL=EXECUTE_STEP_BY_STEP
+
+# CI/CD用自動承認（デフォルト: false）
+export CLAUDE_AUTO_APPROVE=true
+```
 
 ## 📈 運用フロー
 
