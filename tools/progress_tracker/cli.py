@@ -16,6 +16,10 @@ from tools.progress_tracker.config import get_default_config, check_configuratio
 from tools.progress_tracker.progress_manager import ProgressManager
 from tools.progress_tracker.data_models import TaskStatus, ComponentStatus, ProgressTrackerError
 from tools.progress_tracker.connection_monitor import show_user_friendly_status
+from tools.progress_tracker.execution_permission import (
+    ExecutionPermissionManager, PermissionLevel, ActionType, 
+    require_permission, get_permission_manager
+)
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -68,6 +72,7 @@ def cmd_show_status(args):
         return 1
 
 
+@require_permission(ActionType.WRITE)
 def cmd_create_task(args):
     """新規タスク作成"""
     try:
@@ -84,6 +89,7 @@ def cmd_create_task(args):
         return 1
 
 
+@require_permission(ActionType.WRITE)
 def cmd_create_task_enhanced(args):
     """拡張タスク作成（詳細・優先度・日付対応）"""
     try:
@@ -160,6 +166,7 @@ def cmd_create_task_enhanced(args):
         return 1
 
 
+@require_permission(ActionType.WRITE)
 def cmd_update_status(args):
     """ステータス更新"""
     try:
@@ -428,6 +435,152 @@ def cmd_update_task_details(args):
         return 1
 
 
+def cmd_permission_status(args):
+    """権限状態表示"""
+    manager = get_permission_manager()
+    
+    print("🔒 Claude実行権限管理システム")
+    print("=" * 50)
+    
+    # 有効状態
+    enabled = manager.enabled
+    print(f"システム状態: {'✅ 有効' if enabled else '⚠️ 無効'}")
+    
+    if not enabled:
+        print("\n💡 有効化方法:")
+        print("  export CLAUDE_PERMISSION_ENABLED=true")
+        return 0
+    
+    # 現在の権限レベル
+    current_level = manager.get_current_level()
+    print(f"現在の権限レベル: {current_level.name}")
+    print(f"  説明: {get_level_description(current_level)}")
+    
+    # セッション情報
+    print(f"\nセッションID: {manager.session_id}")
+    print(f"開始時刻: {manager.state.get('started_at', '不明')}")
+    
+    # 最近の監査ログ
+    audit_log = manager.get_audit_log(limit=5)
+    if audit_log:
+        print("\n📋 最近のアクティビティ:")
+        for entry in audit_log:
+            event_type = entry.get('event_type', '')
+            timestamp = entry.get('timestamp', '')
+            data = entry.get('data', {})
+            
+            if event_type == 'permission_check':
+                action = data.get('action', '')
+                allowed = data.get('allowed', False)
+                status = '✅' if allowed else '❌'
+                print(f"  {status} {timestamp[:19]} - {action}")
+            elif event_type == 'permission_change':
+                old_level = data.get('old_level', '')
+                new_level = data.get('new_level', '')
+                print(f"  🔄 {timestamp[:19]} - 権限変更: {old_level} → {new_level}")
+    
+    return 0
+
+
+def cmd_set_permission(args):
+    """権限レベル設定"""
+    manager = get_permission_manager()
+    
+    if not manager.enabled:
+        print("⚠️ 権限管理システムが無効です")
+        print("有効化: export CLAUDE_PERMISSION_ENABLED=true")
+        return 1
+    
+    try:
+        new_level = PermissionLevel[args.level.upper()]
+        old_level = manager.get_current_level()
+        
+        if old_level == new_level:
+            print(f"ℹ️ 既に {new_level.name} に設定されています")
+            return 0
+        
+        # 確認
+        print(f"🔄 権限レベル変更:")
+        print(f"  現在: {old_level.name} - {get_level_description(old_level)}")
+        print(f"  変更後: {new_level.name} - {get_level_description(new_level)}")
+        
+        response = input("\n変更しますか？ (y/N): ").strip().lower()
+        if response != 'y':
+            print("キャンセルしました")
+            return 0
+        
+        manager.set_permission_level(new_level)
+        print(f"✅ 権限レベルを {new_level.name} に変更しました")
+        return 0
+        
+    except KeyError:
+        print(f"❌ 無効な権限レベル: {args.level}")
+        print("有効なレベル:")
+        for level in PermissionLevel:
+            print(f"  - {level.name}: {get_level_description(level)}")
+        return 1
+    except Exception as e:
+        print(f"❌ エラー: {e}")
+        return 1
+
+
+def cmd_permission_audit(args):
+    """監査ログ表示"""
+    manager = get_permission_manager()
+    
+    if not manager.enabled:
+        print("⚠️ 権限管理システムが無効です")
+        return 1
+    
+    print("📋 監査ログ")
+    print("=" * 70)
+    
+    audit_log = manager.get_audit_log(limit=args.limit)
+    if not audit_log:
+        print("ログエントリがありません")
+        return 0
+    
+    for entry in audit_log:
+        timestamp = entry.get('timestamp', '')[:19]
+        event_type = entry.get('event_type', '')
+        data = entry.get('data', {})
+        
+        if event_type == 'permission_check':
+            action = data.get('action', '')
+            target = data.get('target', '')
+            allowed = data.get('allowed', False)
+            level = data.get('level', '')
+            
+            status = '✅ 許可' if allowed else '❌ 拒否'
+            print(f"{timestamp} [{level}] {status}: {action}")
+            if target:
+                print(f"  対象: {target}")
+        
+        elif event_type == 'permission_change':
+            old_level = data.get('old_level', '')
+            new_level = data.get('new_level', '')
+            print(f"{timestamp} 🔄 権限変更: {old_level} → {new_level}")
+        
+        elif event_type == 'user_confirmation':
+            action = data.get('action', '')
+            approved = data.get('approved', False)
+            status = '✅ 承認' if approved else '❌ 拒否'
+            print(f"{timestamp} 👤 ユーザー確認 {status}: {action}")
+    
+    return 0
+
+
+def get_level_description(level: PermissionLevel) -> str:
+    """権限レベルの説明取得"""
+    descriptions = {
+        PermissionLevel.READ_ONLY: "読み取り専用（ファイル変更不可）",
+        PermissionLevel.PLAN_ONLY: "計画モード（実装実行不可）",
+        PermissionLevel.EXECUTE_STEP_BY_STEP: "段階実行（各操作に確認必要）",
+        PermissionLevel.EXECUTE_FULL: "完全実行権限（制限なし）"
+    }
+    return descriptions.get(level, "不明")
+
+
 def main():
     """メイン処理"""
     parser = argparse.ArgumentParser(description="進捗管理システム CLI")
@@ -525,6 +678,23 @@ def main():
     # 接続監視コマンド
     status_parser = subparsers.add_parser('connection-status', help='API接続状況確認')
     status_parser.set_defaults(func=lambda args: 0 if show_user_friendly_status() else 1)
+    
+    # ===== 権限管理コマンド =====
+    # 権限状態表示
+    perm_status_parser = subparsers.add_parser('permission-status', help='権限管理システム状態表示')
+    perm_status_parser.set_defaults(func=cmd_permission_status)
+    
+    # 権限レベル設定
+    perm_set_parser = subparsers.add_parser('set-permission', help='権限レベル設定')
+    perm_set_parser.add_argument('level', 
+                                  choices=['READ_ONLY', 'PLAN_ONLY', 'EXECUTE_STEP_BY_STEP', 'EXECUTE_FULL'],
+                                  help='権限レベル')
+    perm_set_parser.set_defaults(func=cmd_set_permission)
+    
+    # 監査ログ表示
+    perm_audit_parser = subparsers.add_parser('permission-audit', help='権限システム監査ログ表示')
+    perm_audit_parser.add_argument('--limit', type=int, default=20, help='表示件数（デフォルト: 20）')
+    perm_audit_parser.set_defaults(func=cmd_permission_audit)
     
     # 引数パース
     args = parser.parse_args()
