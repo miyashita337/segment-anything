@@ -18,6 +18,7 @@ permissions:
   contents: write
   issues: write
   pull-requests: write
+  id-token: write
 
 jobs:
   claude:
@@ -26,7 +27,7 @@ jobs:
       - name: Claude for GitHub (Phase 2)
         uses: anthropics/claude-code-action@v0.0.58
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
         env:
           TEST_MODE: ${{ github.event.inputs.test_mode || 'phase2_auto' }}
