@@ -1,0 +1,37 @@
+{
+  "name": "segment-anything-python",
+  "version": "0.9.23",
+  "description": "SAM + YOLO Character Extraction System with Claude Code Integration",
+  "private": true,
+  "main": "setup.py",
+  "scripts": {
+    "test": "python -m pytest tests/",
+    "lint": "./bin/shell/linter.sh",
+    "extract": "python features/extraction/commands/extract_character.py"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/miyashita337/segment-anything.git"
+  },
+  "keywords": [
+    "computer-vision",
+    "segmentation",
+    "yolo",
+    "sam",
+    "character-extraction",
+    "anime",
+    "lora-training",
+    "claude-code"
+  ],
+  "author": "miyashita337",
+  "license": "Apache-2.0",
+  "engines": {
+    "python": ">=3.8"
+  },
+  "devDependencies": {},
+  "dependencies": {},
+  "python": {
+    "setup_file": "setup.py",
+    "version_file": "CHANGELOG.md"
+  }
+}
