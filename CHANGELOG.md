@@ -11,6 +11,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.25] - 2025-08-23
+
+### Added
+- **Claude for GitHub Actions段階的復旧システム**: 3段階の安全な復旧プロセス実装
+  - Phase 1: workflow_dispatch手動実行
+  - Phase 2: Issue Commentテスト  
+  - Phase 3: フル復旧（全イベント対応）
+- **PRコメント対応プロセス**: GitHub PR #61への対応手順・ステップ13.5実装
+- **Git操作安全性ガイドライン**: `git add .` 禁止対策・33,036ファイル暴発防止
+- **軽量画像抽出テスト**: CI環境用外部Pythonファイル（.ci_extraction_test.py）
+
+### Changed
+- **ドキュメント統一化**: CLAUDE.md重複解消・指示体系整理・バージョニングルール明記
+- **GitHub Actions復旧テンプレート**: phase2/phase3復旧用テンプレート追加
+- **トラッカーワークフロー強化**: 13ステップ・4フェーズワークフロー完全統合
+
+### Fixed
+- **claude-for-github.yml完全修復**: 
+  - アクションバージョン修正（v1→v0.0.58）
+  - パラメータ名修正（github-token→github_token）
+  - permissions追加（id-token: write）
+  - mode設定追加（workflow_dispatch対応）
+- **tracker-ci.yml YAML構文エラー修正**: Python heredoc構文問題解決・CI実行エラー解消
+- **F824 lintエラー修正**: features/common/hooks/start.py 未使用global変数（yolo_model）除去
+
+### Thanks
+- **@miyashita337** for comprehensive GitHub Actions integration and CI/CD pipeline restoration
+
 ## [v0.9.24] - 2025-08-23
 
 ### Added
