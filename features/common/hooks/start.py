@@ -30,7 +30,7 @@ def start():
     Initialize models and performance monitoring for character extraction.
     This function is called when Claude Code starts.
     """
-    global sam_model, yolo_model, performance_monitor
+    global sam_model, performance_monitor
     
     print("🚀 Character Extraction System起動中...")
     
@@ -67,7 +67,7 @@ def get_performance_monitor():
 
 def initialize_models():
     """Initialize SAM and YOLO models with proper error handling."""
-    global sam_model, yolo_model, performance_monitor
+    global sam_model, performance_monitor
     
     try:
         print("🔧 Initializing models...")
