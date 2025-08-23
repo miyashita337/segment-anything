@@ -110,6 +110,11 @@ python3 tools/progress_tracker/cli.py update-metrics P1-010 --current 0.85 --bas
 
 # 接続確認
 python3 tools/progress_tracker/cli.py connection-status
+
+# 権限管理（INCI-001新機能）
+python3 tools/progress_tracker/cli.py permission-status    # 現在の実行権限確認
+python3 tools/progress_tracker/cli.py set-permission LEVEL # 権限レベル設定
+python3 tools/progress_tracker/cli.py permission-audit     # 権限変更履歴確認
 ```
 
 ### 自動更新トリガー

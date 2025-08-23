@@ -142,6 +142,11 @@ def suggest_tracker_name(description):
 # 移行候補の特定
 python tools/progress_tracker/cli.py list --status 着手中,着手前
 
+# 権限管理（INCI-001新機能）
+python tools/progress_tracker/cli.py permission-status    # 現在の実行権限確認
+python tools/progress_tracker/cli.py set-permission LEVEL # 権限レベル設定
+python tools/progress_tracker/cli.py permission-audit     # 権限変更履歴確認
+
 # 機能分析・新規格マッピング
 # 段階的な置換実行（安全性確保）
 ```

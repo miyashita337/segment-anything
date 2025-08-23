@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `tools/progress_tracker/progress_manager.py`: create_task()での明示的登録日付設定
   - `tools/progress_tracker/cli.py`: 基本create命令の登録日付自動化
   - 更新日付と同一フォーマット（%Y-%m-%d %H:%M:%S）採用
+- **INCI-001: Claude実行権限管理システム**: Claude暴走防止のための権限制御機能
+  - `tools/progress_tracker/execution_permission.py`: 4段階権限システム新規実装
+  - `tools/progress_tracker/cli.py`: 権限管理コマンド追加（permission-status/set-permission/permission-audit）
+  - 読み取り専用、計画のみ、段階実行、完全実行の4レベル権限制御
 
 ### Fixed
 - **Google Sheets API列範囲エラー完全修正**: シート構造不整合の根本解決
