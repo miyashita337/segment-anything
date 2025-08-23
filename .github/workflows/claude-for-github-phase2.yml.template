@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Claude for GitHub (Phase 2)
-        uses: anthropics/claude-code-action@v1
+        uses: anthropics/claude-code-action@v0.0.58
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
