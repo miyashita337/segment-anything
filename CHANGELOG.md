@@ -11,6 +11,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.24] - 2025-08-23
+
+### Added
+- **package.json導入**: Pythonプロジェクト向けバージョン管理ファイル新規作成
+  - Node.js依存関係なし、バージョン管理専用設計
+  - Python scripts統合（test・lint・extractコマンド）
+  - `/release`コマンド完全互換性確保
+
+### Fixed
+- **`/release`コマンド警告解消**: "package.jsonが存在しない"エラー完全修正
+- **バージョン不整合修正**: 複数ファイル間のバージョン統一
+  - setup.py: v0.9.13 → v0.9.23 統一
+  - spec.md: v0.4.0 → v0.9.23 統一（日付も2025-08-23に更新）
+
+### Changed
+- **バージョン管理方式**: 手動管理から自動npm version管理に移行
+- **統一マスターファイル**: package.jsonを中央バージョン管理ファイルとして採用
+
 ## [v0.9.23] - 2025-08-23
 
 ### Added
