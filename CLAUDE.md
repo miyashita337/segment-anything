@@ -146,6 +146,45 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **実際の機能動作**: プレースホルダーではなく動作する機能
 - **完全な実装**: 部分実装での完了報告は厳禁
 
+## 🚨 **Git操作安全性ガイドライン**
+
+### ❌ **絶対禁止コマンド**
+
+**deprecatedフォルダに33,036ファイルの大量未追跡ファイルが存在するため、以下のコマンドは厳禁：**
+
+- `git add .` - 大量未追跡ファイルの意図しないステージング防止
+- `git add -A` - 同上  
+- `git add --all` - 同上
+
+### ✅ **推奨Git操作**
+
+- **個別ファイル指定**: `git add specific_file.py specific_dir/`
+- **パターン指定**: `git add *.py` (慎重に確認後)
+- **確認後実行**: `git status` → 変更確認 → 個別add
+
+### 🔧 **deprecatedフォルダ対策**
+
+- **deprecated/untracked_files/**: 33,036ファイル存在（.gitignore除外済み）
+- **危険性**: `git add .`実行時の大量ファイル意図しないステージング
+- **対策**: 必ず個別ファイル指定でGit操作実行
+
+### 📋 **安全なGit操作フロー**
+
+```bash
+# 1. 変更状況確認
+git status
+
+# 2. 個別ファイル追加（具体的ファイル名指定）
+git add CLAUDE.md
+git add docs/templates/unified_tracker_template.md
+
+# 3. コミット作成
+git commit -m "feat(TRACKER_ID): 説明"
+
+# 4. プッシュ
+git push -u origin feature/TRACKER_ID
+```
+
 ## プロジェクト概要
 
 [PRINCIPLE.md](PRINCIPLE.md)を参照
