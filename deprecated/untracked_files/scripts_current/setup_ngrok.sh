@@ -1,0 +1,22 @@
+#!/bin/bash
+# ngrokを使用した外部公開設定
+
+echo "🌐 ngrokセットアップガイド"
+echo "=========================="
+echo ""
+echo "1. ngrokのインストール:"
+echo "   curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null"
+echo "   echo \"deb https://ngrok-agent.s3.amazonaws.com buster main\" | sudo tee /etc/apt/sources.list.d/ngrok.list"
+echo "   sudo apt update && sudo apt install ngrok"
+echo ""
+echo "2. ngrokアカウント作成（無料）:"
+echo "   https://ngrok.com/signup"
+echo ""
+echo "3. 認証トークン設定:"
+echo "   ngrok config add-authtoken <YOUR_AUTH_TOKEN>"
+echo ""
+echo "4. ダッシュボード公開:"
+echo "   ngrok http 8088 --basic-auth=\"admin:dashboard2025!\""
+echo ""
+echo "5. 発行されたURLでアクセス可能"
+echo "   例: https://abc123.ngrok.io"

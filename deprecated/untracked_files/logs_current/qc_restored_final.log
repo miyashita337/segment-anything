@@ -1,0 +1,26 @@
+Initializing models...
+c:\aitools\segment-anything\core\segment_anything\build_sam.py:105: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(f)
+🚀 Phase 0対応モデル初期化開始...
+✅ SAM vit_h loaded on cuda
+✅ SAM model initialized and loaded
+✅ YOLO yolov8x6_animeface.pt loaded on cuda
+✅ YOLO model initialized and loaded
+✅ Performance monitor initialized
+🎉 全モデル初期化完了（load_model()実行済み）
+Traceback (most recent call last):
+  File "C:\AItools\segment-anything\features\extraction\commands\extract_character.py", line 864, in <module>
+    extract_character()
+  File "C:\AItools\segment-anything\sam-env\lib\site-packages\click\core.py", line 1437, in __call__
+    return self.main(*args, **kwargs)
+  File "C:\AItools\segment-anything\sam-env\lib\site-packages\click\core.py", line 1358, in main
+    rv = self.invoke(ctx)
+  File "C:\AItools\segment-anything\sam-env\lib\site-packages\click\core.py", line 1221, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "C:\AItools\segment-anything\sam-env\lib\site-packages\click\core.py", line 789, in invoke
+    return callback(*args, **kwargs)
+  File "C:\AItools\segment-anything\features\extraction\commands\extract_character.py", line 114, in extract_character
+    output_dir.mkdir(exist_ok=True)
+  File "C:\Users\shakufuku\AppData\Local\Programs\Python\Python310\lib\pathlib.py", line 1175, in mkdir
+    self._accessor.mkdir(self, mode)
+FileNotFoundError: [WinError 3] �w�肳�ꂽ�p�X��������܂���B: '\\mnt\\c\\AItools\\lora\\train\\yado\\tracker-workspace\\QC-KANA08-RESTORED-FINAL\\extraction'

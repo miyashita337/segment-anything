@@ -1,0 +1,18 @@
+[0;32m[INFO][0m 統合パイプライン実行開始: INTEGRATE-3-6
+[0;32m[INFO][0m 実行ログ: /mnt/c/AItools/segment-anything/logs/INTEGRATE-3-6_integrated_pipeline_wrapper.log
+[0;32m[INFO][0m === 事前チェック開始 ===
+[0;32m[INFO][0m CUDA利用可能性チェック中...
+[0;32m[INFO][0m CUDA チェック完了
+[0;32m[INFO][0m === 事前チェック完了 ===
+[0;32m[INFO][0m === 実行設定 ===
+[0;32m[INFO][0m トラッカーID: INTEGRATE-3-6
+[0;32m[INFO][0m 入力ディレクトリ: /mnt/c/AItools/lora/train/yado/org/kana05/
+[0;32m[INFO][0m 設定ファイル: /mnt/c/AItools/segment-anything/config/pipeline_config.yaml
+[0;32m[INFO][0m ワークスペース: /mnt/c/AItools/lora/train/yado/tracker-workspace/INTEGRATE-3-6
+[0;32m[INFO][0m レジューム実行: false
+[0;32m[INFO][0m 詳細ログ: false
+[0;32m[INFO][0m ドライラン: true
+[0;32m[INFO][0m Pythonコマンド: python3
+[0;32m[INFO][0m タイムアウト: 1800秒
+[0;32m[INFO][0m =================
+[0;32m[INFO][0m ドライラン完了（実際の処理は実行されていません）

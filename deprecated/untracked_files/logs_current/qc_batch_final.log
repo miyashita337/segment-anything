@@ -1,0 +1,23 @@
+Input directory: C:/AItools/lora/train/yado/org/kana08
+Output directory: C:/AItools/lora/train/yado/tracker-workspace/QC-KANA08-RESTORED-FINAL/extraction
+YOLO threshold: 0.07
+Initializing models...
+c:\aitools\segment-anything\core\segment_anything\build_sam.py:105: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  state_dict = torch.load(f)
+🚀 Character Extraction System起動中...
+🖥️ システム情報:
+   CPU: 16コア, 使用率: 1.5%
+   メモリ: 16.0GB / 31.1GB 利用可能
+   GPU: NVIDIA GeForce RTX 4070 Ti SUPER (1基), VRAM: 16.0GB
+🔄 開始: SAM Model Loading (RAM: 439.6MB, GPU: 0.0MB)
+✅ SAM vit_h loaded on cuda
+✅ 完了: SAM Model Loading (2.64秒, RAM: 5436.3MB, GPU: 2509.6MB)
+✅ start()関数による初期化完了（SAMのみ）
+Model initialization completed
+
+Traceback (most recent call last):
+  File "C:\AItools\segment-anything\tools\testing\test_phase2_simple.py", line 225, in <module>
+    test_phase2_on_failed_images(
+  File "C:\AItools\segment-anything\tools\testing\test_phase2_simple.py", line 21, in test_phase2_on_failed_images
+    from features.extraction.commands.extract_character import extract_character_from_path
+ImportError: cannot import name 'extract_character_from_path' from 'features.extraction.commands.extract_character' (c:\aitools\segment-anything\features\extraction\commands\extract_character.py)

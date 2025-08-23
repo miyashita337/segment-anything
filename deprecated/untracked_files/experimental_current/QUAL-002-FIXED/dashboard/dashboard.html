@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUAL-002 - 品質評価ダッシュボード</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .quality-badge-high { @apply bg-green-500 text-white px-2 py-1 rounded text-xs font-semibold; }
+        .quality-badge-medium { @apply bg-yellow-500 text-white px-2 py-1 rounded text-xs font-semibold; }
+        .quality-badge-low { @apply bg-orange-500 text-white px-2 py-1 rounded text-xs font-semibold; }
+        .quality-badge-poor { @apply bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold; }
+        
+        .image-container { 
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- ヘッダー -->
+        <header class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">QUAL-002 品質評価ダッシュボード</h1>
+            <p class="text-gray-600">生成日時: 2025-08-13 15:34:46</p>
+        </header>
+        
+        <!-- 統計サマリー -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">総画像数</h3>
+                <p class="text-3xl font-bold text-blue-600">3</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">平均品質スコア</h3>
+                <p class="text-3xl font-bold text-green-600">0.676</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">成功画像数</h3>
+                <p class="text-3xl font-bold text-emerald-600">3</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">要改善数</h3>
+                <p class="text-3xl font-bold text-red-600">0</p>
+            </div>
+        </div>
+        
+        <!-- 品質分布 -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">品質分布</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="text-center">
+                    <div class="quality-badge-high inline-block mb-2">高品質</div>
+                    <p class="text-2xl font-bold">0</p>
+                </div>
+                <div class="text-center">
+                    <div class="quality-badge-medium inline-block mb-2">中品質</div>
+                    <p class="text-2xl font-bold">3</p>
+                </div>
+                <div class="text-center">
+                    <div class="quality-badge-low inline-block mb-2">低品質</div>
+                    <p class="text-2xl font-bold">0</p>
+                </div>
+                <div class="text-center">
+                    <div class="quality-badge-poor inline-block mb-2">要改善</div>
+                    <p class="text-2xl font-bold">0</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 画像ギャラリー -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6">画像品質評価結果</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+            <div class="border rounded-lg p-4 bg-gray-50">
+                <div class="mb-3">
+                    <img src="/workspace/QUAL-002/extraction/extracted_kana08_0000_cover.jpg" 
+                         alt="extracted_kana08_0000_cover.jpg" 
+                         class="image-container w-full max-h-96 object-contain"
+                         onerror="this.src='/static/placeholder.jpg'">
+                </div>
+                
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-semibold text-gray-700">extracted_kana08_0000_cover.jpg</span>
+                    <span class="quality-badge-medium">中品質</span>
+                </div>
+                <div class="text-sm text-gray-600">
+                    品質スコア: <span class="font-mono">0.707</span>
+                </div>
+            </div>
+            
+            <div class="border rounded-lg p-4 bg-gray-50">
+                <div class="mb-3">
+                    <img src="/workspace/QUAL-002/extraction/extracted_kana08_0001.jpg" 
+                         alt="extracted_kana08_0001.jpg" 
+                         class="image-container w-full max-h-96 object-contain"
+                         onerror="this.src='/static/placeholder.jpg'">
+                </div>
+                
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-semibold text-gray-700">extracted_kana08_0001.jpg</span>
+                    <span class="quality-badge-medium">中品質</span>
+                </div>
+                <div class="text-sm text-gray-600">
+                    品質スコア: <span class="font-mono">0.657</span>
+                </div>
+            </div>
+            
+            <div class="border rounded-lg p-4 bg-gray-50">
+                <div class="mb-3">
+                    <img src="/workspace/QUAL-002/extraction/extracted_kana08_0001_multi_char_detection.jpg" 
+                         alt="extracted_kana08_0001_multi_char_detection.jpg" 
+                         class="image-container w-full max-h-96 object-contain"
+                         onerror="this.src='/static/placeholder.jpg'">
+                </div>
+                
+                <div class="flex justify-between items-center mb-2">
+                    <span class="font-semibold text-gray-700">extracted_kana08_0001_multi_char_detection.jpg</span>
+                    <span class="quality-badge-medium">中品質</span>
+                </div>
+                <div class="text-sm text-gray-600">
+                    品質スコア: <span class="font-mono">0.663</span>
+                </div>
+            </div>
+            
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+        

@@ -1,0 +1,71 @@
+2025-08-05 17:43:40,185 - integrated_pipeline_INTEGRATE-3-6 - INFO - 統合パイプライン初期化完了: INTEGRATE-3-6
+2025-08-05 17:43:40,185 - integrated_pipeline_INTEGRATE-3-6 - INFO - 統合パイプライン開始: INTEGRATE-3-6
+2025-08-05 17:43:40,187 - integrated_pipeline_INTEGRATE-3-6 - INFO - Phase 3: 品質確認開始
+2025-08-05 17:43:41,910 - integrated_pipeline_INTEGRATE-3-6 - INFO - チェックポイント保存完了: phase3
+2025-08-05 17:43:41,910 - integrated_pipeline_INTEGRATE-3-6 - INFO - Phase 3: 品質確認完了 (1.7秒)
+2025-08-05 17:43:41,911 - integrated_pipeline_INTEGRATE-3-6 - INFO - Phase 4: 抽出実行開始
+2025-08-05 17:43:41,913 - integrated_pipeline_INTEGRATE-3-6 - INFO - 抽出コマンド実行: /usr/bin/python3 /mnt/c/AItools/segment-anything/tools/core/sam_yolo_character_segment.py --mode reproduce-auto --input_dir /mnt/c/AItools/lora/train/yado/org/kana05/ --output_dir /mnt/c/AItools/lora/train/yado/tracker-workspace/INTEGRATE-3-6/extraction --score_threshold 0.07
+2025-08-05 17:47:14,927 - integrated_pipeline_INTEGRATE-3-6 - INFO - 統合パイプライン初期化完了: INTEGRATE-3-6
+2025-08-05 17:47:14,927 - integrated_pipeline_INTEGRATE-3-6 - INFO - 統合パイプライン開始: INTEGRATE-3-6
+2025-08-05 17:47:14,931 - integrated_pipeline_INTEGRATE-3-6 - INFO - チェックポイントクリア完了
+2025-08-05 17:47:14,931 - integrated_pipeline_INTEGRATE-3-6 - INFO - Phase 3: 品質確認開始
+2025-08-05 17:47:16,638 - integrated_pipeline_INTEGRATE-3-6 - INFO - チェックポイント保存完了: phase3
+2025-08-05 17:47:16,638 - integrated_pipeline_INTEGRATE-3-6 - INFO - Phase 3: 品質確認完了 (1.7秒)
+2025-08-05 17:47:16,638 - integrated_pipeline_INTEGRATE-3-6 - INFO - Phase 4: 抽出実行開始
+2025-08-05 17:47:16,641 - integrated_pipeline_INTEGRATE-3-6 - INFO - 抽出コマンド実行: /usr/bin/python3 /mnt/c/AItools/segment-anything/tools/core/sam_yolo_character_segment.py --mode reproduce-auto --input_dir /mnt/c/AItools/lora/train/yado/org/kana05/ --output_dir /mnt/c/AItools/lora/train/yado/tracker-workspace/INTEGRATE-3-6/extraction --score_threshold 0.07 --max_files 3
+2025-08-05 17:47:18,912 - integrated_pipeline_INTEGRATE-3-6 - ERROR - 抽出処理失敗 (終了コード: 2)
+stderr: usage: sam_yolo_character_segment.py [-h]
+                                     [--mode {interactive,batch,choice,reproduce-auto}]
+                                     [--input INPUT] [--input_dir INPUT_DIR]
+                                     [--output_dir OUTPUT_DIR]
+                                     [--sam_checkpoint SAM_CHECKPOINT]
+                                     [--model_type {vit_h,vit_l,vit_b}]
+                                     [--yolo_model YOLO_MODEL]
+                                     [--score_threshold SCORE_THRESHOLD]
+                                     [--device {cuda,cpu}] [--anime_yolo]
+                                     [--multi_character_criteria {balanced,size_priority,fullbody_priority,central_priority,confidence_priority}]
+sam_yolo_character_segment.py: error: unrecognized arguments: --max_files 3
+
+stdout: Warning: EasyOCR not available. Text detection will be disabled.
+Warning: rembg not available. Background removal will use mask-based method.
+
+2025-08-05 17:47:38,719 - integrated_pipeline_INTEGRATE-3-6 - INFO - 統合パイプライン初期化完了: INTEGRATE-3-6
+2025-08-05 17:47:38,719 - integrated_pipeline_INTEGRATE-3-6 - INFO - 統合パイプライン開始: INTEGRATE-3-6
+2025-08-05 17:47:38,723 - integrated_pipeline_INTEGRATE-3-6 - INFO - チェックポイントクリア完了
+2025-08-05 17:47:38,723 - integrated_pipeline_INTEGRATE-3-6 - INFO - Phase 3: 品質確認開始
+2025-08-05 17:47:40,501 - integrated_pipeline_INTEGRATE-3-6 - INFO - チェックポイント保存完了: phase3
+2025-08-05 17:47:40,501 - integrated_pipeline_INTEGRATE-3-6 - INFO - Phase 3: 品質確認完了 (1.8秒)
+2025-08-05 17:47:40,501 - integrated_pipeline_INTEGRATE-3-6 - INFO - Phase 4: 抽出実行開始
+2025-08-05 17:47:40,505 - integrated_pipeline_INTEGRATE-3-6 - INFO - 抽出コマンド実行: /usr/bin/python3 /mnt/c/AItools/segment-anything/features/extraction/commands/extract_character.py /mnt/c/AItools/lora/train/yado/org/kana05/ -o /mnt/c/AItools/lora/train/yado/tracker-workspace/INTEGRATE-3-6/extraction --batch
+2025-08-05 17:47:41,725 - integrated_pipeline_INTEGRATE-3-6 - ERROR - 抽出処理失敗 (終了コード: 1)
+stderr: Traceback (most recent call last):
+  File "/mnt/c/AItools/segment-anything/features/extraction/commands/extract_character.py", line 13, in <module>
+    from features.common.hooks.start import (
+ModuleNotFoundError: No module named 'features'
+
+stdout: 
+2025-08-05 17:47:46,392 - integrated_pipeline_INTEGRATE-3-6 - INFO - 統合パイプライン初期化完了: INTEGRATE-3-6
+2025-08-05 17:47:46,392 - integrated_pipeline_INTEGRATE-3-6 - INFO - 統合パイプライン開始: INTEGRATE-3-6
+2025-08-05 17:47:46,396 - integrated_pipeline_INTEGRATE-3-6 - INFO - チェックポイントクリア完了
+2025-08-05 17:47:46,396 - integrated_pipeline_INTEGRATE-3-6 - INFO - Phase 3: 品質確認開始
+2025-08-05 17:47:48,028 - integrated_pipeline_INTEGRATE-3-6 - INFO - チェックポイント保存完了: phase3
+2025-08-05 17:47:48,029 - integrated_pipeline_INTEGRATE-3-6 - INFO - Phase 3: 品質確認完了 (1.6秒)
+2025-08-05 17:47:48,029 - integrated_pipeline_INTEGRATE-3-6 - INFO - Phase 4: 抽出実行開始
+2025-08-05 17:47:48,032 - integrated_pipeline_INTEGRATE-3-6 - INFO - 抽出コマンド実行: /usr/bin/python3 /mnt/c/AItools/segment-anything/features/extraction/commands/extract_character.py /mnt/c/AItools/lora/train/yado/org/kana05/ -o /mnt/c/AItools/lora/train/yado/tracker-workspace/INTEGRATE-3-6/extraction --batch
+2025-08-05 17:50:24,255 - integrated_pipeline_INTEGRATE-3-6 - INFO - 統合パイプライン初期化完了: INTEGRATE-3-6
+2025-08-05 17:50:24,255 - integrated_pipeline_INTEGRATE-3-6 - INFO - 統合パイプライン開始: INTEGRATE-3-6
+2025-08-05 17:50:24,259 - integrated_pipeline_INTEGRATE-3-6 - INFO - チェックポイント復旧完了: phase3
+2025-08-05 17:50:24,259 - integrated_pipeline_INTEGRATE-3-6 - INFO - レジューム実行: 完了済みフェーズ ['phase3']
+2025-08-05 17:50:24,259 - integrated_pipeline_INTEGRATE-3-6 - INFO - Phase 4: 抽出実行開始
+2025-08-05 17:50:24,263 - integrated_pipeline_INTEGRATE-3-6 - INFO - 抽出コマンド実行: /usr/bin/python3 /mnt/c/AItools/segment-anything/features/extraction/commands/extract_character.py /mnt/c/AItools/lora/train/yado/org/kana05/ -o /mnt/c/AItools/lora/train/yado/tracker-workspace/INTEGRATE-3-6/extraction --batch
+2025-08-05 17:52:20,437 - integrated_pipeline_INTEGRATE-3-6 - INFO - 統合パイプライン初期化完了: INTEGRATE-3-6
+2025-08-05 17:52:20,438 - integrated_pipeline_INTEGRATE-3-6 - INFO - Phase 5: 品質評価開始
+2025-08-05 17:52:20,463 - integrated_pipeline_INTEGRATE-3-6 - INFO - チェックポイント保存完了: phase5
+2025-08-05 17:52:20,463 - integrated_pipeline_INTEGRATE-3-6 - INFO - Phase 5: 品質評価完了 (0.0秒, 成功率: 48.7%)
+2025-08-05 17:52:20,463 - integrated_pipeline_INTEGRATE-3-6 - INFO - Phase 6: ダッシュボード生成開始
+2025-08-05 17:52:20,467 - integrated_pipeline_INTEGRATE-3-6 - INFO - チェックポイント復旧完了: phase5
+2025-08-05 17:52:21,394 - integrated_pipeline_INTEGRATE-3-6 - INFO - ダッシュボード生成完了: /mnt/c/AItools/lora/train/yado/tracker-workspace/INTEGRATE-3-6/dashboard/dashboard.html
+2025-08-05 17:52:21,401 - integrated_pipeline_INTEGRATE-3-6 - INFO - チェックポイント保存完了: phase6
+2025-08-05 17:52:21,401 - integrated_pipeline_INTEGRATE-3-6 - INFO - Phase 6: ダッシュボード生成完了 (0.9秒)
+2025-08-05 21:44:34,021 - integrated_pipeline_INTEGRATE-3-6 - INFO - 統合パイプライン初期化完了: INTEGRATE-3-6
+2025-08-05 21:46:33,008 - integrated_pipeline_INTEGRATE-3-6 - INFO - 統合パイプライン初期化完了: INTEGRATE-3-6

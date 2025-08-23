@@ -1,0 +1,22 @@
+2025-08-05 17:52:06,878 - integrated_pipeline_MOCK-TEST-001 - INFO - 統合パイプライン初期化完了: MOCK-TEST-001
+2025-08-05 17:52:06,878 - integrated_pipeline_MOCK-TEST-001 - INFO - Phase 3: 品質確認開始
+2025-08-05 17:52:06,878 - integrated_pipeline_MOCK-TEST-001 - ERROR - ❌ エラー: 入力ディレクトリが存在しません
+   パス: /mnt/c/AItools/segment-anything/test_small
+
+🔧 対処方法:
+   1. パスの確認: ls /mnt/c/AItools/segment-anything
+   2. 正しいパスの指定
+   3. 必要に応じてディレクトリ作成
+
+⚠️ 注意: 存在しないパスでの強制実行は品質保証違反です
+2025-08-05 17:52:06,879 - integrated_pipeline_MOCK-TEST-001 - INFO - Phase 4: モック抽出実行開始
+2025-08-05 17:52:06,879 - integrated_pipeline_MOCK-TEST-001 - INFO - チェックポイント保存完了: phase4
+2025-08-05 17:52:06,880 - integrated_pipeline_MOCK-TEST-001 - INFO - Phase 4: モック抽出完了 (0.0秒, 7ファイル)
+2025-08-05 17:52:06,880 - integrated_pipeline_MOCK-TEST-001 - INFO - Phase 5: 品質評価開始
+2025-08-05 17:52:06,881 - integrated_pipeline_MOCK-TEST-001 - INFO - チェックポイント保存完了: phase5
+2025-08-05 17:52:06,881 - integrated_pipeline_MOCK-TEST-001 - INFO - Phase 5: 品質評価完了 (0.0秒, 成功率: 0.0%)
+2025-08-05 17:52:06,881 - integrated_pipeline_MOCK-TEST-001 - INFO - Phase 6: ダッシュボード生成開始
+2025-08-05 17:52:06,881 - integrated_pipeline_MOCK-TEST-001 - INFO - チェックポイント復旧完了: phase5
+2025-08-05 17:52:07,859 - integrated_pipeline_MOCK-TEST-001 - INFO - ダッシュボード生成完了: /tmp/tmppklhao_h/MOCK-TEST-001/dashboard/dashboard.html
+2025-08-05 17:52:07,860 - integrated_pipeline_MOCK-TEST-001 - INFO - チェックポイント保存完了: phase6
+2025-08-05 17:52:07,860 - integrated_pipeline_MOCK-TEST-001 - INFO - Phase 6: ダッシュボード生成完了 (1.0秒)

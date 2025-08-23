@@ -1,0 +1,90 @@
+2025-08-06 00:12:52,684 - integrated_pipeline_PH2-008 - INFO - 復旧機能システム統合完了
+2025-08-06 00:12:52,684 - integrated_pipeline_PH2-008 - INFO - 統合パイプライン初期化完了: PH2-008
+2025-08-06 00:12:52,688 - integrated_pipeline_PH2-008 - INFO - パイプライン実行試行 1/4
+2025-08-06 00:12:52,688 - integrated_pipeline_PH2-008 - INFO - 統合パイプライン開始: PH2-008
+2025-08-06 00:12:52,690 - integrated_pipeline_PH2-008 - INFO - Phase 3: 品質確認開始
+2025-08-06 00:12:55,144 - integrated_pipeline_PH2-008 - INFO - チェックポイント保存完了: phase3
+2025-08-06 00:12:55,144 - integrated_pipeline_PH2-008 - INFO - Phase 3: 品質確認完了 (2.5秒)
+2025-08-06 00:12:55,144 - integrated_pipeline_PH2-008 - INFO - Phase 4: 抽出実行開始
+2025-08-06 00:12:55,146 - integrated_pipeline_PH2-008 - INFO - 抽出コマンド実行: /usr/bin/python3 /mnt/c/AItools/segment-anything/features/extraction/commands/extract_character.py /mnt/c/AItools/lora/train/yado/org/kana05/ -o /mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-008/extraction --batch
+2025-08-06 00:12:56,547 - integrated_pipeline_PH2-008 - ERROR - 抽出処理失敗 (終了コード: 1)
+stderr: Traceback (most recent call last):
+  File "/mnt/c/AItools/segment-anything/features/extraction/commands/extract_character.py", line 13, in <module>
+    from features.common.hooks.start import (
+ModuleNotFoundError: No module named 'features'
+
+stdout: 
+2025-08-06 00:13:57,647 - integrated_pipeline_PH2-008 - INFO - 復旧処理完了、再試行します
+2025-08-06 00:13:57,647 - integrated_pipeline_PH2-008 - INFO - パイプライン実行試行 2/4
+2025-08-06 00:13:57,648 - integrated_pipeline_PH2-008 - INFO - 統合パイプライン開始: PH2-008
+2025-08-06 00:13:57,651 - integrated_pipeline_PH2-008 - INFO - チェックポイント復旧完了: phase3
+2025-08-06 00:13:57,651 - integrated_pipeline_PH2-008 - INFO - レジューム実行: 完了済みフェーズ ['phase3']
+2025-08-06 00:13:57,651 - integrated_pipeline_PH2-008 - INFO - Phase 4: 抽出実行開始
+2025-08-06 00:13:57,654 - integrated_pipeline_PH2-008 - INFO - 抽出コマンド実行: /usr/bin/python3 /mnt/c/AItools/segment-anything/features/extraction/commands/extract_character.py /mnt/c/AItools/lora/train/yado/org/kana05/ -o /mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-008/extraction --batch
+2025-08-06 00:13:59,368 - integrated_pipeline_PH2-008 - ERROR - 抽出処理失敗 (終了コード: 1)
+stderr: Traceback (most recent call last):
+  File "/mnt/c/AItools/segment-anything/features/extraction/commands/extract_character.py", line 13, in <module>
+    from features.common.hooks.start import (
+ModuleNotFoundError: No module named 'features'
+
+stdout: 
+2025-08-06 00:16:00,475 - integrated_pipeline_PH2-008 - INFO - 復旧処理完了、再試行します
+2025-08-06 00:16:00,475 - integrated_pipeline_PH2-008 - INFO - パイプライン実行試行 3/4
+2025-08-06 00:16:00,476 - integrated_pipeline_PH2-008 - INFO - 統合パイプライン開始: PH2-008
+2025-08-06 00:16:00,479 - integrated_pipeline_PH2-008 - INFO - チェックポイント復旧完了: phase3
+2025-08-06 00:16:00,479 - integrated_pipeline_PH2-008 - INFO - レジューム実行: 完了済みフェーズ ['phase3']
+2025-08-06 00:16:00,480 - integrated_pipeline_PH2-008 - INFO - Phase 4: 抽出実行開始
+2025-08-06 00:16:00,482 - integrated_pipeline_PH2-008 - INFO - 抽出コマンド実行: /usr/bin/python3 /mnt/c/AItools/segment-anything/features/extraction/commands/extract_character.py /mnt/c/AItools/lora/train/yado/org/kana05/ -o /mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-008/extraction --batch
+2025-08-06 00:16:02,157 - integrated_pipeline_PH2-008 - ERROR - 抽出処理失敗 (終了コード: 1)
+stderr: Traceback (most recent call last):
+  File "/mnt/c/AItools/segment-anything/features/extraction/commands/extract_character.py", line 13, in <module>
+    from features.common.hooks.start import (
+ModuleNotFoundError: No module named 'features'
+
+stdout: 
+2025-08-06 00:18:25,889 - integrated_pipeline_PH2-008 - INFO - 復旧機能システム統合完了
+2025-08-06 00:18:25,890 - integrated_pipeline_PH2-008 - INFO - 統合パイプライン初期化完了: PH2-008
+2025-08-06 00:18:25,894 - integrated_pipeline_PH2-008 - INFO - パイプライン実行試行 1/4
+2025-08-06 00:18:25,894 - integrated_pipeline_PH2-008 - INFO - 統合パイプライン開始: PH2-008
+2025-08-06 00:18:25,897 - integrated_pipeline_PH2-008 - INFO - チェックポイントクリア完了
+2025-08-06 00:18:25,898 - integrated_pipeline_PH2-008 - INFO - Phase 3: 品質確認開始
+2025-08-06 00:18:28,005 - integrated_pipeline_PH2-008 - INFO - チェックポイント保存完了: phase3
+2025-08-06 00:18:28,005 - integrated_pipeline_PH2-008 - INFO - Phase 3: 品質確認完了 (2.1秒)
+2025-08-06 00:18:28,006 - integrated_pipeline_PH2-008 - INFO - Phase 4: 抽出実行開始
+2025-08-06 00:18:28,009 - integrated_pipeline_PH2-008 - INFO - 抽出コマンド実行: /usr/bin/python3 /mnt/c/AItools/segment-anything/features/extraction/commands/extract_character.py /mnt/c/AItools/lora/train/yado/org/kana08/ -o /mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-008/extraction --batch
+2025-08-06 00:26:35,299 - integrated_pipeline_PH2-008 - INFO - チェックポイント保存完了: phase4
+2025-08-06 00:26:35,303 - integrated_pipeline_PH2-008 - INFO - Phase 4: 抽出実行完了 (487.3秒, 26ファイル)
+2025-08-06 00:26:35,304 - integrated_pipeline_PH2-008 - INFO - Phase 5: 品質評価開始
+2025-08-06 00:26:35,334 - integrated_pipeline_PH2-008 - INFO - チェックポイント保存完了: phase5
+2025-08-06 00:26:35,334 - integrated_pipeline_PH2-008 - INFO - Phase 5: 品質評価完了 (0.0秒, 成功率: 66.7%)
+2025-08-06 00:26:35,334 - integrated_pipeline_PH2-008 - INFO - Phase 6: ダッシュボード生成開始
+2025-08-06 00:26:35,339 - integrated_pipeline_PH2-008 - INFO - チェックポイント復旧完了: phase5
+2025-08-06 00:26:35,343 - integrated_pipeline_PH2-008 - INFO - ダッシュボード生成完了: /mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-008/dashboard/dashboard.html
+2025-08-06 00:26:35,345 - integrated_pipeline_PH2-008 - INFO - Pushover結果送信開始...
+2025-08-06 00:26:35,346 - integrated_pipeline_PH2-008 - ERROR - Phase 6 失敗: 'IntegratedQualityPipeline' object has no attribute 'send_extraction_results_to_pushover'
+2025-08-06 00:29:13,473 - integrated_pipeline_PH2-008 - INFO - 復旧機能システム統合完了
+2025-08-06 00:29:13,473 - integrated_pipeline_PH2-008 - INFO - 統合パイプライン初期化完了: PH2-008
+2025-08-06 00:29:13,478 - integrated_pipeline_PH2-008 - INFO - パイプライン実行試行 1/4
+2025-08-06 00:29:13,478 - integrated_pipeline_PH2-008 - INFO - 統合パイプライン開始: PH2-008
+2025-08-06 00:29:13,482 - integrated_pipeline_PH2-008 - INFO - チェックポイント復旧完了: phase5
+2025-08-06 00:29:13,483 - integrated_pipeline_PH2-008 - INFO - レジューム実行: 完了済みフェーズ ['phase3', 'phase4', 'phase5']
+2025-08-06 00:29:13,483 - integrated_pipeline_PH2-008 - INFO - Phase 6: ダッシュボード生成開始
+2025-08-06 00:29:13,487 - integrated_pipeline_PH2-008 - INFO - チェックポイント復旧完了: phase5
+2025-08-06 00:29:14,832 - integrated_pipeline_PH2-008 - INFO - ダッシュボード生成完了: /mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-008/dashboard/dashboard.html
+2025-08-06 00:29:14,835 - integrated_pipeline_PH2-008 - INFO - Pushover結果送信開始...
+2025-08-06 00:29:14,892 - integrated_pipeline_PH2-008 - INFO - Pushover送信開始: 10枚
+2025-08-06 00:29:14,894 - integrated_pipeline_PH2-008 - ERROR - 画像送信エラー extracted_kana08_0000_cover.png: 'DashboardGenerator' object has no attribute 'tracker_id'
+2025-08-06 00:29:14,896 - integrated_pipeline_PH2-008 - ERROR - 画像送信エラー extracted_kana08_0016.png: 'DashboardGenerator' object has no attribute 'tracker_id'
+2025-08-06 00:29:14,898 - integrated_pipeline_PH2-008 - ERROR - 画像送信エラー extracted_kana08_0015.png: 'DashboardGenerator' object has no attribute 'tracker_id'
+2025-08-06 00:29:14,900 - integrated_pipeline_PH2-008 - ERROR - 画像送信エラー extracted_kana08_0004.png: 'DashboardGenerator' object has no attribute 'tracker_id'
+2025-08-06 00:29:14,902 - integrated_pipeline_PH2-008 - ERROR - 画像送信エラー extracted_kana08_0025_cover.png: 'DashboardGenerator' object has no attribute 'tracker_id'
+2025-08-06 00:29:14,905 - integrated_pipeline_PH2-008 - ERROR - 画像送信エラー extracted_kana08_0003.png: 'DashboardGenerator' object has no attribute 'tracker_id'
+2025-08-06 00:29:14,907 - integrated_pipeline_PH2-008 - ERROR - 画像送信エラー extracted_kana08_0002.png: 'DashboardGenerator' object has no attribute 'tracker_id'
+2025-08-06 00:29:14,909 - integrated_pipeline_PH2-008 - ERROR - 画像送信エラー extracted_kana08_0001.png: 'DashboardGenerator' object has no attribute 'tracker_id'
+2025-08-06 00:29:14,911 - integrated_pipeline_PH2-008 - ERROR - 画像送信エラー extracted_kana08_0005.png: 'DashboardGenerator' object has no attribute 'tracker_id'
+2025-08-06 00:29:14,913 - integrated_pipeline_PH2-008 - ERROR - 画像送信エラー extracted_kana08_0007.png: 'DashboardGenerator' object has no attribute 'tracker_id'
+2025-08-06 00:29:14,913 - integrated_pipeline_PH2-008 - ERROR - Pushover送信処理失敗: 'DashboardGenerator' object has no attribute 'tracker_id'
+2025-08-06 00:29:14,919 - integrated_pipeline_PH2-008 - INFO - チェックポイント保存完了: phase6
+2025-08-06 00:29:14,919 - integrated_pipeline_PH2-008 - INFO - Phase 6: ダッシュボード生成完了 (1.4秒)
+2025-08-06 00:29:14,920 - integrated_pipeline_PH2-008 - INFO - 統合パイプライン完了: PH2-008 (1.4秒)
+2025-08-06 00:29:14,923 - integrated_pipeline_PH2-008 - INFO - 復旧機能付きパイプライン実行成功
