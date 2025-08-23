@@ -1,27 +1,28 @@
-# TEMPORARILY DISABLED - Claude GitHub App not responding
-# name: Claude for GitHub
+# Phase 1 Testing - Manual execution only
+name: Claude for GitHub
 
-# on:
-#   issues:
-#     types: [opened, edited]
-#   issue_comment:
-#     types: [created, edited]
-#   pull_request:
-#     types: [opened, edited, synchronize]
-#   pull_request_review_comment:
-#     types: [created, edited]
+on:
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Test mode for claude-for-github.yml restoration'
+        required: false
+        default: 'manual_test'
+        type: string
 
-# permissions:
-#   contents: write
-#   issues: write
-#   pull-requests: write
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
 
-# jobs:
-#   claude:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Claude for GitHub
-#         uses: anthropics/claude-code-action@v1
-#         with:
-#           github-token: ${{ secrets.GITHUB_TOKEN }}
-#           anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+jobs:
+  claude:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Claude for GitHub (Test Mode)
+        uses: anthropics/claude-code-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+        env:
+          TEST_MODE: ${{ github.event.inputs.test_mode }}

@@ -1,0 +1,44 @@
+# Phase 3 Template - Full restoration
+# This template should replace claude-for-github.yml content after Phase 2 success
+name: Claude for GitHub
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Test mode for claude-for-github.yml restoration'
+        required: false
+        default: 'full_operation'
+        type: string
+  issues:
+    types: [opened, edited]
+  issue_comment:
+    types: [created, edited]
+  pull_request:
+    types: [opened, edited, synchronize]
+  pull_request_review_comment:
+    types: [created, edited]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  claude:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Claude for GitHub (Full Operation)
+        uses: anthropics/claude-code-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+        env:
+          TEST_MODE: ${{ github.event.inputs.test_mode || 'full_auto' }}
+          
+      - name: Monitor API Usage
+        if: always()
+        run: |
+          echo "Workflow completed - monitor API usage"
+          echo "Phase: Full Operation"
+          echo "Trigger: ${{ github.event_name }}"
