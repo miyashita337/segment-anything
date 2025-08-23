@@ -31,8 +31,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### 📋 必須参照ドキュメント
 - **詳細チェックリスト**: [`docs/checklists/tracker_workflow_checklist.md`](docs/checklists/tracker_workflow_checklist.md) - 13ステップ完了確認用
-- **計画テンプレート**: [`docs/templates/progress_tracking_template.md`](docs/templates/progress_tracking_template.md) - Phase 1計画書作成用  
-- **完了報告テンプレート**: [`docs/templates/implementation_report_template.md`](docs/templates/implementation_report_template.md) - Phase 4完了報告用
+- **統合テンプレート**: [`docs/templates/unified_tracker_template.md`](docs/templates/unified_tracker_template.md) - 計画・進捗・完了報告統合版
 
 ### 🚨 絶対厳守事項（簡潔版）
 
@@ -43,10 +42,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 5. **例外処理手順遵守**: 技術的困難時のユーザー相談必須
 
 ### ✅ 4フェーズ概要
-- **Phase 1**: 計画・準備（ステップ1-4） - 計画承認・ベースライン測定
-- **Phase 2**: 実装・テスト（ステップ5-8） - 機能実装・パフォーマンス測定
-- **Phase 3**: 品質ワークフロー（ステップ9-11） - 品質確認・改善効果測定
-- **Phase 4**: 完了・承認（ステップ12-13） - 最終検証・Google Sheets更新
+**詳細は** [`docs/checklists/tracker_workflow_checklist.md`](docs/checklists/tracker_workflow_checklist.md) **を参照**
 
 ## 🛡️ **入力ディレクトリ存在チェック必須要件**
 
@@ -150,6 +146,45 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **実際の機能動作**: プレースホルダーではなく動作する機能
 - **完全な実装**: 部分実装での完了報告は厳禁
 
+## 🚨 **Git操作安全性ガイドライン**
+
+### ❌ **絶対禁止コマンド**
+
+**deprecatedフォルダに33,036ファイルの大量未追跡ファイルが存在するため、以下のコマンドは厳禁：**
+
+- `git add .` - 大量未追跡ファイルの意図しないステージング防止
+- `git add -A` - 同上  
+- `git add --all` - 同上
+
+### ✅ **推奨Git操作**
+
+- **個別ファイル指定**: `git add specific_file.py specific_dir/`
+- **パターン指定**: `git add *.py` (慎重に確認後)
+- **確認後実行**: `git status` → 変更確認 → 個別add
+
+### 🔧 **deprecatedフォルダ対策**
+
+- **deprecated/untracked_files/**: 33,036ファイル存在（.gitignore除外済み）
+- **危険性**: `git add .`実行時の大量ファイル意図しないステージング
+- **対策**: 必ず個別ファイル指定でGit操作実行
+
+### 📋 **安全なGit操作フロー**
+
+```bash
+# 1. 変更状況確認
+git status
+
+# 2. 個別ファイル追加（具体的ファイル名指定）
+git add CLAUDE.md
+git add docs/templates/unified_tracker_template.md
+
+# 3. コミット作成
+git commit -m "feat(TRACKER_ID): 説明"
+
+# 4. プッシュ
+git push -u origin feature/TRACKER_ID
+```
+
 ## プロジェクト概要
 
 [PRINCIPLE.md](PRINCIPLE.md)を参照
@@ -184,7 +219,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **用途別フォルダ分離原則**:
 - **`docs/checklists/`**: 実行時確認項目（tracker_workflow_checklist.md等）
-- **`docs/templates/`**: 作業用フォーマット（計画書・報告書テンプレート）  
+- **`docs/templates/`**: 作業用フォーマット（統合版テンプレート：計画・進捗・完了報告一体化）  
 - **`docs/workflows/`**: ワークフロー概念・プロセス説明
 - **参照形式**: 「詳細は○○を参照」でリンク、重複記載厳禁
 
