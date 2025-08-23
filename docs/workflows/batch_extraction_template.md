@@ -274,7 +274,7 @@ git pull origin main
 
 - [segment-anything/CLAUDE.md](../CLAUDE.md) - プロジェクト全体説明
 - [segment-anything/README.md](../README.md) - 基本使用方法
-- [進捗追跡テンプレート](./progress_tracking_template.md)
+- [進捗追跡テンプレート](../templates/progress_tracking_template.md)
 
 ## 🚨 注意事項
 
