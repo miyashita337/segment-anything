@@ -1,0 +1,5 @@
+⚠️ このタスクはClaude Code での手動実行が必要です
+指示ファイル: ./gemini_outputs/gemini_result_20250730_011338.txt.claude_instruction
+
+タスク内容:
+Generate a simple README template for PH3-007 tracker

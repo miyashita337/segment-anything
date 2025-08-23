@@ -1,0 +1,12 @@
+以下のタスクを実行してください：
+
+Generate a simple README template for PH3-007 tracker
+
+要求事項:
+- 出力形式: markdown
+- 簡潔で実用的な結果を提供
+- エラーハンドリングを含める
+- 必要に応じてコメントを追加
+
+このタスクはGeminiでの処理品質が不十分だったため、
+Claude Codeでの再実行となります。

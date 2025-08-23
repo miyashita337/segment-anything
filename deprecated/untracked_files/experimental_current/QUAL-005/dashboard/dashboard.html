@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QUAL-005 - 品質評価ダッシュボード</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea, #764ba2); min-height: 100vh; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #2c3e50, #3498db); color: white; padding: 40px; text-align: center; }
+        .header h1 { margin: 0; font-size: 3em; font-weight: 300; }
+        .header .subtitle { font-size: 1.3em; opacity: 0.9; margin-top: 15px; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; padding: 40px; background: #f8f9fa; }
+        .stat-card { background: white; padding: 25px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .stat-value { font-size: 2.5em; font-weight: bold; margin-bottom: 10px; }
+        .stat-label { color: #666; font-size: 1.1em; }
+        .success-rate { color: #27ae60; }
+        .quality-summary { padding: 40px; background: white; }
+        .quality-summary h2 { text-align: center; margin-bottom: 30px; color: #2c3e50; font-size: 2em; }
+        .quality-chart { display: flex; gap: 20px; margin-bottom: 40px; }
+        .quality-stat { flex: 1; text-align: center; padding: 20px; border-radius: 15px; color: white; }
+        .quality-stat.high { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+        .quality-stat.medium { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .quality-stat.low { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .quality-count { font-size: 2.5em; font-weight: bold; }
+        .quality-label { font-size: 1.2em; margin-top: 10px; }
+        .gallery { padding: 40px; background: #f8f9fa; }
+        .gallery h2 { text-align: center; margin-bottom: 30px; color: #2c3e50; font-size: 2em; }
+        .images-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 18px; }
+        .image-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .image-container { position: relative; min-height: 200px; overflow: visible; }
+        .image-container img { width: 100%; height: 200px; object-fit: contain; background: #f8f9fa; display: block; border-radius: 8px 8px 0 0; }
+        .quality-badge { position: absolute; top: 10px; right: 10px; padding: 5px 10px; border-radius: 20px; color: white; font-weight: bold; font-size: 0.8em; }
+        .quality-badge.high { background: #27ae60; }
+        .quality-badge.medium { background: #f39c12; }
+        .quality-badge.low { background: #e74c3c; }
+        .image-info { padding: 15px; }
+        .image-name { font-weight: bold; margin-bottom: 5px; color: #2c3e50; }
+        .image-details { display: flex; justify-content: space-between; color: #666; font-size: 0.9em; }
+        .no-images { text-align: center; padding: 60px; color: #666; font-size: 1.2em; }
+        .footer { background: #2c3e50; color: white; text-align: center; padding: 30px; }
+        .generation-info { font-size: 0.9em; opacity: 0.8; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 QUAL-005</h1>
+            <div class="subtitle">品質評価ダッシュボード</div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value">48</div>
+                <div class="stat-label">総画像数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value success-rate">0.0%</div>
+                <div class="stat-label">品質スコア</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">0</div>
+                <div class="stat-label">成功画像</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">48</div>
+                <div class="stat-label">要改善</div>
+            </div>
+        </div>
+
+        <div class="quality-summary">
+            <h2>📊 品質分析</h2>
+            <div class="quality-chart">
+                <div class="quality-stat high">
+                    <div class="quality-count">0</div>
+                    <div class="quality-label">高品質</div>
+                </div>
+                <div class="quality-stat medium">
+                    <div class="quality-count">0</div>
+                    <div class="quality-label">中品質</div>
+                </div>
+                <div class="quality-stat low">
+                    <div class="quality-count">48</div>
+                    <div class="quality-label">低品質</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="gallery">
+            <h2>🎨 抽出画像ギャラリー</h2>
+            <div class="images-grid">
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_.jpg" alt="extracted_test_.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_1.jpg" alt="extracted_test_1.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_1.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_10.jpg" alt="extracted_test_10.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_10.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_11.jpg" alt="extracted_test_11.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_11.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_12.jpg" alt="extracted_test_12.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_12.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_13.jpg" alt="extracted_test_13.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_13.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_14.jpg" alt="extracted_test_14.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_14.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_15.jpg" alt="extracted_test_15.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_15.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_16.jpg" alt="extracted_test_16.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_16.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_17.jpg" alt="extracted_test_17.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_17.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_18.jpg" alt="extracted_test_18.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_18.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_19.jpg" alt="extracted_test_19.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_19.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_2.jpg" alt="extracted_test_2.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_2.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_20.jpg" alt="extracted_test_20.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_20.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_21.jpg" alt="extracted_test_21.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_21.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_22.jpg" alt="extracted_test_22.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_22.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_23.jpg" alt="extracted_test_23.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_23.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_24.jpg" alt="extracted_test_24.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_24.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_25.jpg" alt="extracted_test_25.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_25.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_26.jpg" alt="extracted_test_26.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_26.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_27.jpg" alt="extracted_test_27.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_27.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_28.jpg" alt="extracted_test_28.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_28.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_29.jpg" alt="extracted_test_29.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_29.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_3.jpg" alt="extracted_test_3.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_3.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_30.jpg" alt="extracted_test_30.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_30.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_31.jpg" alt="extracted_test_31.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_31.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_32.jpg" alt="extracted_test_32.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_32.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_33.jpg" alt="extracted_test_33.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_33.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_34.jpg" alt="extracted_test_34.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_34.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_35.jpg" alt="extracted_test_35.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_35.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_36.jpg" alt="extracted_test_36.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_36.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_37.jpg" alt="extracted_test_37.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_37.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_38.jpg" alt="extracted_test_38.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_38.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_39.jpg" alt="extracted_test_39.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_39.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_4.jpg" alt="extracted_test_4.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_4.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_40.jpg" alt="extracted_test_40.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_40.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_41.jpg" alt="extracted_test_41.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_41.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_42.jpg" alt="extracted_test_42.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_42.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_43.jpg" alt="extracted_test_43.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_43.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_44.jpg" alt="extracted_test_44.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_44.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_45.jpg" alt="extracted_test_45.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_45.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_46.jpg" alt="extracted_test_46.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_46.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_47.jpg" alt="extracted_test_47.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_47.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_5.jpg" alt="extracted_test_5.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_5.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_6.jpg" alt="extracted_test_6.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_6.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_7.jpg" alt="extracted_test_7.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_7.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_8.jpg" alt="extracted_test_8.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_8.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-card">
+            <div class="image-container">
+                <img src="/./workspace/QUAL-005/extraction/extracted_test_9.jpg" alt="extracted_test_9.jpg" loading="lazy">
+                <div class="quality-badge low">低品質</div>
+            </div>
+            <div class="image-info">
+                <div class="image-name">extracted_test_9.jpg</div>
+                <div class="image-details">
+                    <span>0 KB</span>
+                    <span>低品質</span>
+                </div>
+            </div>
+        </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>🤖 Generated by SAM+YOLO Character Extraction Pipeline</p>
+            <div class="generation-info">
+                Generated: 2025-08-11 16:09:55 | 
+                URL: <a href="http://100.123.241.106:8088/tracker/QUAL-005" style="color: #3498db;">http://100.123.241.106:8088/tracker/QUAL-005</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

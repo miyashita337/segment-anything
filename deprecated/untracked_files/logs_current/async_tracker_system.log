@@ -1,0 +1,22 @@
+2025-07-30 02:14:52,791 - __main__ - INFO - トラッカーワークフロー開始: PH3-007-async
+2025-07-30 02:14:52,802 - __main__ - INFO - タスク開始: unit_tests (試行: 1)
+2025-07-30 02:14:52,802 - __main__ - INFO - タスク開始: integration_tests (試行: 1)
+2025-07-30 02:14:52,803 - __main__ - INFO - タスク開始: quality_check (試行: 1)
+2025-07-30 02:14:57,343 - __main__ - INFO - タスク完了: integration_tests
+2025-07-30 02:14:58,625 - __main__ - ERROR - タスク失敗: unit_tests, エラー: Command 'python3 -m pytest tests/unit/test_extract.py -v' returned non-zero exit status 1.
+2025-07-30 02:14:58,625 - __main__ - INFO - リトライ待機: unit_tests (30秒)
+2025-07-30 02:15:28,656 - __main__ - INFO - タスク開始: unit_tests (試行: 2)
+2025-07-30 02:15:34,305 - __main__ - ERROR - タスク失敗: unit_tests, エラー: Command 'python3 -m pytest tests/unit/test_extract.py -v' returned non-zero exit status 1.
+2025-07-30 02:15:34,305 - __main__ - INFO - リトライ待機: unit_tests (30秒)
+2025-07-30 02:16:04,336 - __main__ - INFO - タスク開始: unit_tests (試行: 3)
+2025-07-30 02:16:09,806 - __main__ - ERROR - タスク失敗: unit_tests, エラー: Command 'python3 -m pytest tests/unit/test_extract.py -v' returned non-zero exit status 1.
+2025-07-30 02:16:09,806 - __main__ - INFO - リトライ待機: unit_tests (30秒)
+2025-07-30 02:16:39,832 - __main__ - INFO - タスク開始: unit_tests (試行: 4)
+2025-07-30 02:16:45,245 - __main__ - ERROR - タスク失敗: unit_tests, エラー: Command 'python3 -m pytest tests/unit/test_extract.py -v' returned non-zero exit status 1.
+2025-07-30 02:16:45,245 - __main__ - ERROR - タスク最終失敗: unit_tests
+2025-07-30 02:17:52,866 - __main__ - WARNING - タスクタイムアウト: quality_check
+2025-07-30 02:17:52,866 - __main__ - INFO - リトライ待機: quality_check (30秒)
+2025-07-30 02:18:22,892 - __main__ - INFO - タスク開始: quality_check (試行: 2)
+2025-07-30 02:21:22,988 - __main__ - WARNING - タスクタイムアウト: quality_check
+2025-07-30 02:21:22,988 - __main__ - INFO - リトライ待機: quality_check (30秒)
+2025-07-30 02:21:52,992 - __main__ - INFO - タスク開始: quality_check (試行: 3)

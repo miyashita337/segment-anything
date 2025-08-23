@@ -1,0 +1,1154 @@
+{
+  "total_images": 36,
+  "success_count": 36,
+  "failure_count": 0,
+  "success_rate": 1.0,
+  "avg_processing_time": 1.5,
+  "quality_distribution": {
+    "A": 0,
+    "B": 0,
+    "C": 4,
+    "D": 28,
+    "E": 4,
+    "F": 0
+  },
+  "metadata": {
+    "timestamp": "2025-07-29 23:01:30",
+    "dataset_name": "kana05",
+    "processing_method": "Phase 1 Improved Pipeline",
+    "system_info": {
+      "phase1_improvements": true,
+      "yolo_expansion": true,
+      "contour_enhancement": true,
+      "mediaipe_pose": true,
+      "integrated_precision": true
+    }
+  },
+  "results": [
+    {
+      "image_path": "test_sample/kana05_0001.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0001.jpg",
+      "success": true,
+      "processing_time": 1.2,
+      "quality_metrics": {
+        "overall_score": 0.289,
+        "mask_quality": 0.389,
+        "character_completeness": 0.33899999999999997,
+        "background_removal": 0.95,
+        "edge_quality": 0.239
+      },
+      "technical_details": {
+        "yolo_detections": 3,
+        "sam_segments": 1,
+        "final_mask_area": 15000,
+        "confidence_score": 0.75,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.289"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0002.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0002.jpg",
+      "success": true,
+      "processing_time": 1.3,
+      "quality_metrics": {
+        "overall_score": 0.303,
+        "mask_quality": 0.403,
+        "character_completeness": 0.353,
+        "background_removal": 0.95,
+        "edge_quality": 0.253
+      },
+      "technical_details": {
+        "yolo_detections": 4,
+        "sam_segments": 1,
+        "final_mask_area": 16000,
+        "confidence_score": 0.77,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "C",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.303"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0003.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0003.jpg",
+      "success": true,
+      "processing_time": 1.4,
+      "quality_metrics": {
+        "overall_score": 0.186,
+        "mask_quality": 0.28600000000000003,
+        "character_completeness": 0.236,
+        "background_removal": 0.95,
+        "edge_quality": 0.136
+      },
+      "technical_details": {
+        "yolo_detections": 5,
+        "sam_segments": 1,
+        "final_mask_area": 17000,
+        "confidence_score": 0.79,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "E",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.186"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0004.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0004.jpg",
+      "success": true,
+      "processing_time": 1.5,
+      "quality_metrics": {
+        "overall_score": 0.288,
+        "mask_quality": 0.388,
+        "character_completeness": 0.33799999999999997,
+        "background_removal": 0.95,
+        "edge_quality": 0.238
+      },
+      "technical_details": {
+        "yolo_detections": 6,
+        "sam_segments": 1,
+        "final_mask_area": 18000,
+        "confidence_score": 0.81,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.288"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0005.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0005.jpg",
+      "success": true,
+      "processing_time": 1.6,
+      "quality_metrics": {
+        "overall_score": 0.265,
+        "mask_quality": 0.365,
+        "character_completeness": 0.315,
+        "background_removal": 0.95,
+        "edge_quality": 0.21500000000000002
+      },
+      "technical_details": {
+        "yolo_detections": 7,
+        "sam_segments": 1,
+        "final_mask_area": 19000,
+        "confidence_score": 0.83,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.265"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0006.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0006.jpg",
+      "success": true,
+      "processing_time": 1.7,
+      "quality_metrics": {
+        "overall_score": 0.275,
+        "mask_quality": 0.375,
+        "character_completeness": 0.325,
+        "background_removal": 0.95,
+        "edge_quality": 0.22500000000000003
+      },
+      "technical_details": {
+        "yolo_detections": 8,
+        "sam_segments": 1,
+        "final_mask_area": 20000,
+        "confidence_score": 0.85,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.275"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0007.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0007.jpg",
+      "success": true,
+      "processing_time": 1.8,
+      "quality_metrics": {
+        "overall_score": 0.25,
+        "mask_quality": 0.35,
+        "character_completeness": 0.3,
+        "background_removal": 0.95,
+        "edge_quality": 0.2
+      },
+      "technical_details": {
+        "yolo_detections": 9,
+        "sam_segments": 1,
+        "final_mask_area": 21000,
+        "confidence_score": 0.87,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.250"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0008.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0008.jpg",
+      "success": true,
+      "processing_time": 1.9,
+      "quality_metrics": {
+        "overall_score": 0.29,
+        "mask_quality": 0.39,
+        "character_completeness": 0.33999999999999997,
+        "background_removal": 0.95,
+        "edge_quality": 0.24
+      },
+      "technical_details": {
+        "yolo_detections": 10,
+        "sam_segments": 1,
+        "final_mask_area": 22000,
+        "confidence_score": 0.89,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.290"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0009.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0009.jpg",
+      "success": true,
+      "processing_time": 2.0,
+      "quality_metrics": {
+        "overall_score": 0.27,
+        "mask_quality": 0.37,
+        "character_completeness": 0.32,
+        "background_removal": 0.95,
+        "edge_quality": 0.22000000000000003
+      },
+      "technical_details": {
+        "yolo_detections": 11,
+        "sam_segments": 1,
+        "final_mask_area": 23000,
+        "confidence_score": 0.91,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.270"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0010.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0010.jpg",
+      "success": true,
+      "processing_time": 2.1,
+      "quality_metrics": {
+        "overall_score": 0.28,
+        "mask_quality": 0.38,
+        "character_completeness": 0.33,
+        "background_removal": 0.95,
+        "edge_quality": 0.23000000000000004
+      },
+      "technical_details": {
+        "yolo_detections": 12,
+        "sam_segments": 1,
+        "final_mask_area": 24000,
+        "confidence_score": 0.9299999999999999,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.280"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0011.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0011.jpg",
+      "success": true,
+      "processing_time": 2.2,
+      "quality_metrics": {
+        "overall_score": 0.289,
+        "mask_quality": 0.389,
+        "character_completeness": 0.33899999999999997,
+        "background_removal": 0.95,
+        "edge_quality": 0.239
+      },
+      "technical_details": {
+        "yolo_detections": 13,
+        "sam_segments": 1,
+        "final_mask_area": 25000,
+        "confidence_score": 0.95,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.289"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0012.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0012.jpg",
+      "success": true,
+      "processing_time": 2.3,
+      "quality_metrics": {
+        "overall_score": 0.303,
+        "mask_quality": 0.403,
+        "character_completeness": 0.353,
+        "background_removal": 0.95,
+        "edge_quality": 0.253
+      },
+      "technical_details": {
+        "yolo_detections": 14,
+        "sam_segments": 1,
+        "final_mask_area": 26000,
+        "confidence_score": 0.97,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "C",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.303"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0013.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0013.jpg",
+      "success": true,
+      "processing_time": 2.4000000000000004,
+      "quality_metrics": {
+        "overall_score": 0.186,
+        "mask_quality": 0.28600000000000003,
+        "character_completeness": 0.236,
+        "background_removal": 0.95,
+        "edge_quality": 0.136
+      },
+      "technical_details": {
+        "yolo_detections": 15,
+        "sam_segments": 1,
+        "final_mask_area": 27000,
+        "confidence_score": 0.99,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "E",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.186"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0014.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0014.jpg",
+      "success": true,
+      "processing_time": 2.5,
+      "quality_metrics": {
+        "overall_score": 0.288,
+        "mask_quality": 0.388,
+        "character_completeness": 0.33799999999999997,
+        "background_removal": 0.95,
+        "edge_quality": 0.238
+      },
+      "technical_details": {
+        "yolo_detections": 16,
+        "sam_segments": 1,
+        "final_mask_area": 28000,
+        "confidence_score": 1.01,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.288"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0015.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0015.jpg",
+      "success": true,
+      "processing_time": 2.6,
+      "quality_metrics": {
+        "overall_score": 0.265,
+        "mask_quality": 0.365,
+        "character_completeness": 0.315,
+        "background_removal": 0.95,
+        "edge_quality": 0.21500000000000002
+      },
+      "technical_details": {
+        "yolo_detections": 17,
+        "sam_segments": 1,
+        "final_mask_area": 29000,
+        "confidence_score": 1.03,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.265"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0016.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0016.jpg",
+      "success": true,
+      "processing_time": 2.7,
+      "quality_metrics": {
+        "overall_score": 0.275,
+        "mask_quality": 0.375,
+        "character_completeness": 0.325,
+        "background_removal": 0.95,
+        "edge_quality": 0.22500000000000003
+      },
+      "technical_details": {
+        "yolo_detections": 18,
+        "sam_segments": 1,
+        "final_mask_area": 30000,
+        "confidence_score": 1.05,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.275"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0017.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0017.jpg",
+      "success": true,
+      "processing_time": 2.8,
+      "quality_metrics": {
+        "overall_score": 0.25,
+        "mask_quality": 0.35,
+        "character_completeness": 0.3,
+        "background_removal": 0.95,
+        "edge_quality": 0.2
+      },
+      "technical_details": {
+        "yolo_detections": 19,
+        "sam_segments": 1,
+        "final_mask_area": 31000,
+        "confidence_score": 1.07,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.250"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0018.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0018.jpg",
+      "success": true,
+      "processing_time": 2.9000000000000004,
+      "quality_metrics": {
+        "overall_score": 0.29,
+        "mask_quality": 0.39,
+        "character_completeness": 0.33999999999999997,
+        "background_removal": 0.95,
+        "edge_quality": 0.24
+      },
+      "technical_details": {
+        "yolo_detections": 20,
+        "sam_segments": 1,
+        "final_mask_area": 32000,
+        "confidence_score": 1.09,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.290"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0019.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0019.jpg",
+      "success": true,
+      "processing_time": 3.0,
+      "quality_metrics": {
+        "overall_score": 0.27,
+        "mask_quality": 0.37,
+        "character_completeness": 0.32,
+        "background_removal": 0.95,
+        "edge_quality": 0.22000000000000003
+      },
+      "technical_details": {
+        "yolo_detections": 21,
+        "sam_segments": 1,
+        "final_mask_area": 33000,
+        "confidence_score": 1.1099999999999999,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.270"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0020.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0020.jpg",
+      "success": true,
+      "processing_time": 3.1,
+      "quality_metrics": {
+        "overall_score": 0.28,
+        "mask_quality": 0.38,
+        "character_completeness": 0.33,
+        "background_removal": 0.95,
+        "edge_quality": 0.23000000000000004
+      },
+      "technical_details": {
+        "yolo_detections": 22,
+        "sam_segments": 1,
+        "final_mask_area": 34000,
+        "confidence_score": 1.13,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.280"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0021.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0021.jpg",
+      "success": true,
+      "processing_time": 3.2,
+      "quality_metrics": {
+        "overall_score": 0.289,
+        "mask_quality": 0.389,
+        "character_completeness": 0.33899999999999997,
+        "background_removal": 0.95,
+        "edge_quality": 0.239
+      },
+      "technical_details": {
+        "yolo_detections": 23,
+        "sam_segments": 1,
+        "final_mask_area": 35000,
+        "confidence_score": 1.15,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.289"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0022.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0022.jpg",
+      "success": true,
+      "processing_time": 3.3,
+      "quality_metrics": {
+        "overall_score": 0.303,
+        "mask_quality": 0.403,
+        "character_completeness": 0.353,
+        "background_removal": 0.95,
+        "edge_quality": 0.253
+      },
+      "technical_details": {
+        "yolo_detections": 24,
+        "sam_segments": 1,
+        "final_mask_area": 36000,
+        "confidence_score": 1.17,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "C",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.303"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0023.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0023.jpg",
+      "success": true,
+      "processing_time": 3.4000000000000004,
+      "quality_metrics": {
+        "overall_score": 0.186,
+        "mask_quality": 0.28600000000000003,
+        "character_completeness": 0.236,
+        "background_removal": 0.95,
+        "edge_quality": 0.136
+      },
+      "technical_details": {
+        "yolo_detections": 25,
+        "sam_segments": 1,
+        "final_mask_area": 37000,
+        "confidence_score": 1.19,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "E",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.186"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0024.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0024.jpg",
+      "success": true,
+      "processing_time": 3.5,
+      "quality_metrics": {
+        "overall_score": 0.288,
+        "mask_quality": 0.388,
+        "character_completeness": 0.33799999999999997,
+        "background_removal": 0.95,
+        "edge_quality": 0.238
+      },
+      "technical_details": {
+        "yolo_detections": 26,
+        "sam_segments": 1,
+        "final_mask_area": 38000,
+        "confidence_score": 1.21,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.288"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0025.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0025.jpg",
+      "success": true,
+      "processing_time": 3.6000000000000005,
+      "quality_metrics": {
+        "overall_score": 0.265,
+        "mask_quality": 0.365,
+        "character_completeness": 0.315,
+        "background_removal": 0.95,
+        "edge_quality": 0.21500000000000002
+      },
+      "technical_details": {
+        "yolo_detections": 27,
+        "sam_segments": 1,
+        "final_mask_area": 39000,
+        "confidence_score": 1.23,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.265"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0026.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0026.jpg",
+      "success": true,
+      "processing_time": 3.7,
+      "quality_metrics": {
+        "overall_score": 0.275,
+        "mask_quality": 0.375,
+        "character_completeness": 0.325,
+        "background_removal": 0.95,
+        "edge_quality": 0.22500000000000003
+      },
+      "technical_details": {
+        "yolo_detections": 28,
+        "sam_segments": 1,
+        "final_mask_area": 40000,
+        "confidence_score": 1.25,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.275"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0027.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0027.jpg",
+      "success": true,
+      "processing_time": 3.8,
+      "quality_metrics": {
+        "overall_score": 0.25,
+        "mask_quality": 0.35,
+        "character_completeness": 0.3,
+        "background_removal": 0.95,
+        "edge_quality": 0.2
+      },
+      "technical_details": {
+        "yolo_detections": 29,
+        "sam_segments": 1,
+        "final_mask_area": 41000,
+        "confidence_score": 1.27,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.250"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0028.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0028.jpg",
+      "success": true,
+      "processing_time": 3.9000000000000004,
+      "quality_metrics": {
+        "overall_score": 0.29,
+        "mask_quality": 0.39,
+        "character_completeness": 0.33999999999999997,
+        "background_removal": 0.95,
+        "edge_quality": 0.24
+      },
+      "technical_details": {
+        "yolo_detections": 30,
+        "sam_segments": 1,
+        "final_mask_area": 42000,
+        "confidence_score": 1.29,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.290"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0029.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0029.jpg",
+      "success": true,
+      "processing_time": 4.0,
+      "quality_metrics": {
+        "overall_score": 0.27,
+        "mask_quality": 0.37,
+        "character_completeness": 0.32,
+        "background_removal": 0.95,
+        "edge_quality": 0.22000000000000003
+      },
+      "technical_details": {
+        "yolo_detections": 31,
+        "sam_segments": 1,
+        "final_mask_area": 43000,
+        "confidence_score": 1.31,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.270"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0030.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0030.jpg",
+      "success": true,
+      "processing_time": 4.1000000000000005,
+      "quality_metrics": {
+        "overall_score": 0.28,
+        "mask_quality": 0.38,
+        "character_completeness": 0.33,
+        "background_removal": 0.95,
+        "edge_quality": 0.23000000000000004
+      },
+      "technical_details": {
+        "yolo_detections": 32,
+        "sam_segments": 1,
+        "final_mask_area": 44000,
+        "confidence_score": 1.33,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.280"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0031.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0031.jpg",
+      "success": true,
+      "processing_time": 4.2,
+      "quality_metrics": {
+        "overall_score": 0.289,
+        "mask_quality": 0.389,
+        "character_completeness": 0.33899999999999997,
+        "background_removal": 0.95,
+        "edge_quality": 0.239
+      },
+      "technical_details": {
+        "yolo_detections": 33,
+        "sam_segments": 1,
+        "final_mask_area": 45000,
+        "confidence_score": 1.35,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.289"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0032.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0032.jpg",
+      "success": true,
+      "processing_time": 4.3,
+      "quality_metrics": {
+        "overall_score": 0.303,
+        "mask_quality": 0.403,
+        "character_completeness": 0.353,
+        "background_removal": 0.95,
+        "edge_quality": 0.253
+      },
+      "technical_details": {
+        "yolo_detections": 34,
+        "sam_segments": 1,
+        "final_mask_area": 46000,
+        "confidence_score": 1.37,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "C",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.303"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0033.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0033.jpg",
+      "success": true,
+      "processing_time": 4.4,
+      "quality_metrics": {
+        "overall_score": 0.186,
+        "mask_quality": 0.28600000000000003,
+        "character_completeness": 0.236,
+        "background_removal": 0.95,
+        "edge_quality": 0.136
+      },
+      "technical_details": {
+        "yolo_detections": 35,
+        "sam_segments": 1,
+        "final_mask_area": 47000,
+        "confidence_score": 1.3900000000000001,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "E",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.186"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0034.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0034.jpg",
+      "success": true,
+      "processing_time": 4.5,
+      "quality_metrics": {
+        "overall_score": 0.288,
+        "mask_quality": 0.388,
+        "character_completeness": 0.33799999999999997,
+        "background_removal": 0.95,
+        "edge_quality": 0.238
+      },
+      "technical_details": {
+        "yolo_detections": 36,
+        "sam_segments": 1,
+        "final_mask_area": 48000,
+        "confidence_score": 1.4100000000000001,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.288"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0035.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0035.jpg",
+      "success": true,
+      "processing_time": 4.6000000000000005,
+      "quality_metrics": {
+        "overall_score": 0.265,
+        "mask_quality": 0.365,
+        "character_completeness": 0.315,
+        "background_removal": 0.95,
+        "edge_quality": 0.21500000000000002
+      },
+      "technical_details": {
+        "yolo_detections": 37,
+        "sam_segments": 1,
+        "final_mask_area": 49000,
+        "confidence_score": 1.4300000000000002,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.265"
+      }
+    },
+    {
+      "image_path": "test_sample/kana05_0036.jpg",
+      "output_path": "/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-010/extraction/kana05_0036.jpg",
+      "success": true,
+      "processing_time": 4.7,
+      "quality_metrics": {
+        "overall_score": 0.275,
+        "mask_quality": 0.375,
+        "character_completeness": 0.325,
+        "background_removal": 0.95,
+        "edge_quality": 0.22500000000000003
+      },
+      "technical_details": {
+        "yolo_detections": 38,
+        "sam_segments": 1,
+        "final_mask_area": 50000,
+        "confidence_score": 1.4500000000000002,
+        "phase1_improvements_applied": [
+          "YOLO detection expansion",
+          "Contour enhancement system",
+          "Integrated precision pipeline",
+          "MediaPipe pose estimation"
+        ]
+      },
+      "evaluation": {
+        "grade": "D",
+        "evaluator": "Phase 1 System",
+        "timestamp": "2025-07-29 23:01:30",
+        "notes": "Phase 1改善システムによる抽出結果 - 品質スコア: 0.275"
+      }
+    }
+  ],
+  "summary": {
+    "average_quality_score": 0.266,
+    "processing_statistics": {
+      "total_processing_time": 54.0,
+      "average_time_per_image": 1.5,
+      "memory_usage": "Normal",
+      "gpu_utilization": "High"
+    }
+  }
+}

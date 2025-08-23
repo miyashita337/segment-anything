@@ -1,0 +1,363 @@
+{
+  "summary": {
+    "total_images": 78,
+    "total_duplicates": 0,
+    "duplicate_groups": 39,
+    "processing_time": "0.47s",
+    "hash_cache_hits": 39,
+    "visual_comparisons": 0
+  },
+  "groups": [
+    {
+      "group_id": "exact_2bbc91b0",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0000_cover.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_fb8d95f9",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0001.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_f5ec76e6",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0002.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_365263f5",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0003.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_40197b0c",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0004.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_b422845c",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0005.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_787201f2",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0006.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_c28fc36b",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0007.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_9896ceca",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0008.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_9d1cfb7b",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0009.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_ab3f7b01",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0010.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_87439120",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0011.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_11843b39",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0012.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_075bc513",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0013.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_fa26db15",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0014.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_59084fee",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0015.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_d08b6959",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0016.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_3c42dd47",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0017.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_453d5fc2",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0018.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_3052a02d",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0019.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_1804257d",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0020.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_fcedd37f",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0021.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_6d62bb37",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0022.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_8112e5f3",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0023.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_6021a8fd",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0024.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_b8ccf008",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0025.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_131d4c71",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0026.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_e96b7f81",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0027.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_c9e037a3",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0028.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_59df0827",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0029.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_776eb954",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0030.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_1b069586",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0031.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_a2e292e3",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0032.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_579267be",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0033.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_97bc2054",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0034.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_ff3acfe4",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0035.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_28f3f951",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0036.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_8b69539d",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_0037_cover.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    },
+    {
+      "group_id": "exact_58ee80f1",
+      "type": "exact",
+      "confidence": 1.0,
+      "primary_image": "C:\\AItools\\lora\\train\\yado\\org\\kana05\\kana05_cover.jpg",
+      "duplicate_count": 0,
+      "duplicates": [],
+      "similarity_scores": {}
+    }
+  ]
+}

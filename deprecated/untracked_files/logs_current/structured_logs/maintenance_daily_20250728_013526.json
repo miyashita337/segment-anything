@@ -1,0 +1,22 @@
+{
+  "timestamp": "2025-07-28T01:35:25.892016",
+  "stats": {
+    "total_files": 40,
+    "directories": {
+      "core": 6,
+      "batch": 3,
+      "testing": 6,
+      "scripts": 7,
+      "utils": 4,
+      "legacy": 4,
+      "progress_tracker": 10
+    },
+    "file_types": {
+      ".py": 30
+    },
+    "total_size_kb": 507.814453125
+  },
+  "governance_score": 80,
+  "cleanup_count": 0,
+  "violations": 2
+}

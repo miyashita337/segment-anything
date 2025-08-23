@@ -1,0 +1,27 @@
+2025-08-06 17:51:36,728 - INFO - ============================================================
+2025-08-06 17:51:36,728 - INFO - INTEGRATE-3-6-03 kana08全画像バックグラウンド抽出開始
+2025-08-06 17:51:36,729 - INFO - 開始時刻: 2025-08-06 17:51:36.728699
+2025-08-06 17:51:36,729 - INFO - ============================================================
+2025-08-06 17:51:36,729 - INFO - 🚀 INTEGRATE-3-6-03 全画像抽出開始
+2025-08-06 17:51:37,454 - INFO - 実行コマンド: python3 tools/core/sam_yolo_character_segment.py --mode reproduce-auto --input_dir /mnt/c/AItools/lora/train/yado/org/kana08/ --output_dir /mnt/c/AItools/lora/train/yado/tracker-workspace/INTEGRATE-3-6-03/extraction/ --score_threshold 0.07 --verbose
+2025-08-06 17:51:39,292 - INFO - [抽出] usage: sam_yolo_character_segment.py [-h]
+2025-08-06 17:51:39,292 - INFO - [抽出] [--mode {interactive,batch,choice,reproduce-auto}]
+2025-08-06 17:51:39,293 - INFO - [抽出] [--input INPUT] [--input_dir INPUT_DIR]
+2025-08-06 17:51:39,293 - INFO - [抽出] [--output_dir OUTPUT_DIR]
+2025-08-06 17:51:39,293 - INFO - [抽出] [--sam_checkpoint SAM_CHECKPOINT]
+2025-08-06 17:51:39,293 - INFO - [抽出] [--model_type {vit_h,vit_l,vit_b}]
+2025-08-06 17:51:39,293 - INFO - [抽出] [--yolo_model YOLO_MODEL]
+2025-08-06 17:51:39,293 - INFO - [抽出] [--score_threshold SCORE_THRESHOLD]
+2025-08-06 17:51:39,293 - INFO - [抽出] [--device {cuda,cpu}] [--anime_yolo]
+2025-08-06 17:51:39,294 - INFO - [抽出] [--multi_character_criteria {balanced,size_priority,fullbody_priority,central_priority,confidence_priority}]
+2025-08-06 17:51:39,294 - INFO - [抽出] sam_yolo_character_segment.py: error: unrecognized arguments: --verbose
+2025-08-06 17:51:39,294 - INFO - [抽出] Warning: EasyOCR not available. Text detection will be disabled.
+2025-08-06 17:51:39,294 - INFO - [抽出] Warning: rembg not available. Background removal will use mask-based method.
+2025-08-06 17:51:39,813 - ERROR - ❌ 抽出処理エラー: return_code=2
+2025-08-06 17:51:39,820 - INFO - 📊 抽出結果: 19/24枚
+2025-08-06 17:51:40,540 - INFO - 📱 完了通知送信: 79.2%成功率
+2025-08-06 17:51:40,540 - INFO - ============================================================
+2025-08-06 17:51:40,540 - INFO - 処理完了時刻: 2025-08-06 17:51:40.540390
+2025-08-06 17:51:40,540 - INFO - 処理時間: 0:00:03.811691
+2025-08-06 17:51:40,540 - INFO - 最終結果: 19/24枚 (79.2%)
+2025-08-06 17:51:40,540 - INFO - ============================================================
