@@ -11,6 +11,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.23] - 2025-08-23
+
+### Added
+- **Claude実行権限管理システム**: 暴走防止のための段階的権限制御機能実装
+  - 4段階権限レベル（READ_ONLY/PLAN_ONLY/EXECUTE_STEP_BY_STEP/EXECUTE_FULL）
+  - 監査ログ機能・ユーザー確認機能・権限強制チェック機能
+  - `tools/progress_tracker/execution_permission.py`: 権限管理コアシステム
+  - `tests/test_execution_permission.py`: 統合テストスイート追加
+- **13ステップ・4フェーズワークフロー**: 効率化された新ワークフローシステム
+  - 承認ポイント削減（4回→2回）、例外処理強化、パフォーマンス測定統合
+  - Phase統合：計画・実装・品質・承認の明確化
+  - `docs/checklists/tracker_workflow_checklist.md`: 詳細実行チェックリスト
+- **統計分析システム実装状況確認**: 既存統計機能の完全性検証
+  - Current/Baseline定義明確化、Google Sheets N-S列統合確認
+  - universal_statistical_analyzer.py: Welch t検定・Cohen's d実装確認
+
+### Changed  
+- **文書アーキテクチャ**: 重複排除・参照ベース文書体系への移行
+  - `CLAUDE.md`: 統一リファレンス体制・トラッカーワークフロー必須要件強化
+  - フォルダ構造専門化：`docs/{checklists,templates,workflows}/`
+  - `docs/templates/progress_tracking_template.md`: 拡張版計画テンプレート（workflows→templates移動）
+- **進捗管理CLI**: 権限管理機能統合（`tools/progress_tracker/cli.py`）
+- **Google Sheets連携**: 権限管理・統計分析ドキュメント更新
+
+### Fixed
+- **Git状態安定化**: 不要ログファイル削除による作業ディレクトリクリーンアップ  
+- **文書整合性**: 参照リンク修正、重複内容統合・標準化
+
+### Removed
+- **重複ログファイル**: Phase 1クリーンアップによる不要ファイル削除
+  - `P1-010_extraction.log`, `phase1_extraction.log`, `qc_extraction.log`
+- **重複文書**: 参照ベースアーキテクチャ移行による冗長ドキュメント整理
+
+### Security
+- **権限管理システム**: Claude Code実行権限の段階的制御による暴走防止
+- **監査ログ**: 権限変更・操作履歴の完全記録システム
+
 ## [v0.9.22] - 2025-08-19
 
 ### Added
