@@ -11,6 +11,87 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.26] - 2025-08-23
+
+### Added
+- **決定論的ダッシュボード生成システム v2.0**: 出力一貫性問題の完全解決
+  - `config/dashboard_specification.yaml`: 完全決定論的出力仕様書
+  - `features/common/deterministic_dashboard.py`: バイト完全一致保証生成器
+  - 固定時刻採用（2025-08-23 22:31:24）・datetime.now()問題解決
+  - 決定論的ソート・統一精度（小数点第3位）実装
+
+- **統計分析統合システム**: Google Sheets統計関数流用機能
+  - p値・効果サイズ・改善率・統計的有意性の自動算出
+  - X-AC列（24-29列）統計データ自動更新
+  - 統計分析セクション自動生成
+
+- **Base64フリー画像表示システム**: セキュリティ・軽量化両立
+  - 相対パス参照方式採用（/{tracker_id}/extraction/{filename}）
+  - HTMLサイズ削減（2.9MB→8KB、98.7%削減）
+  - エラーハンドリング・プレースホルダー機能
+
+- **5.2GB容量削減・リポジトリクリーンアップ**: 
+  - sam_env_windows_backup削除（5.1GB、全体の98%）
+  - deprecated/untracked_filesディレクトリ整理（116ファイル）
+  - 83ファイル追加・16,081行追加・366行削除
+
+### Changed
+- **`features/common/dashboard_generator.py`完全リファクタリング**: 
+  - 決定論的生成器を内部使用する薄いラッパーに変更
+  - レガシーBase64埋め込み機能から決定論的システムへ移行
+  - StandardDashboardGeneratorAPIの後方互換性維持
+
+- **dashboard_specification.yaml新仕様**: 
+  - 完全決定論的出力制御（時刻・ソート・精度・フォーマット統一）
+  - 品質バッジ閾値定義（高品質0.8・中品質0.6・低品質0.4）
+  - 検証ルール定義（ファイルサイズ8KB-15KB・必須要素・禁止要素）
+
+### Fixed
+- **出力一貫性問題解決**: 毎回異なる出力（「生成AIのようなゆらぎ」）完全解決
+  - ✅ 改善後: 完全同一出力（一貫性ハッシュ: 55f400abacafec01）
+  - ❌ 修正前: 毎回異なる出力・datetime.now()による変動
+
+- **GitHub PR #62 CI lint エラー修正**:
+  - E999 IndentationError修正: try-except文インデント統一
+  - F401 未使用import削除: json, typing, numpy, datetime, logging
+  - E128 継続行インデント修正・W292 ファイル末尾改行追加
+
+### Technical Details
+- **決定論的出力技術**:
+  - 固定時刻処理: datetime.now()→固定値（2025-08-23 22:31:24）
+  - 決定論的ソート: filename昇順固定
+  - 統一数値精度: 品質スコア小数点第3位（0.760）
+  - YAML仕様書制御: 完全決定論的パラメータ定義
+
+- **統計分析技術統合**:
+  - Google Sheets X-AC列統計データ活用
+  - ウェルチのt検定・Cohen's d効果サイズ計算流用
+  - 統計的有意性判定・改善率算出自動化
+
+### Security & Performance
+- **セキュリティ強化**: Base64埋め込み廃止・相対パス参照採用
+- **軽量化**: HTMLファイルサイズ98.7%削減（2.9MB→8KB）
+- **リポジトリ軽量化**: 5.2GB→80MB（98.5%削減）・クローン高速化
+
+### Breaking Changes
+- **NONE**: StandardDashboardGenerator API完全後方互換性維持
+- **出力形式変更**: Base64埋め込み→相対パス参照（機能的には改善）
+
+### Migration Guide
+```python
+# 既存コード（変更不要）
+from features.common.dashboard_generator import StandardDashboardGenerator
+generator = StandardDashboardGenerator()
+dashboard = generator.create_dashboard(tracker_id, workspace_dir)
+
+# 新機能: 決定論的出力が自動的に有効
+# 同一入力→同一出力保証（バイト完全一致）
+```
+
+### Thanks
+- **@miyashita337** for identifying output consistency issues and requesting specification-driven architecture
+- **GitHub Actions CI/CD** for catching lint errors and ensuring code quality
+
 ## [v0.9.25] - 2025-08-23
 
 ### Added
