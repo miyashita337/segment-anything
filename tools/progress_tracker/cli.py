@@ -74,18 +74,103 @@ def cmd_show_status(args):
 
 @require_permission(ActionType.WRITE)
 def cmd_create_task(args):
-    """新規タスク作成"""
+    """新規タスク作成（必須パラメータ強制版）"""
+    
+    # 必須パラメータチェック
+    missing_params = []
+    if not args.tracker_id:
+        missing_params.append("トラッカーID")
+    if not hasattr(args, 'description') or not args.description:
+        missing_params.append("概要 (--description)")
+    if not hasattr(args, 'details') or not args.details:
+        missing_params.append("詳細 (--details)")
+    
+    if missing_params:
+        print(f"❌ エラー: 以下の必須パラメータが不足しています:")
+        for param in missing_params:
+            print(f"   - {param}")
+        print("\n💡 必須パラメータ:")
+        print("  - トラッカーID: 例) QUAL-036")
+        print("  - 概要 (--description): タスクの概要説明")
+        print("  - 詳細 (--details): 実装詳細・技術仕様")
+        print("  - 登録日付: 自動設定（現在時刻）")
+        print("\n✅ 正しい使用例:")
+        print('python tools/progress_tracker/cli.py create QUAL-036 \\')
+        print('  --description "Quality Workflowリファクタリング" \\')
+        print('  --details "create_phase1_extraction_report.py固定値→UnifiedQualityChecker実測値統合"')
+        return 1
+    
+    try:
+        config = get_default_config()
+        manager = ProgressManager(config)
+        
+        # 基本タスク作成
+        task = manager.create_task(args.tracker_id, args.description)
+        
+        # 詳細情報の追加（Google Sheetsクライアント直接操作）
+        try:
+            client = manager.client
+            
+            # タスク行を特定
+            all_values = client.get_sheet_values('A:Z')
+            task_row = None
+            
+            for i, row in enumerate(all_values[1:], 2):  # ヘッダーをスキップ
+                if row and len(row) > 0 and row[0] == args.tracker_id:
+                    task_row = i
+                    break
+            
+            if task_row:
+                # 自動日付設定
+                import datetime
+                current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                
+                # 優先度設定（デフォルト：高）
+                priority = getattr(args, 'priority', '高')
+                
+                # Google Sheetsの列構造に基づいて更新
+                # C列: 優先度, D列: 登録日付, E列: 更新日付, F列: 概要, G列: 詳細
+                
+                client.update_sheet_values(f'C{task_row}', [[priority]])        # 優先度
+                client.update_sheet_values(f'D{task_row}', [[current_time]])    # 登録日付
+                client.update_sheet_values(f'E{task_row}', [[current_time]])    # 更新日付
+                client.update_sheet_values(f'F{task_row}', [[args.description]])  # 概要
+                client.update_sheet_values(f'G{task_row}', [[args.details]])    # 詳細
+                
+                print(f"✅ タスク作成成功: {task.tracker_id}")
+                print(f"📝 概要: {args.description}")
+                print(f"📋 詳細: {len(args.details)}文字")
+                print(f"🎯 優先度: {priority}")
+                print(f"📅 登録日付: {current_time}")
+                
+            else:
+                print(f"⚠️ 基本タスクは作成されましたが、詳細情報の更新に失敗しました")
+                
+        except Exception as e:
+            print(f"⚠️ 詳細情報更新エラー: {e}")
+            print("基本タスクは作成済みです")
+        
+        return 0
+        
+    except Exception as e:
+        print(f"❌ タスク作成エラー: {e}")
+        return 1
+
+@require_permission(ActionType.WRITE)
+def cmd_create_task_basic(args):
+    """基本タスク作成（旧create コマンド・後方互換性用）"""
     try:
         config = get_default_config()
         manager = ProgressManager(config)
         
         task = manager.create_task(args.tracker_id, args.description or "")
-        print(f"✅ タスク作成成功: {task.tracker_id}")
+        print(f"✅ 基本タスク作成成功: {task.tracker_id}")
         print(f"📝 説明: {task.description}")
+        print("⚠️ 注意: 詳細情報は含まれていません。必要に応じて update-details コマンドを使用してください")
         return 0
         
     except Exception as e:
-        print(f"❌ タスク作成エラー: {e}")
+        print(f"❌ 基本タスク作成エラー: {e}")
         return 1
 
 
@@ -594,11 +679,19 @@ def main():
     status_parser = subparsers.add_parser('status', help='全体ステータス表示')
     status_parser.set_defaults(func=cmd_show_status)
     
-    # タスク作成コマンド
-    create_parser = subparsers.add_parser('create', help='新規タスク作成')
-    create_parser.add_argument('tracker_id', help='トラッカーID (例: PHS-005)')
-    create_parser.add_argument('--description', '-d', help='タスク説明')
+    # タスク作成コマンド（必須パラメータ強制版）
+    create_parser = subparsers.add_parser('create', help='新規タスク作成（必須パラメータ：概要・詳細）')
+    create_parser.add_argument('tracker_id', help='トラッカーID (例: QUAL-036)')
+    create_parser.add_argument('--description', '-d', required=True, help='タスク概要説明（必須）')
+    create_parser.add_argument('--details', '--detail', required=True, help='詳細情報（必須）')
+    create_parser.add_argument('--priority', '-p', choices=['高', '中', '低'], default='高', help='優先度 (デフォルト: 高)')
     create_parser.set_defaults(func=cmd_create_task)
+    
+    # 基本タスク作成コマンド（後方互換性用）
+    create_basic_parser = subparsers.add_parser('create-basic', help='基本タスク作成（詳細なし・後方互換性用）')
+    create_basic_parser.add_argument('tracker_id', help='トラッカーID (例: PHS-005)')
+    create_basic_parser.add_argument('--description', '-d', help='タスク説明')
+    create_basic_parser.set_defaults(func=cmd_create_task_basic)
     
     # 拡張タスク作成コマンド
     create_enhanced_parser = subparsers.add_parser('create-enhanced', help='拡張タスク作成（詳細・優先度・日付対応）')
