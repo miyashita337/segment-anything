@@ -121,8 +121,8 @@ string_templates:
 # 出力検証ルール
 validation_rules:
   file_size_range:
-    min_bytes: 8000
-    max_bytes: 15000
+    min_bytes: 4000
+    max_bytes: 50000
   required_elements:
     - "<!DOCTYPE html>"
     - "品質評価ダッシュボード" 

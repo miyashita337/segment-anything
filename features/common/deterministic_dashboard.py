@@ -5,6 +5,7 @@
 """
 
 import json
+
 try:
     import yaml
 except ImportError:
@@ -12,10 +13,11 @@ except ImportError:
     import subprocess
     subprocess.check_call(["pip", "install", "PyYAML"])
     import yaml
+
 import hashlib
-from pathlib import Path
-from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
@@ -90,7 +92,18 @@ class DeterministicDashboardGenerator:
             
         # 画像データの決定論的ソート
         results = raw_data.get('results', [])
-        results.sort(key=lambda x: x['filename'])  # ファイル名でソート
+        
+        # filename が存在しない場合は output_path からファイル名を抽出
+        for result in results:
+            if 'filename' not in result:
+                if 'output_path' in result:
+                    import os
+                    result['filename'] = os.path.basename(result['output_path'])
+                elif 'image_path' in result:
+                    import os
+                    result['filename'] = os.path.basename(result['image_path'])
+        
+        results.sort(key=lambda x: x.get('filename', ''))  # ファイル名でソート
         
         # 品質カテゴリー分類（決定論的）
         quality_distribution = self._classify_quality(results)
@@ -119,7 +132,10 @@ class DeterministicDashboardGenerator:
             if not result.get('success', False):
                 continue
                 
+            # quality_metrics.overall_score から品質スコア取得
             score = result.get('quality_score', 0.0)
+            if score == 0.0 and 'quality_metrics' in result:
+                score = result['quality_metrics'].get('overall_score', 0.0)
             
             # 仕様書定義に従った分類
             if score >= self.spec.quality_badges['高品質']['threshold_min']:
@@ -139,13 +155,26 @@ class DeterministicDashboardGenerator:
         summary = raw_data.get('summary', {})
         
         # 成功画像数（要改善以外）
-        successful_count = len([r for r in results if r.get('success', False) and r.get('quality_score', 0) >= 0.4])
+        successful_results = []
+        poor_results = []
         
-        # 要改善数
-        poor_count = len([r for r in results if r.get('success', False) and r.get('quality_score', 0) < 0.4])
+        for r in results:
+            if not r.get('success', False):
+                continue
+            score = r.get('quality_score', 0.0)
+            if score == 0.0 and 'quality_metrics' in r:
+                score = r['quality_metrics'].get('overall_score', 0.0)
+            
+            if score >= 0.4:
+                successful_results.append(r)
+            else:
+                poor_results.append(r)
+        
+        successful_count = len(successful_results)
+        poor_count = len(poor_results)
         
         return {
-            'total_images': summary.get('total_processed', 0),
+            'total_images': summary.get('total_images', 0),  # total_processed -> total_images に修正
             'average_quality': round(summary.get('average_quality_score', 0.0), 3),
             'successful_count': successful_count,
             'poor_count': poor_count
@@ -156,8 +185,11 @@ class DeterministicDashboardGenerator:
         """Google Sheets統計関数からデータ取得（流用）"""
         try:
             # Google Sheets統計関数の流用
-            from ..progress_tracker.sheets_client import GoogleSheetsClient
-            from ..progress_tracker.config import get_default_config
+            import sys
+            import os
+            sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'tools'))
+            from progress_tracker.config import get_default_config
+            from progress_tracker.sheets_client import GoogleSheetsClient
             
             config = get_default_config()
             client = GoogleSheetsClient(config)
@@ -177,6 +209,10 @@ class DeterministicDashboardGenerator:
                     effect_size = self._safe_float(row[26] if len(row) > 26 else '')
                     improvement_rate = self._safe_float(row[27] if len(row) > 27 else '')
                     significance = row[28] if len(row) > 28 else '未評価'
+                    
+                    # 改善率が小数点形式（0.377）の場合はパーセント形式（37.7）に変換
+                    if improvement_rate and improvement_rate < 1.0 and improvement_rate != 0.0:
+                        improvement_rate = improvement_rate * 100
                     
                     return {
                         'p_value': p_value,
@@ -356,8 +392,19 @@ class DeterministicDashboardGenerator:
         
         # 画像カード生成（決定論的順序）
         for result in successful_results:
-            filename = result['filename']
-            score = result['quality_score']
+            filename = result.get('filename', '')
+            if not filename:
+                if 'output_path' in result:
+                    import os
+                    filename = os.path.basename(result['output_path'])
+                elif 'image_path' in result:
+                    import os
+                    filename = os.path.basename(result['image_path'])
+            
+            # quality_score の取得 (quality_metrics.overall_score から)
+            score = result.get('quality_score', 0.0)
+            if score == 0.0 and 'quality_metrics' in result:
+                score = result['quality_metrics'].get('overall_score', 0.0)
             quality_class = self._get_quality_badge_class(score)
             quality_label = self._get_quality_label(score)
             
