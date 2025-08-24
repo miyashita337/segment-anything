@@ -24,6 +24,8 @@
 - [ ] タスク要件・目標の明確化
 - [ ] 技術的制約・依存関係の確認
 - [ ] リソース要件（時間・人員・設備）の見積もり
+- [ ] **トラッカーステータス更新**: Google Sheets「着手中」に変更
+- [ ] **作業ブランチ作成**: `git checkout -b feature/{TRACKER_ID}`
 
 ### ステップ2: 仕様書・事例調査 ✅
 - [ ] `CLAUDE.md` のトラッカーワークフロー要件確認
@@ -96,21 +98,49 @@
 
 ---
 
-## 📋 **Phase 4: 完了・承認フェーズ（ステップ12-13）**
+## 📋 **Phase 4: Git操作・PR作成フェーズ（ステップ12-13）**
 
-### ステップ12: 最終検証・承認準備 ✅
-- [ ] **自動検証実行**: `python3 tools/utils/validate_tracker_completion.py {TRACKER_ID}`
-- [ ] 総合ステータス `/release` 確認
-- [ ] 完了レポート作成・成果物整理
-- [ ] 学習事項・改善点の記録
+### ステップ12: 変更コミット・ブランチプッシュ ✅
+- [ ] **変更ステージング**: `git add [具体的ファイル名]` - 個別ファイル指定必須
+- [ ] **コミット作成**: 
+  ```bash
+  git commit -m "feat({TRACKER_ID}): [概要説明]
+  
+  - 主要変更点1
+  - 主要変更点2
+  
+  🤖 Generated with [Claude Code](https://claude.ai/code)
+  
+  Co-Authored-By: Claude <noreply@anthropic.com>"
+  ```
+- [ ] **ブランチプッシュ**: `git push -u origin feature/{TRACKER_ID}`
 
-### ステップ13: Pull Request・最終承認・完了処理 ✅
-- [ ] **Pull Request作成**: `gh pr create --title "feat({TRACKER_ID}): ..." --body "..."`
-- [ ] **最終承認**: 全成果物・品質基準・改善効果の最終確認
-- [ ] Google Sheets更新（ステータス → `/release`）
+### ステップ13: Pull Request作成・最終承認 ✅
+- [ ] **PR作成**: 
+  ```bash
+  gh pr create --title "feat({TRACKER_ID}): [概要]" --body "$(cat <<'EOF'
+  ## Summary
+  - [変更概要]
+  
+  ## Changes
+  - [具体的変更内容]
+  
+  ## Test plan
+  - [x] [検証項目1]
+  - [x] [検証項目2]
+  
+  🤖 Generated with [Claude Code](https://claude.ai/code)
+  EOF
+  )"
+  ```
+- [ ] **品質ワークフロー実行**: `./tools/scripts/run_quality_workflow.sh {TRACKER_ID}`
+
+### ステップ13.5: PR マージ後完了処理 ✅
+- [ ] **mainブランチ更新**: `git checkout main && git pull`
+- [ ] **Google Sheets更新**: `PROGRESS_TRACKER_SHEET_NAME="シート1" python3 tools/progress_tracker/cli.py update {TRACKER_ID} "/release"`
 - [ ] 完了通知送信・次フェーズへの引継ぎ
 
-### ステップ13.5: Pull Requestコメント対応 ✅
+### ステップ13.6: Pull Requestコメント対応 ✅
 - [ ] **コメント調査**: コメント内容の正確性・妥当性確認
 - [ ] **認識確認**: コメント指摘と現状の差分分析
 - [ ] **Quote Reply**: 認識一致/相違を明記して返信
