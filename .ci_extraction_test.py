@@ -3,12 +3,14 @@
 CI-INTEGRATION-001 Phase 2.2: Lightweight Extraction Test
 軽量画像抽出テスト（SAM/YOLO依存なし）
 """
-import sys
-import os
-import time
-import cv2
 import numpy as np
+import cv2
+
+import os
+import sys
+import time
 from PIL import Image
+
 
 def main():
     print('🚀 CI-INTEGRATION-001 Phase 2.2: Lightweight Extraction Test')

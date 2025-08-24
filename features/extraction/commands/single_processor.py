@@ -6,8 +6,8 @@ import numpy as np
 import cv2
 
 import time
-from features.common.hooks.start import get_sam_model, get_yolo_model, initialize_models
 from features.common.custom_types import ImageType, MaskType
+from features.common.hooks.start import get_sam_model, get_yolo_model, initialize_models
 from pathlib import Path
 from PIL import Image
 from typing import Any, Dict, Optional, Tuple

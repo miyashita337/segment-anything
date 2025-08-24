@@ -6,9 +6,11 @@ QI-002: キャラクター分離器 (CharacterSeparator)
 
 import numpy as np
 import cv2
-from typing import List, NamedTuple, Optional
+
 from dataclasses import dataclass
-from .multi_character_detector import MultiCharacterDetector, CharacterRegion
+from typing import List, NamedTuple, Optional
+
+from .multi_character_detector import CharacterRegion, MultiCharacterDetector
 
 
 class CharacterSeparationResult(NamedTuple):

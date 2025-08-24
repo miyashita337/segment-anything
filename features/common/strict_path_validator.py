@@ -9,17 +9,20 @@ Created for: QUAL-033 - 厳密パス検証システム実装・全ワークフ�
 Author: Claude Code Integration System
 """
 
-import os
-import sys
 import logging
+import os
 import re
-from pathlib import Path
-from typing import Dict, Any, Optional, List, Tuple, Union
+import sys
 from dataclasses import dataclass
 from enum import Enum
-
 # 既存の入力検証との統合
-from features.common.input_validation import InputValidationError, validate_input_directory, validate_output_directory
+from features.common.input_validation import (
+    InputValidationError,
+    validate_input_directory,
+    validate_output_directory,
+)
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 # 作者別パラメータシステムとの統合
 try:

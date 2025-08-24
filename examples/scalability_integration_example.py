@@ -4,25 +4,26 @@
 PH2-002: 既存パイプラインへのスケーラビリティ改善統合デモ
 """
 
-import sys
-import time
 import numpy as np
 import torch
+
+import sys
+import time
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 sys.path.append(str(Path(__file__).parent.parent))
 
+from features.common.error_handling import global_error_handler, with_error_handling
+from features.common.resource_manager import BatchProcessor, ResourceManager, managed_resources
 from features.common.scalability import (
-    ParallelProcessor, AsyncProcessor, PipelineProcessor,
-    GPUParallelProcessor, ScalabilityManager,
-    ProcessingTask, TaskResult
-)
-from features.common.resource_manager import (
-    ResourceManager, managed_resources, BatchProcessor
-)
-from features.common.error_handling import (
-    global_error_handler, with_error_handling
+    AsyncProcessor,
+    GPUParallelProcessor,
+    ParallelProcessor,
+    PipelineProcessor,
+    ProcessingTask,
+    ScalabilityManager,
+    TaskResult,
 )
 
 
@@ -75,7 +76,7 @@ def simulate_sam_segmentation(detection_data: Dict[str, Any]) -> Dict[str, Any]:
 async def async_file_operation(filepath: str) -> Dict[str, Any]:
     """非同期ファイル操作のシミュレーション"""
     import asyncio
-    
+
     # I/O待機をシミュレート
     await asyncio.sleep(0.05 + np.random.random() * 0.02)
     

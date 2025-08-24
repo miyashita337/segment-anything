@@ -12,10 +12,9 @@ import gc
 import logging
 import psutil
 import time
-from typing import Dict, Optional, Callable
-from pathlib import Path
 from datetime import datetime
-
+from pathlib import Path
+from typing import Callable, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -275,8 +274,8 @@ def monitor_memory(cleanup_after: bool = False):
 
 if __name__ == "__main__":
     # テスト実行
-    import sys
     import json
+    import sys
     
     logging.basicConfig(level=logging.INFO)
     

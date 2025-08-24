@@ -185,8 +185,8 @@ class DeterministicDashboardGenerator:
         """Google Sheets統計関数からデータ取得（流用）"""
         try:
             # Google Sheets統計関数の流用
-            import sys
             import os
+            import sys
             sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'tools'))
             from progress_tracker.config import get_default_config
             from progress_tracker.sheets_client import GoogleSheetsClient

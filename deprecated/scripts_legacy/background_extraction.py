@@ -6,8 +6,9 @@ TEST-20250803で全26枚を処理
 
 import subprocess
 import sys
-from pathlib import Path
 import time
+from pathlib import Path
+
 
 def main():
     print("🚀 元仕様確認 - バックグラウンド抽出開始")

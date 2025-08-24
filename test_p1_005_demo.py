@@ -4,9 +4,10 @@ P1-005: 自動マスク修正機能デモ
 実際の画像を使用した自動マスク修正機能のデモンストレーション
 """
 
-import sys
-import cv2
 import numpy as np
+import cv2
+
+import sys
 from pathlib import Path
 
 # プロジェクトルートをパスに追加

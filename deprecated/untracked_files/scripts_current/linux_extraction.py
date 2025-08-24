@@ -1,4 +1,10 @@
-from features.common.environment_manager import get_path, get_test_image_path, setup_test_env, is_ci_environment
+from features.common.environment_manager import (
+    get_path,
+    get_test_image_path,
+    is_ci_environment,
+    setup_test_env,
+)
+
 #!/usr/bin/env python3
 """
 Linux環境での実際のキャラクター抽出スクリプト

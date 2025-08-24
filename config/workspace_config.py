@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 from typing import Optional
 
+
 class WorkspaceConfig:
     """ワークスペース設定一元管理クラス"""
     

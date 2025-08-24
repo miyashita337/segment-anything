@@ -5,7 +5,7 @@ Provides type aliases and common types used across the application.
 import numpy as np
 
 from PIL import Image
-from typing import Any, Union, Dict
+from typing import Any, Dict, Union
 
 # Image type aliases
 ImageType = Union[np.ndarray, Image.Image]

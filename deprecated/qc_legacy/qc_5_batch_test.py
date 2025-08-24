@@ -5,8 +5,9 @@ QC-KANA08復元版で5枚テスト
 
 import subprocess
 import sys
-from pathlib import Path
 import time
+from pathlib import Path
+
 
 def main():
     input_dir = Path("C:/AItools/lora/train/yado/org/kana08")

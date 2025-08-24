@@ -3,11 +3,12 @@
 QC-KANA08完全復元版 - WSLネイティブ環境で20枚抽出
 """
 
+import os
 import subprocess
 import sys
-from pathlib import Path
 import time
-import os
+from pathlib import Path
+
 
 def main():
     print("QC-KANA08完全復元版 - WSLネイティブ環境で20枚抽出開始")

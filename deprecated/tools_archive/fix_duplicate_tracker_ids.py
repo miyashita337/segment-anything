@@ -4,11 +4,11 @@
 P1-A002-1, P1-A002-2, P1-A002-3の重複行を削除
 """
 
+import logging
 import os
 import sys
-import logging
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 # プロジェクトパス追加
 project_root = Path(__file__).parent.parent

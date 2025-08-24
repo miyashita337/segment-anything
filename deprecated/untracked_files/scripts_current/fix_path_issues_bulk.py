@@ -6,12 +6,12 @@
 個別修正不要の自動化ツール
 """
 
+import argparse
 import os
 import re
 import sys
 from pathlib import Path
-from typing import List, Dict, Tuple
-import argparse
+from typing import Dict, List, Tuple
 
 # プロジェクトルート追加
 project_root = Path(__file__).parent.parent.parent

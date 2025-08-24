@@ -7,6 +7,7 @@ QI-002: 明度解析器 (BrightnessAnalyzer)
 
 import numpy as np
 import cv2
+
 from typing import Dict, List, Tuple
 
 

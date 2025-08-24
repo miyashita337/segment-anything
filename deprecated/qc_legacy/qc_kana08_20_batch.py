@@ -3,12 +3,12 @@
 QC成功スクリプトベース - KANA08の20枚バッチ抽出
 """
 
-import sys
-import os
-import time
 import logging
-from pathlib import Path
+import os
+import sys
+import time
 import traceback
+from pathlib import Path
 
 # 環境設定
 os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = '1'
@@ -16,12 +16,14 @@ os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = '1'
 import numpy as np
 import cv2
 import torch
+
 from PIL import Image
 
 # SAMとYOLOのインポート
 sys.path.insert(0, '/mnt/c/AItools/segment-anything')
 sys.path.insert(0, '/mnt/c/AItools/segment-anything/core')
 from segment_anything import SamPredictor, sam_model_registry
+
 from ultralytics import YOLO
 
 # ログ設定

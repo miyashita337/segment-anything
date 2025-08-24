@@ -4,16 +4,16 @@ P1-010 自動リトライ機能のデモスクリプト
 失敗時に最大3回まで自動再実行を行う
 """
 
-import sys
-from pathlib import Path
 import logging
 import random
+import sys
+from pathlib import Path
 
 # プロジェクトルートをパスに追加
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
-from features.common.retry_handler import RetryHandler, RetryConfig
+from features.common.retry_handler import RetryConfig, RetryHandler
 
 # ロギング設定
 logging.basicConfig(

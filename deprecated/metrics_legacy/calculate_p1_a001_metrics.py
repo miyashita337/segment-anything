@@ -5,10 +5,10 @@ Enhanced統合版の実行結果から10指標を計算
 """
 
 import json
-import sys
 import logging
+import sys
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
 
 # プロジェクトパス追加
 project_root = Path(__file__).parent.parent

@@ -5,11 +5,11 @@
 TEST-20250803で全26枚を処理
 """
 
+import os
 import subprocess
 import sys
-from pathlib import Path
 import time
-import os
+from pathlib import Path
 
 # UTF-8エンコーディング設定
 os.environ['PYTHONIOENCODING'] = 'utf-8'

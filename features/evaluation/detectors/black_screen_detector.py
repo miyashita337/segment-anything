@@ -6,7 +6,9 @@ QI-002で報告された「24枚中3枚（12.5%）の黒画面問題」の解決
 """
 
 import numpy as np
+
 from typing import NamedTuple, Optional
+
 from .brightness_analyzer import BrightnessAnalyzer
 
 

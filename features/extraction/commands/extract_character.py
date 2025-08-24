@@ -23,10 +23,6 @@ import logging
 import random
 import time
 from features.adaptation.author_parameter_adapter import AuthorParameterAdapter
-
-# QUAL-033: 厳密パス検証システム統合
-from features.common.strict_path_validator import StrictPathValidator, validate_strict_paths, InputValidationError
-from features.common.interactive_path_input import InteractivePathInput, interactive_setup
 from features.common.custom_types import ImageType, MaskType
 from features.common.file_utils import generate_output_filename, is_already_processed
 from features.common.hooks.start import (
@@ -35,9 +31,16 @@ from features.common.hooks.start import (
     get_yolo_model,
     initialize_models,
 )
+from features.common.interactive_path_input import InteractivePathInput, interactive_setup
 from features.common.memory_optimizer import BatchMemoryManager, optimize_for_large_dataset
 from features.common.retry_handler import image_retry_handler
 from features.common.stable_batch_processor import StableBatchProcessor
+# QUAL-033: 厳密パス検証システム統合
+from features.common.strict_path_validator import (
+    InputValidationError,
+    StrictPathValidator,
+    validate_strict_paths,
+)
 from features.evaluation.utils.face_detection import filter_non_character_masks
 from features.evaluation.utils.mask_quality_validator import validate_and_improve_mask
 from features.evaluation.utils.non_character_filter import apply_non_character_filter

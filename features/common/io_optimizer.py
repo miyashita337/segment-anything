@@ -9,15 +9,14 @@ GPT-4分析に基づくファイルI/O最適化:
 """
 
 import asyncio
+import json
 import logging
 import time
-import json
-from typing import Dict, List, Optional, Callable, Any, Union
-from pathlib import Path
-from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
-
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -435,8 +434,8 @@ def optimize_io(enable_batch: bool = False, vscode_sync: bool = True):
 
 if __name__ == "__main__":
     # テスト実行
-    import tempfile
     import shutil
+    import tempfile
     
     async def test_io_optimizer():
         """I/O最適化システムのテスト"""

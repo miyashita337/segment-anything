@@ -7,6 +7,7 @@ import json
 import requests
 from pathlib import Path
 
+
 def test_pushover():
     # 設定読み込み
     config_path = Path('/mnt/c/AItools/segment-anything/config/pushover.json')

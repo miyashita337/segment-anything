@@ -3,11 +3,11 @@
 統一された入力ディレクトリ存在チェック機能
 """
 
+import logging
 import os
 import sys
-import logging
 from pathlib import Path
-from typing import Union, List, Optional
+from typing import List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -261,7 +261,7 @@ def check_input_dir_with_images(input_dir: Union[str, Path],
 if __name__ == "__main__":
     # テスト実行例
     import tempfile
-    
+
     # テスト用一時ディレクトリ作成
     with tempfile.TemporaryDirectory() as temp_dir:
         test_path = Path(temp_dir)

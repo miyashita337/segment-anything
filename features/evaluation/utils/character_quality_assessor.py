@@ -6,9 +6,10 @@ QI-002: キャラクター品質評価器 (CharacterQualityAssessor)
 
 import numpy as np
 import cv2
-from typing import List, NamedTuple, Optional, Dict
-from dataclasses import dataclass
+
 import math
+from dataclasses import dataclass
+from typing import Dict, List, NamedTuple, Optional
 
 
 @dataclass
@@ -131,8 +132,8 @@ class CharacterQualityAssessor:
         """
         try:
             # キャラクター検出とセグメンテーション
-            from ..detectors.multi_character_detector import MultiCharacterDetector
             from ..detectors.character_separator import CharacterSeparator
+            from ..detectors.multi_character_detector import MultiCharacterDetector
             
             detector = MultiCharacterDetector()
             separator = CharacterSeparator()
