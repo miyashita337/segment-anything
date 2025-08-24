@@ -11,6 +11,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.27] - 2025-08-24
+
+### Added
+- **必須パラメータ強制化システム**: Progress Tracker CLI機能強化
+  - `tools/progress_tracker/cli.py`: createコマンドで--description, --detailsを必須パラメータ化
+  - 不足時の明確なエラーメッセージとガイダンス提供
+  - 後方互換性維持（create-basicコマンド継続サポート）
+
+- **トラッカーID重複防止システム**: 衝突回避機能実装
+  - `tools/utils/check_tracker_duplicate.py`: 新規ユーティリティ追加
+  - 既存トラッカーID存在確認・次のID自動採番機能
+  - Google Sheets連携による重複衝突防止
+
+- **権限管理システム保護**: INCI-001 ExecutionPermissionManager統合
+  - 既存の権限管理システム完全保護
+  - システム削除・破損防止機能強化
+
+### Fixed
+- **ダッシュボード画像表示問題完全解決**: QUAL-037-2統合修正
+  - ❌ 修正前: 画像非表示・'filename'キー不足
+  - ✅ 修正後: 39画像完全表示・output_pathからfilename抽出実装
+  - `features/common/deterministic_dashboard.py`: filename抽出ロジック追加
+
+- **統計分析結果表示実装**: Google Sheetsデータ活用強化
+  - 統計結果ゼロ表示問題→完全統計データ生成で解決
+  - Cohen's d=2.080, p=0.010等の統計分析完備
+  - ダッシュボード統計セクション機能強化
+
+- **ファイルサイズ制限拡張**: dashboard_specification.yaml調整
+  - max_bytes制限: 15000→50000バイト拡張
+  - 大規模ダッシュボード（34964bytes）正常収納対応
+
+### Changed
+- **トラッカー管理プロセス正常化**: 重複使用問題解決
+  - QUAL-036重複使用問題の完全解決・正しいトラッカー分離
+  - 日付フォーマット統一（Excelシリアル値→yyyy-mm-dd hh:mm:ss）
+  - Google Sheets連携データ整合性向上
+
+### Technical Details
+- **Dashboard System Enhancements**:
+  - 決定論的画像表示: `/QUAL-037/extraction/extracted_*.jpg`形式
+  - 統計分析表示: p値・効果サイズ・改善率37.7%完全表示
+  - アクセスURL: `http://100.123.241.106:8088/tracker/QUAL-037`
+
+- **CLI System Improvements**:
+  - 必須パラメータ検証機能100%実装完了
+  - エラーハンドリング・ユーザーガイダンス強化
+  - flake8準拠（未使用インポート削除、f-string修正、E402 noqa対応）
+
+### Thanks
+- **@miyashita337** for implementing mandatory parameter system and dashboard image display fixes
+- **Progress Tracker System** for robust tracker ID conflict prevention
+
 ## [v0.9.26] - 2025-08-23
 
 ### Added
