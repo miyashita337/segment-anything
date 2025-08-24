@@ -121,3 +121,9 @@ tracker_standardization_backup.md
 # Deprecated directory
 # deprecated/  # コミット履歴からの復旧を容易にするため、gitの管理下に置く
 deprecated/untracked_files/  # 46,251ファイルの大量ファイルは除外
+# Progress tracker legacy files (OPTM-007)
+deprecated/progress_tracker_legacy/
+
+# Backup/broken files (OPTM-007)
+*.backup2
+*.broken
