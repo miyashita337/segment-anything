@@ -12,10 +12,10 @@ from .base_command import BaseExtractionCommand, ExtractionConfig
 
 try:
     from features.common.notification.global_pushover import (
-    notify_success,
-    notify_error,
-    notify_process_complete
-)
+        notify_error,
+        notify_process_complete,
+        notify_success,
+    )
     PUSHOVER_AVAILABLE = True
     NOTIFIER_AVAILABLE = True
 except ImportError:

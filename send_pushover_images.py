@@ -4,9 +4,9 @@ Pushover画像送信スクリプト - Ubuntu環境対応
 高品質抽出結果をPushoverに送信
 """
 
-import requests
 import json
 import os
+import requests
 from pathlib import Path
 
 # Pushover設定読み込み

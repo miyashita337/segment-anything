@@ -7,8 +7,9 @@ YOLO検出結果を基に、複数の独立したキャラクター領域を識�
 
 import numpy as np
 import cv2
-from typing import List, NamedTuple, Optional
+
 from dataclasses import dataclass
+from typing import List, NamedTuple, Optional
 from ultralytics import YOLO
 
 

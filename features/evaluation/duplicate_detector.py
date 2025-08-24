@@ -4,19 +4,20 @@ P1-B003: 画像重複判定機能
 AIによる重複判定システム - ハッシュ値と視覚的類似度のハイブリッド判定
 """
 
+import numpy as np
+import cv2
+import torch
+import torch.nn.functional as F
+
 import hashlib
 import json
 import logging
 import time
+from dataclasses import asdict, dataclass
 from datetime import datetime
-import numpy as np
-from dataclasses import dataclass, asdict
 from pathlib import Path
-from typing import Dict, List, Tuple, Set, Optional, Any
-import cv2
 from PIL import Image
-import torch
-import torch.nn.functional as F
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 # 既存システム利用
 try:

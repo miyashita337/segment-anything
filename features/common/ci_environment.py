@@ -6,11 +6,11 @@ CI-INTEGRATION-001: GitHub Actions CI専用軽量化システム
 環境変数によるCI検出、CPU専用モード、軽量モデル自動選択を提供
 """
 
-import os
 import logging
-from typing import Dict, Any, Optional
-from enum import Enum
+import os
 from dataclasses import dataclass
+from enum import Enum
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 

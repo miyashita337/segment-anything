@@ -3,18 +3,19 @@
 P1-007: 品質評価の根拠と改善提案の詳細説明
 """
 
-import logging
 import numpy as np
-from typing import Dict, List, Any, Optional, Union, Tuple
-from enum import Enum
-from dataclasses import dataclass, field
-from pathlib import Path
 import cv2
-import json
-import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import matplotlib.pyplot as plt
 from matplotlib.font_manager import FontProperties
+
+import json
+import logging
 from collections import defaultdict
+from dataclasses import dataclass, field
+from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 logger = logging.getLogger(__name__)
 

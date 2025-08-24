@@ -4,24 +4,24 @@ P1-015: 大規模データセット並列処理システム
 メモリ効率化とプログレッシブ処理によるスケーラブルな画像処理
 """
 
+import torch
+
 import logging
 import os
+import psutil
 import subprocess
+# プロジェクトルートをパスに追加
+import sys
 import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-import psutil
-import torch
-
-# プロジェクトルートをパスに追加
-import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from features.common.memory_optimizer import BatchMemoryManager, MemoryOptimizer
-from features.common.output_path_manager import OutputPathManager, OutputCategory
+from features.common.output_path_manager import OutputCategory, OutputPathManager
 
 logger = logging.getLogger(__name__)
 

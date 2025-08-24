@@ -4,10 +4,11 @@ QCC-021-EXTENDED 全画像パス表示ダッシュボード生成
 Base64埋め込み禁止・パス参照方式で全画像表示
 """
 
-import os
 import json
+import os
 from datetime import datetime
 from pathlib import Path
+
 
 def get_file_size_mb(file_path):
     """ファイルサイズをMBで取得"""

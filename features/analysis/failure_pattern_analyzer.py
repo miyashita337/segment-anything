@@ -10,21 +10,21 @@ QCC-011: 失敗画像の共通パターンを自動検出・分類
 4. 失敗原因の自動分類とレポート生成
 """
 
-import json
-import logging
-from pathlib import Path
-from typing import Dict, List, Tuple, Optional, Any
 import numpy as np
-from datetime import datetime
-from PIL import Image
 import cv2
 
+import json
+import logging
+from datetime import datetime
+from pathlib import Path
+from PIL import Image
 # scikit-learn components
 from sklearn.cluster import DBSCAN
-from sklearn.manifold import TSNE
-from sklearn.ensemble import IsolationForest
-from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
+from sklearn.ensemble import IsolationForest
+from sklearn.manifold import TSNE
+from sklearn.preprocessing import StandardScaler
+from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 

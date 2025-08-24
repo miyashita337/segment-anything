@@ -6,18 +6,18 @@ P1-B003タスク詳細確認スクリプト（修正版）
 Google Sheetsから直接P1-B003の情報を取得
 """
 
+import json
 import os
 import sys
-import json
 from pathlib import Path
 
 # プロジェクトパスを設定
 sys.path.insert(0, str(Path(__file__).parent))
 
 try:
-    from tools.progress_tracker.sheets_client import GoogleSheetsClient
-    from tools.progress_tracker.data_models import TaskStatus
     from tools.progress_tracker.config import get_default_config
+    from tools.progress_tracker.data_models import TaskStatus
+    from tools.progress_tracker.sheets_client import GoogleSheetsClient
     
     def get_p1_b003_details():
         """P1-B003の詳細情報を取得"""

@@ -19,18 +19,18 @@ monitor = ResourceMonitor()
 monitor.start_monitoring()
 """
 
-import os
-import sys
-import time
-import psutil
-import threading
-import logging
-import json
 import datetime
-from pathlib import Path
-from typing import Dict, List, Optional, Callable, Any
-from dataclasses import dataclass, asdict
+import json
+import logging
+import os
+import psutil
 import subprocess
+import sys
+import threading
+import time
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional
 
 try:
     import nvidia_ml_py3 as nvml

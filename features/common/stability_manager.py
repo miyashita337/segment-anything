@@ -7,13 +7,12 @@ P1-023: VSCode安定性向上 - 統合安定性管理システム
 
 import asyncio
 import logging
-from typing import Dict, Any, Optional, List, Callable, Union
 from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Union
 
-from .memory_monitor import get_memory_monitor, monitor_memory
 from .io_optimizer import get_io_optimizer, optimize_io
 from .lazy_import_manager import get_lazy_import_manager, with_lazy_imports
-
+from .memory_monitor import get_memory_monitor, monitor_memory
 
 logger = logging.getLogger(__name__)
 
@@ -470,8 +469,8 @@ def with_stability_management(
 
 if __name__ == "__main__":
     # テスト実行
-    import tempfile
     import json
+    import tempfile
     
     async def test_stability_manager():
         """統合安定性管理システムのテスト"""

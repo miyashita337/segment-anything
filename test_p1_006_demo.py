@@ -4,20 +4,23 @@ P1-006 階層的品質評価のデモスクリプト
 複数レベルでの品質評価と統合判定
 """
 
-import sys
-from pathlib import Path
-import logging
 import numpy as np
 import cv2
+
 import json
+import logging
+import sys
+from pathlib import Path
 
 # プロジェクトルートをパスに追加
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
 from features.evaluation.hierarchical_quality import (
-    HierarchicalQualityEvaluator, evaluate_hierarchical_quality,
-    QualityLevel, QualityMetric
+    HierarchicalQualityEvaluator,
+    QualityLevel,
+    QualityMetric,
+    evaluate_hierarchical_quality,
 )
 
 # ロギング設定

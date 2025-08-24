@@ -4,20 +4,21 @@
 PH2-002: 実際の処理でのリソース管理デモ
 """
 
-import sys
-import time
 import numpy as np
 import torch
+
+import sys
+import time
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent))
 
+from features.common.error_handling import global_error_handler, with_error_handling
 from features.common.resource_manager import (
-    ResourceManager, managed_resources, BatchProcessor,
-    cleanup_global_resources
-)
-from features.common.error_handling import (
-    global_error_handler, with_error_handling
+    BatchProcessor,
+    ResourceManager,
+    cleanup_global_resources,
+    managed_resources,
 )
 
 

@@ -4,15 +4,15 @@
 PH2-002: より具体的で回復可能なエラー処理の実装
 """
 
+import json
+import logging
 import sys
 import traceback
-import logging
-from enum import Enum
-from typing import Optional, Callable, Any, Dict, Type
-from functools import wraps
 from datetime import datetime
-import json
+from enum import Enum
+from functools import wraps
 from pathlib import Path
+from typing import Any, Callable, Dict, Optional, Type
 
 
 class ErrorSeverity(Enum):
@@ -300,8 +300,9 @@ global_error_handler = ErrorHandler()
 # リカバリー戦略の例
 def memory_recovery_strategy(error: InsufficientMemoryError) -> bool:
     """メモリ不足時のリカバリー戦略"""
-    import gc
     import torch
+
+    import gc
 
     print("🔧 メモリクリーンアップ実行中...")
 

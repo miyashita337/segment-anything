@@ -7,9 +7,10 @@ Advanced automatic mask correction with edge smoothing and noise removal
 
 import numpy as np
 import cv2
+
 import logging
-from typing import Any, Dict, List, Optional, Tuple, Union
 from dataclasses import dataclass
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 logger = logging.getLogger(__name__)
 

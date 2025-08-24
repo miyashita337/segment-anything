@@ -12,16 +12,16 @@ QI-003要件:
 
 import numpy as np
 import cv2
-from pathlib import Path
-from typing import List, Dict, Any, Tuple, Optional
+
 import logging
 from dataclasses import dataclass
-
+from features.common.dashboard_generator import StandardDashboardGenerator
+from features.common.notification.pushover_image_sender import PushoverImageSender
 # 既存システムのインポート
 from features.evaluation.detectors.black_screen_detector import BlackScreenDetector
 from features.evaluation.integrated_quality_monitor import IntegratedQualityMonitor
-from features.common.dashboard_generator import StandardDashboardGenerator
-from features.common.notification.pushover_image_sender import PushoverImageSender
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 
 @dataclass

@@ -6,8 +6,9 @@ QC-KANA08完全再現スクリプト
 
 import subprocess
 import sys
-from pathlib import Path
 import time
+from pathlib import Path
+
 
 def main():
     print("🎯 QC-KANA08完全再現開始")

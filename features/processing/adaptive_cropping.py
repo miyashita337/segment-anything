@@ -4,12 +4,13 @@ P1-B004: 適応的クロッピングシステム
 複数キャラ混入を防ぐMediaPipe顔検出統合システム
 """
 
-import cv2
 import numpy as np
+import cv2
+
 import logging
-from typing import List, Dict, Tuple, Optional, Any
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 

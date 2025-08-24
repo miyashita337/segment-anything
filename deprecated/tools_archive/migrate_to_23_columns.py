@@ -4,12 +4,12 @@ Google Sheets 22列→23列移行スクリプト
 G列に「詳細」列追加、H-W列データシフト
 """
 
+import logging
 import os
 import sys
-import logging
-from pathlib import Path
 from datetime import datetime
-from typing import List, Dict, Any
+from pathlib import Path
+from typing import Any, Dict, List
 
 # プロジェクトパス追加
 project_root = Path(__file__).parent.parent

@@ -4,20 +4,23 @@ P1-007 評価説明可能性のデモスクリプト
 品質評価の根拠と改善提案の詳細説明
 """
 
-import sys
-from pathlib import Path
-import logging
 import numpy as np
 import cv2
+
 import json
+import logging
+import sys
+from pathlib import Path
 
 # プロジェクトルートをパスに追加
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
 from features.evaluation.explainable_quality import (
-    ExplainableQualityEvaluator, explain_quality_evaluation,
-    QualityFactor, ExplanationResult
+    ExplainableQualityEvaluator,
+    ExplanationResult,
+    QualityFactor,
+    explain_quality_evaluation,
 )
 
 # ロギング設定

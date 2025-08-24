@@ -6,8 +6,9 @@ QC-KANA08復元版で20枚抽出
 
 import subprocess
 import sys
-from pathlib import Path
 import time
+from pathlib import Path
+
 
 def main():
     print("QC-KANA08復元版で20枚抽出開始")

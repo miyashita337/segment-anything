@@ -7,9 +7,10 @@ QI-002: 抽出品質分析器 (ExtractionQualityAnalyzer)
 
 import numpy as np
 import cv2
-from typing import List, NamedTuple, Optional, Dict
-from dataclasses import dataclass
+
 import math
+from dataclasses import dataclass
+from typing import Dict, List, NamedTuple, Optional
 
 
 @dataclass

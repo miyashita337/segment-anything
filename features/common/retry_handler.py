@@ -3,11 +3,11 @@
 失敗時に最大3回まで自動再実行を行う
 """
 
-import time
 import logging
-from typing import TypeVar, Callable, Optional, Dict, Any, Tuple
-from functools import wraps
+import time
 import traceback
+from functools import wraps
+from typing import Any, Callable, Dict, Optional, Tuple, TypeVar
 
 logger = logging.getLogger(__name__)
 

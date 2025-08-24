@@ -4,8 +4,8 @@
 sympyの循環インポート問題を回避するため最小限の実装
 """
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 # sympyのインポートを避けるため環境変数設定
@@ -14,6 +14,7 @@ os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = '1'
 import numpy as np
 import cv2
 import torch
+
 from PIL import Image
 
 # SAMとYOLOのインポート  
@@ -21,6 +22,7 @@ sys.path.insert(0, '/mnt/c/AItools/segment-anything')
 sys.path.insert(0, '/mnt/c/AItools/segment-anything/core')
 from core.segment_anything import SamPredictor, sam_model_registry
 from ultralytics import YOLO
+
 
 def extract_character(input_path, output_path):
     """単一画像からキャラクター抽出"""

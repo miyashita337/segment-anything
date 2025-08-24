@@ -6,13 +6,14 @@ Multiple Character Detection System
 
 import numpy as np
 import cv2
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, NamedTuple
+
+import logging
+import os
+import sys
 from dataclasses import dataclass
 from enum import Enum
-import logging
-import sys
-import os
+from pathlib import Path
+from typing import Any, Dict, List, NamedTuple, Optional, Tuple
 
 # プロジェクトルートをパスに追加
 project_root = Path(__file__).parent.parent.parent.parent

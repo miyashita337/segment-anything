@@ -255,7 +255,7 @@ class BoundaryCaseDetector:
         """
         try:
             from features.evaluation.utils.multiple_character_detector import (
-                detect_multiple_characters_from_image
+                detect_multiple_characters_from_image,
             )
             from features.extraction.models.yolo_wrapper import YOLOModelWrapper
         except ImportError as e:

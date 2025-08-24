@@ -6,9 +6,10 @@ INTEGRATE-3-6-05 ダッシュボード生成スクリプト
 
 import base64
 import json
-from pathlib import Path
-from datetime import datetime
 import logging
+from datetime import datetime
+from pathlib import Path
+
 
 def create_dashboard():
     """INTEGRATE-3-6-05用ダッシュボード作成"""
