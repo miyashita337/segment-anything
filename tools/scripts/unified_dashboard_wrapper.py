@@ -45,22 +45,24 @@ def main():
             
             simple_result = {
                 "tracker_id": tracker_id,
-                "total_images": len(image_files),
-                "successful_extractions": len(image_files),
-                "success_rate": 100.0 if image_files else 0.0,
-                "average_quality_score": 0.85,  # デフォルト値
-                "extraction_results": []
+                "summary": {
+                    "total_images": len(image_files),
+                    "successful": len(image_files),
+                    "average_quality_score": 0.85
+                },
+                "results": []
             }
             
             # 各画像の簡易結果
             for i, img_file in enumerate(image_files, 1):
                 file_size = img_file.stat().st_size / (1024 * 1024)  # MB
-                simple_result["extraction_results"].append({
-                    "image_name": img_file.name,
+                simple_result["results"].append({
+                    "filename": img_file.name,
                     "success": True,
                     "quality_score": 0.85,
-                    "grade": "B",
-                    "file_size_mb": round(file_size, 2)
+                    "quality_metrics": {
+                        "overall_score": 0.85
+                    }
                 })
             
             # 簡易JSONファイル保存

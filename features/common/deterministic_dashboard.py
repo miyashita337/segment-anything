@@ -5,6 +5,7 @@
 """
 
 import json
+import re
 
 try:
     import yaml
@@ -34,12 +35,111 @@ class DashboardSpecification:
     validation_rules: Dict[str, Any]
 
 
+class SpecificationViolationError(Exception):
+    """仕様書違反エラー"""
+    pass
+
+
+class SpecificationEnforcer:
+    """仕様書強制システム - Claude提案仕様書の確実な適用を保証"""
+    
+    def __init__(self, spec: DashboardSpecification):
+        self.spec = spec
+        self._validate_specification_completeness()
+    
+    def _validate_specification_completeness(self):
+        """仕様書の完全性検証"""
+        required_templates = [
+            'page_title', 'header_title', 'generation_time', 
+            'image_alt_format', 'quality_score_format'
+        ]
+        
+        for template_key in required_templates:
+            if template_key not in self.spec.string_templates:
+                raise SpecificationViolationError(
+                    f"Missing required template: {template_key} in specification"
+                )
+    
+    def get_page_title(self, tracker_id: str) -> str:
+        """ページタイトル取得（仕様書強制）"""
+        return self.spec.string_templates['page_title'].format(tracker_id=tracker_id)
+    
+    def get_header_title(self, tracker_id: str) -> str:
+        """ヘッダータイトル取得（仕様書強制）"""
+        return self.spec.string_templates['header_title'].format(tracker_id=tracker_id)
+    
+    def get_generation_time_label(self, timestamp: str) -> str:
+        """生成時刻ラベル取得（仕様書強制）"""
+        return self.spec.string_templates['generation_time'].format(timestamp=timestamp)
+    
+    def get_image_src(self, tracker_id: str, filename: str) -> str:
+        """画像ソースパス取得（仕様書強制）"""
+        image_path_format = self.spec.content_rules['gallery']['image_path_format']
+        return image_path_format.format(tracker_id=tracker_id, filename=filename)
+    
+    def get_image_alt(self, filename: str) -> str:
+        """画像alt属性取得（仕様書強制）"""
+        return self.spec.string_templates['image_alt_format'].format(filename=filename)
+    
+    def get_quality_score_label(self, score: float) -> str:
+        """品質スコアラベル取得（仕様書強制）"""
+        decimal_places = self.spec.number_formatting['quality_scores']['decimal_places']
+        format_str = f"{{score:.{decimal_places}f}}"
+        formatted_score = format_str.format(score=score)
+        return self.spec.string_templates['quality_score_format'].format(score=formatted_score)
+    
+    def detect_hardcode_violations(self, html_content: str) -> List[str]:
+        """ハードコード違反検出"""
+        violations = []
+        
+        # 仕様書定義テンプレートのハードコード使用検出
+        hardcoded_patterns = [
+            (r'品質評価ダッシュボード', 'header_title/page_title template should be used'),
+            (r'生成日時:', 'generation_time template should be used'),
+            (r'品質スコア:', 'quality_score_format template should be used'),
+            (r'/{[^}]+}/extraction/{[^}]+}', 'image_path_format from content_rules should be used')
+        ]
+        
+        for pattern, message in hardcoded_patterns:
+            if re.search(pattern, html_content):
+                violations.append(f"Hardcode violation detected: {message}")
+        
+        return violations
+
+
+class HardcodeDetector:
+    """ハードコード検出・違反防止システム"""
+    
+    def __init__(self, spec: DashboardSpecification):
+        self.spec = spec
+    
+    def scan_implementation_violations(self, file_content: str) -> List[str]:
+        """実装ファイル内のハードコード違反スキャン"""
+        violations = []
+        
+        # f-string内のハードコード検出
+        hardcode_patterns = [
+            (r'f["\'].*品質評価ダッシュボード.*["\']', 'Use enforcer.get_header_title() instead'),
+            (r'f["\'].*生成日時:.*["\']', 'Use enforcer.get_generation_time_label() instead'),
+            (r'f["\'].*/{[^}]+}/extraction/{[^}]+}.*["\']', 'Use enforcer.get_image_src() instead'),
+            (r'f["\'].*品質スコア:.*["\']', 'Use enforcer.get_quality_score_label() instead')
+        ]
+        
+        for pattern, recommendation in hardcode_patterns:
+            if re.search(pattern, file_content):
+                violations.append(f"Implementation violation: {recommendation}")
+        
+        return violations
+
+
 class DeterministicDashboardGenerator:
     """完全決定論的ダッシュボード生成器"""
     
     def __init__(self, spec_path: str = "config/dashboard_specification.yaml"):
         """仕様書を読み込んで初期化"""
         self.spec = self._load_specification(spec_path)
+        # 🚨 仕様書強制システム追加
+        self.enforcer = SpecificationEnforcer(self.spec)
         
     def _load_specification(self, spec_path: str) -> DashboardSpecification:
         """仕様書YAML読み込み"""
@@ -290,7 +390,7 @@ class DeterministicDashboardGenerator:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{tracker_id} - 品質評価ダッシュボード</title>
+    <title>{self.enforcer.get_page_title(tracker_id)}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .quality-badge-high {{ @apply bg-green-500 text-white px-2 py-1 rounded text-xs font-semibold; }}
@@ -310,8 +410,8 @@ class DeterministicDashboardGenerator:
     <div class="container mx-auto px-4 py-8">
         <!-- ヘッダー -->
         <header class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">{tracker_id} 品質評価ダッシュボード</h1>
-            <p class="text-gray-600">生成日時: {timestamp}</p>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">{self.enforcer.get_header_title(tracker_id)}</h1>
+            <p class="text-gray-600">{self.enforcer.get_generation_time_label(timestamp)}</p>
         </header>
         
         <!-- 統計サマリー -->
@@ -410,13 +510,13 @@ class DeterministicDashboardGenerator:
             
             html += f'''
             <div class="image-grid-item border rounded-lg p-3 bg-gray-50">
-                <img src="/{tracker_id}/extraction/{filename}" 
-                     alt="{filename}" 
+                <img src="{self.enforcer.get_image_src(tracker_id, filename)}" 
+                     alt="{self.enforcer.get_image_alt(filename)}" 
                      class="image-container w-full object-contain" 
                      onerror="this.parentElement.innerHTML='&lt;div class=\'p-4 text-center text-gray-500\'&gt;画像読み込みエラー&lt;br&gt;{filename}&lt;/div&gt;'">
                 <div class="mt-2 text-center">
                     <span class="{quality_class}">{quality_label}</span>
-                    <p class="text-sm text-gray-600 mt-1">品質スコア: {score:.3f}</p>
+                    <p class="text-sm text-gray-600 mt-1">{self.enforcer.get_quality_score_label(score)}</p>
                     <p class="text-xs text-gray-500">{filename}</p>
                 </div>
             </div>
