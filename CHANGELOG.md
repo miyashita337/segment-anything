@@ -11,6 +11,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.28] - 2025-08-26
+
+### Added
+- **QUAL-040シンプルダッシュボードシステム** - 軽量で実用的な実装
+  - 190行のコンパクト実装（旧608行から68%削減）
+  - 直接HTML生成・Tailwind CSS完全対応
+  - 品質バッジシステム（4段階評価）実装
+  - リアルタイム時刻表示による自然な動作
+
+- **統合ダッシュボードラッパー** - `tools/scripts/unified_dashboard_wrapper.py`
+  - ワークフロー統合対応・緊急修正対応
+
+- **リポジトリクリーンアップシステム** - deprecated構造最適化
+  - Untrackedファイル整理・.gitignore更新
+  - 開発環境統合・保守性向上
+
+### Changed
+- **ダッシュボード生成方式** - 決定論的制約から実用性重視へ転換
+  - 固定時刻表示 → `datetime.now()` リアルタイム表示
+  - 複雑な依存関係排除・保守性・可読性大幅向上
+
+- **技術仕様書統一化** - `docs/technical_specifications.md`
+  - QUAL-040実装準拠の仕様書に更新
+  - version: "2.0.0" - シンプル・実用性重視アプローチ
+  - 存在しない`dashboard_specification.yaml`参照削除
+
+### Removed
+- **決定論的ダッシュボードシステム** - 過度に複雑な実装削除
+  - `features/common/deterministic_dashboard.py` (609行削除)
+  - `config/dashboard_specification.yaml` (135行削除)
+  - `tools/progress_tracker/universal_statistical_analyzer.py`
+  - `tools/progress_tracker/universal_dashboard_generator.py`
+
+### Fixed
+- **OPTM-007緊急修正** - unified_dashboard_wrapper.py追加
+  - run_quality_workflow.sh用ラッパー追加によるワークフロー修正
+
+### Thanks
+- @miyashita337 for implementing the simplified dashboard system and comprehensive repository cleanup
+
+---
+
 ## [v0.9.27] - 2025-08-24
 
 ### Added
