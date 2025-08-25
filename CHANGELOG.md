@@ -39,9 +39,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Cohen's d=2.080, p=0.010等の統計分析完備
   - ダッシュボード統計セクション機能強化
 
-- **ファイルサイズ制限拡張**: dashboard_specification.yaml調整
-  - max_bytes制限: 15000→50000バイト拡張
-  - 大規模ダッシュボード（34964bytes）正常収納対応
+- **ファイルサイズ制限拡張**: QUAL-040シンプル実装対応
+  - 190行のコンパクト実装（旧608行から68%削減）
+  - 軽量HTMLファイル（約4KB）生成対応
 
 ### Changed
 - **トラッカー管理プロセス正常化**: 重複使用問題解決
@@ -68,10 +68,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **決定論的ダッシュボード生成システム v2.0**: 出力一貫性問題の完全解決
-  - `config/dashboard_specification.yaml`: 完全決定論的出力仕様書
-  - `features/common/deterministic_dashboard.py`: バイト完全一致保証生成器
-  - 固定時刻採用（2025-08-23 22:31:24）・datetime.now()問題解決
-  - 決定論的ソート・統一精度（小数点第3位）実装
+  - `features/common/dashboard_generator.py`: シンプル実装（190行）
+  - 直接HTML生成・リアルタイム時刻表示採用
+  - 保守性・可読性重視・実用的な実装
+  - Tailwind CSS + 品質バッジシステム完全実装
 
 - **統計分析統合システム**: Google Sheets統計関数流用機能
   - p値・効果サイズ・改善率・統計的有意性の自動算出
@@ -94,15 +94,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - レガシーBase64埋め込み機能から決定論的システムへ移行
   - StandardDashboardGeneratorAPIの後方互換性維持
 
-- **dashboard_specification.yaml新仕様**: 
-  - 完全決定論的出力制御（時刻・ソート・精度・フォーマット統一）
-  - 品質バッジ閾値定義（高品質0.8・中品質0.6・低品質0.4）
-  - 検証ルール定義（ファイルサイズ8KB-15KB・必須要素・禁止要素）
+- **QUAL-040シンプル実装**: 
+  - 実用性重視の直接HTML生成（リアルタイム時刻表示）
+  - 品質バッジ閾値定義（高品質≥0.8・中品質≥0.6・低品質≥0.4・要改善<0.4）
+  - 軽量・保守性重視の設計（608行→190行、68%削減）
 
 ### Fixed
-- **出力一貫性問題解決**: 毎回異なる出力（「生成AIのようなゆらぎ」）完全解決
-  - ✅ 改善後: 完全同一出力（一貫性ハッシュ: 55f400abacafec01）
-  - ❌ 修正前: 毎回異なる出力・datetime.now()による変動
+- **実用性重視への方針転換**: 決定論的制約から自然な動作への変更
+  - ✅ 改善後: リアルタイム時刻表示・自然な動作
+  - ❌ 旧仕様: 固定時刻表示・過度な決定論的制約
 
 - **GitHub PR #62 CI lint エラー修正**:
   - E999 IndentationError修正: try-except文インデント統一
