@@ -73,18 +73,18 @@ directory_structure:
 
 ### 5. ダッシュボード仕様システム
 
-**統一仕様参照**: `config/dashboard_specification.yaml`
+**実装ベース**: QUAL-040シンプル実装（features/common/dashboard_generator.py）
 
 ```yaml
-# ダッシュボード生成仕様（完全決定論的出力）
+# ダッシュボード生成仕様（QUAL-040実装準拠）
 dashboard_specifications:
-  version: "1.0.0"
-  deterministic_output: "完全固定化"
+  version: "2.0.0"
+  implementation_approach: "シンプル・実用性重視"
   
-  # 時刻表示の統一
+  # 時刻表示（リアルタイム）
   timestamp_policy:
     format: "YYYY-MM-DD HH:MM:SS"
-    fixed_value: "2025-08-23 22:31:24"  # 決定論的出力のため固定
+    display: "リアルタイム生成時刻"  # datetime.now()使用
     timezone: "Asia/Tokyo"
   
   # 数値フォーマット統一
@@ -92,45 +92,41 @@ dashboard_specifications:
     quality_scores:
       decimal_places: 3
       format: "0.000"
+      example: "0.850"
     percentages:
       decimal_places: 1
       suffix: "%"
-    p_values:
-      decimal_places: 3
-      format: "0.000"
-    effect_sizes:
-      decimal_places: 3
-      format: "0.000"
   
-  # 品質バッジ基準
+  # 品質バッジ基準（4段階評価）
   quality_badge_thresholds:
-    high_quality: ">= 0.8"    # 高品質: 緑
-    medium_quality: ">= 0.6"  # 中品質: 黄
-    low_quality: ">= 0.4"     # 低品質: 橙
-    poor_quality: "< 0.4"     # 要改善: 赤
+    high_quality: ">= 0.8"    # 高品質: 緑色バッジ
+    medium_quality: ">= 0.6"  # 中品質: 黄色バッジ
+    low_quality: ">= 0.4"     # 低品質: 橙色バッジ
+    poor_quality: "< 0.4"     # 要改善: 赤色バッジ
   
-  # HTML構造規則
-  html_template_structure:
-    header_section: "タイトル + 生成日時"
-    statistics_summary: "4カラムグリッド（総画像数、平均品質、成功数、要改善数）"
-    quality_distribution: "品質分布（4段階バッジ表示）"
-    statistical_analysis: "統計分析結果（p値、効果サイズ、改善率、統計的有意性）"
-    image_gallery: "画像品質評価結果（グリッドレイアウト）"
+  # HTML構造（Tailwind CSS）
+  html_structure:
+    framework: "Tailwind CSS (CDN)"
+    layout: "レスポンシブグリッドレイアウト"
+    sections:
+      header: "bg-white rounded-lg shadow-md p-6 mb-8"
+      statistics_grid: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+      quality_distribution: "grid grid-cols-2 md:grid-cols-4 gap-4"
+      image_gallery: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
   
-  # 統計分析統合
-  statistical_analysis:
-    data_source: "Google Sheets統合（未登録時はローカル計算）"
-    baseline_comparison: "仮想ベースライン0.75との比較"
-    effect_size_calculation: "Cohen's d効果サイズ"
-    significance_threshold: "p < 0.05"
-    improvement_rate: "((現在 - ベースライン) / ベースライン) * 100%"
+  # データソース（シンプル化）
+  data_processing:
+    input_format: "extraction_result.json"
+    statistical_calculation: "基本統計のみ（品質分布計算）"
+    image_path_format: "/{tracker_id}/extraction/{filename}"
 ```
 
 **技術実装**:
-- **決定論的生成**: すべての出力値が仕様に従い固定化
-- **フォールバック機能**: Google Sheets未登録時のローカル統計計算
-- **完全HTML準拠**: Tailwind CSS + 品質バッジシステム
-- **統計的妥当性**: Cohen's d、p値、効果サイズによる科学的評価
+- **シンプル生成**: 190行のコンパクトな実装（旧608行から68%削減）
+- **リアルタイム表示**: datetime.now()による自然な時刻表示
+- **直接HTML生成**: テンプレートエンジンなしの直接的f-string生成
+- **基本統計のみ**: extraction_result.jsonベースの品質分布計算
+- **保守性重視**: 理解しやすく、修正しやすい実装
 
 ---
 
