@@ -266,9 +266,12 @@ class TestUniversalStatisticalAnalyzer:
         mock_sqa.return_value = mock_analyzer_instance
         analyzer.statistical_analyzer = mock_analyzer_instance
         
-        # モックデータ
-        mock_metrics = Mock(quality_scores=[0.7, 0.75, 0.8, 0.72, 0.78])
-        mock_analyzer_instance.load_extraction_results.return_value = mock_metrics
+        # モックデータ（異なる品質スコアでCohen's d ≠ 0になるように設定）
+        mock_current_metrics = Mock(quality_scores=[0.8, 0.85, 0.9, 0.82, 0.88])  # 高品質
+        mock_baseline_metrics = Mock(quality_scores=[0.6, 0.65, 0.7, 0.62, 0.68])  # 低品質
+        
+        # load_extraction_resultsは呼び出し順序に応じて異なる値を返す
+        mock_analyzer_instance.load_extraction_results.side_effect = [mock_current_metrics, mock_baseline_metrics]
         
         # Google Sheetsモック
         with patch.object(analyzer, 'update_google_sheets_statistics', return_value=True):
