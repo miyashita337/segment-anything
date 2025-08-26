@@ -54,8 +54,8 @@ class StandardDashboardGenerator:
         
         # 基本統計
         total = data.get('total_images', 0)
-        successful = data.get('successful_extractions', 0)
-        avg_quality = data.get('average_quality_score', 0.0)
+        successful = data.get('success_count', 0)
+        avg_quality = data.get('summary', {}).get('average_quality_score', 0.0)
         
         # 画像リスト（extraction_resultsとresults両方に対応）
         results = data.get('extraction_results', data.get('results', []))
@@ -64,7 +64,7 @@ class StandardDashboardGenerator:
         quality_dist = {'高品質': 0, '中品質': 0, '低品質': 0, '要改善': 0}
         for r in results:
             if r.get('success'):
-                score = r.get('quality_score', 0.0)
+                score = r.get('quality_metrics', {}).get('overall_score', 0.0)
                 if score >= 0.8:
                     quality_dist['高品質'] += 1
                 elif score >= 0.6:
@@ -141,8 +141,10 @@ class StandardDashboardGenerator:
         # 画像カード生成
         for r in results:
             if r.get('success'):
-                filename = r.get('image_name', r.get('filename', 'unknown.jpg'))
-                score = r.get('quality_score', 0.0)
+                # image_pathから実際のファイル名を抽出
+                image_path = r.get('image_path', 'unknown.jpg')
+                filename = image_path.split('/')[-1] if '/' in image_path else image_path
+                score = r.get('quality_metrics', {}).get('overall_score', 0.0)
                 quality_label = self._get_quality_label(score)
                 quality_class = self._get_quality_class(score)
                 
