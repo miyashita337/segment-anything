@@ -221,21 +221,20 @@ class UniversalStatisticalAnalyzer:
         abs_d = abs(d)
         
         # Cohen (1988) + 現代的基準の統合
-        categories = [
-            (0.0, "効果なし (|d| = 0)"),
-            (0.1, "微小効果 (0 < |d| < 0.2)"),
-            (0.2, "小効果 (0.2 ≤ |d| < 0.5)"),
-            (0.5, "中効果 (0.5 ≤ |d| < 0.8)"),
-            (0.8, "大効果 (0.8 ≤ |d| < 1.2)"),
-            (1.2, "非常に大きい効果 (1.2 ≤ |d| < 2.0)"),
-            (2.0, "極大効果 (|d| ≥ 2.0)"),
-        ]
-        
-        for threshold, category in categories:
-            if abs_d < threshold:
-                return category
-        
-        return categories[-1][1]  # 最後のカテゴリ
+        if abs_d == 0.0:
+            return "効果なし (|d| = 0)"
+        elif abs_d < 0.2:
+            return "微小効果 (0 < |d| < 0.2)"
+        elif abs_d < 0.5:
+            return "小効果 (0.2 ≤ |d| < 0.5)"
+        elif abs_d < 0.8:
+            return "中効果 (0.5 ≤ |d| < 0.8)"
+        elif abs_d < 1.2:
+            return "大効果 (0.8 ≤ |d| < 1.2)"
+        elif abs_d < 2.0:
+            return "非常に大きい効果 (1.2 ≤ |d| < 2.0)"
+        else:
+            return "極大効果 (|d| ≥ 2.0)"  # 最後のカテゴリ
     
     def update_google_sheets_statistics(
         self, 
