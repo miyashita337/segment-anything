@@ -11,6 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.29] - 2025-08-26
+
+### Fixed
+- **QUAL-040ダッシュボードデータマッピング問題修正**
+  - 基本統計フィールド名修正: `successful_extractions` → `success_count`
+  - 品質スコア取得パス修正: `quality_score` → `quality_metrics.overall_score`  
+  - 画像ファイル名抽出修正: `image_path`から実際のファイル名抽出
+  - 平均品質スコア表示修正: `summary.average_quality_score`パス対応
+  - Before: unknown.jpg表示・0.000品質スコア → After: 実際のファイル名・正確な品質データ表示
+
 ## [v0.9.28] - 2025-08-26
 
 ### Added
