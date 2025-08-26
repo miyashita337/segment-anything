@@ -1,0 +1,27 @@
+# テスト専用軽量依存関係
+# INCI-004 CI最適化: 重い依存関係を除外してテスト実行時間を短縮
+
+# 必須テストライブラリ
+pytest>=6.0
+pytest-cov>=4.0
+pytest-mock>=3.0
+
+# 統計分析必須
+numpy>=1.20.0
+scipy>=1.7.0
+
+# Google Sheets統合テスト用
+google-api-python-client>=2.0.0
+google-auth-oauthlib>=0.4.0
+google-auth>=2.0.0
+
+# その他軽量依存関係
+requests>=2.25.0
+pyyaml>=5.4.0
+
+# 除外した重い依存関係（本体では必要だがテストでは不要）:
+# - torch, torchvision (PyTorch関連 - 約2GB)
+# - opencv-python (OpenCV - 約100MB) 
+# - ultralytics (YOLO - 約200MB)
+# - easyocr (OCR - 約500MB)
+# - その他CUDA関連依存関係
