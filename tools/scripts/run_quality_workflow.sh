@@ -244,29 +244,72 @@ sam-env/bin/python3 tools/core/run_objective_evaluation.py \
     --batch "${OUTPUT_DIR}/extraction/" \
     --output "${OUTPUT_DIR}/tests/objective_metrics_test.json"
 
-# 5. 改善効果測定（ベースライン比較）
-echo "📊 改善効果測定実行中..."
+# 5. 統合統計分析（INCI-004対応）
+echo "🔬 統合統計分析実行中 (INCI-004)..."
+
+# 最新の完了済みトラッカーをベースラインとして自動検索
+BASELINE_TRACKER=""
+if [ -d "$WORKSPACE_BASE" ]; then
+    # トラッカーワークスペースを更新日時順でソート（最新順）
+    LATEST_TRACKER=$(ls -t "$WORKSPACE_BASE" | grep -E "^(QUAL|INTG|INCI)-[0-9]" | grep -v "$TRACKER_ID" | head -n 1)
+    
+    if [ -n "$LATEST_TRACKER" ] && [ -f "${WORKSPACE_BASE}/${LATEST_TRACKER}/extraction_result.json" ]; then
+        BASELINE_TRACKER="$LATEST_TRACKER"
+        echo "🎯 ベースライントラッカー自動検出: $BASELINE_TRACKER"
+        
+        # INCI-004統合統計分析実行
+        echo "  📊 Cohen's d計算・Welch t検定・Google Sheets更新..."
+        sam-env/bin/python3 tools/progress_tracker/universal_statistical_analyzer.py \
+            --current "$TRACKER_ID" \
+            --baseline "$BASELINE_TRACKER" \
+            --verbose > "${OUTPUT_DIR}/statistical_analysis_result.txt" 2>&1
+        
+        if [ $? -eq 0 ]; then
+            echo "✅ 統合統計分析完了"
+            echo "📊 分析結果: ${OUTPUT_DIR}/statistical_analysis_result.txt"
+            
+            # 結果の要約を表示
+            if [ -f "${OUTPUT_DIR}/statistical_analysis_result.txt" ]; then
+                echo "  📈 分析サマリー:"
+                grep -E "(Cohen's d:|改善率:|統計的有意性:|実用的意義:)" "${OUTPUT_DIR}/statistical_analysis_result.txt" | sed 's/^/    /'
+            fi
+        else
+            echo "⚠️  統合統計分析に失敗しました"
+            echo "📝 詳細エラー: ${OUTPUT_DIR}/statistical_analysis_result.txt"
+        fi
+    else
+        echo "⚠️  適切なベーストラッカーが見つかりません"
+        echo "ℹ️  利用可能トラッカー: $(ls "$WORKSPACE_BASE" | grep -E "^(QUAL|INTG|INCI)-[0-9]" | grep -v "$TRACKER_ID" | tr '\n' ' ')"
+        echo "ℹ️  統計分析をスキップしました。手動実行する場合："
+        echo "    sam-env/bin/python3 tools/progress_tracker/universal_statistical_analyzer.py --current $TRACKER_ID --baseline BASELINE_ID"
+    fi
+else
+    echo "⚠️  ワークスペースベースディレクトリが見つかりません: $WORKSPACE_BASE"
+fi
+
+# 6. 改善効果測定（レガシー・後方互換用）
+echo "📊 改善効果測定（レガシー）..."
 if [ -d "${WORKSPACE_BASE}/baseline" ] && [ "$(ls -A ${WORKSPACE_BASE}/baseline)" ]; then
     sam-env/bin/python3 generate_improvement_comparison.py \
         --baseline "${WORKSPACE_BASE}/baseline/" \
         --current "${OUTPUT_DIR}/" \
         --output "${OUTPUT_DIR}/improvement_report.json"
 else
-    echo "⚠️  ベースラインデータが見つかりません。比較分析をスキップします。"
-    echo "ℹ️  初回実行時は正常です。今回の結果をベースラインとして保存できます。"
+    echo "⚠️  レガシーベースラインデータが見つかりません。スキップします。"
 fi
 
-# 6. 実行結果サマリー生成
+# 7. 実行結果サマリー生成
 echo "📋 実行結果サマリー生成中..."
 SUMMARY_FILE="${OUTPUT_DIR}/workflow_summary.txt"
 
 cat > "$SUMMARY_FILE" << EOF
-品質保証ワークフロー実行結果
-================================
+品質保証ワークフロー実行結果（INCI-004対応）
+=============================================
 
 トラッカーID: ${TRACKER_ID}
 実行日時: $(date '+%Y-%m-%d %H:%M:%S')
 実行者: $(whoami)
+ベースライン: ${BASELINE_TRACKER:-"未設定"}
 
 🎯 実行ステップ
 ✅ ワークスペース準備
@@ -275,22 +318,31 @@ $([ "$SKIP_EXTRACTION" = false ] && echo "✅ 抽出パイプライン実行" ||
 ✅ 統合品質チェック
 ✅ ダッシュボード生成
 ✅ 客観指標テスト
-$([ -f "${OUTPUT_DIR}/improvement_report.json" ] && echo "✅ 改善効果測定" || echo "⏭️  改善効果測定（ベースラインなし）")
+$([ -f "${OUTPUT_DIR}/statistical_analysis_result.txt" ] && echo "✅ 統合統計分析（INCI-004）" || echo "⏭️  統合統計分析（ベースラインなし）")
+$([ -f "${OUTPUT_DIR}/improvement_report.json" ] && echo "✅ 改善効果測定（レガシー）" || echo "⏭️  改善効果測定（レガシー）")
 
 📁 生成ファイル
 - 抽出結果: ${OUTPUT_DIR}/extraction/
 - 品質レポート: ${OUTPUT_DIR}/quality/unified_quality_report.json
 - ダッシュボード: ${OUTPUT_DIR}/dashboard/dashboard.html
 - テスト結果: ${OUTPUT_DIR}/tests/
+$([ -f "${OUTPUT_DIR}/statistical_analysis_result.txt" ] && echo "- 統計分析結果: ${OUTPUT_DIR}/statistical_analysis_result.txt")
 $([ -f "${OUTPUT_DIR}/improvement_report.json" ] && echo "- 改善レポート: ${OUTPUT_DIR}/improvement_report.json")
+
+📊 統計分析サマリー（INCI-004）
+$([ -f "${OUTPUT_DIR}/statistical_analysis_result.txt" ] && {
+    echo "$(grep -E "(Cohen's d:|改善率:|統計的有意性:|実用的意義:)" "${OUTPUT_DIR}/statistical_analysis_result.txt" | sed 's/^/- /')"
+} || echo "- 統計分析が実行されませんでした")
 
 📊 次のステップ（シリアル処理必須）
 1. ダッシュボードで品質確認: file://${OUTPUT_DIR}/dashboard/dashboard.html
-2. 実装完了報告テンプレートの記入
-3. 品質劣化がないことを確認
-4. Google Sheetsステータス更新（"/release"）
-5. git commit（品質確認後のみ）
-6. ✅ 次のトラッカーは現在のトラッカーが/releaseになってから開始すること
+2. 統計分析結果確認: ${OUTPUT_DIR}/statistical_analysis_result.txt
+3. Google Sheetsの統計列データ確認（X-AC列）
+4. 実装完了報告テンプレートの記入
+5. 品質劣化がないことを確認
+6. Google Sheetsステータス更新（"/release"）
+7. git commit（品質確認後のみ）
+8. ✅ 次のトラッカーは現在のトラッカーが/releaseになってから開始すること
 
 EOF
 
