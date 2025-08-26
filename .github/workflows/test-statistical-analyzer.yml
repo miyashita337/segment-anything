@@ -23,7 +23,7 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     
@@ -83,7 +83,7 @@ jobs:
         python -m pytest tests/unit/test_universal_statistical_analyzer.py --cov=tools.progress_tracker.universal_statistical_analyzer --cov-report=html --cov-report=term
     
     - name: Upload coverage to artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-report-python-${{ matrix.python-version }}
         path: htmlcov/
