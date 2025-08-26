@@ -196,7 +196,8 @@ class TestUniversalStatisticalAnalyzer:
         
         for cohens_d, expected_category in test_cases:
             category = analyzer._categorize_effect_magnitude(cohens_d)
-            assert expected_category in category
+            # 実装は詳細な範囲情報付きカテゴリを返すので、キーワードが含まれることを確認
+            assert expected_category in category, f"Expected '{expected_category}' in '{category}' for d={cohens_d}"
     
     # ================== Google Sheets統合テスト ==================
     
