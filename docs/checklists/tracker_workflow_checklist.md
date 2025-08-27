@@ -18,7 +18,14 @@
 
 ---
 
-## 📋 **Phase 1: 計画・準備フェーズ（ステップ1-4）**
+## 📋 **Phase 1: 計画・準備フェーズ（ステップ0-4）**
+
+### ステップ0: **sam-env仮想環境確認・アクティベート** ✅
+- [ ] **仮想環境状態確認**: `echo $VIRTUAL_ENV` で現在の仮想環境確認
+- [ ] **sam-env アクティベート**: 仮想環境未アクティベート時は `source sam-env/bin/activate` 実行
+- [ ] **アクティベート後確認**: `which python3` でパス確認
+- [ ] **必要パッケージ確認**: プロジェクト依存関係がインストール済みか確認
+- [ ] **⚠️ 重要**: 全ての後続処理は同一仮想環境セッション内で実行必須
 
 ### ステップ1: タスク要件確認・トラッカーID決定 ✅
 - [ ] トラッカーID決定（例: INCI-001, QUAL-032）
@@ -51,16 +58,24 @@
 
 ## 📋 **Phase 2: 実装・テストフェーズ（ステップ5-8）**
 
-### ステップ5: 📋 **承認2: 実装方針承認** ✅
-- [ ] **📋 承認2（実装方針承認）**: コア機能実装方針・技術選択・アーキテクチャ承認
-- [ ] **ユーザー承認待ち**: 実装方針・技術アーキテクチャの許可取得
-- [ ] ワークスペースディレクトリ作成: `/workspace/{TRACKER_ID}/{extraction,quality,dashboard,tests}`
+### ステップ5: 📋 **承認2: ワークスペース・実装方針承認** ✅
+- [ ] **📋 承認2A（ワークスペース承認）**: 正式ワークスペース生成の必要性・構造妥当性
+- [ ] **スキップ承認**: ワークスペース生成省略時は必須特別承認取得
+- [ ] **ユーザー承認待ち**: ワークスペース生成方針の許可取得
+- [ ] ワークスペースディレクトリ作成: `mkdir -p /workspace/{TRACKER_ID}/{extraction,quality,dashboard,tests}`
 - [ ] OutputPathManager使用・出力先設定
 - [ ] 開発・テスト環境のセットアップ完了
 
-### ステップ6: コア機能実装・Git管理開始 ✅
+### ステップ6: 抽出実行・Git管理開始 ✅
 - [ ] **ブランチ作成**: `git checkout -b feature/{TRACKER_ID}`
-- [ ] 主要機能の実装完了
+- [ ] **📋 承認2B（抽出実行承認）**: input/output指定・バックグラウンド実行許可
+- [ ] **スキップ承認**: 抽出実行省略時は必須特別承認取得
+- [ ] **抽出パイプライン実行**: 指定input→output抽出実行必須
+  - **大量ファイル処理時**: `nohup`コマンドを使用してClaude Codeタイムアウト回避
+  ```bash
+  nohup MEMORY_LIMIT_DISABLED=true python3 features/extraction/commands/extract_character.py \
+    /input/path/ -o /output/path/ --batch --verbose > extraction.log 2>&1 &
+  ```
 - [ ] コードレビュー・品質基準への適合確認
 - [ ] 技術的困難発生時の例外処理手順実行
 
@@ -83,18 +98,26 @@
 
 ---
 
-## 📋 **Phase 3: 品質ワークフロー実行フェーズ（ステップ9-11）**
+## 📋 **Phase 3: 品質ワークフロー実行フェーズ（ステップ9-11）【必須順序遵守】**
 
-### ステップ9: 品質ワークフロー実行 ✅
-- [ ] **実行コマンド**: `./tools/scripts/run_quality_workflow.sh {TRACKER_ID}`
+### ステップ9A: 品質ワークフロー実行 ✅
+- [ ] **必須順序1**: `./tools/scripts/run_quality_workflow.sh {TRACKER_ID}` 実行
 - [ ] 抽出パイプライン実行完了
 - [ ] 品質チェック3コマンド完了
-- [ ] ダッシュボード生成完了
 
-### ステップ10: 出力確認・検証 ✅
+### ステップ9B: ダッシュボード生成 ✅
+- [ ] **必須順序2**: ダッシュボード生成・品質レポート確認
+- [ ] `workspace/{TRACKER_ID}/dashboard/dashboard.html` 生成・アクセス可能
+
+### ステップ9C: 統計分析実行 ✅
+- [ ] **必須順序3**: `universal_statistical_analyzer.py` 実行
+- [ ] `statistical_analysis_final.json` 生成確認
+
+### ステップ10: 修正・最適化ループ ✅
+- [ ] **品質問題発見時**: 修正実行後ステップ9A-9Cを繰り返し
+- [ ] **修正Push**: `git add [具体的ファイル名] && git commit && git push`
 - [ ] `workspace/{TRACKER_ID}/extraction/` にファイル存在
 - [ ] `workspace/{TRACKER_ID}/quality/unified_quality_report.json` 存在
-- [ ] `workspace/{TRACKER_ID}/dashboard/dashboard.html` 存在・アクセス可能
 - [ ] `workspace/{TRACKER_ID}/tests/` にテスト結果存在
 
 ### ステップ11: 📋 **承認4: 品質ワークフロー結果承認** ✅
