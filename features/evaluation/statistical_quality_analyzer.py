@@ -94,8 +94,14 @@ class StatisticalQualityAnalyzer:
                 success_rate = 0.0
                 sample_size = 0
             
-            # 個別結果がある場合
-            if 'results' in data:
+            # 個別結果がある場合 - 正しいキー名で処理
+            if 'extraction_results' in data:  # 🔧 修正: 'results' → 'extraction_results'
+                for result in data['extraction_results']:
+                    if 'quality_score' in result:
+                        quality_scores.append(result['quality_score'])
+                    if 'extraction_time' in result:
+                        extraction_times.append(result['extraction_time'])
+            elif 'results' in data:  # 従来形式のサポート
                 for result in data['results']:
                     if 'quality_score' in result:
                         quality_scores.append(result['quality_score'])
@@ -104,18 +110,13 @@ class StatisticalQualityAnalyzer:
             elif 'quality_scores' in data:
                 quality_scores = data['quality_scores']
         
-        # デフォルト値設定
-        if not quality_scores and sample_size > 0:
-            # ダミーデータ生成（テスト用）
-            quality_scores = np.random.beta(2, 5, sample_size).tolist()
-            success_rate = success_rate or len([s for s in quality_scores if s > 0.5]) / len(quality_scores)
-        elif not quality_scores:
-            # 完全に空のデータ
-            quality_scores = []
-            success_rate = 0.0
+        # 🔧 修正: ダミーデータ生成を削除し、実データが取得できない場合はエラー
+        if not quality_scores:
+            raise ValueError(f"品質スコアデータが見つかりません: {tracker_id}. JSONファイルに 'extraction_results' または 'results' キーが必要です")
         
         if not extraction_times:
-            extraction_times = np.random.gamma(2, 2, len(quality_scores)).tolist()
+            # 抽出時間がない場合はデフォルト値を使用（実害なし）
+            extraction_times = [2.0] * len(quality_scores)  # 2秒デフォルト
         
         return QualityMetrics(
             tracker_id=tracker_id,

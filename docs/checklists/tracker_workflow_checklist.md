@@ -108,6 +108,12 @@
 ### ステップ9B: ダッシュボード生成 ✅
 - [ ] **必須順序2**: ダッシュボード生成・品質レポート確認
 - [ ] `workspace/{TRACKER_ID}/dashboard/dashboard.html` 生成・アクセス可能
+- [ ] **📋 ダッシュボード品質保証チェック必須実行**: `docs/checklists/dashboard_quality_checklist.md` 全項目実行（QUAL-041再発防止）
+  - [ ] 🔴 **統計分析結果必須表示確認（7項目順序）** (Current→BaseLine→p値→効果サイズ、Cohen's d→改善率→統計的有意性→信頼区間)
+  - [ ] 🔴 **基本品質指標必須表示確認** (総画像数・平均品質スコア・成功画像数・要改善数)
+  - [ ] 🔴 **品質分布必須表示確認** (高品質・中品質・低品質・要改善の正確な数値)
+  - [ ] 🔴 **画像ギャラリー必須表示確認** (実際のファイル名・品質スコア・品質ラベル)
+  - [ ] 🔴 **curl仕様書通り動作確認**: `curl -u admin:secure_track_2025_q3_8f9a http://[SERVER]:8088/tracker/{TRACKER_ID}`
 
 ### ステップ9C: 統計分析実行 ✅
 - [ ] **必須順序3**: `universal_statistical_analyzer.py` 実行

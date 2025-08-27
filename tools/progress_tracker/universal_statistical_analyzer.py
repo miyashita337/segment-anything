@@ -241,10 +241,10 @@ class UniversalStatisticalAnalyzer:
         tracker_id: str, 
         analysis_result: Dict
     ) -> bool:
-        """Google Sheets統計列自動更新"""
+        """Google Sheets統計列自動更新 - N-S列対応版"""
         try:
             # トラッカー行を検索
-            all_values = self.sheets_client.get_sheet_values('A:AC')
+            all_values = self.sheets_client.get_sheet_values('A:S')
             if not all_values:
                 print("❌ Google Sheetsデータ取得失敗")
                 return False
@@ -259,7 +259,7 @@ class UniversalStatisticalAnalyzer:
                 print(f"❌ トラッカー {tracker_id} がGoogle Sheetsに見つかりません")
                 return False
             
-            # 統計データ更新（X-AC列：24-29番目）
+            # 統計データ更新（N-S列：14-19番目）
             current_score = analysis_result['descriptive_stats']['current']['mean']
             baseline_score = analysis_result['descriptive_stats']['baseline']['mean']
             p_value = analysis_result['t_test_result'].p_value
@@ -267,15 +267,21 @@ class UniversalStatisticalAnalyzer:
             improvement_rate = analysis_result['improvement_rate']
             significance = '有意' if analysis_result['t_test_result'].is_significant else '非有意'
             
-            # X-AC列を一括更新
-            self.sheets_client.update_sheet_values(f'X{tracker_row}', [[f'{current_score:.3f}']])
-            self.sheets_client.update_sheet_values(f'Y{tracker_row}', [[f'{baseline_score:.3f}']])
-            self.sheets_client.update_sheet_values(f'Z{tracker_row}', [[f'{p_value:.4f}']])
-            self.sheets_client.update_sheet_values(f'AA{tracker_row}', [[f'{cohens_d:.3f}']])
-            self.sheets_client.update_sheet_values(f'AB{tracker_row}', [[f'{improvement_rate:+.1f}%']])
-            self.sheets_client.update_sheet_values(f'AC{tracker_row}', [[significance]])
+            # N-S列を一括更新（正しい列マッピング）
+            self.sheets_client.update_sheet_values(f'N{tracker_row}', [[f'{current_score:.3f}']])
+            self.sheets_client.update_sheet_values(f'O{tracker_row}', [[f'{baseline_score:.3f}']])
+            self.sheets_client.update_sheet_values(f'P{tracker_row}', [[f'{p_value:.4f}']])
+            self.sheets_client.update_sheet_values(f'Q{tracker_row}', [[f'{cohens_d:.3f}']])
+            self.sheets_client.update_sheet_values(f'R{tracker_row}', [[f'{improvement_rate:+.1f}%']])
+            self.sheets_client.update_sheet_values(f'S{tracker_row}', [[significance]])
             
             print(f"✅ Google Sheets統計列更新完了: {tracker_id} (行{tracker_row})")
+            print(f"   N列(Current): {current_score:.3f}")
+            print(f"   O列(BaseLine): {baseline_score:.3f}")
+            print(f"   P列(p値): {p_value:.4f}")
+            print(f"   Q列(効果サイズ): {cohens_d:.3f}")
+            print(f"   R列(改善率): {improvement_rate:+.1f}%")
+            print(f"   S列(統計的有意性): {significance}")
             return True
             
         except Exception as e:
