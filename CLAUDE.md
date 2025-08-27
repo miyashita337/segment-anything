@@ -204,6 +204,7 @@ git push -u origin feature/TRACKER_ID
 - **📝 トラッカー命名ガイドライン**: [`docs/tracker_naming_guidelines.md`](docs/tracker_naming_guidelines.md) を参照
 - **📦 依存関係管理**: [`docs/dependency_reference.md`](docs/dependency_reference.md) を参照
 - **🏗️ プロジェクト構造**: [`docs/project_structure_reference.md`](docs/project_structure_reference.md) を参照
+- **📊 ダッシュボード品質保証**: [`docs/checklists/dashboard_quality_checklist.md`](docs/checklists/dashboard_quality_checklist.md) を参照
 
 ### 参照形式
 
