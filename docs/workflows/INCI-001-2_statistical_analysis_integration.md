@@ -61,22 +61,22 @@ def run_statistical_analysis(self, current_tracker: str, baseline_tracker: str =
     - ウェルチのt検定実行（不等分散対応）
     - Cohen's d効果サイズ計算
     - 95%信頼区間算出
-    - Google Sheets X-AC列自動更新
+    - Google Sheets N-S列自動更新
     """
 ```
 
-#### Google Sheets X-AC列自動更新
+#### Google Sheets N-S列自動更新
 ```python
 def _update_google_sheets_statistics(self, tracker_id: str, baseline_tracker: str, stats_result: Dict[str, Any]) -> bool:
     """
-    Google Sheets X-AC列統計データ更新
+    Google Sheets N-S列統計データ更新
     
-    X: Current Score (現在の品質スコア平均)
-    Y: BaseLine (ベースライントラッカーID) 
-    Z: p値 (Welch's t-test結果)
-    AA: Cohen's d (効果サイズ)
-    AB: 改善率 (%)
-    AC: 統計的有意性 (有意/非有意)
+    N: Current Score (現在の品質スコア平均)
+    O: BaseLine (ベースライントラッカーID) 
+    P: p値 (Welch's t-test結果)
+    Q: Cohen's d (効果サイズ)
+    R: 改善率 (%)
+    S: 統計的有意性 (有意/非有意)
     """
 ```
 
@@ -133,7 +133,7 @@ def generate_improvement_chart(self, current_tracker: str, stats_result: Dict[st
 
 ### 機能統合効果
 - ✅ **自動統計分析実行**: ダッシュボード生成時に自動実行（`auto_statistical_analysis=True`）
-- ✅ **Google Sheets自動更新**: X-AC列統計データ自動更新
+- ✅ **Google Sheets自動更新**: N-S列統計データ自動更新
 - ✅ **Chart.js可視化統合**: 改善推移グラフ + 統計分析結果同時表示
 - ✅ **Legacy system migration**: `universal_*`ファイルをdeprecated移動
 

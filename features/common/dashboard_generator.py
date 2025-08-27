@@ -43,6 +43,13 @@ class StandardDashboardGenerator:
         # HTML生成
         html_content = self._generate_html(tracker_id, data)
 
+        # ダッシュボードディレクトリにextraction_result.jsonもコピー
+        dashboard_extraction_result = dashboard_dir / "extraction_result.json"
+        if not dashboard_extraction_result.exists():
+            import shutil
+            shutil.copy2(extraction_result_path, dashboard_extraction_result)
+            print(f"📋 dashboard/extraction_result.json作成: {dashboard_extraction_result}")
+
         # ファイル出力
         with open(dashboard_file, 'w', encoding='utf-8') as f:
             f.write(html_content)
@@ -50,21 +57,21 @@ class StandardDashboardGenerator:
         return str(dashboard_file)
 
     def _generate_html(self, tracker_id: str, data: Dict[str, Any]) -> str:
-        """シンプルなHTML生成"""
+        """シンプルなHTML生成（仕様書準拠修正版）"""
         
-        # 基本統計
+        # 基本統計（正しいキー名で取得）
         total = data.get('total_images', 0)
-        successful = data.get('success_count', 0)
-        avg_quality = data.get('summary', {}).get('average_quality_score', 0.0)
+        successful = data.get('successful_extractions', 0)  # 修正: success_count → successful_extractions
+        avg_quality = data.get('average_quality_score', 0.0)  # 修正: summary → 直接取得
         
         # 画像リスト（extraction_resultsとresults両方に対応）
         results = data.get('extraction_results', data.get('results', []))
         
-        # 品質分布計算
+        # 品質分布計算（正しいキー名で取得）
         quality_dist = {'高品質': 0, '中品質': 0, '低品質': 0, '要改善': 0}
         for r in results:
             if r.get('success'):
-                score = r.get('quality_metrics', {}).get('overall_score', 0.0)
+                score = r.get('quality_score', 0.0)  # 修正: quality_metrics.overall_score → quality_score
                 if score >= 0.8:
                     quality_dist['高品質'] += 1
                 elif score >= 0.6:
@@ -76,6 +83,45 @@ class StandardDashboardGenerator:
 
         # 現在時刻（自然な表示）
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        # 統計分析結果セクション追加
+        statistical_section = ""
+        if 'statistical_analysis' in data:
+            stats = data['statistical_analysis']
+            statistical_section = f'''
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">📊 統計分析結果</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
+                <div class="text-center">
+                    <div class="text-sm text-gray-600 mb-1">Current(平均品質スコア)</div>
+                    <p class="text-lg font-bold text-blue-600">{stats.get('current_score', 'N/A')}</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-sm text-gray-600 mb-1">BaseLine</div>
+                    <p class="text-lg font-bold text-gray-600">{stats.get('baseline_score', 'N/A')}</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-sm text-gray-600 mb-1">p値</div>
+                    <p class="text-lg font-bold text-indigo-600">{stats.get('p_value', 'N/A')}</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-sm text-gray-600 mb-1">効果サイズ、Cohen's d</div>
+                    <p class="text-lg font-bold text-purple-600">{stats.get('effect_size', 'N/A')}</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-sm text-gray-600 mb-1">改善率</div>
+                    <p class="text-lg font-bold text-green-600">{stats.get('improvement_rate', 'N/A')}</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-sm text-gray-600 mb-1">統計的有意性</div>
+                    <p class="text-lg font-bold text-red-600">{stats.get('significance', 'N/A')}</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-sm text-gray-600 mb-1">信頼区間</div>
+                    <p class="text-lg font-bold text-teal-600">{stats.get('confidence_interval', 'N/A')}</p>
+                </div>
+            </div>
+        </div>'''
 
         # HTML生成
         html = f'''<!DOCTYPE html>
@@ -111,7 +157,7 @@ class StandardDashboardGenerator:
                 <p class="text-3xl font-bold text-red-600">{quality_dist["要改善"]}</p>
             </div>
         </div>
-        
+        {statistical_section}
         <div class="bg-white rounded-lg shadow-md p-6 mb-8">
             <h2 class="text-xl font-semibold text-gray-800 mb-4">品質分布</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -138,13 +184,12 @@ class StandardDashboardGenerator:
             <h2 class="text-2xl font-bold text-gray-800 mb-6">🖼️ 抽出結果ギャラリー</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">'''
 
-        # 画像カード生成
+        # 画像カード生成（修正版）
         for r in results:
             if r.get('success'):
-                # image_pathから実際のファイル名を抽出
-                image_path = r.get('image_path', 'unknown.jpg')
-                filename = image_path.split('/')[-1] if '/' in image_path else image_path
-                score = r.get('quality_metrics', {}).get('overall_score', 0.0)
+                # image_nameから実際のファイル名を取得（修正）
+                filename = r.get('image_name', 'unknown.jpg')  # 修正: image_path → image_name
+                score = r.get('quality_score', 0.0)  # 修正: quality_metrics.overall_score → quality_score
                 quality_label = self._get_quality_label(score)
                 quality_class = self._get_quality_class(score)
                 
@@ -157,6 +202,7 @@ class StandardDashboardGenerator:
                     <div class="mt-2 text-center">
                         <span class="{quality_class}">{quality_label}</span>
                         <p class="text-sm text-gray-600 mt-1">{filename}</p>
+                        <p class="text-xs text-gray-500 mt-1">スコア: {score:.3f}</p>
                     </div>
                 </div>'''
 

@@ -47,15 +47,15 @@
 | L | dashboard_generation | ダッシュボード生成 | 完了, 失敗, 未実行, 実行中 |
 | M | extraction_pipeline | 抽出パイプライン | 完了, 失敗, 未実行, 実行中 |
 
-### 統計分析列（X-AC列）
+### 統計分析列（N-S列）
 | 列 | 指標名 | 説明 | 範囲 |
 |---|---|---|---|
-| X | current_score | Current品質スコア | 0.0-1.0 |
-| Y | baseline_score | BaseLine品質スコア | 0.0-1.0 |
-| Z | p_value | p値（統計的有意性） | 0.0-1.0 |
-| AA | effect_size | 効果サイズ（Cohen's d） | -∞ to +∞ |
-| AB | improvement_rate | 改善率（%） | -100% to +∞ |
-| AC | statistical_significance | 統計的有意性 | 有意/非有意 |
+| N | current_score | Current品質スコア | 0.0-1.0 |
+| O | baseline_score | BaseLine品質スコア | 0.0-1.0 |
+| P | p_value | p値（統計的有意性） | 0.0-1.0 |
+| Q | effect_size | 効果サイズ（Cohen's d） | -∞ to +∞ |
+| R | improvement_rate | 改善率（%） | -100% to +∞ |
+| S | statistical_significance | 統計的有意性 | 有意/非有意 |
 
 ---
 
@@ -128,7 +128,7 @@ python3 tools/progress_tracker/cli.py permission-audit     # 権限変更履歴�
 
 ### 2025-07-28
 - 23列システム（A-W）への拡張完了
-- 統計指標追加（X-AC列: Current/BaseLine/p値/効果サイズ/改善率/統計的有意性）
+- 統計指標追加（N-S列: Current/BaseLine/p値/効果サイズ/改善率/統計的有意性）
 - P1-010での動作確認完了
 
 ### 2025-07-27  
