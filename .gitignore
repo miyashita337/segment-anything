@@ -127,3 +127,11 @@ deprecated/progress_tracker_legacy/
 # Backup/broken files (OPTM-007)
 *.backup2
 *.broken
+
+# Log files
+*.log
+TEST-001_extraction.log
+pytorch_install.log
+
+# Runtime generated config (QUAL-036)
+config/current_author_config.json
