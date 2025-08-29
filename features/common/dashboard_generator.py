@@ -94,7 +94,7 @@ class StandardDashboardGenerator:
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
                 <div class="text-center">
                     <div class="text-sm text-gray-600 mb-1">Current(平均品質スコア)</div>
-                    <p class="text-lg font-bold text-blue-600">{stats.get('current_score', 'N/A')}</p>
+                    <p class="text-lg font-bold text-blue-600">{avg_quality:.3f}</p>
                 </div>
                 <div class="text-center">
                     <div class="text-sm text-gray-600 mb-1">BaseLine</div>
@@ -198,7 +198,7 @@ class StandardDashboardGenerator:
                     <img src="/{tracker_id}/extraction/{filename}" 
                          alt="{filename}" 
                          class="w-full object-contain rounded" 
-                         onerror="this.parentElement.innerHTML='<div class=\\"p-4 text-center text-gray-500\\">画像読み込みエラー<br>{filename}</div>'">
+                         onerror="this.parentElement.innerHTML='&lt;div class=&quot;p-4 text-center text-gray-500&quot;&gt;画像読み込みエラー&lt;br&gt;{filename}&lt;/div&gt;'">
                     <div class="mt-2 text-center">
                         <span class="{quality_class}">{quality_label}</span>
                         <p class="text-sm text-gray-600 mt-1">{filename}</p>
