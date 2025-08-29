@@ -4,6 +4,8 @@
 全てのトラッカーダッシュボードを統合管理
 
 http://localhost:8088/ でアクセス可能
+
+QUAL-036: 作者別振り分け対応 - ハードコーディング除去・動的作者検出システム統合
 """
 
 import aiohttp_cors
@@ -12,31 +14,106 @@ import base64
 import json
 import logging
 import mimetypes
+import os
 import re
 from aiohttp import web
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
+
+# QUAL-036: 作者別パラメータ適応システム統合
+try:
+    from features.adaptation.author_parameter_adapter import AuthorParameterAdapter
+    AUTHOR_ADAPTER_AVAILABLE = True
+except ImportError:
+    logger.warning("⚠️ AuthorParameterAdapter not available - using default workspace")
+    AUTHOR_ADAPTER_AVAILABLE = False
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-TRACKER_WORKSPACE = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace")
+# QUAL-036: ハードコーディング除去 - 動的ワークスペース生成
+def get_tracker_workspace(input_path: Optional[str] = None) -> Path:
+    """
+    作者を検出してワークスペースパスを動的生成
+    
+    Args:
+        input_path: 入力パス（作者検出用）
+        
+    Returns:
+        作者別ワークスペースパス
+    """
+    try:
+        # 環境変数からの取得を優先
+        if 'TRACKER_WORKSPACE_BASE' in os.environ:
+            return Path(os.environ['TRACKER_WORKSPACE_BASE'])
+        
+        # 入力パスから作者検出
+        if input_path and AUTHOR_ADAPTER_AVAILABLE:
+            detected_author = AuthorParameterAdapter.detect_author_from_path(input_path)
+            if detected_author:
+                workspace = Path(f"/mnt/c/AItools/lora/train/{detected_author}/tracker-workspace")
+                logger.info(f"🔍 作者検出成功: {detected_author} → {workspace}")
+                return workspace
+        
+        # フォールバック: デフォルト作者（yado）
+        default_workspace = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace")
+        logger.info(f"📂 デフォルトワークスペース使用: {default_workspace}")
+        return default_workspace
+        
+    except Exception as e:
+        logger.error(f"❌ ワークスペース検出エラー: {e}")
+        return Path("/mnt/c/AItools/lora/train/yado/tracker-workspace")
 
 # Basic認証設定
 BASIC_AUTH_USERNAME = "admin"
 BASIC_AUTH_PASSWORD = "secure_track_2025_q3_8f9a"
 
 class IntegratedDashboardServer:
-    def __init__(self, port=8088):
+    def __init__(self, port=8088, input_path=None):
+        """
+        統合ダッシュボードサーバー初期化
+        
+        Args:
+            port: サーバーポート
+            input_path: 入力パス（作者検出用）
+        """
         self.port = port
+        self.input_path = input_path
         self.app = web.Application()  # ミドルウェアを後で追加
-        self.tracker_workspace = TRACKER_WORKSPACE
+        
+        # QUAL-036: 動的ワークスペース設定
+        self.tracker_workspace = get_tracker_workspace(input_path)
+        self.author_name = self._detect_author_name()
+        
         self._setup_routes()
         self._setup_cors()
         self._scan_dashboards()
         
         # ミドルウェアを最後に追加
         self.app.middlewares.append(self.auth_middleware)
+        
+        # QUAL-036: 作者情報ログ出力
+        logger.info(f"🎯 作者別ダッシュボード初期化完了")
+        logger.info(f"   作者: {self.author_name}")
+        logger.info(f"   ワークスペース: {self.tracker_workspace}")
+        logger.info(f"   入力パス: {self.input_path}")
+    
+    def _detect_author_name(self) -> str:
+        """現在の作者名を取得"""
+        if self.input_path and AUTHOR_ADAPTER_AVAILABLE:
+            detected = AuthorParameterAdapter.detect_author_from_path(self.input_path)
+            if detected:
+                return detected
+        
+        # ワークスペースパスから作者名を逆算
+        workspace_parts = self.tracker_workspace.parts
+        if 'train' in workspace_parts:
+            train_idx = workspace_parts.index('train')
+            if train_idx + 1 < len(workspace_parts):
+                return workspace_parts[train_idx + 1]
+        
+        return "yado"  # デフォルト
     
     def _scan_dashboards(self):
         """利用可能なダッシュボードをスキャン"""
@@ -526,8 +603,26 @@ class IntegratedDashboardServer:
         logger.info(f"🚀 サーバー起動完了 http://localhost:{self.port} ({len(self.dashboards)}個のダッシュボード)")
 
 async def main():
-    """メイン実行関数"""
-    server = IntegratedDashboardServer(port=8088)
+    """
+    メイン実行関数
+    
+    QUAL-036: 入力パス引数対応
+    Usage: python integrated_dashboard_server.py [input_path]
+    """
+    import sys
+    
+    # コマンドライン引数から入力パスを取得
+    input_path = None
+    if len(sys.argv) > 1:
+        input_path = sys.argv[1]
+        logger.info(f"📂 入力パス指定: {input_path}")
+    
+    # 環境変数からも取得可能
+    if not input_path and 'INPUT_PATH' in os.environ:
+        input_path = os.environ['INPUT_PATH']
+        logger.info(f"📂 環境変数から入力パス取得: {input_path}")
+    
+    server = IntegratedDashboardServer(port=8088, input_path=input_path)
     await server.start()
     
     try:
