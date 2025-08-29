@@ -46,6 +46,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 🛡️ **入力ディレクトリ存在チェック必須要件**
 
+### 📋 **必須参照チェックリスト**
+**詳細な検証手順**: [`docs/checklists/input_path_validation_checklist.md`](docs/checklists/input_path_validation_checklist.md)
+
 ### 🚨 **入力検証の絶対原則**
 
 **存在しない入力ディレクトリでの処理実行は厳禁。強引な処理継続は禁止。**
