@@ -24,6 +24,15 @@
 - [ ] **仮想環境状態確認**: `echo $VIRTUAL_ENV` で現在の仮想環境確認
 - [ ] **sam-env アクティベート**: 仮想環境未アクティベート時は `source sam-env/bin/activate` 実行
 - [ ] **アクティベート後確認**: `which python3` でパス確認
+- [ ] **🚨 重要依存関係インストール**: PyTorch等重要パッケージのバックグラウンドインストール必須
+  ```bash
+  # 【環境構築】PyTorch依存関係バックグラウンドインストール（Claude Codeタイムアウト回避）
+  nohup bash -c "source sam-env/bin/activate && pip install torch torchvision ultralytics opencv-python pillow numpy matplotlib easyocr pycocotools onnxruntime onnx" > pytorch_install.log 2>&1 &
+  
+  # 【進捗確認】インストール状況確認
+  tail -f pytorch_install.log     # リアルタイム進捗
+  ps aux | grep "pip install"     # プロセス確認
+  ```
 - [ ] **必要パッケージ確認**: プロジェクト依存関係がインストール済みか確認
 - [ ] **⚠️ 重要**: 全ての後続処理は同一仮想環境セッション内で実行必須
 
@@ -71,10 +80,17 @@
 - [ ] **📋 承認2B（抽出実行承認）**: input/output指定・バックグラウンド実行許可
 - [ ] **スキップ承認**: 抽出実行省略時は必須特別承認取得
 - [ ] **抽出パイプライン実行**: 指定input→output抽出実行必須
-  - **大量ファイル処理時**: `nohup`コマンドを使用してClaude Codeタイムアウト回避
+  - **🚨 重要**: `nohup`コマンドを使用してClaude Codeタイムアウト回避（**必須実行方法**）
+  - **⏱️ 処理時間**: 基本1枚5-10分、10分以上の処理は必ずバックグラウンド実行
+  - **🔄 頻出問題解決**: 「抽出でClaude Codeのタイムアウトになる」→バックグラウンド実行で根本解決
   ```bash
+  # 【標準実行形式】バックグラウンド抽出（Claude Codeタイムアウト回避）
   nohup MEMORY_LIMIT_DISABLED=true python3 features/extraction/commands/extract_character.py \
     /input/path/ -o /output/path/ --batch --verbose > extraction.log 2>&1 &
+  
+  # 【進捗監視】抽出状況確認コマンド
+  tail -f extraction.log        # リアルタイム進捗確認
+  ps aux | grep extract_character  # プロセス実行確認
   ```
 - [ ] コードレビュー・品質基準への適合確認
 - [ ] 技術的困難発生時の例外処理手順実行
@@ -108,7 +124,15 @@
 ### ステップ9B: ダッシュボード生成 ✅
 - [ ] **必須順序2**: ダッシュボード生成・品質レポート確認
 - [ ] `workspace/{TRACKER_ID}/dashboard/dashboard.html` 生成・アクセス可能
-- [ ] **📋 ダッシュボード品質保証チェック必須実行**: `docs/checklists/dashboard_quality_checklist.md` 全項目実行（QUAL-041再発防止）
+- [ ] **🤖 自動ダッシュボード品質保証チェック必須実行**（TEST-001バグ再発防止）:
+  ```bash
+  # プログラムレベル品質チェック（4セクション完全自動化）
+  python3 tools/testing/dashboard_quality_validator.py {TRACKER_ID}
+  
+  # 【重要】終了コード0（全セクション通過）確認必須
+  echo $?  # 0なら成功、1なら失敗
+  ```
+- [ ] **📋 手動補完チェック**（自動チェック通過後の最終確認）:
   - [ ] 🔴 **統計分析結果必須表示確認（7項目順序）** (Current→BaseLine→p値→効果サイズ、Cohen's d→改善率→統計的有意性→信頼区間)
   - [ ] 🔴 **基本品質指標必須表示確認** (総画像数・平均品質スコア・成功画像数・要改善数)
   - [ ] 🔴 **品質分布必須表示確認** (高品質・中品質・低品質・要改善の正確な数値)
