@@ -293,6 +293,23 @@
 
 ---
 
+## 📚 関連ドキュメント
+
+### ワークフローテストシステム
+- **包括的テストシステム設計**: [`docs/workflows/comprehensive_workflow_testing_system.md`](../workflows/comprehensive_workflow_testing_system.md)
+  - 4レベルテストシステムの設計意図と実装詳細
+  - トラブルシューティングガイド
+
+### 入力検証
+- **入力パス検証仕様**: [`docs/checklists/input_path_validation_checklist.md`](./input_path_validation_checklist.md)
+  - CLAUDE.md準拠の厳格な入力検証要件
+
+### TEST-001実績
+- **ベースライン測定結果**: [`docs/results/TEST-001/baseline_measurement.md`](../results/TEST-001/baseline_measurement.md)
+- **修正計画書**: [`docs/results/TEST-001/correction_plan.md`](../results/TEST-001/correction_plan.md)
+
+---
+
 **注意**: この13ステップ・4フェーズワークフローは、INCI-001での実績とINCI-004での承認強化要件を踏まえて設計されています。**各ステップの完了確認を徹底し、5回の承認ポイントでの確認・例外処理手順を遵守**してください。
 
 **INCI-004対応事項**:
