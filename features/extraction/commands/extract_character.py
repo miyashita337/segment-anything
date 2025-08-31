@@ -115,6 +115,10 @@ logger = logging.getLogger(__name__)
               help='QUAL-033: Enable interactive mode for path input')
 @click.option('--require-author-structure', is_flag=True, default=False,
               help='QUAL-033: Require /train/{author}/org/{work}/ path structure')
+@click.option('--quality-method',
+              type=click.Choice(['balanced', 'size_priority', 'confidence_priority', 'fullbody_priority', 'central_priority']),
+              default='balanced',
+              help='Quality evaluation method for mask selection (default: balanced)')
 def extract_character(
     input_path: str,
     output_path: str,
@@ -133,7 +137,8 @@ def extract_character(
     no_strict_validation: bool = False,
     strict_validation: bool = True,
     interactive: bool = False,
-    require_author_structure: bool = False
+    require_author_structure: bool = False,
+    quality_method: str = 'balanced'
 ) -> None:
     """Extract anime character from manga image.
 

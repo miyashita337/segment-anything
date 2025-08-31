@@ -1,6 +1,11 @@
 #!/bin/bash
 # 品質保証ワークフロー完全自動化スクリプト
-# Usage: ./run_quality_workflow.sh PH2-001
+# Usage: 
+#   ./run_quality_workflow.sh TRACKER_ID                                    # 従来実行
+#   ./run_quality_workflow.sh TRACKER_ID --use-subagent /input/dir          # SubAgent統合実行
+#   ./run_quality_workflow.sh TRACKER_ID --subagent-register /input/dir     # SubAgent段階1: 登録
+#   ./run_quality_workflow.sh TRACKER_ID --subagent-monitor                 # SubAgent段階2: 監視
+#   ./run_quality_workflow.sh TRACKER_ID --subagent-collect                 # SubAgent段階3: 収集
 
 set -e  # エラー時に停止
 
@@ -32,6 +37,30 @@ fi
 
 echo "✅ 環境チェック完了"
 echo ""
+
+# SubAgent実行モード確認
+USE_SUBAGENT=false
+SUBAGENT_STAGE=""
+INPUT_DIR=""
+
+# 既存の --use-subagent モード（保持）
+if [ "$2" = "--use-subagent" ]; then
+    USE_SUBAGENT=true
+    INPUT_DIR="$3"
+    echo "🤖 SubAgentモード有効: TaskOrchestratorを使用した統合実行"
+
+# 新規の段階実行モード
+elif [ "$2" = "--subagent-register" ]; then
+    SUBAGENT_STAGE="register"
+    INPUT_DIR="$3"
+    echo "🚀 SubAgent段階1: タスク登録実行"
+elif [ "$2" = "--subagent-monitor" ]; then
+    SUBAGENT_STAGE="monitor"
+    echo "👁️ SubAgent段階2: タスク監視実行"
+elif [ "$2" = "--subagent-collect" ]; then
+    SUBAGENT_STAGE="collect"
+    echo "📊 SubAgent段階3: 結果収集実行"
+fi
 
 TRACKER_ID=$1
 
@@ -100,6 +129,62 @@ fi
 if [ "$SKIP_EXTRACTION" = false ]; then
     echo "🚀 抽出パイプライン開始（バックグラウンド実行）"
     echo "⚠️  Windows ハングアップ防止のため、バックグラウンド実行します"
+    
+    # SubAgent実行モード分岐
+    if [ "$USE_SUBAGENT" = true ]; then
+        echo "🤖 SubAgent TaskOrchestratorによる実行"
+        sam-env/bin/python3 tools/scripts/run_workflow_with_subagent.py \
+            "$TRACKER_ID" \
+            "$INPUT_DIR" \
+            --max-files 10
+        exit $?
+    fi
+    
+    # SubAgent段階実行モード分岐
+    if [ -n "$SUBAGENT_STAGE" ]; then
+        echo "🎯 SubAgent段階実行: $SUBAGENT_STAGE"
+        echo "   トラッカーID: $TRACKER_ID"
+        echo "   実行段階: $SUBAGENT_STAGE"
+        echo ""
+        
+        case "$SUBAGENT_STAGE" in
+            "register")
+                echo "🚀 段階1: タスク登録開始"
+                if [ -z "$INPUT_DIR" ]; then
+                    echo "❌ エラー: 入力ディレクトリが指定されていません"
+                    echo "使用法: $0 $TRACKER_ID --subagent-register /path/to/input"
+                    exit 1
+                fi
+                
+                sam-env/bin/python3 tools/queue/async_stage_manager.py register \
+                    "$TRACKER_ID" \
+                    "$INPUT_DIR" \
+                    --task-type extraction \
+                    --max-files 10 \
+                    --quality-method balanced
+                exit $?
+                ;;
+                
+            "monitor")
+                echo "👁️ 段階2: タスク監視開始"
+                sam-env/bin/python3 tools/queue/async_stage_manager.py monitor \
+                    "$TRACKER_ID"
+                exit $?
+                ;;
+                
+            "collect")
+                echo "📊 段階3: 結果収集開始"
+                sam-env/bin/python3 tools/queue/async_stage_manager.py collect \
+                    "$TRACKER_ID"
+                exit $?
+                ;;
+                
+            *)
+                echo "❌ エラー: 不明な段階: $SUBAGENT_STAGE"
+                exit 1
+                ;;
+        esac
+    fi
     
     # QUAL-033: 厳密パス検証システム統合
     echo ""

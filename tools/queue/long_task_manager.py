@@ -23,7 +23,7 @@ import logging
 
 # ロギング設定
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
@@ -189,16 +189,24 @@ class LongTaskQueue:
     
     def _execute_queue(self) -> None:
         """キュー実行ループ"""
+        logger.info("🔄 Starting _execute_queue loop")
         while not self.stop_event.is_set():
+            logger.debug(f"Queue loop: queue_length={len(self.task_queue)}, current_task={self.current_task is not None}")
+            
             if not self.task_queue and not self.current_task:
+                logger.debug("Queue empty, waiting...")
                 time.sleep(5)  # キューが空の場合は待機
                 continue
             
             if not self.current_task and self.task_queue:
                 self.current_task = self.task_queue.popleft()
+                logger.info(f"🎯 Picked up task from queue: {self.current_task.task_id}")
             
             if self.current_task and self.current_task.status == TaskStatus.PENDING:
+                logger.info(f"▶️ Executing task: {self.current_task.task_id}")
                 self._execute_task(self.current_task)
+            elif self.current_task:
+                logger.debug(f"Task {self.current_task.task_id} status: {self.current_task.status}")
             
             time.sleep(1)
     
@@ -221,19 +229,42 @@ class LongTaskQueue:
         })
         
         try:
+            # プロセス実行前の詳細ログ
+            logger.info(f"🚀 Starting subprocess execution")
+            logger.info(f"   Command: {task.command}")
+            logger.info(f"   Working directory: /mnt/c/AItools/segment-anything")
+            logger.info(f"   Output file: {output_file}")
+            
+            # 作業ディレクトリの存在確認
+            cwd_path = "/mnt/c/AItools/segment-anything"
+            if not os.path.exists(cwd_path):
+                logger.error(f"❌ Working directory does not exist: {cwd_path}")
+                raise FileNotFoundError(f"Working directory not found: {cwd_path}")
+            
+            logger.info(f"✅ Working directory confirmed: {cwd_path}")
+            
             # プロセス実行
             with open(output_file, 'w') as f:
+                logger.info(f"📝 Output file opened for writing: {output_file}")
+                
                 self.running_process = subprocess.Popen(
                     task.command,
                     shell=True,
                     stdout=f,
                     stderr=subprocess.STDOUT,
+                    cwd=cwd_path,
                     preexec_fn=os.setsid if os.name != 'nt' else None
                 )
-                task.process_pid = self.running_process.pid
                 
-                # プロセス完了待機
+                task.process_pid = self.running_process.pid
+                # 重要: process_pid設定後にキュー状態を保存
+                self._save_queue_state()
+                logger.info(f"✅ Process started successfully with PID: {self.running_process.pid}")
+                
+                # プロセス完了待機開始
+                logger.info(f"⏳ Waiting for process completion...")
                 return_code = self.running_process.wait()
+                logger.info(f"🏁 Process completed with return code: {return_code}")
                 
                 if return_code == 0:
                     task.status = TaskStatus.COMPLETED
