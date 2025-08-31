@@ -210,6 +210,28 @@
   ```
 - [ ] **品質ワークフロー実行**: `./tools/scripts/run_quality_workflow.sh {TRACKER_ID}`
 
+### ステップ13.1: システム統合性検証（QUAL-044事例対応） 🔴
+- [ ] **既存システム理解確認**: 
+  ```bash
+  # integrated_dashboard_server.py等の既存統合システム確認
+  ps aux | grep integrated_dashboard_server
+  ss -tulpn | grep 8088
+  ```
+- [ ] **外部サーバー統合性確認**:
+  ```bash
+  # メインダッシュボード構造確認（左ペイン+右画面）
+  curl -u admin:secure_track_2025_q3_8f9a -s "http://100.123.241.106:8088/" | grep -E "(sidebar|main-content|tracker.*list)"
+  ```
+- [ ] **個別ファイル変更影響確認**:
+  ```bash
+  # 個別トラッカーファイル整合性確認
+  diff -u /mnt/c/AItools/lora/train/yado/tracker-workspace/{TRACKER_ID}/dashboard/dashboard.html /mnt/c/AItools/lora/train/yado/tracker-workspace/{TRACKER_ID}/dashboard/index.html
+  ```
+- [ ] **🚨 重要**: Section E（システム統合性検証）完全実行
+  - 既存システム優先活用の確認
+  - ファイル変更が全体構造に与える影響の排除
+  - 適切なサーバー管理の実施
+
 ### ステップ13.5: PR マージ後完了処理 ✅
 - [ ] **mainブランチ更新**: `git checkout main && git pull`
 - [ ] **Google Sheets更新**: `PROGRESS_TRACKER_SHEET_NAME="シート1" python3 tools/progress_tracker/cli.py update {TRACKER_ID} "/release"`
