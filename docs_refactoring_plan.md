@@ -42,7 +42,7 @@ docs/
 │   │   ├── development_guide.md
 │   │   └── testing_guide.md
 │   ├── quality/           # 品質管理
-│   │   ├── standards.md   # PROJECT_SETTINGS.md移動先
+│   │   ├── standards.md   # docs/development/quality/standards.md移動先
 │   │   └── qa_process.md
 │   └── progress/          # 進捗管理
 │       ├── current_phase.md
@@ -51,13 +51,13 @@ docs/
 │
 ├── technical/             # 技術仕様
 │   ├── specifications/    # 仕様書
-│   │   └── system_spec.md # spec.md移動先
+│   │   └── system_docs/technical/specifications/system_spec.md # docs/technical/specifications/system_spec.md移動先
 │   ├── api/              # API仕様
 │   └── performance/      # パフォーマンス
 │
 ├── reports/              # レポート・分析
 │   ├── quality/          # 品質レポート
-│   │   └── qc_comprehensive_report.md # QC_COMPREHENSIVE_REPORT.md移動先
+│   │   └── qc_comprehensive_report.md # docs/reports/quality/qc_comprehensive_report.md移動先
 │   ├── completion/       # 完了報告
 │   │   ├── p1_005_completion_report.md
 │   │   └── other_completion_reports.md
@@ -91,13 +91,13 @@ PRINCIPLE.md                # プロジェクト核心原則（保持）
 #### **優先度1（即座移行）**
 ```yaml
 技術仕様:
-  - spec.md → docs/technical/specifications/system_spec.md
+  - docs/technical/specifications/system_spec.md → docs/technical/specifications/system_docs/technical/specifications/system_spec.md
 
 開発標準:
-  - PROJECT_SETTINGS.md → docs/development/quality/standards.md
+  - docs/development/quality/standards.md → docs/development/quality/standards.md
 
 品質レポート:
-  - QC_COMPREHENSIVE_REPORT.md → docs/reports/quality/qc_comprehensive_report.md
+  - docs/reports/quality/qc_comprehensive_report.md → docs/reports/quality/qc_comprehensive_report.md
 ```
 
 #### **優先度2（1週間以内）**
@@ -141,13 +141,13 @@ touch docs/core/QUICK_START.md
 ### **Step 2: 優先度1ファイル移行（1時間）**
 ```bash
 # 技術仕様移行
-mv spec.md docs/technical/specifications/system_spec.md
+mv docs/technical/specifications/system_spec.md docs/technical/specifications/system_docs/technical/specifications/system_spec.md
 
 # 開発標準移行
-mv PROJECT_SETTINGS.md docs/development/quality/standards.md
+mv docs/development/quality/standards.md docs/development/quality/standards.md
 
 # 品質レポート移行
-mv QC_COMPREHENSIVE_REPORT.md docs/reports/quality/qc_comprehensive_report.md
+mv docs/reports/quality/qc_comprehensive_report.md docs/reports/quality/qc_comprehensive_report.md
 ```
 
 ### **Step 3: ナビゲーションシステム構築（1時間）**
@@ -188,8 +188,8 @@ mv QC_COMPREHENSIVE_REPORT.md docs/reports/quality/qc_comprehensive_report.md
 ### **Step 5: 参照リンク更新（2時間）**
 ```bash
 # 全ファイルの参照リンク更新
-# 例：spec.md → docs/technical/specifications/system_spec.md
-# 例：PROJECT_SETTINGS.md → docs/development/quality/standards.md
+# 例：docs/technical/specifications/system_spec.md → docs/technical/specifications/system_docs/technical/specifications/system_spec.md
+# 例：docs/development/quality/standards.md → docs/development/quality/standards.md
 ```
 
 ## 📊 **期待される効果**

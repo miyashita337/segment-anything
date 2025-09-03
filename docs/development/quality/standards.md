@@ -1,4 +1,4 @@
-# PROJECT_SETTINGS.md
+# docs/development/quality/standards.md
 
 ## 🔧 プロジェクト設定・命名規則
 

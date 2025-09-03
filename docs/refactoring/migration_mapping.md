@@ -43,15 +43,15 @@
 ### technical/仕様書移行
 | 現在のパス | 移行先 | 参照数 | リスク |
 |-----------|--------|--------|--------|
-| `spec.md` | `docs/technical/specifications/system_spec.md` | 15+ | 中 |
+| `docs/technical/specifications/system_spec.md` | `docs/technical/specifications/system_docs/technical/specifications/system_spec.md` | 15+ | 中 |
 | `docs/technical_specifications.md` | `docs/technical/specifications/technical_specifications.md` | 8 | 中 |
-| `docs/objective_metrics_specification.md` | `docs/technical/specifications/objective_metrics_spec.md` | 2 | 中 |
+| `docs/objective_metrics_specification.md` | `docs/technical/specifications/objective_metrics_docs/technical/specifications/system_spec.md` | 2 | 中 |
 
 ### development/品質関連移行
 | 現在のパス | 移行先 | 参照数 | リスク |
 |-----------|--------|--------|--------|
-| `PROJECT_SETTINGS.md` | `docs/development/quality/standards.md` | 5 | 中 |
-| `QC_COMPREHENSIVE_REPORT.md` | `docs/reports/quality/qc_comprehensive_report.md` | 3 | 中 |
+| `docs/development/quality/standards.md` | `docs/development/quality/standards.md` | 5 | 中 |
+| `docs/reports/quality/qc_comprehensive_report.md` | `docs/reports/quality/qc_comprehensive_report.md` | 3 | 中 |
 | `docs/QUALITY-FIX-001_analysis_and_solution.md` | `docs/reports/quality/quality_fix_001_analysis.md` | 1 | 中 |
 
 ## 🗂️ Phase 3: 高リスクファイル（特別配慮）
@@ -113,8 +113,8 @@ import re
 import os
 
 MAPPING = {
-    "spec.md": "docs/technical/specifications/system_spec.md",
-    "PROJECT_SETTINGS.md": "docs/development/quality/standards.md",
+    "docs/technical/specifications/system_spec.md": "docs/technical/specifications/system_docs/technical/specifications/system_spec.md",
+    "docs/development/quality/standards.md": "docs/development/quality/standards.md",
     # ... 他のマッピング
 }
 

@@ -265,7 +265,7 @@ dashboard = generator.create_dashboard(tracker_id, workspace_dir)
 - **`/release`コマンド警告解消**: "package.jsonが存在しない"エラー完全修正
 - **バージョン不整合修正**: 複数ファイル間のバージョン統一
   - setup.py: v0.9.13 → v0.9.23 統一
-  - spec.md: v0.4.0 → v0.9.23 統一（日付も2025-08-23に更新）
+  - docs/technical/specifications/system_spec.md: v0.4.0 → v0.9.23 統一（日付も2025-08-23に更新）
 
 ### Changed
 - **バージョン管理方式**: 手動管理から自動npm version管理に移行
@@ -1011,7 +1011,7 @@ dashboard = generator.create_dashboard(tracker_id, workspace_dir)
 ### Added
 - **OPT-020 Ubuntu環境移行完了**: Windows PE32+からUbuntu python3ネイティブ環境への完全移行
   - charset issues (cp932→UTF-8) 完全解決
-  - spec.md準拠（python3優先、WSL2、ubuntu仮想環境必須）
+  - docs/technical/specifications/system_spec.md準拠（python3優先、WSL2、ubuntu仮想環境必須）
   - QC成功システム100%動作確認・バッチ抽出26/26成功率達成
   - Pushover連携でcharset問題解消確認
 - **send_pushover_images.py**: Ubuntu環境対応Pushover送信システム実装
@@ -1568,7 +1568,7 @@ dashboard = generator.create_dashboard(tracker_id, workspace_dir)
 ## [v0.3.5] - 2025-07-18
 
 ### Added
-- **PROJECT_SETTINGS.md**: Comprehensive project settings documentation with naming conventions, development guidelines, and mandatory checklists
+- **docs/development/quality/standards.md**: Comprehensive project settings documentation with naming conventions, development guidelines, and mandatory checklists
 - **run_batch_v034.py**: Improved batch processing script with proper naming conventions (replaced proprietary terms)
 - **run_small_test_v034.py**: Small-scale test script with proper naming conventions (replaced proprietary terms)
 

@@ -69,9 +69,9 @@ docs/
 ## 🎯 Phase 3準備状況
 
 ### 次回対象ファイル（中リスクファイル）
-- **技術仕様書**: `spec.md` (15+参照)
-- **品質文書**: `PROJECT_SETTINGS.md` (5参照)
-- **品質レポート**: `QC_COMPREHENSIVE_REPORT.md` (3参照)
+- **技術仕様書**: `docs/technical/specifications/system_spec.md` (15+参照)
+- **品質文書**: `docs/development/quality/standards.md` (5参照)
+- **品質レポート**: `docs/reports/quality/qc_comprehensive_report.md` (3参照)
 
 ### 準備完了事項
 - ✅ ディレクトリ構造確立

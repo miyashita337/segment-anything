@@ -114,7 +114,7 @@ yolo_alternatives:
 ### 標準プロジェクト構造
 ```
 segment-anything/
-├── spec.md                     # この仕様書
+├── docs/technical/specifications/system_spec.md                     # この仕様書
 ├── core/                       # Meta Facebook実装
 │   └── segment_anything/
 ├── features/                   # カスタム実装
@@ -291,7 +291,7 @@ reference_hardware:
 
 推奨事項:
   - 変数名: [dataset_name], [character_name], [version]
-  - 設定参照: "../../spec.md を参照"
+  - 設定参照: "../../docs/technical/specifications/system_spec.md を参照"
 ```
 
 ### セキュリティ

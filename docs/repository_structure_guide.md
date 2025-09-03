@@ -60,7 +60,7 @@ class RepositoryCleanup:
         
         # 重要ファイルのバックアップ
         important_files = [
-            "spec.md", "PRINCIPLE.md", "README.md",
+            "docs/technical/specifications/system_spec.md", "PRINCIPLE.md", "README.md",
             "docs/workflows/", "features/", "core/", "tools/"
         ]
         
