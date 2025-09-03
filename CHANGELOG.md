@@ -282,7 +282,7 @@ dashboard = generator.create_dashboard(tracker_id, workspace_dir)
 - **13ステップ・4フェーズワークフロー**: 効率化された新ワークフローシステム
   - 承認ポイント削減（4回→2回）、例外処理強化、パフォーマンス測定統合
   - Phase統合：計画・実装・品質・承認の明確化
-  - `docs/checklists/tracker_workflow_checklist.md`: 詳細実行チェックリスト
+  - `docs/workflows/checklists/tracker_workflow_checklist.md`: 詳細実行チェックリスト
 - **統計分析システム実装状況確認**: 既存統計機能の完全性検証
   - Current/Baseline定義明確化、Google Sheets N-S列統合確認
   - universal_statistical_analyzer.py: Welch t検定・Cohen's d実装確認
@@ -402,8 +402,8 @@ dashboard = generator.create_dashboard(tracker_id, workspace_dir)
 - **ドキュメント整合性修正**: 7ファイルで古い指標・誤記・旧ID形式を修正
   - `docs/daily_user_tasks.md`: 品質チェック基準をp値/効果サイズに更新
   - `CHANGELOG.md`: OPTETETETETETETET誤記を正しいP1-XXX形式に修正
-  - `docs/google_sheets_reference.md`: 統計指標への完全移行記録
-  - `docs/checklists/tracker_workflow_checklist.md`: 旧ID例をP1-XXX形式に統一
+  - `docs/integrations/external/google_sheets_reference.md`: 統計指標への完全移行記録
+  - `docs/workflows/checklists/tracker_workflow_checklist.md`: 旧ID例をP1-XXX形式に統一
   - `config/README.md`: サンプルコードの新ID形式対応
   - `docs/human_evaluation_integration.md`: 統計的品質指標システムへの更新
   - `docs/P1-017_critical_usability_improvements.md`: トラッカーIDと指標の統一

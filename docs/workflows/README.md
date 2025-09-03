@@ -291,7 +291,7 @@ flowchart TB
 - [バッチ抽出テンプレート](./batch_extraction_template.md) - ⑤ ローカルテストで使用
 - [品質評価ガイド](./quality_evaluation_guide.md) - ⑥ 評価フェーズで参照
 - [トラブルシューティング](./troubleshooting_guide.md) - 全フェーズのエラー対処
-- [Google Sheets セットアップ](./google_sheets_setup.md) - 進捗管理システム設定（詳細: [`docs/google_sheets_reference.md`](../google_sheets_reference.md) を参照）
+- [Google Sheets セットアップ](./google_sheets_setup.md) - 進捗管理システム設定（詳細: [`docs/integrations/external/google_sheets_reference.md`](../docs/integrations/external/google_sheets_reference.md) を参照）
 
 ### タスク管理文書
 

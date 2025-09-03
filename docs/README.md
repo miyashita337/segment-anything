@@ -21,8 +21,8 @@
 - [進捗管理](development/progress/) - タスク・進捗管理
 
 ### トラッカーシステム 🎯
-- [13ステップワークフロー](checklists/tracker_workflow_checklist.md) - 必須チェックリスト
-- [統合テンプレート](templates/unified_tracker_template.md) - 計画・進捗・完了報告
+- [13ステップワークフロー](docs/workflows/checklists/tracker_workflow_checklist.md) - 必須チェックリスト
+- [統合テンプレート](docs/workflows/templates/unified_tracker_template.md) - 計画・進捗・完了報告
 - [トラッカーワークスペース](tracker-workspace/) - 各トラッカーの作業領域
 
 ## 📊 技術情報
@@ -40,7 +40,7 @@
 ## 🔌 外部連携
 
 ### インテグレーション
-- [Google Sheets連携](google_sheets_reference.md) - 進捗管理システム
+- [Google Sheets連携](docs/integrations/external/google_sheets_reference.md) - 進捗管理システム
 - [GitHub Actions](github_actions_reference.md) - CI/CD設定
 - [詳細設定](integrations/) - 外部サービス連携設定
 
@@ -63,9 +63,9 @@
 | 目的 | 参照先 |
 |-----|--------|
 | 新規参加者 | [クイックスタート](core/QUICK_START.md) → [開発ワークフロー](workflows/) |
-| トラッカータスク開始 | [13ステップチェックリスト](checklists/tracker_workflow_checklist.md) |
+| トラッカータスク開始 | [13ステップチェックリスト](docs/workflows/checklists/tracker_workflow_checklist.md) |
 | 品質基準確認 | [技術仕様](technical_specifications.md) → [品質管理](development/quality/) |
-| 進捗報告 | [Google Sheets連携](google_sheets_reference.md) |
+| 進捗報告 | [Google Sheets連携](docs/integrations/external/google_sheets_reference.md) |
 | トラブルシューティング | [ワークフロー](workflows/troubleshooting_guide.md) |
 
 ### カテゴリ別整理

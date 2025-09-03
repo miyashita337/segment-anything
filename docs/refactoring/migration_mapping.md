@@ -11,9 +11,9 @@
 - `PRINCIPLE.md` - プロジェクト核心原則
 
 ### 慎重検討必要（トラッカーシステム関連）
-- `docs/checklists/tracker_workflow_checklist.md` - 参照10箇所
-- `docs/templates/unified_tracker_template.md` - 参照3箇所
-- `docs/google_sheets_reference.md` - Google Sheets連携
+- `docs/workflows/checklists/tracker_workflow_checklist.md` - 参照10箇所
+- `docs/workflows/templates/unified_tracker_template.md` - 参照3箇所
+- `docs/integrations/external/google_sheets_reference.md` - Google Sheets連携
 
 ## 🗂️ Phase 1: 低リスクファイル移行（Week 1）
 

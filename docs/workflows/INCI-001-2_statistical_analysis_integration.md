@@ -236,8 +236,8 @@ python tools/progress_tracker/config.py
 
 ## 📚 関連ドキュメント
 
-- **Google Sheets統合**: [`docs/google_sheets_reference.md`](../google_sheets_reference.md)
-- **トラッカーワークフロー**: [`docs/checklists/tracker_workflow_checklist.md`](../checklists/tracker_workflow_checklist.md)
+- **Google Sheets統合**: [`docs/integrations/external/google_sheets_reference.md`](../docs/integrations/external/google_sheets_reference.md)
+- **トラッカーワークフロー**: [`docs/workflows/checklists/tracker_workflow_checklist.md`](../docs/workflows/checklists/tracker_workflow_checklist.md)
 - **技術仕様**: [`docs/technical_specifications.md`](../technical_specifications.md)
 - **セキュリティ原則**: [`CLAUDE.md`](../../CLAUDE.md) - 重要なセキュリティ原則セクション
 

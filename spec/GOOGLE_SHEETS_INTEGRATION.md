@@ -1,6 +1,6 @@
 # Google Sheets 自動更新統合仕様
 
-**⚠️ 重要**: 最新のGoogle Sheets情報は [`docs/google_sheets_reference.md`](../docs/google_sheets_reference.md) を参照してください。
+**⚠️ 重要**: 最新のGoogle Sheets情報は [`docs/integrations/external/google_sheets_reference.md`](../docs/google_sheets_reference.md) を参照してください。
 
 ## 概要
 品質チェック、抽出パイプライン、評価システムの結果をGoogle Spreadsheetに自動反映するシステム。
@@ -57,7 +57,7 @@ config = get_default_config()
 
 ### シート構造（A-W列）
 
-**⚠️ 重要**: 最新の列構成は [`docs/google_sheets_reference.md`](../docs/google_sheets_reference.md) を参照してください。
+**⚠️ 重要**: 最新の列構成は [`docs/integrations/external/google_sheets_reference.md`](../docs/google_sheets_reference.md) を参照してください。
 
 **現在の構成**: 23列拡張システム（A-W列）
 - **A-G列**: 基本情報（トラッカーID、優先度、ステータス、日付、概要等）

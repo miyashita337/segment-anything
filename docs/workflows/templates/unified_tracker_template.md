@@ -172,7 +172,7 @@
 - **統計的解釈**: [改善の実質的意味・信頼性評価]
 
 ### 13ステップワークフロー（4フェーズ）- **テンプレート**
-**詳細チェックリストは** [`docs/checklists/tracker_workflow_checklist.md`](../checklists/tracker_workflow_checklist.md) **を参照**
+**詳細チェックリストは** [`docs/workflows/checklists/tracker_workflow_checklist.md`](../docs/workflows/checklists/tracker_workflow_checklist.md) **を参照**
 
 **📋 使用方法**: 実際のトラッカー実行時に進捗に応じて `[ ]` → `[x]` に変更してください
 

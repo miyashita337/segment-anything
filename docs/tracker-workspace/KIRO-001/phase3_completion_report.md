@@ -108,9 +108,9 @@ docs/
 
 ### 次フェーズ対象（高リスクファイル）
 **Phase 4: 高リスクファイル移行**
-- `docs/checklists/tracker_workflow_checklist.md` (10参照)
-- `docs/templates/unified_tracker_template.md` (3参照)
-- `docs/google_sheets_reference.md` (Google Sheets連携)
+- `docs/workflows/checklists/tracker_workflow_checklist.md` (10参照)
+- `docs/workflows/templates/unified_tracker_template.md` (3参照)
+- `docs/integrations/external/google_sheets_reference.md` (Google Sheets連携)
 
 ### 特別配慮事項
 - **トラッカーシステム**: 専用領域での慎重管理
