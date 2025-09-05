@@ -17,7 +17,7 @@
 - **トラッカーID**: [TRACKER_ID]
 - **計画作成日**: [YYYY-MM-DD]
 - **目標**: [具体的な目標・期待効果]
-- **バージョン参照**: [../../spec.md](../../spec.md)
+- **バージョン参照**: [../../docs/technical/specifications/system_spec.md](../../docs/technical/specifications/system_spec.md)
 
 ### 要件・制約分析
 - **技術的制約**: [CUDA要件・メモリ制限・時間制限等]
@@ -198,7 +198,7 @@
 - **統計的解釈**: [改善の実質的意味・信頼性評価]
 
 ### 13ステップワークフロー（4フェーズ）- **テンプレート**
-**詳細チェックリストは** [`docs/checklists/tracker_workflow_checklist.md`](../checklists/tracker_workflow_checklist.md) **を参照**
+**詳細チェックリストは** [`docs/workflows/checklists/tracker_workflow_checklist.md`](../docs/workflows/checklists/tracker_workflow_checklist.md) **を参照**
 
 **📋 使用方法**: 実際のトラッカー実行時に進捗に応じて `[ ]` → `[x]` に変更してください
 
@@ -251,4 +251,4 @@
 *統合テンプレート作成: INCI-002により、progress_tracking + implementation_report を統一*  
 *INCI-004強化: 2承認→5承認システム・統計分析システム統合*  
 *対応ワークフロー: 13ステップ・4フェーズ・5段階承認*  
-*参照仕様: [../../spec.md](../../spec.md)*
+*参照仕様: [../../docs/technical/specifications/system_spec.md](../../docs/technical/specifications/system_spec.md)*

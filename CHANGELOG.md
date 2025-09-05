@@ -265,7 +265,7 @@ dashboard = generator.create_dashboard(tracker_id, workspace_dir)
 - **`/release`コマンド警告解消**: "package.jsonが存在しない"エラー完全修正
 - **バージョン不整合修正**: 複数ファイル間のバージョン統一
   - setup.py: v0.9.13 → v0.9.23 統一
-  - spec.md: v0.4.0 → v0.9.23 統一（日付も2025-08-23に更新）
+  - docs/technical/specifications/system_spec.md: v0.4.0 → v0.9.23 統一（日付も2025-08-23に更新）
 
 ### Changed
 - **バージョン管理方式**: 手動管理から自動npm version管理に移行
@@ -282,7 +282,7 @@ dashboard = generator.create_dashboard(tracker_id, workspace_dir)
 - **13ステップ・4フェーズワークフロー**: 効率化された新ワークフローシステム
   - 承認ポイント削減（4回→2回）、例外処理強化、パフォーマンス測定統合
   - Phase統合：計画・実装・品質・承認の明確化
-  - `docs/checklists/tracker_workflow_checklist.md`: 詳細実行チェックリスト
+  - `docs/workflows/checklists/tracker_workflow_checklist.md`: 詳細実行チェックリスト
 - **統計分析システム実装状況確認**: 既存統計機能の完全性検証
   - Current/Baseline定義明確化、Google Sheets N-S列統合確認
   - universal_statistical_analyzer.py: Welch t検定・Cohen's d実装確認
@@ -402,8 +402,8 @@ dashboard = generator.create_dashboard(tracker_id, workspace_dir)
 - **ドキュメント整合性修正**: 7ファイルで古い指標・誤記・旧ID形式を修正
   - `docs/daily_user_tasks.md`: 品質チェック基準をp値/効果サイズに更新
   - `CHANGELOG.md`: OPTETETETETETETET誤記を正しいP1-XXX形式に修正
-  - `docs/google_sheets_reference.md`: 統計指標への完全移行記録
-  - `docs/checklists/tracker_workflow_checklist.md`: 旧ID例をP1-XXX形式に統一
+  - `docs/integrations/external/google_sheets_reference.md`: 統計指標への完全移行記録
+  - `docs/workflows/checklists/tracker_workflow_checklist.md`: 旧ID例をP1-XXX形式に統一
   - `config/README.md`: サンプルコードの新ID形式対応
   - `docs/human_evaluation_integration.md`: 統計的品質指標システムへの更新
   - `docs/P1-017_critical_usability_improvements.md`: トラッカーIDと指標の統一
@@ -1011,7 +1011,7 @@ dashboard = generator.create_dashboard(tracker_id, workspace_dir)
 ### Added
 - **OPT-020 Ubuntu環境移行完了**: Windows PE32+からUbuntu python3ネイティブ環境への完全移行
   - charset issues (cp932→UTF-8) 完全解決
-  - spec.md準拠（python3優先、WSL2、ubuntu仮想環境必須）
+  - docs/technical/specifications/system_spec.md準拠（python3優先、WSL2、ubuntu仮想環境必須）
   - QC成功システム100%動作確認・バッチ抽出26/26成功率達成
   - Pushover連携でcharset問題解消確認
 - **send_pushover_images.py**: Ubuntu環境対応Pushover送信システム実装
@@ -1568,7 +1568,7 @@ dashboard = generator.create_dashboard(tracker_id, workspace_dir)
 ## [v0.3.5] - 2025-07-18
 
 ### Added
-- **PROJECT_SETTINGS.md**: Comprehensive project settings documentation with naming conventions, development guidelines, and mandatory checklists
+- **docs/development/quality/standards.md**: Comprehensive project settings documentation with naming conventions, development guidelines, and mandatory checklists
 - **run_batch_v034.py**: Improved batch processing script with proper naming conventions (replaced proprietary terms)
 - **run_small_test_v034.py**: Small-scale test script with proper naming conventions (replaced proprietary terms)
 

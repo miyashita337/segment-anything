@@ -8,7 +8,7 @@
 ### 現在のバージョン状態
 ```yaml
 current_status:
-  spec.md_version: "v0.4.0"
+  docs/technical/specifications/system_spec.md_version: "v0.4.0"
   project_phase: "客観的評価システム移行期"  
   major_change: "主観的評価 → 客観的3指標システム"
   system_name: "SAMベースキャラクター抽出システム"
@@ -112,7 +112,7 @@ system_definition:
 ### ファイルのバージョン表記統一
 ```yaml
 file_versioning:
-  spec.md: "v1.0.0 (2025-08-07更新予定)"
+  docs/technical/specifications/system_spec.md: "v1.0.0 (2025-08-07更新予定)"
   PRINCIPLE.md: "バージョン番号なし（普遍的原則）"
   universal_specifications.md: "バージョン番号なし（不変仕様）"
   
@@ -143,8 +143,8 @@ compatibility_management:
 
 ### Step 1: v1.0.0準備（即座実行）
 ```bash
-# 現在のspec.mdを更新
-sed -i 's/v0.4.0/v1.0.0/' /mnt/c/AItools/segment-anything/spec.md
+# 現在のdocs/technical/specifications/system_spec.mdを更新
+sed -i 's/v0.4.0/v1.0.0/' /mnt/c/AItools/segment-anything/docs/technical/specifications/system_spec.md
 
 # CHANGELOGの作成
 cat > /mnt/c/AItools/segment-anything/CHANGELOG.md << EOF
@@ -193,7 +193,7 @@ find /mnt/c/AItools/segment-anything/docs -name "*.md" -exec grep -l "v0\." {} \
 ```yaml
 daily_version_tasks:
   version_consistency_check:
-    - "spec.mdのバージョンが最新か？"
+    - "docs/technical/specifications/system_spec.mdのバージョンが最新か？"
     - "新機能がCHANGELOGに記録されているか？"
     
   compatibility_verification:
@@ -233,7 +233,7 @@ def check_version_consistency():
 def update_all_version_references(new_version):
     """全ファイルのバージョン参照を更新"""
     files_to_update = [
-        "spec.md",
+        "docs/technical/specifications/system_spec.md",
         "README.md", 
         "docs/workflows/*.md"
     ]

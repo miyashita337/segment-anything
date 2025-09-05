@@ -30,8 +30,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **13ステップ・4フェーズワークフローの詳細については以下を参照**:
 
 ### 📋 必須参照ドキュメント
-- **詳細チェックリスト**: [`docs/checklists/tracker_workflow_checklist.md`](docs/checklists/tracker_workflow_checklist.md) - 13ステップ完了確認用
-- **統合テンプレート**: [`docs/templates/unified_tracker_template.md`](docs/templates/unified_tracker_template.md) - 計画・進捗・完了報告統合版
+- **詳細チェックリスト**: [`docs/workflows/checklists/tracker_workflow_checklist.md`](docs/workflows/checklists/tracker_workflow_checklist.md) - 13ステップ完了確認用
+- **統合テンプレート**: [`docs/workflows/templates/unified_tracker_template.md`](docs/workflows/templates/unified_tracker_template.md) - 計画・進捗・完了報告統合版
 
 ### 🚨 絶対厳守事項（簡潔版）
 
@@ -42,7 +42,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 5. **例外処理手順遵守**: 技術的困難時のユーザー相談必須
 
 ### ✅ 4フェーズ概要
-**詳細は** [`docs/checklists/tracker_workflow_checklist.md`](docs/checklists/tracker_workflow_checklist.md) **を参照**
+**詳細は** [`docs/workflows/checklists/tracker_workflow_checklist.md`](docs/workflows/checklists/tracker_workflow_checklist.md) **を参照**
 
 ## 🛡️ **入力ディレクトリ存在チェック必須要件**
 
@@ -200,7 +200,7 @@ git push -u origin feature/TRACKER_ID
 
 ### 統一リファレンス一覧
 
-- **🔗 Google Sheets 進捗管理**: [`docs/google_sheets_reference.md`](docs/google_sheets_reference.md) を参照
+- **🔗 Google Sheets 進捗管理**: [`docs/integrations/external/google_sheets_reference.md`](docs/integrations/external/google_sheets_reference.md) を参照
 - **⚙️ GitHub Actions 統合**: [`docs/github_actions_reference.md`](docs/github_actions_reference.md) を参照
 - **📋 技術仕様**: [`docs/technical_specifications.md`](docs/technical_specifications.md) を参照
 - **🎯 トラッカーID標準化**: [`docs/tracker_id_standardization_report.md`](docs/tracker_id_standardization_report.md) を参照

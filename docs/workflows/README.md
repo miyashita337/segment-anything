@@ -1,6 +1,6 @@
 # AI-人間協調ワークフロー（現在仕様版）
 
-**バージョン**: [../../spec.md](../../spec.md) を参照  
+**バージョン**: [../../docs/technical/specifications/system_spec.md](../../docs/technical/specifications/system_spec.md) を参照  
 **最終更新**: 2025-07-27  
 **重要変更**: GitHub Action仕様から現在のlocalhost Claude Code仕様に全面更新
 
@@ -189,7 +189,7 @@ flowchart TB
 - Google Sheetsの優先順位に従って実行
 - **調査結果に基づく安全な実装**（重複回避・デグレード防止）
 - 既存テンプレート（[batch_extraction_template.md](./batch_extraction_template.md)）の活用
-- [spec.md](../../spec.md) 準拠の実装
+- [docs/technical/specifications/system_spec.md](../../docs/technical/specifications/system_spec.md) 準拠の実装
 - PHS-006で実装されたスケーラビリティ改善の活用
 
 #### 🤖 Claude Code の実装責任範囲
@@ -291,7 +291,7 @@ flowchart TB
 - [バッチ抽出テンプレート](./batch_extraction_template.md) - ⑤ ローカルテストで使用
 - [品質評価ガイド](./quality_evaluation_guide.md) - ⑥ 評価フェーズで参照
 - [トラブルシューティング](./troubleshooting_guide.md) - 全フェーズのエラー対処
-- [Google Sheets セットアップ](./google_sheets_setup.md) - 進捗管理システム設定（詳細: [`docs/google_sheets_reference.md`](../google_sheets_reference.md) を参照）
+- [Google Sheets セットアップ](./google_sheets_setup.md) - 進捗管理システム設定（詳細: [`docs/integrations/external/google_sheets_reference.md`](../docs/integrations/external/google_sheets_reference.md) を参照）
 
 ### タスク管理文書
 

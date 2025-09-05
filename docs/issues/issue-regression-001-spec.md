@@ -281,4 +281,4 @@ region_score = (
 **関連ドキュメント**:
 - [AI協議議事録](./issue-regression-001-discussion.md)
 - [PROGRESS_TRACKER.md](../workflows/PROGRESS_TRACKER.md)
-- [spec.md](../../spec.md)
+- [docs/technical/specifications/system_spec.md](../../docs/technical/specifications/system_spec.md)

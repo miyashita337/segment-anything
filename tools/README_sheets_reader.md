@@ -5,7 +5,7 @@
 Google Sheetsの進捗管理スプレッドシートからデータを取得・表示するツールです。
 
 **スプレッドシートURL**: https://docs.google.com/spreadsheets/d/10B7JIXPR7AoVHBrLbIG6bvn4wfKha_SradJODwzUHFA/edit  
-**詳細**: `docs/google_sheets_reference.md` を参照
+**詳細**: `docs/integrations/external/google_sheets_reference.md` を参照
 
 ## 利用可能なスクリプト
 

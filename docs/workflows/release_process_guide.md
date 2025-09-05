@@ -359,7 +359,7 @@ def update_release_documentation(version: str):
     """リリース時のドキュメント自動更新"""
     
     updates = [
-        update_spec_md(version),           # spec.md のバージョン更新
+        update_spec_md(version),           # docs/technical/specifications/system_spec.md のバージョン更新
         update_claude_md(version),         # CLAUDE.md の更新
         update_changelog(version),         # CHANGELOG.md の生成
         update_readme_badges(version),     # README.md のバッジ更新
@@ -403,4 +403,4 @@ def update_release_documentation(version: str):
 **関連ドキュメント**:
 - [AI-人間協調ワークフロー](./README.md) - 全体プロセス  
 - [PROGRESS_TRACKER.md](./PROGRESS_TRACKER.md) - 進捗管理
-- [spec.md](../../spec.md) - バージョン情報参照
+- [docs/technical/specifications/system_spec.md](../../docs/technical/specifications/system_spec.md) - バージョン情報参照

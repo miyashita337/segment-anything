@@ -534,4 +534,4 @@ sudo reboot
 ---
 
 *最終更新: 2025-07-21*  
-*対象バージョン: [../../spec.md](../../spec.md) を参照*
+*対象バージョン: [../../docs/technical/specifications/system_spec.md](../../docs/technical/specifications/system_spec.md) を参照*

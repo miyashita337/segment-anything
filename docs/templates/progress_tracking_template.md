@@ -12,7 +12,7 @@
 - **計画作成日**: [YYYY-MM-DD]
 - **計画者**: [実行者名]
 - **承認者**: [承認者名]
-- **バージョン**: [../../spec.md](../../spec.md) を参照
+- **バージョン**: [../../docs/technical/specifications/system_spec.md](../../docs/technical/specifications/system_spec.md) を参照
 
 ## 🎯 タスク要件（ステップ1）
 - **目標**: [具体的な目標・期待効果]
@@ -260,4 +260,4 @@ update_progress() {
 ---
 
 *テンプレート更新日: 2025-07-21*  
-*対応バージョン: [../../spec.md](../../spec.md) を参照*
+*対応バージョン: [../../docs/technical/specifications/system_spec.md](../../docs/technical/specifications/system_spec.md) を参照*

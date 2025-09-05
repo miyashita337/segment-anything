@@ -119,7 +119,7 @@ improvable_areas:
 - [ ] 客観的品質評価を使用しているか？
 
 ### ✅ 互換性確認
-- [ ] 既存のspec.mdとの整合性があるか？
+- [ ] 既存のdocs/technical/specifications/system_spec.mdとの整合性があるか？
 - [ ] PRINCIPLE.mdのセキュリティ原則に準拠しているか？
 - [ ] 3指標システム（PLA/SCI/PLE）を活用しているか？
 

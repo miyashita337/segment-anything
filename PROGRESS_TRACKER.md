@@ -729,7 +729,7 @@
   - **状況**: Phase 1-3完了待ち
   - **備考**: プロジェクト概要を自立型開発対応に修正
 
-- [ ] **[P4-010]** tech-spec.md作成
+- [ ] **[P4-010]** tech-docs/technical/specifications/system_spec.md作成
   - **担当**: Claude
   - **開始日**: 
   - **完了日**: 

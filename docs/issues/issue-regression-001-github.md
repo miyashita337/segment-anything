@@ -128,7 +128,7 @@ Region Classification:
 ## 🔗 Related Links
 
 - **GitHub PR**: #8 (introduced the regression)
-- **Technical Spec**: [issue-regression-001-spec.md](./issue-regression-001-spec.md)
+- **Technical Spec**: [issue-regression-001-docs/technical/specifications/system_spec.md](./issue-regression-001-docs/technical/specifications/system_spec.md)
 - **AI Discussion**: [issue-regression-001-discussion.md](./issue-regression-001-discussion.md)
 
 ## 📅 Estimated Effort

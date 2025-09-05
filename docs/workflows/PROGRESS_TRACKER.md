@@ -7,7 +7,7 @@
 ## 📊 Google Sheetsアクセス
 
 **メインスプレッドシート**: [Progress Tracker](https://docs.google.com/spreadsheets/d/10B7JIXPR7AoVHBrLbIG6bvn4wfKha_SradJODwzUHFA/edit?gid=0#gid=0)  
-**詳細**: `docs/google_sheets_reference.md` を参照
+**詳細**: `docs/integrations/external/google_sheets_reference.md` を参照
 
 **用途**: PROGRESS_TRACKER.mdの機能をGoogle Sheetsに完全移行し、Claude Codeによる自動更新とリアルタイム進捗管理を実現
 

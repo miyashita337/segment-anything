@@ -15,7 +15,7 @@ segment-anything を使用したアニメキャラクターのバッチ抽出の
 
 ### 環境要件
 
-**詳細は [../../spec.md](../../spec.md) を参照してください。**
+**詳細は [../../docs/technical/specifications/system_spec.md](../../docs/technical/specifications/system_spec.md) を参照してください。**
 
 主要要件:
 
@@ -78,7 +78,7 @@ PROGRESS_FILE="docs/request/[dataset_name]_extraction_progress_$(date +%Y%m%d).m
 ## 基本情報
 
 - **実行日**: [日付]
-- **バージョン**: [../../spec.md](../../spec.md) を参照
+- **バージョン**: [../../docs/technical/specifications/system_spec.md](../../docs/technical/specifications/system_spec.md) を参照
 - **入力**: [入力パス]
 - **出力**: [出力パス]
 - **品質手法**: balanced
@@ -286,4 +286,4 @@ git pull origin main
 ---
 
 _最終更新: 2025-07-21_  
-_バージョン: [../../spec.md](../../spec.md) を参照_
+_バージョン: [../../docs/technical/specifications/system_spec.md](../../docs/technical/specifications/system_spec.md) を参照_

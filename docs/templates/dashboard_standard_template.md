@@ -123,5 +123,5 @@ python tools/scripts/unified_dashboard_wrapper.py \
 ## 参照実装
 
 - **正しい実装例**: INCI-003ダッシュボード
-- **仕様書**: `docs/templates/unified_tracker_template.md`
-- **ワークフロー**: `docs/checklists/tracker_workflow_checklist.md`
+- **仕様書**: `docs/workflows/templates/unified_tracker_template.md`
+- **ワークフロー**: `docs/workflows/checklists/tracker_workflow_checklist.md`

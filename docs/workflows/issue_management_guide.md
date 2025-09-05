@@ -206,7 +206,7 @@ flowchart LR
 ### 関連ファイル
 
 - 議事録: `docs/issues/issue-xxx-discussion.md`
-- 仕様書: `docs/issues/issue-xxx-spec.md`
+- 仕様書: `docs/issues/issue-xxx-docs/technical/specifications/system_spec.md`
 ```
 
 ## 🌐 英語版 ISSUE 生成
@@ -311,4 +311,4 @@ flowchart TB
 
 - [PROGRESS_TRACKER.md](./PROGRESS_TRACKER.md) - 優先度管理
 - [AI-人間協調ワークフロー](./README.md) - 全体フロー
-- [spec.md](../../spec.md) - 技術仕様参照
+- [docs/technical/specifications/system_spec.md](../../docs/technical/specifications/system_spec.md) - 技術仕様参照

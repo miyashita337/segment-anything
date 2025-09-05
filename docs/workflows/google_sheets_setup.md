@@ -1,6 +1,6 @@
 # Google Sheets進捗管理システム セットアップガイド（2025年版）
 
-**⚠️ 重要**: 最新情報は [`docs/google_sheets_reference.md`](../google_sheets_reference.md) を参照してください。
+**⚠️ 重要**: 最新情報は [`docs/integrations/external/google_sheets_reference.md`](../docs/integrations/external/google_sheets_reference.md) を参照してください。
 
 **最終更新**: 2025-07-28  
 **実装状況**: ✅ 完全実装済み・運用中  
@@ -193,7 +193,7 @@ python tools/progress_tracker/workflow_integration.py PH2-001 --mode complete
 
 ## 📊 スプレッドシート構成
 
-**⚠️ 重要**: 最新の列構成・指標定義は [`docs/google_sheets_reference.md`](../google_sheets_reference.md) を参照してください。
+**⚠️ 重要**: 最新の列構成・指標定義は [`docs/integrations/external/google_sheets_reference.md`](../docs/integrations/external/google_sheets_reference.md) を参照してください。
 
 **現在の構成**: 23列拡張システム（A-W列）
 - **基本情報**: A-G列（トラッカーID、優先度、ステータス等）  
