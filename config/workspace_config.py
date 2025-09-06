@@ -5,6 +5,7 @@
 """
 
 import os
+import re
 from pathlib import Path
 from typing import Optional
 
@@ -12,9 +13,80 @@ from typing import Optional
 class WorkspaceConfig:
     """ワークスペース設定一元管理クラス"""
     
-    # デフォルトワークスペースパス
+    # デフォルトワークスペースパス（動的作者名検出で上書き可能）
     DEFAULT_WORKSPACE_BASE = "/mnt/c/AItools/lora/train/yado/tracker-workspace"
+    BASE_TRAIN_PATH = "/mnt/c/AItools/lora/train"
     
+    @classmethod
+    def detect_author_from_input_path(cls, input_path: str) -> Optional[str]:
+        """
+        入力パスから作者名を動的検出
+        
+        Args:
+            input_path: 入力パス（例: /mnt/c/AItools/lora/train/kiri/aichikan/）
+            
+        Returns:
+            検出された作者名（例: "kiri"）、検出失敗時はNone
+        """
+        try:
+            # パスを正規化
+            normalized_path = os.path.normpath(input_path)
+            
+            # BASE_TRAIN_PATHパターンでマッチ
+            pattern = re.escape(cls.BASE_TRAIN_PATH) + r'/([^/]+)(?:/.*)?'
+            match = re.match(pattern, normalized_path)
+            
+            if match:
+                author_name = match.group(1)
+                # 有効な作者名かチェック（英数字、ハイフン、アンダースコア）
+                if re.match(r'^[a-zA-Z0-9_-]+$', author_name):
+                    return author_name
+            
+            return None
+        except Exception:
+            return None
+    
+    @classmethod 
+    def get_workspace_base_for_author(cls, author_name: str) -> str:
+        """
+        指定された作者名に対応するワークスペースベースパス生成
+        
+        Args:
+            author_name: 作者名（例: "kiri"）
+            
+        Returns:
+            作者専用ワークスペースベースパス
+        """
+        return f"{cls.BASE_TRAIN_PATH}/{author_name}/tracker-workspace"
+    
+    @classmethod
+    def update_workspace_for_author(cls, author_name: str) -> None:
+        """
+        検出された作者名でワークスペース設定を環境変数に設定
+        
+        Args:
+            author_name: 作者名
+        """
+        workspace_base = cls.get_workspace_base_for_author(author_name)
+        os.environ['TRACKER_WORKSPACE_BASE'] = workspace_base
+    
+    @classmethod
+    def auto_detect_and_configure(cls, input_path: str) -> Optional[str]:
+        """
+        入力パスから作者名を検出してワークスペース設定を自動更新
+        
+        Args:
+            input_path: 入力パス
+            
+        Returns:
+            検出・設定された作者名（失敗時はNone）
+        """
+        author_name = cls.detect_author_from_input_path(input_path)
+        if author_name:
+            cls.update_workspace_for_author(author_name)
+            return author_name
+        return None
+
     @classmethod
     def get_workspace_base(cls) -> str:
         """
