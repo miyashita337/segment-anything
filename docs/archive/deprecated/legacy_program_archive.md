@@ -12,7 +12,6 @@
 | プログラム | 用途 | 優先度 |
 |-----------|------|--------|
 | `features/extraction/commands/extract_character.py` | 日常的な抽出・新アーキテクチャ | **最優先** |
-| `tools/core/sam_yolo_character_segment.py` | トラッカータスク用・実績あり | **高優先** |
 | `features/extraction/commands/quick_interactive.py` | 緊急時救済・100%成功率 | **条件付き** |
 | `tools/core/run_auto_pipeline.py` | 大規模バッチ処理 | **特殊用途** |
 

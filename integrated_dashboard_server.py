@@ -187,6 +187,7 @@ class IntegratedDashboardServer:
         """ルーティング設定"""
         self.app.router.add_get('/', self.handle_main)
         self.app.router.add_get('/tracker/{tracker_id}', self.handle_tracker)
+        self.app.router.add_get('/tracker/{tracker_id}/', self.handle_tracker)  # 末尾スラッシュ対応
         self.app.router.add_get('/tracker/{tracker_id}/{dashboard_name}', self.handle_tracker_dashboard)
         self.app.router.add_get('/api/dashboards', self.handle_api_dashboards)
         self.app.router.add_get('/refresh', self.handle_refresh)

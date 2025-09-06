@@ -1,0 +1,155 @@
+# SubAgent統合ワークフロー設定ファイル
+# QUAL-044: 長時間タスクキューシステム設定
+
+# 基本設定
+workflow:
+  name: "SubAgent Integrated Quality Workflow"
+  version: "1.0.0"
+  tracker_prefix: "QUAL"
+  
+# TaskOrchestrator設定
+orchestrator:
+  # 監視設定
+  monitoring:
+    check_interval: 5  # 秒（状態ファイル確認間隔）
+    timeout_default: 1800  # 秒（デフォルトタイムアウト30分）
+    retry_max: 3  # 最大リトライ回数
+  
+  # ログ設定
+  logging:
+    level: "INFO"
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    output_dir: "logs/"
+
+# 各フェーズ設定
+phases:
+  # Phase 1: 抽出パイプライン
+  extraction:
+    enabled: true
+    timeout: 3600  # 1時間
+    max_files: 10
+    options:
+      - "--verbose"
+      - "--strict-validation"
+      - "--require-author-structure"
+    quality_methods:
+      - "balanced"
+      - "confidence_priority"
+      - "size_priority"
+    
+  # Phase 2: 品質評価
+  quality_check:
+    enabled: true
+    timeout: 1800  # 30分
+    options:
+      - "--generate-report"
+      - "--calculate-metrics"
+    thresholds:
+      min_quality_score: 0.7
+      min_success_rate: 0.8
+      
+  # Phase 3: ダッシュボード生成
+  dashboard:
+    enabled: true
+    timeout: 600  # 10分
+    options:
+      - "--with-stats"
+      - "--with-images"
+      - "--markdown-report"
+    output_formats:
+      - "html"
+      - "markdown"
+      - "json"
+      
+  # Phase 4: 統合レポート
+  integration_report:
+    enabled: true
+    timeout: 300  # 5分
+    include_sections:
+      - "summary"
+      - "phase_results"
+      - "quality_metrics"
+      - "next_actions"
+
+# キュー管理設定
+queue:
+  # FIFO処理設定
+  processing_mode: "fifo"
+  max_parallel_tasks: 1  # 並列実行数（現在は1）
+  task_retention_days: 7  # タスク履歴保持期間
+  
+  # 状態ファイル
+  status_file: "queue/queue_status.json"
+  log_dir: "queue/logs/"
+
+# 通知設定
+notification:
+  # Pushover設定
+  pushover:
+    enabled: true
+    config_file: "config/pushover.json"
+    events:
+      - "task_completed"
+      - "task_failed"
+      - "workflow_completed"
+      
+  # PlanMode連携
+  planmode:
+    enabled: true
+    escalation_on_error: true
+    require_review_threshold: 0.5  # 品質スコア閾値
+
+# パス設定
+paths:
+  # デフォルト入力パス（QUAL-033により無効化）
+  # default_input: null  # 明示的にnull設定
+  
+  # ワークスペース設定
+  workspace_base: "/mnt/c/AItools/lora/train/yado/tracker-workspace"
+  
+  # モデルファイル
+  models:
+    sam: "sam_vit_h_4b8939.pth"
+    yolo: "yolov8x.pt"
+
+# エラーハンドリング
+error_handling:
+  # リトライ設定
+  retry:
+    enabled: true
+    max_attempts: 3
+    delay_seconds: 30
+    backoff_factor: 2.0
+    
+  # エラー時アクション
+  on_error:
+    - "log_error"
+    - "send_notification"
+    - "save_state"
+    - "escalate_to_planmode"
+
+# パフォーマンス設定
+performance:
+  # メモリ管理
+  memory:
+    limit_enabled: false  # MEMORY_LIMIT_DISABLED相当
+    max_memory_gb: 8
+    
+  # GPU設定
+  gpu:
+    device: "cuda:0"
+    fallback_to_cpu: true
+    
+# 実験的機能
+experimental:
+  # SubAgent高度機能
+  advanced_monitoring: false
+  auto_parameter_tuning: false
+  predictive_error_detection: false
+  
+# デバッグ設定
+debug:
+  enabled: false
+  verbose_logging: false
+  save_intermediate_results: true
+  profile_performance: false

@@ -166,7 +166,7 @@ class ConfigManager:
         lines.append("")
         lines.append("```bash")
         lines.append("# 抽出コマンド例")
-        lines.append("python tools/core/sam_yolo_character_segment.py \\")
+        lines.append("python features/extraction/commands/extract_character.py \\")
         lines.append("  --input_dir ${DEFAULT_INPUT_DIR} \\")
         lines.append("  --output_dir ${TRACKER_WORKSPACE_BASE}/${TRACKER_ID}/extraction/")
         lines.append("```")

@@ -8,7 +8,7 @@ echo "開始時刻: $(date)"
 # 基本パラメータ
 INPUT_DIR="/mnt/c/AItools/lora/train/yadokugaeru/org/kaname03"
 OUTPUT_BASE="/mnt/c/AItools/lora/train/yadokugaeru/clipped_boundingbox"
-SCRIPT="python3 sam_yolo_character_segment.py"
+SCRIPT="python3 features/extraction/commands/extract_character.py"
 
 # 実行基準リスト
 CRITERIA=("balanced" "size_priority" "fullbody_priority" "central_priority" "confidence_priority")

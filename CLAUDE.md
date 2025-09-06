@@ -83,10 +83,50 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 #### 🔍 **チェック対象ファイル**
 
-- `tools/core/sam_yolo_character_segment.py`
+- `features/extraction/commands/extract_character.py`
 - `tools/scripts/run_quality_workflow.sh`
 - `create_phase1_extraction_report.py`
 - 全ての抽出・処理関連スクリプト
+
+## 🚨 **システム破壊防止ルール（QUAL-044事例から学習）**
+
+### 🛑 **既存実装優先原則**
+
+**新規実装前に必ず既存の類似機能を調査し、既存システムの活用を最優先とすること**
+
+#### ✅ **必須確認事項**
+
+1. **既存サーバーの調査**
+   - `integrated_dashboard_server.py` 等の既存統合システムの存在確認
+   - 既存サーバーの機能・構造の完全理解
+   - 独自実装は既存システムで解決不可能な場合のみ実施
+
+2. **ファイル変更前影響範囲確認**
+   - 個別トラッカーファイル（`*/index.html`）変更時の全体システムへの影響確認必須
+   - 外部サーバー構造への影響分析必須
+   - 変更対象ファイルが他システム・プロセスに与える影響の事前調査
+
+3. **サーバー管理標準化**
+   - 単純な `python3 -m http.server` の使用禁止（単一ディレクトリ公開）
+   - 統合管理システム（`integrated_dashboard_server.py`）の活用推奨
+   - プロセス変更前の動作中サーバーの詳細確認必須
+
+#### ❌ **禁止される危険行為**
+
+- 既存の統合システムを無視した独自実装
+- システム全体の理解なしでの個別ファイル変更
+- 動作中サーバーの詳細確認なしでのプロセス変更
+- 「とりあえず動かす」目的での応急処置実装
+
+#### 📋 **QUAL-044事例での学習内容**
+
+```
+❌ 問題行為: QUAL-044/index.html を勝手に変更 → 外部サーバーの左ペイン構造破壊
+❌ 問題行為: integrated_dashboard_server.py の存在を無視して独自HTML実装
+❌ 問題行為: 単純HTTPサーバーでの応急処置
+
+✅ 正解: integrated_dashboard_server.py を理解・活用して統合ダッシュボード復元
+```
 
 ## 🚨 **技術的困難時の対処方針**
 
@@ -330,9 +370,9 @@ python features/extraction/commands/quick_interactive.py image.jpg --points 750,
 python tools/core/run_auto_pipeline.py
 
 # 【実績使用】現在のトラッカータスクで使用中（OPTET-010で実証済み）
-python tools/core/sam_yolo_character_segment.py --mode reproduce-auto \
-  --input_dir /mnt/c/AItools/lora/train/yado/org/kana05/ \
-  --output_dir ${TRACKER_WORKSPACE_BASE}/${TRACKER_ID}/extraction/
+python features/extraction/commands/extract_character.py \
+  /mnt/c/AItools/lora/train/yado/org/kana05/ \
+  -o ${TRACKER_WORKSPACE_BASE}/${TRACKER_ID}/extraction/ --batch
 ```
 
 #### 📦 データセット特化（レガシー・保守モード）
@@ -348,7 +388,7 @@ python tools/batch/kana08_enhanced_stable_batch.py \
 #### 💡 使用指針
 
 - **日常的な抽出**: `features/extraction/commands/extract_character.py`
-- **トラッカータスク**: `tools/core/sam_yolo_character_segment.py --mode reproduce-auto`
+- **トラッカータスク**: `features/extraction/commands/extract_character.py --batch`
 - **自動処理失敗時**: `features/extraction/commands/quick_interactive.py`
 - **大規模処理**: `tools/core/run_auto_pipeline.py`
 - **kana08データセット**: `tools/batch/kana08_enhanced_stable_batch.py`
