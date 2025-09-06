@@ -99,12 +99,12 @@ if [[ ! "$TRACKER_ID" =~ ^[A-Za-z0-9_-]+$ ]]; then
 fi
 
 echo "🔄 品質保証ワークフロー開始: ${TRACKER_ID}"
-echo "📁 出力ディレクトリ: ${OUTPUT_DIR}"
+echo "📁 初期出力ディレクトリ: ${OUTPUT_DIR} (動的作者名検出後に更新)"
 
 # ワークスペース確認リマインダー
 echo ""
 echo "🔔 リマインダー: ${TRACKER_ID} のワークスペース出力確認"
-echo "📍 確認場所: ${WORKSPACE_BASE}/${TRACKER_ID}/"
+echo "📍 確認場所: 動的作者名検出後に決定"
 echo "📋 必須ディレクトリ: extraction/, quality/, dashboard/, tests/"
 echo ""
 
@@ -192,6 +192,9 @@ if [ "$SKIP_EXTRACTION" = false ]; then
     echo "   デフォルトパスは無効化されています。明示的にパスを指定してください。"
     echo ""
     
+    # 動的作者名検出システム統合
+    echo "🤖 動的作者名検出システム使用中..."
+    
     # 入力ディレクトリの対話的入力
     while true; do
         echo "📁 画像入力ディレクトリを指定してください:"
@@ -205,6 +208,45 @@ if [ "$SKIP_EXTRACTION" = false ]; then
             echo "❌ エラー: パスの入力が必要です（デフォルト値は無効化されています）"
             echo ""
             continue
+        fi
+        
+        # 🤖 動的作者名検出・ワークスペース設定更新
+        echo "🔍 入力パスから作者名を検出中..."
+        DETECTED_AUTHOR=$(sam-env/bin/python3 -c "
+import sys
+sys.path.insert(0, '$(dirname "$0")/../..')
+from config.workspace_config import WorkspaceConfig
+author = WorkspaceConfig.auto_detect_and_configure('$INPUT_DIR')
+if author:
+    print(f'DETECTED:{author}')
+    print(f'WORKSPACE:{WorkspaceConfig.get_workspace_base()}')
+else:
+    print('NONE')
+")
+        
+        if echo "$DETECTED_AUTHOR" | grep -q "DETECTED:"; then
+            AUTHOR_NAME=$(echo "$DETECTED_AUTHOR" | grep "DETECTED:" | cut -d: -f2)
+            NEW_WORKSPACE_BASE=$(echo "$DETECTED_AUTHOR" | grep "WORKSPACE:" | cut -d: -f2)
+            echo "✅ 作者名検出成功: $AUTHOR_NAME"
+            echo "🔄 ワークスペースベース更新: $NEW_WORKSPACE_BASE"
+            
+            # 環境変数を再設定してワークスペースパスを更新
+            export TRACKER_WORKSPACE_BASE="$NEW_WORKSPACE_BASE"
+            WORKSPACE_BASE="$NEW_WORKSPACE_BASE"
+            OUTPUT_DIR="${WORKSPACE_BASE}/${TRACKER_ID}"
+            
+            echo "📁 新しい出力ディレクトリ: $OUTPUT_DIR"
+            mkdir -p "${OUTPUT_DIR}"/{extraction,quality,dashboard,tests}
+            
+            echo ""
+            echo "✅ 動的作者名検出完了！"
+            echo "📝 検出結果:"
+            echo "   👤 作者名: $AUTHOR_NAME"
+            echo "   📁 ワークスペースベース: $NEW_WORKSPACE_BASE"
+            echo "   📍 最終出力ディレクトリ: $OUTPUT_DIR"
+            echo ""
+        else
+            echo "⚠️  作者名検出失敗 - デフォルト設定を使用"
         fi
         
         # 入力ディレクトリ存在チェック（QUAL-033準拠）
@@ -434,6 +476,14 @@ EOF
 echo ""
 echo "✅ 品質保証ワークフロー完了: ${TRACKER_ID}"
 echo "📋 実行サマリー: $SUMMARY_FILE"
+echo ""
+echo "🎯 動的作者名検出結果:"
+if [ -n "$AUTHOR_NAME" ]; then
+    echo "   👤 検出作者名: $AUTHOR_NAME"
+    echo "   📁 使用ワークスペース: $WORKSPACE_BASE"
+else
+    echo "   ⚠️  デフォルト設定を使用"
+fi
 echo ""
 echo "🔗 ダッシュボード: file://${OUTPUT_DIR}/dashboard/dashboard.html"
 echo ""
