@@ -140,8 +140,9 @@
 - [ ] **品質ワークフロー実行**: `./tools/scripts/run_quality_workflow.sh {TRACKER_ID}`
 - [ ] **ダッシュボード生成**: `workspace/{TRACKER_ID}/dashboard/dashboard.html` 確認
 - [ ] **統計分析実行**: `python3 tools/progress_tracker/universal_statistical_analyzer.py --current {TRACKER_ID} --baseline {BASELINE_ID}`
+- [ ] ** ダッシュボードHTMLが表示されることをチェックする `curl -u admin:secure_track_2025_q3_8f9a http://100.123.241.106:8088/tracker/{TRACKER_ID}/`
 - [ ] **承認者**: [レビュー者名] - [承認日時]
-- **承認基準**: 品質スコア≥0.7・統計的有意性確認・ダッシュボード正常生成
+- **承認基準**: curlでの表示・品質スコア≥0.7・統計的有意性確認・ダッシュボード正常生成
 
 ### 承認5: 最終承認 ⏳/✅/❌
 - [ ] **総合評価**: 計画目標達成度・品質基準充足・リスク解決状況
