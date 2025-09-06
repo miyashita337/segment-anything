@@ -11,6 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.32] - 2025-09-06
+
+### Changed
+- **Documentation Updates**
+  - Updated package.json version to match latest release
+  - Enhanced CHANGELOG.md with comprehensive v0.9.30+ feature documentation
+
 ## [v0.9.30] - 2025-09-06
 
 ### Added
