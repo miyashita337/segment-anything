@@ -83,7 +83,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 #### 🔍 **チェック対象ファイル**
 
-- `tools/core/sam_yolo_character_segment.py`
+- `features/extraction/commands/extract_character.py`
 - `tools/scripts/run_quality_workflow.sh`
 - `create_phase1_extraction_report.py`
 - 全ての抽出・処理関連スクリプト
@@ -370,9 +370,9 @@ python features/extraction/commands/quick_interactive.py image.jpg --points 750,
 python tools/core/run_auto_pipeline.py
 
 # 【実績使用】現在のトラッカータスクで使用中（OPTET-010で実証済み）
-python tools/core/sam_yolo_character_segment.py --mode reproduce-auto \
-  --input_dir /mnt/c/AItools/lora/train/yado/org/kana05/ \
-  --output_dir ${TRACKER_WORKSPACE_BASE}/${TRACKER_ID}/extraction/
+python features/extraction/commands/extract_character.py \
+  /mnt/c/AItools/lora/train/yado/org/kana05/ \
+  -o ${TRACKER_WORKSPACE_BASE}/${TRACKER_ID}/extraction/ --batch
 ```
 
 #### 📦 データセット特化（レガシー・保守モード）
@@ -388,7 +388,7 @@ python tools/batch/kana08_enhanced_stable_batch.py \
 #### 💡 使用指針
 
 - **日常的な抽出**: `features/extraction/commands/extract_character.py`
-- **トラッカータスク**: `tools/core/sam_yolo_character_segment.py --mode reproduce-auto`
+- **トラッカータスク**: `features/extraction/commands/extract_character.py --batch`
 - **自動処理失敗時**: `features/extraction/commands/quick_interactive.py`
 - **大規模処理**: `tools/core/run_auto_pipeline.py`
 - **kana08データセット**: `tools/batch/kana08_enhanced_stable_batch.py`

@@ -32,8 +32,7 @@ from features.common.notification.global_pushover import (
 ### Phase 2: 既存実装の移行
 
 #### 優先度高（即座に移行）
-- `sam_yolo_character_segment.py` ✅ 完了
-- `extract_character.py` 
+- `features/extraction/commands/extract_character.py` ✅ 完了 
 - `integrated_quality_pipeline.py`
 
 #### 優先度中（段階的移行）
@@ -113,8 +112,7 @@ def test_no_direct_api_implementation():
 ## 🚀 実行計画
 
 ### 即座実行（今回）
-1. sam_yolo_character_segment.py ✅ 完了
-2. extract_character.pyの移行
+1. features/extraction/commands/extract_character.py ✅ 完了
 3. ドキュメント作成 ✅ 完了
 
 ### 次回実行

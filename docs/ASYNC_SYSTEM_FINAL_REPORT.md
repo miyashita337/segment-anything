@@ -77,7 +77,7 @@ class AsyncBatchedExtractionRunner:
 - 非同期化によりI/O効率は向上
 - 並列処理によりスループットは向上  
 - しかし個別バッチの処理時間（7分以上）は変わらず
-- この時間はsam_yolo_character_segment.pyの処理時間
+- この時間は抽出処理自体（features/extraction/commands/extract_character.py）の処理時間
 ```
 
 ## 🔍 問題分析: なぜタイムアウトが解決されないのか

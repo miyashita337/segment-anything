@@ -23,7 +23,7 @@
 
 **技術詳細**:
 ```python
-現在使用中: tools/sam_yolo_character_segment.py v0.0.1
+現在使用中: features/extraction/commands/extract_character.py（新アーキテクチャ）
 - 基本的なYOLO+SAM機能のみ
 - 品質評価機能なし
 - MediaPipe Pose未統合
@@ -47,8 +47,8 @@ features/extraction/quality_guard_system.py:
   - 品質スコア閾値管理
   - 適応的改善処理
 
-# 現在使用中（v0.0.1）
-tools/sam_yolo_character_segment.py:
+# 現在使用中（新アーキテクチャ）
+features/extraction/commands/extract_character.py:
   - 品質評価機能なし
   - すべて未評価のまま出力
 ```
