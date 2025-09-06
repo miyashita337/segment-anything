@@ -171,11 +171,12 @@ echo "📊 ダッシュボードサイズ: $(wc -c < /tmp/dashboard_check.html) 
 - [ ] **🔴 HTTP 200**: 正常レスポンス
 - [ ] **🔴 HTML サイズ**: 5KB以上（空でない）
 - [ ] **🔴 認証成功**: 認証エラーでない
+- [ ] **🔴 iframe表示確認**: src="/{TRACKER_ID}/dashboard/dashboard.html"が含まれる
 
 ### C2: 統計分析結果サーバー表示確認 🔴
 ```bash
-# 必須実行コマンド
-curl -u admin:secure_track_2025_q3_8f9a http://100.123.241.106:8088/tracker/{TRACKER_ID} | grep -E "(p値|効果サイズ|改善率|統計的有意性|ベースライン|信頼区間)"
+# 必須実行コマンド（直接ダッシュボードHTMLにアクセス）
+curl -u admin:secure_track_2025_q3_8f9a http://100.123.241.106:8088/{TRACKER_ID}/dashboard/dashboard.html | grep -E "(p値|効果サイズ|改善率|統計的有意性|BaseLine|信頼区間)"
 ```
 
 - [ ] **🔴 p値表示**: HTML内に数値存在
@@ -187,8 +188,8 @@ curl -u admin:secure_track_2025_q3_8f9a http://100.123.241.106:8088/tracker/{TRA
 
 ### C3: 品質指標サーバー表示確認 🔴
 ```bash
-# 必須実行コマンド
-curl -u admin:secure_track_2025_q3_8f9a http://100.123.241.106:8088/tracker/{TRACKER_ID} | grep -E "text-3xl font-bold" | grep -E "[0-9]+\.?[0-9]*"
+# 必須実行コマンド（直接ダッシュボードHTMLにアクセス）
+curl -u admin:secure_track_2025_q3_8f9a http://100.123.241.106:8088/{TRACKER_ID}/dashboard/dashboard.html | grep -E "text-3xl font-bold" | grep -E "[0-9]+\.?[0-9]*"
 ```
 
 - [ ] **🔴 総画像数非ゼロ**: 実際の処理数表示
