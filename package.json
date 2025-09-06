@@ -1,6 +1,6 @@
 {
   "name": "segment-anything-python",
-  "version": "0.9.27",
+  "version": "0.9.30",
   "description": "SAM + YOLO Character Extraction System with Claude Code Integration",
   "private": true,
   "main": "setup.py",
