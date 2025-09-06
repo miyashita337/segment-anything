@@ -12,7 +12,7 @@ Tools directoryはTDR-001により機能別に整理されました。
 - `quality_dashboard.py` - 品質ダッシュボード生成
 - `run_auto_pipeline.py` - 自動パイプライン実行
 - `run_objective_evaluation.py` - 客観的評価実行
-- `sam_yolo_character_segment.py` - キャラクター抽出パイプライン
+- （キャラクター抽出パイプラインは `../features/extraction/commands/extract_character.py` に移行済み）
 - `unified_quality_checker.py` - 統合品質チェッカー
 
 ### batch/ - バッチ処理系

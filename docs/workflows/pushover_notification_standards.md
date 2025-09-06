@@ -70,7 +70,6 @@ send_pushover_with_image(
 ## 🔧 実装統合状況
 
 ### 統合済みファイル（20/31）
-- `tools/core/sam_yolo_character_segment.py` ✅
 - `features/extraction/commands/extract_character.py` ✅
 - その他18ファイル ✅
 
@@ -107,7 +106,7 @@ python features/common/notification/pushover_image_sender.py
 ### 統合テスト
 ```bash
 # 実際の抽出処理でのテスト
-python tools/core/sam_yolo_character_segment.py --mode test
+python features/extraction/commands/extract_character.py --batch
 ```
 
 ## 📈 バージョン履歴

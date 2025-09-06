@@ -136,7 +136,6 @@ tools/
 ├── batch/                     # バッチ処理スクリプト
 │   └── kana08_enhanced_stable_batch.py  # 安定版バッチ処理
 ├── core/                      # コア機能スクリプト
-│   ├── sam_yolo_character_segment.py    # メイン処理スクリプト  
 │   ├── unified_quality_checker.py      # 統合品質チェッカー
 │   ├── quality_dashboard.py            # 品質ダッシュボード
 │   └── run_auto_pipeline.py            # 自動パイプライン

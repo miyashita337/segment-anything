@@ -14,7 +14,8 @@
 
 ```bash
 # 抽出コマンド例
-python tools/core/sam_yolo_character_segment.py \
+python features/extraction/commands/extract_character.py \
   --input_dir ${DEFAULT_INPUT_DIR} \
-  --output_dir ${TRACKER_WORKSPACE_BASE}/${TRACKER_ID}/extraction/
+  --output_dir ${TRACKER_WORKSPACE_BASE}/${TRACKER_ID}/extraction/ \
+  --batch
 ```
