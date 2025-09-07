@@ -172,7 +172,7 @@ class IntegratedDashboardServer:
                 # 同様のスキャン処理を追加ワークスペースに対しても実行
                 for tracker_dir in additional_workspace.iterdir():
                     if tracker_dir.is_dir():
-                        for pattern in ["quality/dashboard", "dashboard"]:
+                        for pattern in ["dashboard"]:
                             dashboard_dir = tracker_dir / pattern
                             if dashboard_dir.exists():
                                 for html_file in dashboard_dir.glob("*.html"):
