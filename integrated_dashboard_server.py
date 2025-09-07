@@ -21,6 +21,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+# WorkspaceConfig統合 - 動的ワークスペース管理
+from config.workspace_config import WorkspaceConfig
+
 # QUAL-036: 作者別パラメータ適応システム統合
 try:
     from features.adaptation.author_parameter_adapter import AuthorParameterAdapter
@@ -116,23 +119,66 @@ class IntegratedDashboardServer:
         return "yado"  # デフォルト
     
     def _scan_dashboards(self):
-        """利用可能なダッシュボードをスキャン"""
+        """利用可能なダッシュボードを動的にスキャン（WorkspaceConfig活用）"""
         self.dashboards = {}
         
-        # メインダッシュボード
-        main_dashboard = self.tracker_workspace / "main_dashboard.html"
-        if main_dashboard.exists():
-            self.dashboards['main'] = main_dashboard
+        # WorkspaceConfigを使用して動的にワークスペースを検出
+        base_path = Path(WorkspaceConfig.BASE_TRAIN_PATH)
         
-        # 各トラッカーのダッシュボード
-        for tracker_dir in self.tracker_workspace.iterdir():
-            if tracker_dir.is_dir():
-                dashboard_dir = tracker_dir / "dashboard"
-                if dashboard_dir.exists():
-                    for html_file in dashboard_dir.glob("*.html"):
-                        tracker_id = tracker_dir.name
-                        dashboard_key = f"{tracker_id}/{html_file.stem}"
-                        self.dashboards[dashboard_key] = html_file
+        # 存在する全作者ディレクトリを動的に検出
+        if base_path.exists():
+            for author_dir in base_path.iterdir():
+                if author_dir.is_dir():
+                    # WorkspaceConfigの関数を使ってワークスペースパス生成
+                    workspace = Path(WorkspaceConfig.get_workspace_base_for_author(author_dir.name))
+                    
+                    if not workspace.exists():
+                        continue
+                    
+                    logger.info(f"📂 スキャン中: {author_dir.name}のワークスペース - {workspace}")
+                    
+                    # メインダッシュボード
+                    main_dashboard = workspace / "main_dashboard.html"
+                    if main_dashboard.exists():
+                        self.dashboards[f'{author_dir.name}_main'] = main_dashboard
+                    
+                    # 各トラッカーのダッシュボード
+                    for tracker_dir in workspace.iterdir():
+                        if tracker_dir.is_dir():
+                            # qualityディレクトリ内も確認（KIRO-002用）
+                            quality_dashboard_dir = tracker_dir / "quality" / "dashboard"
+                            if quality_dashboard_dir.exists():
+                                for html_file in quality_dashboard_dir.glob("*.html"):
+                                    tracker_id = tracker_dir.name
+                                    dashboard_key = f"{tracker_id}/{html_file.stem}"
+                                    self.dashboards[dashboard_key] = html_file
+                            
+                            # 通常のdashboardディレクトリ
+                            dashboard_dir = tracker_dir / "dashboard"
+                            if dashboard_dir.exists():
+                                for html_file in dashboard_dir.glob("*.html"):
+                                    tracker_id = tracker_dir.name
+                                    dashboard_key = f"{tracker_id}/{html_file.stem}"
+                                    self.dashboards[dashboard_key] = html_file
+        
+        # 環境変数から追加のワークスペースも確認
+        if 'TRACKER_WORKSPACE_BASE' in os.environ:
+            additional_workspace = Path(os.environ['TRACKER_WORKSPACE_BASE'])
+            if additional_workspace.exists() and additional_workspace not in [
+                Path(WorkspaceConfig.get_workspace_base_for_author(d.name)) 
+                for d in base_path.iterdir() if d.is_dir()
+            ]:
+                logger.info(f"📂 環境変数から追加ワークスペース: {additional_workspace}")
+                # 同様のスキャン処理を追加ワークスペースに対しても実行
+                for tracker_dir in additional_workspace.iterdir():
+                    if tracker_dir.is_dir():
+                        for pattern in ["quality/dashboard", "dashboard"]:
+                            dashboard_dir = tracker_dir / pattern
+                            if dashboard_dir.exists():
+                                for html_file in dashboard_dir.glob("*.html"):
+                                    tracker_id = tracker_dir.name
+                                    dashboard_key = f"{tracker_id}/{html_file.stem}"
+                                    self.dashboards[dashboard_key] = html_file
         
         logger.info(f"🎯 {len(self.dashboards)}個のダッシュボードを検出完了")
     
@@ -245,17 +291,34 @@ class IntegratedDashboardServer:
         return web.Response(text=nav_html, content_type='text/html')
     
     async def handle_static(self, request):
-        """静的ファイル配信（HTML、画像、CSS、JS等）"""
+        """静的ファイル配信（複数ワークスペース対応）"""
         path = request.match_info['path']
         
         # セキュリティチェック
         if '..' in path:
             return web.Response(text="Forbidden", status=403)
         
-        # 抽出画像制限を無効化：VPN+Basic認証で既に保護済み
+        # WorkspaceConfigを使用して複数のワークスペースから探す
+        base_path = Path(WorkspaceConfig.BASE_TRAIN_PATH)
         
-        # ワークスペース内のファイルを探す
-        file_path = self.tracker_workspace / path
+        # まず動的に全作者のワークスペースから探す
+        for author_dir in base_path.iterdir():
+            if author_dir.is_dir():
+                workspace = Path(WorkspaceConfig.get_workspace_base_for_author(author_dir.name))
+                file_path = workspace / path
+                
+                if file_path.exists() and file_path.is_file():
+                    # ファイルが見つかった場合は配信処理へ
+                    break
+        else:
+            # 環境変数のワークスペースも確認
+            if 'TRACKER_WORKSPACE_BASE' in os.environ:
+                file_path = Path(os.environ['TRACKER_WORKSPACE_BASE']) / path
+                if not (file_path.exists() and file_path.is_file()):
+                    # デフォルトワークスペースも確認
+                    file_path = self.tracker_workspace / path
+            else:
+                file_path = self.tracker_workspace / path
         
         if file_path.exists() and file_path.is_file():
             mime_type, _ = mimetypes.guess_type(str(file_path))
@@ -279,9 +342,11 @@ class IntegratedDashboardServer:
         """利用可能なダッシュボード一覧API"""
         dashboard_list = []
         for key, path in self.dashboards.items():
+            # ファイルの実際のワークスペースを特定（動的作者検出）
+            actual_workspace = self._get_workspace_for_dashboard(path)
             dashboard_list.append({
                 'key': key,
-                'path': str(path.relative_to(self.tracker_workspace)),
+                'path': str(path.relative_to(actual_workspace)),
                 'tracker': key.split('/')[0] if '/' in key else 'main',
                 'name': path.stem
             })
@@ -366,14 +431,43 @@ class IntegratedDashboardServer:
         
         return html_content
     
+    def _get_workspace_for_dashboard(self, dashboard_path):
+        """ダッシュボードファイルの実際のワークスペースを特定"""
+        dashboard_path = Path(dashboard_path)
+        
+        # kiriワークスペース判定
+        kiri_workspace = Path(WorkspaceConfig.get_workspace_base_for_author('kiri'))
+        if str(dashboard_path).startswith(str(kiri_workspace)):
+            return kiri_workspace
+        
+        # yadoワークスペース判定
+        yado_workspace = Path(WorkspaceConfig.get_workspace_base_for_author('yado'))
+        if str(dashboard_path).startswith(str(yado_workspace)):
+            return yado_workspace
+        
+        # その他の作者のワークスペースを動的検出
+        for path_part in dashboard_path.parts:
+            if 'tracker-workspace' in str(path_part):
+                # tracker-workspaceの親ディレクトリから作者名を抽出
+                train_path_idx = next((i for i, p in enumerate(dashboard_path.parts) if p == 'train'), None)
+                if train_path_idx is not None and train_path_idx + 1 < len(dashboard_path.parts):
+                    author_name = dashboard_path.parts[train_path_idx + 1]
+                    return Path(WorkspaceConfig.get_workspace_base_for_author(author_name))
+        
+        # フォールバック: デフォルトワークスペース
+        return Path(self.tracker_workspace)
+    
     def _generate_navigation_wrapper(self, title, current_key):
         """ナビゲーション付きHTMLラッパー生成"""
         # 現在のダッシュボードのパスを取得
         dashboard_path = ""
         if current_key in self.dashboards:
-            # ワークスペース相対パスを取得
+            # ワークスペース相対パスを取得（動的作者検出）
             dashboard_file = self.dashboards[current_key]
-            dashboard_path = str(dashboard_file.relative_to(self.tracker_workspace))
+            
+            # ファイルの実際のワークスペースを特定
+            actual_workspace = self._get_workspace_for_dashboard(dashboard_file)
+            dashboard_path = str(dashboard_file.relative_to(actual_workspace))
         
         # ナビゲーションメニュー生成
         nav_items = []
