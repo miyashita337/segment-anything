@@ -13,10 +13,17 @@
 - [ ] **必要パッケージ確認**: プロジェクト依存関係インストール済み確認
 - [ ] **⚠️ 重要**: 全ての後続処理を同一仮想環境セッション内で実行
 
+### 🚨 Google Sheets連携（必須実行）
+- [ ] **ステータス更新**: `python tools/progress_tracker/cli.py update {TRACKER_ID} "着手中"`
+- [ ] **トラッカー内容取得**: `python tools/progress_tracker/cli.py status {TRACKER_ID}`
+- [ ] **概要・詳細確認**: Google Sheetsから取得した内容をこのテンプレートに転記
+
 ### 基本情報
-- **トラッカーID**: [TRACKER_ID]
+- **トラッカーID**: [TRACKER_ID] ← Google Sheetsから取得
 - **計画作成日**: [YYYY-MM-DD]
-- **目標**: [具体的な目標・期待効果]
+- **概要**: [Google Sheetsの概要欄から転記]
+- **詳細**: [Google Sheetsの詳細欄から転記]
+- **目標**: [Google Sheets情報に基づく具体的な目標・期待効果]
 - **バージョン参照**: [../../docs/technical/specifications/system_spec.md](../../docs/technical/specifications/system_spec.md)
 
 ### 要件・制約分析

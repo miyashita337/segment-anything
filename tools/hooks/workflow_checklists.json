@@ -1,0 +1,452 @@
+{
+  "unified_tracker_template": {
+    "name": "統合トラッカーテンプレート",
+    "phases": {
+      "phase_1_planning": {
+        "name": "Phase 1: 計画書作成",
+        "items": [
+          {
+            "id": "sam_env_check",
+            "description": "sam-env仮想環境確認・セットアップ",
+            "required": true,
+            "commands": ["echo $VIRTUAL_ENV", "source sam-env/bin/activate", "which python3"]
+          },
+          {
+            "id": "google_sheets_sync",
+            "description": "Google Sheets連携",
+            "required": true,
+            "commands": [
+              "python tools/progress_tracker/cli.py update {TRACKER_ID} '着手中'",
+              "python tools/progress_tracker/cli.py status {TRACKER_ID}"
+            ]
+          },
+          {
+            "id": "sow_creation",
+            "description": "SOW（作業範囲確定書）作成",
+            "required": true,
+            "checklist": ["作業スコープ定義", "除外項目明記", "成果物定義", "品質基準設定"]
+          }
+        ]
+      }
+    }
+  },
+  "tracker_workflow_checklist": {
+    "name": "13ステップワークフローチェックリスト",
+    "total_steps": 13,
+    "phases": {
+      "phase_0_5_branch": {
+        "name": "Phase 0.5: ブランチ検証フェーズ",
+        "critical": true,
+        "blocking": true,
+        "step": {
+          "step_id": "0.5",
+          "name": "Git作業ブランチ検証・作成",
+          "items": [
+            {
+              "id": "current_branch_check",
+              "description": "現在ブランチ状態確認",
+              "command": "git branch --show-current",
+              "required": true
+            },
+            {
+              "id": "feature_branch_validation",
+              "description": "feature/{TRACKER_ID}ブランチ検証",
+              "validation": "^feature/[A-Z]{3,4}-[0-9]{3}.*$",
+              "required": true,
+              "blocking": true
+            },
+            {
+              "id": "branch_creation",
+              "description": "作業ブランチ作成",
+              "command": "git checkout -b feature/{TRACKER_ID}",
+              "conditional": "current_branch != feature/*"
+            },
+            {
+              "id": "branch_confirmation",
+              "description": "作成後確認",
+              "command": "git branch --show-current",
+              "validation": "feature/{TRACKER_ID}"
+            }
+          ]
+        }
+      },
+      "phase_1_preparation": {
+        "name": "Phase 1: 計画・準備フェーズ",
+        "prerequisite": ["phase_0_5_branch"],
+        "steps": [
+          {
+            "step_id": "1.0",
+            "name": "sam-env仮想環境確認・アクティベート",
+            "items": [
+              {
+                "id": "venv_status_check",
+                "description": "仮想環境状態確認",
+                "command": "echo $VIRTUAL_ENV",
+                "required": true
+              },
+              {
+                "id": "sam_env_activate",
+                "description": "sam-env アクティベート",
+                "command": "source sam-env/bin/activate",
+                "conditional": "VIRTUAL_ENV empty"
+              },
+              {
+                "id": "python_path_check",
+                "description": "アクティベート後確認",
+                "command": "which python3",
+                "required": true
+              },
+              {
+                "id": "dependencies_check",
+                "description": "重要依存関係確認",
+                "validation": "PyTorch, ultralytics, opencv-python installed"
+              }
+            ]
+          },
+          {
+            "step_id": "1.1",
+            "name": "タスク要件確認・トラッカーID決定",
+            "items": [
+              {
+                "id": "tracker_id_decision",
+                "description": "トラッカーID決定",
+                "required": true
+              },
+              {
+                "id": "requirements_clarification",
+                "description": "タスク要件・目標の明確化",
+                "required": true
+              },
+              {
+                "id": "constraints_check",
+                "description": "技術的制約・依存関係の確認",
+                "required": true
+              },
+              {
+                "id": "resource_estimation",
+                "description": "リソース要件見積もり",
+                "required": true
+              },
+              {
+                "id": "google_sheets_update",
+                "description": "Google Sheets「着手中」更新",
+                "command": "python tools/progress_tracker/cli.py update {TRACKER_ID} '着手中'",
+                "required": true
+              }
+            ]
+          },
+          {
+            "step_id": "1.2",
+            "name": "仕様書・事例調査",
+            "items": [
+              {
+                "id": "claude_md_check",
+                "description": "CLAUDE.md ワークフロー要件確認",
+                "required": true
+              },
+              {
+                "id": "output_standards_check",
+                "description": "spec/OUTPUT_PATH_STANDARDS.md 全文確認",
+                "required": true
+              },
+              {
+                "id": "output_config_check",
+                "description": "docs/workflows/output_directory_config.md 確認",
+                "required": true
+              },
+              {
+                "id": "success_cases_study",
+                "description": "既存成功事例の調査・パターン分析",
+                "required": true
+              },
+              {
+                "id": "failure_avoidance",
+                "description": "失敗事例からの回避事項特定",
+                "required": true
+              }
+            ]
+          },
+          {
+            "step_id": "1.3",
+            "name": "計画書作成",
+            "items": [
+              {
+                "id": "implementation_plan",
+                "description": "実装計画書作成",
+                "required": true
+              },
+              {
+                "id": "sow_creation",
+                "description": "SOW（作業範囲確定書）作成",
+                "required": true
+              },
+              {
+                "id": "deliverables_definition",
+                "description": "成果物定義・品質基準設定",
+                "required": true
+              }
+            ]
+          },
+          {
+            "step_id": "1.4",
+            "name": "承認取得（第1段階）",
+            "approval_stage": 1,
+            "items": [
+              {
+                "id": "plan_approval",
+                "description": "計画書承認取得",
+                "required": true,
+                "blocking": true
+              }
+            ]
+          }
+        ]
+      },
+      "phase_2_implementation": {
+        "name": "Phase 2: 実装フェーズ",
+        "prerequisite": ["phase_1_preparation"],
+        "steps": [
+          {
+            "step_id": "2.5",
+            "name": "実装作業",
+            "items": [
+              {
+                "id": "core_implementation",
+                "description": "コア機能実装",
+                "required": true
+              },
+              {
+                "id": "error_handling",
+                "description": "エラーハンドリング実装",
+                "required": true
+              },
+              {
+                "id": "logging_system",
+                "description": "ログ機能実装",
+                "required": true
+              }
+            ]
+          },
+          {
+            "step_id": "2.6",
+            "name": "単体テスト",
+            "items": [
+              {
+                "id": "test_case_creation",
+                "description": "テストケース作成",
+                "required": true
+              },
+              {
+                "id": "test_execution",
+                "description": "テスト実行",
+                "required": true
+              },
+              {
+                "id": "coverage_check",
+                "description": "カバレッジ確認",
+                "required": true
+              }
+            ]
+          },
+          {
+            "step_id": "2.7",
+            "name": "統合テスト",
+            "items": [
+              {
+                "id": "integration_test",
+                "description": "統合テスト実行",
+                "required": true
+              },
+              {
+                "id": "end_to_end_test",
+                "description": "E2Eテスト実行",
+                "required": true
+              }
+            ]
+          },
+          {
+            "step_id": "2.8",
+            "name": "承認取得（第2段階）",
+            "approval_stage": 2,
+            "items": [
+              {
+                "id": "implementation_approval",
+                "description": "実装承認取得",
+                "required": true,
+                "blocking": true
+              }
+            ]
+          }
+        ]
+      },
+      "phase_3_quality": {
+        "name": "Phase 3: 品質ワークフロー",
+        "prerequisite": ["phase_2_implementation"],
+        "steps": [
+          {
+            "step_id": "3.9",
+            "name": "品質ワークフロー実行",
+            "items": [
+              {
+                "id": "quality_workflow_execution",
+                "description": "品質ワークフロー実行",
+                "command": "./tools/scripts/run_quality_workflow.sh {TRACKER_ID}",
+                "required": true
+              },
+              {
+                "id": "extraction_result_validation",
+                "description": "extraction_result.json存在・構造確認",
+                "validation": "extraction_result.json structure check",
+                "required": true
+              },
+              {
+                "id": "dashboard_generation",
+                "description": "ダッシュボード生成確認",
+                "required": true
+              }
+            ]
+          },
+          {
+            "step_id": "3.10",
+            "name": "ドキュメント作成",
+            "items": [
+              {
+                "id": "documentation_creation",
+                "description": "ドキュメント作成",
+                "required": true
+              },
+              {
+                "id": "readme_update",
+                "description": "README更新",
+                "required": true
+              }
+            ]
+          },
+          {
+            "step_id": "3.11",
+            "name": "最終品質確認",
+            "items": [
+              {
+                "id": "final_quality_check",
+                "description": "最終品質確認",
+                "required": true
+              },
+              {
+                "id": "deliverables_validation",
+                "description": "成果物検証",
+                "required": true
+              }
+            ]
+          }
+        ]
+      },
+      "phase_4_completion": {
+        "name": "Phase 4: 完了フェーズ",
+        "prerequisite": ["phase_3_quality"],
+        "steps": [
+          {
+            "step_id": "4.12",
+            "name": "Git操作",
+            "items": [
+              {
+                "id": "git_commit",
+                "description": "コミット作成",
+                "command": "git commit -m 'feat({TRACKER_ID}): implementation'",
+                "required": true
+              },
+              {
+                "id": "git_push",
+                "description": "プッシュ実行",
+                "command": "git push -u origin feature/{TRACKER_ID}",
+                "required": true
+              },
+              {
+                "id": "pr_creation",
+                "description": "プルリクエスト作成",
+                "command": "gh pr create",
+                "required": true
+              }
+            ]
+          },
+          {
+            "step_id": "4.13",
+            "name": "最終承認・完了",
+            "approval_stage": 5,
+            "items": [
+              {
+                "id": "final_approval",
+                "description": "最終承認取得",
+                "required": true,
+                "blocking": true
+              },
+              {
+                "id": "completion_confirmation",
+                "description": "完了確認",
+                "required": true
+              },
+              {
+                "id": "google_sheets_completion",
+                "description": "Google Sheets完了更新",
+                "command": "python tools/progress_tracker/cli.py update {TRACKER_ID} '完了'",
+                "required": true
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "input_path_validation": {
+    "name": "入力パス検証チェックリスト",
+    "items": [
+      {
+        "id": "path_exists_check",
+        "description": "入力パス存在確認",
+        "required": true,
+        "blocking": true,
+        "command": "ls {INPUT_PATH}",
+        "error_template": "❌ エラー: 入力ディレクトリが存在しません\\n   パス: {INPUT_PATH}"
+      },
+      {
+        "id": "no_alternative",
+        "description": "代替案提案禁止",
+        "policy": "存在しないパスでの処理継続・代替案提案は完全禁止"
+      }
+    ]
+  },
+  "dashboard_quality": {
+    "name": "ダッシュボード品質保証チェックリスト",
+    "validation": {
+      "extraction_result_structure": {
+        "required_fields": [
+          "tracker_id",
+          "total_images",
+          "successful_extractions",
+          "average_quality_score",
+          "statistical_analysis",
+          "extraction_results"
+        ],
+        "validation_commands": [
+          "python3 -c \"import json; data=json.load(open('{WORKSPACE}/extraction_result.json')); print('tracker_id:', data.get('tracker_id', '❌未設定'))\""
+        ]
+      },
+      "quality_thresholds": {
+        "minimum_success_rate": 0.85,
+        "minimum_completeness": 0.95,
+        "minimum_files": 3
+      }
+    }
+  },
+  "output_directory_config": {
+    "name": "出力ディレクトリ設定",
+    "structure": {
+      "workspace_base": "/mnt/c/AItools/lora/train/{AUTHOR}/tracker-workspace",
+      "directories": {
+        "extractions": "{WORKSPACE}/{TRACKER_ID}/extraction/",
+        "quality_reports": "{WORKSPACE}/{TRACKER_ID}/quality_reports/",
+        "dashboards": "{WORKSPACE}/{TRACKER_ID}/dashboards/",
+        "workflow_state": "{WORKSPACE}/{TRACKER_ID}/.workflow/"
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "hooks": {
+    "PreToolUse": {
+      "command": "bash tools/hooks/validate_workflow_compliance.sh",
+      "match": {
+        "tool": "Bash",
+        "args.command": "*extract_character.py*|*progress_tracker/cli.py*|*run_quality_workflow.sh*|*python*tracker*"
+      },
+      "description": "INTG-086: ワークフローコンプライアンス検証 - トラッカー関連Pythonスクリプト実行時のフェーズ別チェック"
+    },
+    "PostToolUse": {
+      "command": "bash tools/hooks/update_workflow_progress.sh",
+      "match": {
+        "tool": "Bash",
+        "args.command": "*extract_character.py*|*progress_tracker/cli.py*|*run_quality_workflow.sh*|*python*tracker*"
+      },
+      "description": "INTG-086: ワークフロー進捗更新 - 13ステップ個別・チェックリスト項目レベル進捗記録"
+    },
+    "UserPromptSubmit": {
+      "command": "bash tools/hooks/analyze_tracker_context.sh",
+      "description": "INTG-086: トラッカーコンテキスト分析 - フェーズ別状況確認・13ステップ進捗表示・次アクション提案"
+    }
+  }
+}

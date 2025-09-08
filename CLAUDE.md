@@ -35,11 +35,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### 🚨 絶対厳守事項（簡潔版）
 
-1. **13ステップ完了必須**: 上記チェックリストに従い全フェーズ・全ステップ完了
-2. **ワークスペース出力必須**: `/mnt/c/AItools/lora/train/yado/tracker-workspace/{TRACKER_ID}/`
-3. **品質ワークフロー実行必須**: `./tools/scripts/run_quality_workflow.sh {TRACKER_ID}`
-4. **シリアル処理厳守**: 複数トラッカー並行処理厳禁
-5. **例外処理手順遵守**: 技術的困難時のユーザー相談必須
+1. **Google Sheets必須確認**: トラッカー開始時に必ずGoogle Sheetsから概要・詳細を読み込み
+2. **13ステップ完了必須**: 上記チェックリストに従い全フェーズ・全ステップ完了
+3. **ワークスペース出力必須**: `/mnt/c/AItools/lora/train/yado/tracker-workspace/{TRACKER_ID}/`
+4. **品質ワークフロー実行必須**: `./tools/scripts/run_quality_workflow.sh {TRACKER_ID}`
+5. **シリアル処理厳守**: 複数トラッカー並行処理厳禁
+6. **例外処理手順遵守**: 技術的困難時のユーザー相談必須
+
+### 📋 **トラッカーワークフロー開始手順（必須）**
+
+**ユーザーから「トラッカーID：XXX　内容を読み込んで調査実装を開始して」の指示があった場合**:
+
+1. **🚨 CRITICAL**: 既存トラッカー実装であり、新規作成ではない
+2. **Google Sheetsステータス更新**: `python tools/progress_tracker/cli.py update {TRACKER_ID} "着手中"`
+3. **Google Sheets内容読み込み**: `python tools/progress_tracker/cli.py status {TRACKER_ID}` で概要・詳細確認
+4. **読み込み内容に基づく計画書作成**: Google Sheetsの内容に即した実装計画策定
+5. **13ステップワークフロー開始**: 正規4フェーズ・5段階承認での実行
 
 ### ✅ 4フェーズ概要
 **詳細は** [`docs/workflows/checklists/tracker_workflow_checklist.md`](docs/workflows/checklists/tracker_workflow_checklist.md) **を参照**
