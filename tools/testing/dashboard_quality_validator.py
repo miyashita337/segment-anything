@@ -3,9 +3,15 @@
 ダッシュボード品質チェック自動化スクリプト
 仕様書: docs/checklists/dashboard_quality_checklist.md
 
+INTG-087: 品質保証冪等性システム統合版
+- 複数実行での一貫性チェック
+- 冪等性保証テスト
+- 統計分析結果検証
+
 実行例:
 python tools/testing/dashboard_quality_validator.py TEST-001
 python tools/testing/dashboard_quality_validator.py QUAL-042 --server-url http://100.123.241.106:8088
+python tools/testing/dashboard_quality_validator.py INTG-087 --idempotency-test 3
 """
 
 import argparse
@@ -371,6 +377,138 @@ class DashboardQualityValidator:
         
         print(f"\n💾 レポート保存: {output_path}")
 
+    def run_idempotency_test(self, iterations: int = 3) -> Dict:
+        """
+        冪等性テスト実行
+        
+        Args:
+            iterations: テスト実行回数
+            
+        Returns:
+            Dict: 冪等性テスト結果
+        """
+        print(f"\n🔄 INTG-087 冪等性テスト開始 (実行回数: {iterations})")
+        print("=" * 60)
+        
+        # 複数回実行して結果を収集
+        results = []
+        extraction_results = []
+        
+        for i in range(iterations):
+            print(f"\n📊 実行 {i+1}/{iterations}")
+            
+            # 品質ワークフロー実行
+            try:
+                cmd = f"bash tools/scripts/run_quality_workflow.sh {self.tracker_id}"
+                result = subprocess.run(cmd, shell=True, capture_output=True, text=True, cwd="/mnt/c/AItools/segment-anything")
+                
+                if result.returncode == 0:
+                    print(f"✅ 品質ワークフロー実行成功 (実行 {i+1})")
+                else:
+                    print(f"❌ 品質ワークフロー実行失敗 (実行 {i+1}): {result.stderr}")
+                    continue
+                
+            except Exception as e:
+                print(f"❌ 品質ワークフロー実行例外 (実行 {i+1}): {e}")
+                continue
+            
+            # 実行結果読み込み
+            if self.extraction_result_path.exists():
+                with open(self.extraction_result_path, 'r', encoding='utf-8') as f:
+                    extraction_data = json.load(f)
+                    extraction_results.append(extraction_data)
+            
+            # 品質チェック実行
+            validation_result = self.run_full_validation()
+            results.append({
+                "iteration": i + 1,
+                "timestamp": subprocess.check_output(["date", "+%Y-%m-%d %H:%M:%S"], text=True).strip(),
+                "validation_result": validation_result,
+                "extraction_stats": extraction_data if self.extraction_result_path.exists() else None
+            })
+            
+            # 間隔を空ける
+            import time
+            time.sleep(2)
+        
+        # 冪等性分析
+        idempotency_analysis = self._analyze_idempotency(results, extraction_results)
+        
+        print("\n📊 冪等性テスト結果")
+        print("=" * 40)
+        print(f"実行回数: {len(results)}")
+        print(f"一貫性スコア: {idempotency_analysis['consistency_score']:.2f}%")
+        print(f"冪等性判定: {'✅ 合格' if idempotency_analysis['is_idempotent'] else '❌ 不合格'}")
+        
+        if idempotency_analysis['inconsistencies']:
+            print("\n⚠️ 検出された非一貫性:")
+            for inconsistency in idempotency_analysis['inconsistencies']:
+                print(f"  - {inconsistency}")
+        
+        return {
+            "iterations": len(results),
+            "results": results,
+            "idempotency_analysis": idempotency_analysis
+        }
+
+    def _analyze_idempotency(self, results: List[Dict], extraction_results: List[Dict]) -> Dict:
+        """冪等性分析"""
+        if len(results) < 2:
+            return {
+                "consistency_score": 100.0,
+                "is_idempotent": True,
+                "inconsistencies": []
+            }
+        
+        inconsistencies = []
+        total_checks = 0
+        consistent_checks = 0
+        
+        # 抽出結果の一貫性チェック
+        if extraction_results:
+            first_stats = extraction_results[0]
+            
+            for i, stats in enumerate(extraction_results[1:], 2):
+                # 主要統計の比較
+                key_metrics = ['total_images', 'successful_extractions', 'average_quality_score']
+                
+                for metric in key_metrics:
+                    total_checks += 1
+                    if first_stats.get(metric) == stats.get(metric):
+                        consistent_checks += 1
+                    else:
+                        inconsistencies.append(
+                            f"実行{i}: {metric} = {stats.get(metric)} (実行1: {first_stats.get(metric)})"
+                        )
+        
+        # バリデーション結果の一貫性チェック
+        first_validation = results[0]['validation_result']
+        
+        for i, result in enumerate(results[1:], 2):
+            validation = result['validation_result']
+            
+            for section, section_result in validation.items():
+                total_checks += 1
+                if section_result['passed'] == first_validation[section]['passed']:
+                    consistent_checks += 1
+                else:
+                    inconsistencies.append(
+                        f"実行{i}: {section} = {'PASS' if section_result['passed'] else 'FAIL'} "
+                        f"(実行1: {'PASS' if first_validation[section]['passed'] else 'FAIL'})"
+                    )
+        
+        # 一貫性スコア計算
+        consistency_score = (consistent_checks / max(total_checks, 1)) * 100
+        is_idempotent = consistency_score >= 95.0  # 95%以上で冪等と判定
+        
+        return {
+            "consistency_score": consistency_score,
+            "is_idempotent": is_idempotent,
+            "inconsistencies": inconsistencies,
+            "total_checks": total_checks,
+            "consistent_checks": consistent_checks
+        }
+
 
 def main():
     """メイン関数"""
@@ -384,19 +522,39 @@ def main():
                         help="ダッシュボードサーバーURL")
     parser.add_argument("--save-report", help="レポート保存パス")
     parser.add_argument("--verbose", "-v", action="store_true", help="詳細出力")
+    parser.add_argument("--idempotency-test", type=int, metavar="N",
+                        help="INTG-087: 冪等性テスト実行（N回繰り返し、デフォルト3回）")
     
     args = parser.parse_args()
     
-    # バリデーター初期化・実行
+    # バリデーター初期化
     validator = DashboardQualityValidator(args.tracker_id, args.server_url)
-    results = validator.run_full_validation()
     
-    # レポート保存
-    if args.save_report:
-        validator.save_report(args.save_report)
+    # 冪等性テスト実行
+    if args.idempotency_test:
+        iterations = args.idempotency_test if args.idempotency_test > 0 else 3
+        idempotency_results = validator.run_idempotency_test(iterations)
+        
+        # 冪等性テストレポート保存
+        if args.save_report:
+            idempotency_report_path = args.save_report.replace('.json', '_idempotency.json')
+            with open(idempotency_report_path, 'w', encoding='utf-8') as f:
+                json.dump(idempotency_results, f, ensure_ascii=False, indent=2)
+            print(f"\n💾 冪等性テストレポート保存: {idempotency_report_path}")
+        
+        # 冪等性テスト結果による終了コード
+        exit_code = 0 if idempotency_results['idempotency_analysis']['is_idempotent'] else 1
+    else:
+        # 通常の品質チェック実行
+        results = validator.run_full_validation()
+        
+        # レポート保存
+        if args.save_report:
+            validator.save_report(args.save_report)
+        
+        # 終了コード設定（全セクション通過時は0、そうでなければ1）
+        exit_code = 0 if all(section["passed"] for section in results.values()) else 1
     
-    # 終了コード設定（全セクション通過時は0、そうでなければ1）
-    exit_code = 0 if all(section["passed"] for section in results.values()) else 1
     sys.exit(exit_code)
 
 

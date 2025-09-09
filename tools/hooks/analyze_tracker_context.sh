@@ -364,16 +364,16 @@ PHASE_DETAILS=$(cat <<EOF
   "documents_compliance": $DOCUMENTS_COMPLIANCE,
   "phase_specific_check": $PHASE_SPECIFIC_CHECK,
   "phase_status": {
-    "0.5": $(echo "$CURRENT_STATUS" | jq '.phase_0_5_branch // false'),
-    "1": {
+    "phase_0_5": $(echo "$CURRENT_STATUS" | jq '.phase_0_5_branch // false'),
+    "phase_1": {
       "sam_env": $(echo "$CURRENT_STATUS" | jq '.phase_1_planning.sam_env_check // false'),
       "google_sheets": $(echo "$CURRENT_STATUS" | jq '.phase_1_planning.google_sheets_sync // false'),
       "sow": $(echo "$CURRENT_STATUS" | jq '.phase_1_planning.sow_creation // false')
     },
-    "2": {
+    "phase_2": {
       "started": $(echo "$CURRENT_STATUS" | jq '.phase_2_implementation.started // false')
     },
-    "3": {
+    "phase_3": {
       "workflow_executed": $(echo "$CURRENT_STATUS" | jq '.phase_3_quality.workflow_executed // false'),
       "dashboard_created": $(echo "$CURRENT_STATUS" | jq '.phase_3_quality.dashboard_created // false')
     }

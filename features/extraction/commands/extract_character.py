@@ -1,6 +1,8 @@
 """Character extraction command implementation.
 
 Provides CLI interface for extracting anime characters from manga images.
+
+INTG-087: SubAgent統合対応版 - 直接実行防止機能付き
 """
 import sys
 from pathlib import Path
@@ -82,6 +84,66 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
+# INTG-087: SubAgent統合システム - 直接実行チェック
+def check_subagent_execution():
+    """
+    extract_character.py の SubAgent実行必須チェック
+    直接実行を防止し、SubAgent キューシステム経由の実行を強制
+    """
+    import os
+    import psutil
+    
+    # SubAgent実行環境の検出
+    subagent_indicators = [
+        # 環境変数による検出
+        os.getenv("SUBAGENT_TASK_ID"),
+        os.getenv("SUBAGENT_EXECUTION"), 
+        os.getenv("CLAUDE_SUBAGENT_MODE")
+    ]
+    
+    # 環境変数で SubAgent実行が確認された場合は許可
+    if any(subagent_indicators):
+        logger.info("✅ SubAgent実行環境検出 - 実行許可")
+        return True
+    
+    # プロセス階層による検出
+    try:
+        current_process = psutil.Process()
+        for parent in current_process.parents():
+            if "subagent" in parent.name().lower():
+                logger.info("✅ SubAgent プロセス階層検出 - 実行許可")
+                return True
+    except (psutil.NoSuchProcess, psutil.AccessDenied):
+        pass
+    
+    # 直接実行検出 - 実行拒否
+    error_message = """
+❌ extract_character.py の直接実行は禁止されています
+
+🚨 INTG-087 SubAgent統合システムにより、長時間タスクは必ずSubAgentキューシステム経由で実行する必要があります。
+
+🔧 正しい実行方法:
+1. タスクをキューに追加:
+   python tools/queue/subagent_wrapper.py enqueue extract_character "python features/extraction/commands/extract_character.py [args...]"
+
+2. キューからタスクを実行:
+   python tools/queue/subagent_wrapper.py execute
+
+3. キュー状況確認:
+   python tools/queue/subagent_wrapper.py status
+
+📚 詳細なガイド:
+   docs/claude-code-hooks-guide.md を参照
+
+⚠️ この制限は品質保証・リソース管理・進捗追跡のために設けられています。
+   緊急時のみ SUBAGENT_EXECUTION=true 環境変数で直接実行可能です。
+"""
+    
+    print(error_message)
+    logger.error("直接実行検出 - SubAgent実行必須")
+    sys.exit(1)
+
+
 @click.command()
 @click.argument('input_path')
 @click.option('-o', '--output-path', required=True, help='Output path for extracted character')
@@ -151,6 +213,9 @@ def extract_character(
         interactive: Enable interactive mode for path input
         require_author_structure: Require author structure validation
     """
+    # INTG-087: SubAgent実行必須チェック（最優先実行）
+    check_subagent_execution()
+    
     # QUAL-033: 厳密パス検証システム - 強制有効化
     if no_strict_validation:
         if not interactive:  # 非対話モードでは強制終了
