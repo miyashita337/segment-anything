@@ -236,6 +236,7 @@ class IntegratedDashboardServer:
         self.app.router.add_get('/tracker/{tracker_id}/', self.handle_tracker)  # 末尾スラッシュ対応
         self.app.router.add_get('/tracker/{tracker_id}/{dashboard_name}', self.handle_tracker_dashboard)
         self.app.router.add_get('/api/dashboards', self.handle_api_dashboards)
+        self.app.router.add_get('/dashboard-list', self.handle_dashboard_list_html)  # ページ一覧HTML表示用
         self.app.router.add_get('/refresh', self.handle_refresh)
         # 静的ファイルサーバー機能
         self.app.router.add_get('/{path:.*}', self.handle_static)
@@ -363,6 +364,140 @@ class IntegratedDashboardServer:
             'message': f'{len(self.dashboards)} dashboards rescanned'
         })
     
+    async def handle_dashboard_list_html(self, request):
+        """ダッシュボード一覧HTML表示（メインダッシュボード右ペイン用）"""
+        dashboard_list = []
+        for key, path in self.dashboards.items():
+            # ファイルの実際のワークスペースを特定（動的作者検出）
+            actual_workspace = self._get_workspace_for_dashboard(path)
+            dashboard_list.append({
+                'key': key,
+                'path': str(path.relative_to(actual_workspace)),
+                'tracker': key.split('/')[0] if '/' in key else 'main',
+                'name': path.stem
+            })
+        
+        # HTML生成
+        html = f'''
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ダッシュボード一覧</title>
+    <style>
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+        }}
+        .header {{
+            text-align: center;
+            margin-bottom: 30px;
+        }}
+        .header h1 {{
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }}
+        .stats {{
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }}
+        .dashboard-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }}
+        .dashboard-card {{
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }}
+        .dashboard-card:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }}
+        .tracker-name {{
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }}
+        .dashboard-name {{
+            color: #7f8c8d;
+            margin-bottom: 12px;
+        }}
+        .dashboard-path {{
+            font-size: 0.85em;
+            color: #95a5a6;
+            font-family: monospace;
+            background: #ecf0f1;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }}
+        .category-header {{
+            grid-column: 1 / -1;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #34495e;
+            margin: 20px 0 10px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #3498db;
+        }}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 統合ダッシュボード</h1>
+        <div class="stats">全 {len(dashboard_list)} 個のダッシュボード</div>
+    </div>
+    
+    <div class="dashboard-grid">'''
+        
+        # トラッカー別にグループ化して表示
+        trackers = {}
+        for item in sorted(dashboard_list, key=lambda x: x['key']):
+            tracker = item['tracker']
+            if tracker not in trackers:
+                trackers[tracker] = []
+            trackers[tracker].append(item)
+        
+        for category, items in trackers.items():
+            # カテゴリーアイコン
+            category_icon = {
+                'QUAL': '🔍',
+                'INTG': '🔬', 
+                'TEST': '🧪',
+                'OPTM': '⚡',
+                'DEMO': '📁',
+                'INCI': '📁',
+                'KIRO': '📁'
+            }.get(category.split('-')[0], '📁')
+            
+            html += f'<div class="category-header">{category_icon} {category}</div>'
+            
+            for item in items:
+                onclick = f"parent.location.href='/tracker/{item['key'].replace('/dashboard', '')}'"
+                html += f'''
+        <div class="dashboard-card" onclick="{onclick}">
+            <div class="tracker-name">{item['key']}</div>
+            <div class="dashboard-name">{item['name']}</div>
+            <div class="dashboard-path">{item['path']}</div>
+        </div>'''
+        
+        html += '''
+    </div>
+</body>
+</html>'''
+        
+        return web.Response(text=html, content_type='text/html')
+    
     def _is_extracted_image(self, path):
         """抽出画像かどうかの判定"""
         path_lower = path.lower()
@@ -461,7 +596,11 @@ class IntegratedDashboardServer:
         """ナビゲーション付きHTMLラッパー生成"""
         # 現在のダッシュボードのパスを取得
         dashboard_path = ""
-        if current_key in self.dashboards:
+        
+        # メインダッシュボードの場合：ページ一覧表示（元の仕様復元）
+        if current_key == "main":
+            dashboard_path = "dashboard-list"  # ページ一覧HTML表示エンドポイント
+        elif current_key in self.dashboards:
             # ワークスペース相対パスを取得（動的作者検出）
             dashboard_file = self.dashboards[current_key]
             

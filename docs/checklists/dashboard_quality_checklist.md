@@ -379,6 +379,247 @@ print(f'✅ 強制再生成完了: {dashboard_path}')
 
 ---
 
+## 📋 **Section F: メインダッシュボード安定性検証（INTG-086完全対応）**
+
+### F1: メインダッシュボード表示構造検証 🔴
+
+#### F1.1: 入れ子表示防止検証（5回目発生防止）
+```bash
+# 必須実行コマンド - メインダッシュボード構造確認
+curl -u admin:secure_track_2025_q3_8f9a -s "http://100.123.241.106:8088/" | grep -E "iframe.*src"
+```
+
+- [ ] **🔴 iframe src確認**: `src="/"` や `src=""` の入れ子参照が存在しない
+- [ ] **🔴 メインダッシュボード表示**: 「メインダッシュボードの中にメインダッシュボード」が発生していない
+- [ ] **🔴 正常iframe**: 個別トラッカーへの正しいiframe参照のみ存在
+
+#### F1.2: 左ペイン・右ペイン構造確認
+```bash
+# 必須実行コマンド - ページ構造検証
+curl -u admin:secure_track_2025_q3_8f9a -s "http://100.123.241.106:8088/" | grep -E "(sidebar|main-content)"
+```
+
+- [ ] **🔴 左ペイン存在**: `sidebar` クラス・要素が正常に存在
+- [ ] **🔴 右ペイン存在**: `main-content` クラス・要素が正常に存在
+- [ ] **🔴 レイアウト構造**: 2ペイン構造が正しく表示される
+
+#### F1.3: ダッシュボード一覧表示確認
+```bash
+# 必須実行コマンド - ダッシュボード一覧確認
+curl -u admin:secure_track_2025_q3_8f9a -s "http://100.123.241.106:8088/dashboard-list" | grep -E "tracker.*list"
+```
+
+- [ ] **🔴 ダッシュボード一覧**: 79個のダッシュボードが一覧表示される
+- [ ] **🔴 トラッカーリンク**: 各トラッカーへの適切なリンクが生成されている
+- [ ] **🔴 ページ一覧復元**: 「ようこそ画面」ではなく実際のページ一覧が表示
+
+### F2: 個別トラッカー画面遷移安定性検証 🔴
+
+#### F2.1: 左ペイン消失防止検証
+```bash
+# 必須実行コマンド - 個別トラッカーページでの左ペイン確認
+curl -u admin:secure_track_2025_q3_8f9a -s "http://100.123.241.106:8088/tracker/{TRACKER_ID}" | grep -E "sidebar"
+```
+
+- [ ] **🔴 左ペイン継続表示**: 個別トラッカー画面でも左ペインが表示される
+- [ ] **🔴 ナビゲーション安定**: トラッカー間の遷移で左ペインが消失しない
+- [ ] **🔴 wrapper構造**: `_generate_navigation_wrapper` が正しく動作している
+
+#### F2.2: 右ペイン表示制御検証
+```bash
+# 必須実行コマンド - 右ペイン表示状態確認
+curl -u admin:secure_track_2025_q3_8f9a -s "http://100.123.241.106:8088/tracker/{TRACKER_ID}" | grep -E "(dashboard\.html|main-content)"
+```
+
+- [ ] **🔴 トラッカーダッシュボード表示**: 個別のdashboard.htmlが正しく表示される
+- [ ] **🔴 iframe構造**: 適切なiframe内でダッシュボードが表示される
+- [ ] **🔴 右ペイン表示制御**: 空白表示/一覧表示が意図通りに制御される
+
+### F3: サーバー統合性・プロセス管理検証 🔴
+
+#### F3.1: 適切なサーバー動作確認
+```bash
+# 必須実行コマンド - サーバープロセス確認
+ps aux | grep integrated_dashboard_server
+ps aux | grep "python.*http.server"
+ss -tulpn | grep 8088
+```
+
+- [ ] **🔴 integrated_dashboard_server動作**: `integrated_dashboard_server.py` が正常動作
+- [ ] **🔴 単純HTTPサーバー排除**: `python3 -m http.server` 等の不適切サーバーが動作していない
+- [ ] **🔴 ポート8088専有**: 適切なサーバーがポート8088を使用している
+
+#### F3.2: 統合ダッシュボードアーキテクチャ検証
+```bash
+# 必須実行コマンド - システム構造整合性確認
+python3 -c "
+import subprocess
+result = subprocess.run(['curl', '-u', 'admin:secure_track_2025_q3_8f9a', '-s', 'http://100.123.241.106:8088/'], capture_output=True, text=True)
+print('✅ 統合ダッシュボードサーバー応答:', len(result.stdout), 'bytes')
+print('🔍 入れ子iframe:', 'src=\"/\"' in result.stdout or 'src=\"\"' in result.stdout)
+"
+```
+
+- [ ] **🔴 統合システム動作**: 統合ダッシュボードシステムが正常応答
+- [ ] **🔴 個別ファイル変更影響なし**: 個別トラッカーファイル変更が全体構造に影響していない
+- [ ] **🔴 既存システム活用**: 独自実装でなく既存 `integrated_dashboard_server.py` を活用
+
+### F4: 自動品質保証システム実行 🔴
+
+#### F4.1: 構造検証ツール実行
+```bash
+# 必須実行コマンド - 自動構造検証
+python3 html/validation/dashboard_structure_validator.py --validate-all --output /tmp/dashboard_validation.json
+```
+
+- [ ] **🔴 自動検証合格**: 構造検証ツールが全テスト合格
+- [ ] **🔴 重大エラー0件**: CRITICAL severity エラーが0件
+- [ ] **🔴 入れ子検証合格**: 入れ子表示検証が合格
+- [ ] **🔴 左ペイン検証合格**: 左ペイン安定性検証が合格
+
+#### F4.2: 回帰テスト実行
+```bash
+# 必須実行コマンド - 主要ダッシュボード回帰テスト
+for tracker_id in QUAL-001 QUAL-044 INTG-086; do
+    echo "🧪 テスト: $tracker_id"
+    curl -u admin:secure_track_2025_q3_8f9a -s "http://100.123.241.106:8088/tracker/$tracker_id" > /tmp/test_$tracker_id.html
+    echo "   サイズ: $(wc -c < /tmp/test_$tracker_id.html) bytes"
+    grep -q "sidebar" /tmp/test_$tracker_id.html && echo "   左ペイン: ✅" || echo "   左ペイン: ❌"
+done
+```
+
+- [ ] **🔴 全トラッカー表示**: 主要トラッカーが全て正常表示
+- [ ] **🔴 左ペイン一貫表示**: 全トラッカーで左ペインが表示
+- [ ] **🔴 HTML サイズ適正**: 各ダッシュボードが5KB以上の適正サイズ
+
+### F5: 将来防止プロトコル確立 🔴
+
+#### F5.1: HTMLバージョン管理確認
+```bash
+# 必須実行コマンド - HTMLテンプレート管理確認
+ls -la html/templates/
+ls -la html/validation/
+git status html/
+```
+
+- [ ] **🔴 テンプレート管理**: `html/templates/` でHTMLテンプレートが管理されている
+- [ ] **🔴 検証ツール配置**: `html/validation/` で自動検証ツールが配置されている
+- [ ] **🔴 Git管理**: HTMLテンプレート・検証ツールがGit管理されている
+
+#### F5.2: 統合テンプレート更新確認
+```bash
+# 必須実行コマンド - 統合テンプレート内容確認
+grep -A 10 -B 5 "ダッシュボード安定性" docs/workflows/templates/unified_tracker_template.md
+```
+
+- [ ] **🔴 テンプレート更新**: 統合テンプレートにダッシュボード安定性確認が追加されている
+- [ ] **🔴 手順明記**: メイン・個別ダッシュボード確認手順が明記されている
+- [ ] **🔴 品質基準統合**: チェックリストとテンプレートが整合している
+
+---
+
+## ❌ **絶対回避すべきメインダッシュボードNGパターン（INTG-086教訓）**
+
+### 🚫 メインダッシュボード入れ子表示（5回目発生）
+```
+❌ iframe src="/" による自己参照
+❌ 「メインダッシュボードの中にメインダッシュボード」表示
+❌ 無限ループ的な画面構造
+✅ 適切なiframe src設定（dashboard-list等）
+```
+
+### 🚫 左ペイン消失問題
+```
+❌ 個別トラッカー画面遷移で左ペイン非表示
+❌ _generate_navigation_wrapper の不適切な実装
+❌ sidebar要素の欠如
+✅ 全画面で一貫した左ペイン表示
+```
+
+### 🚫 不適切なサーバー管理
+```
+❌ python3 -m http.server による単純サーバー
+❌ integrated_dashboard_server.py を無視した独自実装
+❌ ポート競合による不安定動作
+✅ 統合ダッシュボードサーバーの適切活用
+```
+
+### 🚫 システム理解不足による破壊
+```
+❌ 既存システム理解なしでの個別ファイル変更
+❌ 影響範囲確認なしでの修正実施
+❌ 「とりあえず動かす」応急処置
+✅ システム全体理解に基づく適切な修正
+```
+
+---
+
+## 🛠️ **メインダッシュボード緊急修復コマンド集**
+
+### 入れ子表示修復
+```bash
+# integrated_dashboard_server.pyのiframe src修正
+python3 -c "
+import re
+with open('integrated_dashboard_server.py', 'r') as f:
+    content = f.read()
+# iframe src=\"/\" を dashboard-list に修正
+content = re.sub(r'iframe.*src=\"/\"', 'iframe src=\"/dashboard-list\"', content)
+with open('integrated_dashboard_server.py', 'w') as f:
+    f.write(content)
+print('✅ iframe src修正完了')
+"
+```
+
+### 左ペイン表示強制修復
+```bash
+# navigation wrapper生成の修復
+python3 -c "
+import re
+with open('integrated_dashboard_server.py', 'r') as f:
+    content = f.read()
+# handle_tracker内のreturn修正確認
+if 'nav_html = self._generate_navigation_wrapper' not in content:
+    print('⚠️ navigation wrapper生成が不完全')
+else:
+    print('✅ navigation wrapper生成は正常')
+"
+```
+
+### サーバー正常化
+```bash
+# 不適切サーバー終了→適切サーバー起動
+pkill -f "python.*http.server"
+nohup python3 integrated_dashboard_server.py --port 8088 > /tmp/dashboard_server_fixed.log 2>&1 &
+echo "✅ 統合ダッシュボードサーバー起動完了"
+```
+
+---
+
+## 📊 **メインダッシュボード品質保証レベル強化**
+
+### 🟢 Level A (基本動作)
+- [ ] メインダッシュボードが表示される
+- [ ] 左ペイン・右ペインが表示される  
+- [ ] 入れ子表示が発生していない
+
+### 🟡 Level B (安定性保証)
+- [ ] Level A + 個別トラッカー遷移で左ペイン継続表示
+- [ ] Level A + 適切なサーバープロセス動作
+- [ ] Level A + ダッシュボード一覧正常表示
+
+### 🔴 Level S (完全安定性保証)
+- [ ] Level B + 自動構造検証ツール全合格
+- [ ] Level B + 回帰テスト全合格
+- [ ] Level B + HTMLバージョン管理体制確立
+- [ ] Level B + 将来防止プロトコル完全実装
+
+**🚨 重要**: **Level S (完全安定性保証)を達成するまで、メインダッシュボード完了と報告してはいけない**
+
+**🔒 6回目発生絶対防止**: このSection F全項目実行により、メインダッシュボード問題の6回目発生を完全に防止する
+
+---
+
 ## 📋 **Section E: システム統合性検証（QUAL-044事例対応）**
 
 ### E1: 既存システム理解確認 🔴

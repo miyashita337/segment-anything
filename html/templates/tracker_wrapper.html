@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{TRACKER_TITLE}} - 統合ダッシュボード</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            z-index: 1000;
+            background: white;
+            box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+        }
+        .main-content {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+        iframe.tracker-frame {
+            width: 100%;
+            height: 100vh;
+            border: none;
+            display: block;
+        }
+        /* 左ペイン消失防止 */
+        .sidebar-stable {
+            display: block !important;
+            visibility: visible !important;
+            position: fixed !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- 左ペイン - 全画面遷移でも必ず表示 -->
+        <div class="sidebar sidebar-stable">
+            <div class="p-4">
+                <h1 class="text-xl font-bold text-gray-800 mb-4">📊 統合ダッシュボード</h1>
+                
+                <!-- 戻るナビゲーション -->
+                <div class="mb-4">
+                    <a href="/" class="block w-full text-left px-3 py-2 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md">
+                        ← メインダッシュボードに戻る
+                    </a>
+                </div>
+
+                <!-- 現在のトラッカー情報 -->
+                <div class="mb-4 p-3 bg-blue-50 rounded-md">
+                    <p class="text-sm font-semibold text-blue-800">現在表示中:</p>
+                    <p class="text-sm text-blue-700">{{TRACKER_ID}}</p>
+                </div>
+
+                <!-- 他のトラッカー一覧 -->
+                <div class="mb-4">
+                    <h2 class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">他のトラッカー</h2>
+                    <div id="other-tracker-list" class="space-y-1 max-h-60 overflow-y-auto">
+                        <!-- 動的生成：integrated_dashboard_server.pyから挿入 -->
+                        {{OTHER_TRACKERS_PLACEHOLDER}}
+                    </div>
+                </div>
+
+                <!-- 品質情報（オプション） -->
+                <div class="mt-8 p-3 bg-gray-50 rounded-md">
+                    <p class="text-xs text-gray-600">品質スコア: <span class="font-semibold text-green-600">{{QUALITY_SCORE}}</span></p>
+                    <p class="text-xs text-gray-600">最終更新: <span class="font-semibold">{{LAST_UPDATED}}</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右ペイン - トラッカーダッシュボード表示 -->
+        <div class="main-content">
+            <iframe src="{{DASHBOARD_URL}}" class="tracker-frame" title="{{TRACKER_ID}} ダッシュボード">
+                <p>ダッシュボードの読み込みに失敗しました。</p>
+            </iframe>
+        </div>
+    </div>
+
+    <script>
+        // 個別トラッカー表示安定性保証スクリプト
+        (function() {
+            'use strict';
+            
+            // 左ペイン強制表示保証
+            function ensureSidebarAlwaysVisible() {
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar) {
+                    sidebar.classList.add('sidebar-stable');
+                    sidebar.style.display = 'block';
+                    sidebar.style.visibility = 'visible';
+                    sidebar.style.position = 'fixed';
+                    sidebar.style.left = '0';
+                    sidebar.style.top = '0';
+                    sidebar.style.width = '250px';
+                    sidebar.style.zIndex = '1000';
+                }
+            }
+
+            // iframe読み込み監視
+            function monitorIframeLoad() {
+                const iframe = document.querySelector('.tracker-frame');
+                if (iframe) {
+                    iframe.addEventListener('load', function() {
+                        // iframe読み込み完了後も左ペイン表示を保証
+                        setTimeout(ensureSidebarAlwaysVisible, 100);
+                    });
+                    
+                    iframe.addEventListener('error', function() {
+                        console.error('🚨 トラッカーダッシュボード読み込み失敗:', iframe.src);
+                    });
+                }
+            }
+
+            // 初期化実行
+            document.addEventListener('DOMContentLoaded', function() {
+                ensureSidebarAlwaysVisible();
+                monitorIframeLoad();
+                
+                // 強制監視（2秒間隔）
+                setInterval(ensureSidebarAlwaysVisible, 2000);
+            });
+
+            // ページ可視性変更時の処理
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    ensureSidebarAlwaysVisible();
+                }
+            });
+
+            // リサイズ時の処理
+            window.addEventListener('resize', ensureSidebarAlwaysVisible);
+        })();
+    </script>
+</body>
+</html>
