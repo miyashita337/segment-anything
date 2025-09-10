@@ -1,12 +1,12 @@
 {
   "hooks": {
     "PreToolUse": {
-      "command": "bash tools/hooks/validate_workflow_compliance.sh",
+      "command": "bash tools/hooks/semantic_workflow_compliance.sh",
       "match": {
         "tool": "Bash",
         "args.command": "*extract_character.py*|*progress_tracker/cli.py*|*run_quality_workflow.sh*|*python*tracker*"
       },
-      "description": "INTG-086: ワークフローコンプライアンス検証 - トラッカー関連Pythonスクリプト実行時のフェーズ別チェック"
+      "description": "INTG-087: セマンティックワークフロー検証 - 意味論的判定による柔軟なワークフロー制御（ハードコーディング排除）"
     },
     "PostToolUse": {
       "command": "bash tools/hooks/update_workflow_progress.sh",
