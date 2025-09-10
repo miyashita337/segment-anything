@@ -550,6 +550,11 @@ class IntegratedDashboardServer:
     
     def _apply_filename_masking(self, html_content):
         """HTMLコンテンツ全体にファイル名マスキングを適用"""
+        
+        # INTG-087系トラッカーの場合はファイル名マスキングを無効化
+        if 'INTG-087' in html_content:
+            return html_content
+            
         # 抽出ファイル名パターンを検索してマスキング
         patterns = [
             r'(kana\d+_\d{4,}_(?:extracted|cropped|segment)[^"\s<>]*)',  # kana08_0001_extracted.jpg等

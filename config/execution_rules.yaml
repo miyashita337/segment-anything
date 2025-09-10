@@ -1,0 +1,91 @@
+# INTG-087: セマンティックワークフロー検証ルール設定
+# ハードコーディング排除・意味論的判定による柔軟なワークフロー制御
+
+execution_rules:
+  extract_character:
+    description: "キャラクター抽出実行の前提条件"
+    command_patterns:
+      - "*extract_character.py*"
+      - "*extract_character*"
+    
+    # 意味論的前提条件（番号ではなく機能で判定）
+    semantic_prerequisites:
+      - capability: "implementation_completion"
+        description: "実装作業完了"
+        validation_method: "phase_status_check"
+        target_phase: "phase_2_implementation"
+        required_items:
+          - "core_implementation"
+          - "error_handling" 
+          - "logging_system"
+      
+      - capability: "extraction_execution_approval"
+        description: "抽出実行承認取得"
+        validation_method: "approval_status_check"
+        approval_type: "implementation_approval"
+        approval_context: "extraction_execution"
+    
+    # 実行コンテキスト理解
+    execution_context:
+      intent: "data_extraction"
+      resource_requirements: ["gpu_access", "file_system_write"]
+      estimated_duration: "long_running"
+      
+  run_quality_workflow:
+    description: "品質ワークフロー実行の前提条件"
+    command_patterns:
+      - "*run_quality_workflow.sh*"
+    
+    semantic_prerequisites:
+      - capability: "extraction_completion"
+        description: "抽出処理完了"
+        validation_method: "output_validation"
+        required_outputs:
+          - "extraction_results"
+          - "processed_images"
+      
+      - capability: "phase_2_completion"
+        description: "Phase 2完了"
+        validation_method: "phase_completion_check"
+        target_phase: "phase_2_implementation"
+
+# 動的検証ルール（テンプレート変更対応）
+template_parsing:
+  unified_tracker_template_path: "/mnt/c/AItools/segment-anything/docs/workflows/templates/unified_tracker_template.md"
+  
+  # パースする意味的パターン
+  semantic_patterns:
+    implementation_completion:
+      patterns: 
+        - "実装完了"
+        - "core_implementation.*completed"
+        - "実装作業.*完了"
+    
+    extraction_approval:
+      patterns:
+        - "抽出実行.*承認"
+        - "extraction.*approval"
+        - "抽出.*許可"
+    
+    phase_completion:
+      patterns:
+        - "Phase \\d+.*完了"
+        - "フェーズ.*完了"
+
+# 後方互換性設定
+compatibility:
+  fallback_to_legacy: true
+  legacy_approval_numbers: [1, 2, 3, 4, 5]
+  migration_mode: "gradual"
+
+# 検証設定
+validation:
+  strict_mode: false  # 開発段階では緩和
+  log_decisions: true
+  decision_audit_path: "/tmp/semantic_validation_audit.log"
+
+# Hook統合設定
+hook_integration:
+  enabled: true
+  priority: "semantic_first"  # セマンティック判定を優先
+  legacy_fallback: true       # レガシー判定をfallbackに
