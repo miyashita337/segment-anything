@@ -563,18 +563,6 @@ class IntegratedDashboardServer:
         # 抽出関連パターンに該当する場合は拒否
         return any(indicator in path_lower for indicator in extracted_indicators)
     
-    def _load_template(self, template_name):
-        """HTMLテンプレートファイルを読み込み"""
-        template_path = Path("html/templates") / template_name
-        try:
-            with open(template_path, 'r', encoding='utf-8') as f:
-                return f.read()
-        except FileNotFoundError:
-            logger.error(f"❌ テンプレートファイルが見つかりません: {template_path}")
-            return ""
-        except Exception as e:
-            logger.error(f"❌ テンプレート読み込みエラー: {e}")
-            return ""
 
     def _mask_filename(self, filename):
         """ファイル名部分マスキング"""
@@ -620,69 +608,6 @@ class IntegratedDashboardServer:
                         continue
         
         return []
-    
-    def _generate_template_based_gallery(self, tracker_id):
-        """テンプレートベースの画像ギャラリーHTML生成"""
-        template = self._load_template("image_gallery.html")
-        if not template:
-            return self._generate_fallback_gallery(tracker_id)
-        
-        image_files = self._get_extraction_images(tracker_id)
-        
-        # 画像アイテムHTML生成
-        image_gallery_content = ""
-        for filename in image_files:
-            # 実際のファイル名を直接使用（マスキング処理を完全バイパス）
-            image_gallery_content += f'''
-            <div class="image-item">
-                <img src="{filename}" alt="{filename}" loading="lazy" class="opacity-0 transition-opacity duration-300">
-                <div class="image-info">
-                    <div class="image-name">{filename}</div>
-                </div>
-            </div>
-            '''
-        
-        # プレースホルダーの置換
-        html = template.replace("{{TRACKER_ID}}", tracker_id)
-        html = html.replace("{{IMAGE_COUNT}}", str(len(image_files)))
-        html = html.replace("{{IMAGE_GALLERY_CONTENT}}", image_gallery_content)
-        html = html.replace("{{#if HAS_IMAGES}}", "" if image_files else "<!--")
-        html = html.replace("{{else}}", "-->" if image_files else "")
-        html = html.replace("{{/if}}", "" if image_files else "-->")
-        
-        return html
-    
-    def _generate_fallback_gallery(self, tracker_id):
-        """フォールバック用シンプル画像ギャラリー"""
-        image_files = self._get_extraction_images(tracker_id)
-        
-        if not image_files:
-            return '''
-            <div style="text-align: center; padding: 40px; color: #666;">
-                <div style="font-size: 48px; margin-bottom: 20px;">📷</div>
-                <h3>抽出画像が見つかりません</h3>
-                <p>extraction/ ディレクトリに画像ファイルがありません</p>
-            </div>
-            '''
-        
-        gallery_html = f'''
-        <div style="padding: 20px;">
-            <h2 style="text-align: center; margin-bottom: 30px;">{tracker_id} 抽出結果 ({len(image_files)}枚)</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
-        '''
-        
-        for filename in image_files:
-            gallery_html += f'''
-                <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                    <img src="{filename}" alt="{filename}" loading="lazy" style="width: 100%; height: 200px; object-fit: cover;">
-                    <div style="padding: 12px;">
-                        <div style="font-size: 12px; color: #666; word-break: break-all;">{filename}</div>
-                    </div>
-                </div>
-            '''
-        
-        gallery_html += '</div></div>'
-        return gallery_html
     
     def _apply_filename_masking(self, html_content):
         """HTMLコンテンツ全体にファイル名マスキングを適用"""
