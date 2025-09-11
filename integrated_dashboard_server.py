@@ -236,6 +236,7 @@ class IntegratedDashboardServer:
         self.app.router.add_get('/tracker/{tracker_id}/', self.handle_tracker)  # 末尾スラッシュ対応
         self.app.router.add_get('/tracker/{tracker_id}/{dashboard_name}', self.handle_tracker_dashboard)
         self.app.router.add_get('/api/dashboards', self.handle_api_dashboards)
+        self.app.router.add_get('/api/images/{tracker_id}', self.handle_api_images)  # 画像リストAPI
         self.app.router.add_get('/dashboard-list', self.handle_dashboard_list_html)  # ページ一覧HTML表示用
         self.app.router.add_get('/refresh', self.handle_refresh)
         # 静的ファイルサーバー機能
@@ -355,6 +356,30 @@ class IntegratedDashboardServer:
             'total': len(dashboard_list),
             'dashboards': sorted(dashboard_list, key=lambda x: x['key'])
         })
+    
+    async def handle_api_images(self, request):
+        """API: 指定トラッカーの画像リストをJSON形式で返す"""
+        tracker_id = request.match_info['tracker_id']
+        
+        try:
+            # 抽出画像取得
+            image_files = self._get_extraction_images(tracker_id)
+            
+            return web.json_response({
+                'status': 'success',
+                'tracker_id': tracker_id,
+                'total': len(image_files),
+                'images': image_files
+            })
+        except Exception as e:
+            logger.error(f"❌ 画像API取得エラー({tracker_id}): {e}")
+            return web.json_response({
+                'status': 'error',
+                'tracker_id': tracker_id,
+                'error': str(e),
+                'total': 0,
+                'images': []
+            })
     
     async def handle_refresh(self, request):
         """ダッシュボード再スキャン"""
@@ -538,6 +563,7 @@ class IntegratedDashboardServer:
         # 抽出関連パターンに該当する場合は拒否
         return any(indicator in path_lower for indicator in extracted_indicators)
     
+
     def _mask_filename(self, filename):
         """ファイル名部分マスキング"""
         # 抽出ファイルのマスキング
@@ -548,8 +574,48 @@ class IntegratedDashboardServer:
             return masked
         return filename
     
+    def _get_extraction_images(self, tracker_id):
+        """トラッカーのextraction/ディレクトリから実際の画像ファイル一覧を取得"""
+        # 包括的な画像形式対応（WebP含む）
+        SUPPORTED_IMAGE_EXTENSIONS = (
+            '.jpg', '.jpeg',     # JPEG形式
+            '.png',              # PNG形式  
+            '.webp',             # WebP形式
+            '.gif',              # GIF形式
+            '.bmp',              # Bitmap形式
+            '.svg'               # SVG形式
+        )
+        
+        # 複数作者のワークスペースから探索
+        base_path = Path(WorkspaceConfig.BASE_TRAIN_PATH)
+        
+        for author_dir in base_path.iterdir():
+            if author_dir.is_dir():
+                workspace = Path(WorkspaceConfig.get_workspace_base_for_author(author_dir.name))
+                extraction_dir = workspace / tracker_id / "extraction"
+                
+                if extraction_dir.exists() and extraction_dir.is_dir():
+                    try:
+                        actual_files = list(extraction_dir.iterdir())
+                        image_files = [
+                            f.name for f in actual_files 
+                            if f.is_file() and f.suffix.lower() in SUPPORTED_IMAGE_EXTENSIONS
+                        ]
+                        if image_files:
+                            return sorted(image_files)  # ソートして一貫した順序で返す
+                    except Exception as e:
+                        logger.warning(f"⚠️ 画像ファイル一覧取得エラー {extraction_dir}: {e}")
+                        continue
+        
+        return []
+    
     def _apply_filename_masking(self, html_content):
         """HTMLコンテンツ全体にファイル名マスキングを適用"""
+        
+        # INTG-087系トラッカーの場合はファイル名マスキングを無効化
+        if 'INTG-087' in html_content:
+            return html_content
+            
         # 抽出ファイル名パターンを検索してマスキング
         patterns = [
             r'(kana\d+_\d{4,}_(?:extracted|cropped|segment)[^"\s<>]*)',  # kana08_0001_extracted.jpg等

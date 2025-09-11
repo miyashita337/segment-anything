@@ -1,12 +1,12 @@
 {
   "hooks": {
     "PreToolUse": {
-      "command": "bash tools/hooks/validate_workflow_compliance.sh",
+      "command": "bash tools/hooks/hybrid_workflow_compliance.sh",
       "match": {
         "tool": "Bash",
         "args.command": "*extract_character.py*|*progress_tracker/cli.py*|*run_quality_workflow.sh*|*python*tracker*"
       },
-      "description": "INTG-086: ワークフローコンプライアンス検証 - トラッカー関連Pythonスクリプト実行時のフェーズ別チェック"
+      "description": "INTG-087: ハイブリッド検証システム - 厳格検証（品質保証）+ セマンティック補完（柔軟性）の組み合わせ"
     },
     "PostToolUse": {
       "command": "bash tools/hooks/update_workflow_progress.sh",
