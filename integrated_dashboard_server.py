@@ -236,6 +236,7 @@ class IntegratedDashboardServer:
         self.app.router.add_get('/tracker/{tracker_id}/', self.handle_tracker)  # 末尾スラッシュ対応
         self.app.router.add_get('/tracker/{tracker_id}/{dashboard_name}', self.handle_tracker_dashboard)
         self.app.router.add_get('/api/dashboards', self.handle_api_dashboards)
+        self.app.router.add_get('/api/images/{tracker_id}', self.handle_api_images)  # 画像リストAPI
         self.app.router.add_get('/dashboard-list', self.handle_dashboard_list_html)  # ページ一覧HTML表示用
         self.app.router.add_get('/refresh', self.handle_refresh)
         # 静的ファイルサーバー機能
@@ -355,6 +356,30 @@ class IntegratedDashboardServer:
             'total': len(dashboard_list),
             'dashboards': sorted(dashboard_list, key=lambda x: x['key'])
         })
+    
+    async def handle_api_images(self, request):
+        """API: 指定トラッカーの画像リストをJSON形式で返す"""
+        tracker_id = request.match_info['tracker_id']
+        
+        try:
+            # 抽出画像取得
+            image_files = self._get_extraction_images(tracker_id)
+            
+            return web.json_response({
+                'status': 'success',
+                'tracker_id': tracker_id,
+                'total': len(image_files),
+                'images': image_files
+            })
+        except Exception as e:
+            logger.error(f"❌ 画像API取得エラー({tracker_id}): {e}")
+            return web.json_response({
+                'status': 'error',
+                'tracker_id': tracker_id,
+                'error': str(e),
+                'total': 0,
+                'images': []
+            })
     
     async def handle_refresh(self, request):
         """ダッシュボード再スキャン"""
@@ -538,6 +563,19 @@ class IntegratedDashboardServer:
         # 抽出関連パターンに該当する場合は拒否
         return any(indicator in path_lower for indicator in extracted_indicators)
     
+    def _load_template(self, template_name):
+        """HTMLテンプレートファイルを読み込み"""
+        template_path = Path("html/templates") / template_name
+        try:
+            with open(template_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        except FileNotFoundError:
+            logger.error(f"❌ テンプレートファイルが見つかりません: {template_path}")
+            return ""
+        except Exception as e:
+            logger.error(f"❌ テンプレート読み込みエラー: {e}")
+            return ""
+
     def _mask_filename(self, filename):
         """ファイル名部分マスキング"""
         # 抽出ファイルのマスキング
@@ -547,6 +585,104 @@ class IntegratedDashboardServer:
             masked = re.sub(pattern, '_***_', filename)
             return masked
         return filename
+    
+    def _get_extraction_images(self, tracker_id):
+        """トラッカーのextraction/ディレクトリから実際の画像ファイル一覧を取得"""
+        # 包括的な画像形式対応（WebP含む）
+        SUPPORTED_IMAGE_EXTENSIONS = (
+            '.jpg', '.jpeg',     # JPEG形式
+            '.png',              # PNG形式  
+            '.webp',             # WebP形式
+            '.gif',              # GIF形式
+            '.bmp',              # Bitmap形式
+            '.svg'               # SVG形式
+        )
+        
+        # 複数作者のワークスペースから探索
+        base_path = Path(WorkspaceConfig.BASE_TRAIN_PATH)
+        
+        for author_dir in base_path.iterdir():
+            if author_dir.is_dir():
+                workspace = Path(WorkspaceConfig.get_workspace_base_for_author(author_dir.name))
+                extraction_dir = workspace / tracker_id / "extraction"
+                
+                if extraction_dir.exists() and extraction_dir.is_dir():
+                    try:
+                        actual_files = list(extraction_dir.iterdir())
+                        image_files = [
+                            f.name for f in actual_files 
+                            if f.is_file() and f.suffix.lower() in SUPPORTED_IMAGE_EXTENSIONS
+                        ]
+                        if image_files:
+                            return sorted(image_files)  # ソートして一貫した順序で返す
+                    except Exception as e:
+                        logger.warning(f"⚠️ 画像ファイル一覧取得エラー {extraction_dir}: {e}")
+                        continue
+        
+        return []
+    
+    def _generate_template_based_gallery(self, tracker_id):
+        """テンプレートベースの画像ギャラリーHTML生成"""
+        template = self._load_template("image_gallery.html")
+        if not template:
+            return self._generate_fallback_gallery(tracker_id)
+        
+        image_files = self._get_extraction_images(tracker_id)
+        
+        # 画像アイテムHTML生成
+        image_gallery_content = ""
+        for filename in image_files:
+            # 実際のファイル名を直接使用（マスキング処理を完全バイパス）
+            image_gallery_content += f'''
+            <div class="image-item">
+                <img src="{filename}" alt="{filename}" loading="lazy" class="opacity-0 transition-opacity duration-300">
+                <div class="image-info">
+                    <div class="image-name">{filename}</div>
+                </div>
+            </div>
+            '''
+        
+        # プレースホルダーの置換
+        html = template.replace("{{TRACKER_ID}}", tracker_id)
+        html = html.replace("{{IMAGE_COUNT}}", str(len(image_files)))
+        html = html.replace("{{IMAGE_GALLERY_CONTENT}}", image_gallery_content)
+        html = html.replace("{{#if HAS_IMAGES}}", "" if image_files else "<!--")
+        html = html.replace("{{else}}", "-->" if image_files else "")
+        html = html.replace("{{/if}}", "" if image_files else "-->")
+        
+        return html
+    
+    def _generate_fallback_gallery(self, tracker_id):
+        """フォールバック用シンプル画像ギャラリー"""
+        image_files = self._get_extraction_images(tracker_id)
+        
+        if not image_files:
+            return '''
+            <div style="text-align: center; padding: 40px; color: #666;">
+                <div style="font-size: 48px; margin-bottom: 20px;">📷</div>
+                <h3>抽出画像が見つかりません</h3>
+                <p>extraction/ ディレクトリに画像ファイルがありません</p>
+            </div>
+            '''
+        
+        gallery_html = f'''
+        <div style="padding: 20px;">
+            <h2 style="text-align: center; margin-bottom: 30px;">{tracker_id} 抽出結果 ({len(image_files)}枚)</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+        '''
+        
+        for filename in image_files:
+            gallery_html += f'''
+                <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <img src="{filename}" alt="{filename}" loading="lazy" style="width: 100%; height: 200px; object-fit: cover;">
+                    <div style="padding: 12px;">
+                        <div style="font-size: 12px; color: #666; word-break: break-all;">{filename}</div>
+                    </div>
+                </div>
+            '''
+        
+        gallery_html += '</div></div>'
+        return gallery_html
     
     def _apply_filename_masking(self, html_content):
         """HTMLコンテンツ全体にファイル名マスキングを適用"""
