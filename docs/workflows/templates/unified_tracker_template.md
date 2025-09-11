@@ -36,6 +36,8 @@
   - [ ] CLAUDE.md トラッカーワークフロー要件
   - [ ] spec/OUTPUT_PATH_STANDARDS.md
   - [ ] docs/workflows/output_directory_config.md
+- **Hook設定管理**: 
+  - [ ] [`docs/development/claude_hooks_policy.md`](../../development/claude_hooks_policy.md) - Hook統合システム変更時の設定管理ポリシー
 - **成功事例**: [類似トラッカーのパターン・教訓]
 - **回避事項**: [失敗事例からの学習]
 
