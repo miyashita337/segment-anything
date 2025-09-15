@@ -261,7 +261,7 @@ git commit -m "feat(TRACKER_ID): 説明"
 git push -u origin feature/TRACKER_ID
 ```
 
-## プロジェクト概要
+## 最重要原則
 
 [PRINCIPLE.md](PRINCIPLE.md)を参照
 
