@@ -11,6 +11,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.35] - 2025-09-16
+
+### Added
+- **INTG-089: SubAgent統合システム実時間監視・通知機能強化**
+  - SubAgentMonitor拡張: GPU異常検知、メモリリーク検出、温度監視機能実装
+  - NotificationBridge強化: ハッシュベース重複防止、優先度別通知制御システム
+  - EnhancedSubAgentTaskQueue: チェックポイント・レジューム機能による長時間タスク対応
+  - IntegratedSubAgentSystem: 3システム協調による実時間監視統合アーキテクチャ
+- **包括的テストスイート追加**
+  - SubAgentMonitor単体テスト: GPU/メモリ/プロセス監視機能検証
+  - NotificationBridge単体テスト: 重複防止/優先度制御機能検証
+  - EnhancedSubAgentTaskQueue単体テスト: チェックポイント/レジューム機能検証
+  - 統合テスト: システム間連携・実世界シナリオ検証
+  - モッククライアント実装: テスト時外部依存排除
+
+### Fixed
+- **GPU監視システム修正**
+  - ゼロ除算エラー修正: torch.cuda.max_memory_allocated()が0の場合の処理改善
+  - GPU memory使用率計算の堅牢性向上（フォールバック機能追加）
+- **NotificationBridge不具合修正**
+  - 正規表現モジュール未インポートエラー修正（re module import追加）
+  - 通知処理の安定性向上
+
+### Performance Improvements
+- **正規表現処理最適化**
+  - コンパイル済みパターンによる高速化実装
+  - timestamp/percentage処理の効率化
+- **ハッシュキャッシュシステム**
+  - LRUキャッシュによる重複計算削減
+  - メモリ使用量の効率的監視・制御
+
+### Technical Details
+- **影響範囲**: tools/queue/配下SubAgentシステム全体拡張
+- **依存関係**: PyTorch（GPU監視）、psutil（システムメトリクス）
+- **互換性**: QUAL-044、INTG-087実装との完全互換性保証
+- **テストカバレッジ**: 单体・統合・実世界シナリオの包括的テスト実装
+
 ## [v0.9.34] - 2025-09-15
 
 ### Added
