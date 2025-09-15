@@ -1,0 +1,63 @@
+{
+  "timestamp": "2025-09-15 22:45:24",
+  "total_tests": 0,
+  "passed_tests": 0,
+  "failed_tests": 0,
+  "skipped_tests": 0,
+  "success_rate": 0,
+  "test_results": {
+    "unit_tests": {
+      "tests/unit/test_subagent_monitor_intg089.py": {
+        "return_code": 4,
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "total": 0,
+        "duration": 0.0,
+        "success": false
+      },
+      "tests/unit/test_notification_bridge_intg089.py": {
+        "return_code": 4,
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "total": 0,
+        "duration": 0.0,
+        "success": false
+      }
+    },
+    "integration_tests": {
+      "status": "skipped",
+      "reason": "\u5b9f\u88c5\u8abf\u6574\u4e2d"
+    },
+    "mock_tests": {
+      "success": true,
+      "results": {
+        "basic_notification": true,
+        "deduplication_test": {
+          "first_send": true,
+          "duplicate_send": false
+        },
+        "statistics": {
+          "pushover_stats": {
+            "total_calls": 1,
+            "successful_calls": 1,
+            "failed_calls": 0,
+            "success_rate": 1.0,
+            "first_message_time": "2025-09-15T13:45:22.034036+00:00",
+            "last_message_time": "2025-09-15T13:45:22.034036+00:00"
+          },
+          "unique_notifications": 1,
+          "total_notifications": 1,
+          "duplicate_prevention_rate": 0.0
+        }
+      }
+    },
+    "health_check": {
+      "imports": true,
+      "instance_creation": true,
+      "monitor_function": true,
+      "notification_function": true
+    }
+  }
+}
