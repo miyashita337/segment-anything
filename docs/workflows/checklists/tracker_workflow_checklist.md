@@ -387,6 +387,11 @@ Phase 0.5独立実行 → 強制検証 → 次フェーズ禁止 → 確実実�
 
 ## 📚 関連ドキュメント
 
+### Hook設定管理
+- **Hook設定管理ポリシー**: [`docs/development/claude_hooks_policy.md`](../../development/claude_hooks_policy.md)
+  - `.claude/hooks.json`のコミット判断基準
+  - システム機能変更時のHook設定管理手順
+
 ### ワークフローテストシステム
 - **包括的テストシステム設計**: [`docs/workflows/comprehensive_workflow_testing_system.md`](../workflows/comprehensive_workflow_testing_system.md)
   - 4レベルテストシステムの設計意図と実装詳細

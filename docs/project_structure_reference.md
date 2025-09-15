@@ -316,6 +316,8 @@ echo "*.pth" >> .gitignore
 echo "config/*_auth.json" >> .gitignore
 ```
 
+**Hook設定管理について**: `.claude/hooks.json`の管理ポリシーは [`docs/development/claude_hooks_policy.md`](../development/claude_hooks_policy.md) を参照してください。
+
 ---
 
 ## 🎯 現在の構造統計

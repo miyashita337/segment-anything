@@ -4,6 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 日本語で応答してください。
 
+## ⛔ 承認必須ルール（2025-09-15制定）
+
+**Phase移行時・破壊的操作前は必ず停止し「承認をお願いします」と明記してユーザーの返答を待つこと。承認なしでの続行は規約違反。**
+
 ## 📌 重要: バージョニングルール（2025-08-08制定）
 
 **ユーザーから明示的な指示があるまで、以下のルールを厳守すること：**
@@ -29,17 +33,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **13ステップ・4フェーズワークフローの詳細については以下を参照**:
 
-### 📋 必須参照ドキュメント
+### 📋 ワークフロー必須参照ドキュメント
 - **詳細チェックリスト**: [`docs/workflows/checklists/tracker_workflow_checklist.md`](docs/workflows/checklists/tracker_workflow_checklist.md) - 13ステップ完了確認用
 - **統合テンプレート**: [`docs/workflows/templates/unified_tracker_template.md`](docs/workflows/templates/unified_tracker_template.md) - 計画・進捗・完了報告統合版
 
 ### 🚨 絶対厳守事項（簡潔版）
 
-1. **13ステップ完了必須**: 上記チェックリストに従い全フェーズ・全ステップ完了
-2. **ワークスペース出力必須**: `/mnt/c/AItools/lora/train/yado/tracker-workspace/{TRACKER_ID}/`
-3. **品質ワークフロー実行必須**: `./tools/scripts/run_quality_workflow.sh {TRACKER_ID}`
-4. **シリアル処理厳守**: 複数トラッカー並行処理厳禁
-5. **例外処理手順遵守**: 技術的困難時のユーザー相談必須
+1. **Google Sheets必須確認**: トラッカー開始時に必ずGoogle Sheetsから概要・詳細を読み込み
+2. **13ステップ完了必須**: 上記チェックリストに従い全フェーズ・全ステップ完了
+3. **ワークスペース出力必須**: `/mnt/c/AItools/lora/train/yado/tracker-workspace/{TRACKER_ID}/`
+4. **品質ワークフロー実行必須**: `./tools/scripts/run_quality_workflow.sh {TRACKER_ID}`
+5. **シリアル処理厳守**: 複数トラッカー並行処理厳禁
+6. **例外処理手順遵守**: 技術的困難時のユーザー相談必須
+
+### 📋 **トラッカーワークフロー開始手順（必須）**
+
+**ユーザーから「トラッカーID：XXX　内容を読み込んで調査実装を開始して」の指示があった場合**:
+
+1. **🚨 CRITICAL**: 既存トラッカー実装であり、新規作成ではない
+2. **Google Sheetsステータス更新**: `python tools/progress_tracker/cli.py update {TRACKER_ID} "着手中"`
+3. **Google Sheets内容読み込み**: `python tools/progress_tracker/cli.py status {TRACKER_ID}` で概要・詳細確認
+4. **読み込み内容に基づく計画書作成**: Google Sheetsの内容に即した実装計画策定
+5. **13ステップワークフロー開始**: 正規4フェーズ・5段階承認での実行
 
 ### ✅ 4フェーズ概要
 **詳細は** [`docs/workflows/checklists/tracker_workflow_checklist.md`](docs/workflows/checklists/tracker_workflow_checklist.md) **を参照**
@@ -127,6 +142,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ✅ 正解: integrated_dashboard_server.py を理解・活用して統合ダッシュボード復元
 ```
+
+## 🚨 **統合ダッシュボード必須手順**
+
+**品質ワークフロー完了時の必須確認手順**:
+
+```bash
+# 1. 統合サーバー用index.html作成
+cp {TRACKER_WORKSPACE}/{TRACKER_ID}/dashboard/dashboard.html {TRACKER_WORKSPACE}/{TRACKER_ID}/index.html
+
+# 2. サーバー再スキャン実行
+curl -u admin:secure_track_2025_q3_8f9a http://100.123.241.106:8088/refresh
+
+# 3. トラッカー認識確認（完了報告前必須実行）
+curl -u admin:secure_track_2025_q3_8f9a http://100.123.241.106:8088/tracker/{TRACKER_ID}
+```
+
+**成功確認**: HTMLが返ればOK / **失敗**: エラーメッセージが返る
+**詳細手順**: [`docs/quick-guides/integrated_dashboard_operations.md`](docs/quick-guides/integrated_dashboard_operations.md) を参照
 
 ## 🚨 **技術的困難時の対処方針**
 
@@ -228,7 +261,7 @@ git commit -m "feat(TRACKER_ID): 説明"
 git push -u origin feature/TRACKER_ID
 ```
 
-## プロジェクト概要
+## 最重要原則
 
 [PRINCIPLE.md](PRINCIPLE.md)を参照
 

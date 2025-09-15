@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>統合ダッシュボード管理システム</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            z-index: 1000;
+        }
+        .main-content {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+        /* iframe入れ子表示防止 */
+        iframe.dashboard-frame {
+            width: 100%;
+            height: 100vh;
+            border: none;
+            display: block;
+        }
+        /* ナビゲーション安定性保証 */
+        .navigation-stable {
+            position: relative;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex">
+        <!-- 左ペイン（サイドバー）- 安定表示保証 -->
+        <div class="sidebar bg-white shadow-lg">
+            <div class="p-4">
+                <h1 class="text-xl font-bold text-gray-800 mb-4">📊 統合ダッシュボード</h1>
+                
+                <!-- メインダッシュボードリンク -->
+                <div class="mb-4">
+                    <a href="/" class="block w-full text-left px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md">
+                        🏠 メインダッシュボード
+                    </a>
+                </div>
+
+                <!-- トラッカー一覧 -->
+                <div class="mb-4">
+                    <h2 class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">トラッカー一覧</h2>
+                    <div id="tracker-list" class="space-y-1">
+                        <!-- 動的生成：integrated_dashboard_server.pyから挿入 -->
+                        {{TRACKER_LIST_PLACEHOLDER}}
+                    </div>
+                </div>
+
+                <!-- 統計情報 -->
+                <div class="mt-8 p-3 bg-gray-50 rounded-md">
+                    <p class="text-xs text-gray-600">総ダッシュボード数: <span class="font-semibold">{{DASHBOARD_COUNT}}</span></p>
+                    <p class="text-xs text-gray-600">アクティブ: <span class="font-semibold text-green-600">{{ACTIVE_COUNT}}</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右ペイン（メインコンテンツ）- 表示制御保証 -->
+        <div class="main-content navigation-stable">
+            <div id="main-content-area" class="w-full h-screen">
+                <!-- コンテンツ表示エリア -->
+                {{MAIN_CONTENT_PLACEHOLDER}}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // メインダッシュボード安定性保証スクリプト
+        (function() {
+            'use strict';
+            
+            // iframe入れ子表示防止
+            function preventNestedDashboard() {
+                const iframes = document.querySelectorAll('iframe.dashboard-frame');
+                iframes.forEach(iframe => {
+                    // メインダッシュボード（"/"）への参照を防止
+                    if (iframe.src === window.location.origin + '/' || 
+                        iframe.src === window.location.origin) {
+                        console.warn('🚨 iframe入れ子表示防止: メインダッシュボード参照をブロック');
+                        iframe.src = 'about:blank';
+                    }
+                });
+            }
+
+            // 左ペイン表示安定性監視
+            function ensureSidebarVisibility() {
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar) {
+                    // 強制表示保証
+                    sidebar.style.display = 'block';
+                    sidebar.style.visibility = 'visible';
+                }
+            }
+
+            // 初期化実行
+            document.addEventListener('DOMContentLoaded', function() {
+                preventNestedDashboard();
+                ensureSidebarVisibility();
+                
+                // 定期監視（5秒間隔）
+                setInterval(() => {
+                    preventNestedDashboard();
+                    ensureSidebarVisibility();
+                }, 5000);
+            });
+
+            // ページ遷移時の安定性保証
+            window.addEventListener('beforeunload', function() {
+                ensureSidebarVisibility();
+            });
+        })();
+    </script>
+</body>
+</html>

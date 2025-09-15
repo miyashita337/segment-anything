@@ -236,6 +236,8 @@ class IntegratedDashboardServer:
         self.app.router.add_get('/tracker/{tracker_id}/', self.handle_tracker)  # 末尾スラッシュ対応
         self.app.router.add_get('/tracker/{tracker_id}/{dashboard_name}', self.handle_tracker_dashboard)
         self.app.router.add_get('/api/dashboards', self.handle_api_dashboards)
+        self.app.router.add_get('/api/images/{tracker_id}', self.handle_api_images)  # 画像リストAPI
+        self.app.router.add_get('/dashboard-list', self.handle_dashboard_list_html)  # ページ一覧HTML表示用
         self.app.router.add_get('/refresh', self.handle_refresh)
         # 静的ファイルサーバー機能
         self.app.router.add_get('/{path:.*}', self.handle_static)
@@ -355,6 +357,30 @@ class IntegratedDashboardServer:
             'dashboards': sorted(dashboard_list, key=lambda x: x['key'])
         })
     
+    async def handle_api_images(self, request):
+        """API: 指定トラッカーの画像リストをJSON形式で返す"""
+        tracker_id = request.match_info['tracker_id']
+        
+        try:
+            # 抽出画像取得
+            image_files = self._get_extraction_images(tracker_id)
+            
+            return web.json_response({
+                'status': 'success',
+                'tracker_id': tracker_id,
+                'total': len(image_files),
+                'images': image_files
+            })
+        except Exception as e:
+            logger.error(f"❌ 画像API取得エラー({tracker_id}): {e}")
+            return web.json_response({
+                'status': 'error',
+                'tracker_id': tracker_id,
+                'error': str(e),
+                'total': 0,
+                'images': []
+            })
+    
     async def handle_refresh(self, request):
         """ダッシュボード再スキャン"""
         self._scan_dashboards()
@@ -362,6 +388,140 @@ class IntegratedDashboardServer:
             'status': 'success',
             'message': f'{len(self.dashboards)} dashboards rescanned'
         })
+    
+    async def handle_dashboard_list_html(self, request):
+        """ダッシュボード一覧HTML表示（メインダッシュボード右ペイン用）"""
+        dashboard_list = []
+        for key, path in self.dashboards.items():
+            # ファイルの実際のワークスペースを特定（動的作者検出）
+            actual_workspace = self._get_workspace_for_dashboard(path)
+            dashboard_list.append({
+                'key': key,
+                'path': str(path.relative_to(actual_workspace)),
+                'tracker': key.split('/')[0] if '/' in key else 'main',
+                'name': path.stem
+            })
+        
+        # HTML生成
+        html = f'''
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ダッシュボード一覧</title>
+    <style>
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+        }}
+        .header {{
+            text-align: center;
+            margin-bottom: 30px;
+        }}
+        .header h1 {{
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }}
+        .stats {{
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }}
+        .dashboard-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }}
+        .dashboard-card {{
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }}
+        .dashboard-card:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }}
+        .tracker-name {{
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }}
+        .dashboard-name {{
+            color: #7f8c8d;
+            margin-bottom: 12px;
+        }}
+        .dashboard-path {{
+            font-size: 0.85em;
+            color: #95a5a6;
+            font-family: monospace;
+            background: #ecf0f1;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }}
+        .category-header {{
+            grid-column: 1 / -1;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #34495e;
+            margin: 20px 0 10px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #3498db;
+        }}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 統合ダッシュボード</h1>
+        <div class="stats">全 {len(dashboard_list)} 個のダッシュボード</div>
+    </div>
+    
+    <div class="dashboard-grid">'''
+        
+        # トラッカー別にグループ化して表示
+        trackers = {}
+        for item in sorted(dashboard_list, key=lambda x: x['key']):
+            tracker = item['tracker']
+            if tracker not in trackers:
+                trackers[tracker] = []
+            trackers[tracker].append(item)
+        
+        for category, items in trackers.items():
+            # カテゴリーアイコン
+            category_icon = {
+                'QUAL': '🔍',
+                'INTG': '🔬', 
+                'TEST': '🧪',
+                'OPTM': '⚡',
+                'DEMO': '📁',
+                'INCI': '📁',
+                'KIRO': '📁'
+            }.get(category.split('-')[0], '📁')
+            
+            html += f'<div class="category-header">{category_icon} {category}</div>'
+            
+            for item in items:
+                onclick = f"parent.location.href='/tracker/{item['key'].replace('/dashboard', '')}'"
+                html += f'''
+        <div class="dashboard-card" onclick="{onclick}">
+            <div class="tracker-name">{item['key']}</div>
+            <div class="dashboard-name">{item['name']}</div>
+            <div class="dashboard-path">{item['path']}</div>
+        </div>'''
+        
+        html += '''
+    </div>
+</body>
+</html>'''
+        
+        return web.Response(text=html, content_type='text/html')
     
     def _is_extracted_image(self, path):
         """抽出画像かどうかの判定"""
@@ -403,6 +563,7 @@ class IntegratedDashboardServer:
         # 抽出関連パターンに該当する場合は拒否
         return any(indicator in path_lower for indicator in extracted_indicators)
     
+
     def _mask_filename(self, filename):
         """ファイル名部分マスキング"""
         # 抽出ファイルのマスキング
@@ -413,8 +574,48 @@ class IntegratedDashboardServer:
             return masked
         return filename
     
+    def _get_extraction_images(self, tracker_id):
+        """トラッカーのextraction/ディレクトリから実際の画像ファイル一覧を取得"""
+        # 包括的な画像形式対応（WebP含む）
+        SUPPORTED_IMAGE_EXTENSIONS = (
+            '.jpg', '.jpeg',     # JPEG形式
+            '.png',              # PNG形式  
+            '.webp',             # WebP形式
+            '.gif',              # GIF形式
+            '.bmp',              # Bitmap形式
+            '.svg'               # SVG形式
+        )
+        
+        # 複数作者のワークスペースから探索
+        base_path = Path(WorkspaceConfig.BASE_TRAIN_PATH)
+        
+        for author_dir in base_path.iterdir():
+            if author_dir.is_dir():
+                workspace = Path(WorkspaceConfig.get_workspace_base_for_author(author_dir.name))
+                extraction_dir = workspace / tracker_id / "extraction"
+                
+                if extraction_dir.exists() and extraction_dir.is_dir():
+                    try:
+                        actual_files = list(extraction_dir.iterdir())
+                        image_files = [
+                            f.name for f in actual_files 
+                            if f.is_file() and f.suffix.lower() in SUPPORTED_IMAGE_EXTENSIONS
+                        ]
+                        if image_files:
+                            return sorted(image_files)  # ソートして一貫した順序で返す
+                    except Exception as e:
+                        logger.warning(f"⚠️ 画像ファイル一覧取得エラー {extraction_dir}: {e}")
+                        continue
+        
+        return []
+    
     def _apply_filename_masking(self, html_content):
         """HTMLコンテンツ全体にファイル名マスキングを適用"""
+        
+        # INTG-087系トラッカーの場合はファイル名マスキングを無効化
+        if 'INTG-087' in html_content:
+            return html_content
+            
         # 抽出ファイル名パターンを検索してマスキング
         patterns = [
             r'(kana\d+_\d{4,}_(?:extracted|cropped|segment)[^"\s<>]*)',  # kana08_0001_extracted.jpg等
@@ -461,7 +662,11 @@ class IntegratedDashboardServer:
         """ナビゲーション付きHTMLラッパー生成"""
         # 現在のダッシュボードのパスを取得
         dashboard_path = ""
-        if current_key in self.dashboards:
+        
+        # メインダッシュボードの場合：ページ一覧表示（元の仕様復元）
+        if current_key == "main":
+            dashboard_path = "dashboard-list"  # ページ一覧HTML表示エンドポイント
+        elif current_key in self.dashboards:
             # ワークスペース相対パスを取得（動的作者検出）
             dashboard_file = self.dashboards[current_key]
             
