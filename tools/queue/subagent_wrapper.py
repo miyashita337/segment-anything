@@ -6,6 +6,7 @@ Claude Code SubAgent統合用の長時間タスクキュー・実行制御シス
 
 import json
 import logging
+import signal
 import subprocess
 import sys
 import time
@@ -43,6 +44,7 @@ class SubAgentTaskQueue:
         # キュー状態ファイル
         self.queue_state_file = self.queue_dir / "queue_state.json"
         self.task_registry_file = self.queue_dir / "task_registry.json"
+        self.running_tasks_file = self.queue_dir / "running_tasks.json"
         
         # 実行制御設定
         self.max_execution_time = 3600  # 1時間
@@ -205,40 +207,63 @@ class SubAgentTaskQueue:
             process = psutil.Process()
             initial_memory = process.memory_info().rss
             
-            # コマンド実行
+            # コマンド実行（Popenでプロセス管理強化）
             self.logger.info(f"コマンド実行: {task['command']}")
-            
-            result = subprocess.run(
+
+            process = subprocess.Popen(
                 task["command"],
                 shell=True,
-                capture_output=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
                 text=True,
-                timeout=self.task_timeout,
                 cwd="/mnt/c/AItools/segment-anything"
             )
+
+            # プロセスID記録
+            task["pid"] = process.pid
+            self._save_running_task(task)
+
+            # プロセス実行完了待機
+            try:
+                stdout, stderr = process.communicate(timeout=self.task_timeout)
+                result_code = process.returncode
+            except subprocess.TimeoutExpired:
+                # タイムアウト時は安全に停止
+                self._terminate_process(process.pid)
+                stdout, stderr = process.communicate()
+                result_code = -1
             
             # 実行時間計算
             execution_time = time.time() - start_time
-            final_memory = process.memory_info().rss
+
+            # メモリ情報取得（現在のプロセス）
+            try:
+                current_proc = psutil.Process()
+                final_memory = current_proc.memory_info().rss
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                final_memory = initial_memory
             memory_delta = final_memory - initial_memory
             
             # 実行統計
             execution_stats = {
                 "execution_time": execution_time,
                 "memory_delta": memory_delta,
-                "cpu_percent": process.cpu_percent(),
-                "return_code": result.returncode
+                "cpu_percent": current_proc.cpu_percent() if 'current_proc' in locals() else 0.0,
+                "return_code": result_code
             }
             
             # 結果判定
-            if result.returncode == 0:
+            if result_code == 0:
                 status = "completed"
-                output = result.stdout
+                output = stdout
                 error = None
             else:
                 status = "failed"
-                output = result.stdout
-                error = result.stderr
+                output = stdout
+                error = stderr
+
+            # 実行完了後はrunning_tasksから削除
+            self._remove_running_task(task["task_id"])
             
             return {
                 "status": status,
@@ -248,21 +273,11 @@ class SubAgentTaskQueue:
                 "execution_stats": execution_stats
             }
             
-        except subprocess.TimeoutExpired:
-            self.logger.warning(f"タスクタイムアウト: {task['task_id']}")
-            return {
-                "status": "timeout",
-                "completed_at": datetime.now(timezone.utc).isoformat(),
-                "output": None,
-                "error": "Task execution timeout",
-                "execution_stats": {
-                    "execution_time": time.time() - start_time,
-                    "timeout": True
-                }
-            }
             
         except Exception as e:
             self.logger.error(f"タスク実行例外: {task['task_id']} - {str(e)}")
+            # エラー時も実行中タスクから削除
+            self._remove_running_task(task["task_id"])
             return {
                 "status": "error",
                 "completed_at": datetime.now(timezone.utc).isoformat(),
@@ -420,6 +435,204 @@ class SubAgentTaskQueue:
             self.logger.error(f"クリーンアップエラー: {str(e)}")
             return 0
 
+    def kill_task(self, task_id: str) -> bool:
+        """
+        指定したタスクを停止
+
+        Args:
+            task_id: 停止するタスクID
+
+        Returns:
+            bool: 停止成功フラグ
+        """
+        try:
+            running_tasks = self._load_running_tasks()
+
+            if task_id not in running_tasks:
+                self.logger.warning(f"実行中タスクが見つかりません: {task_id}")
+                return False
+
+            task = running_tasks[task_id]
+            pid = task.get("pid")
+
+            if not pid:
+                self.logger.error(f"タスクにプロセスIDが記録されていません: {task_id}")
+                return False
+
+            # プロセス停止実行
+            success = self._terminate_process(pid)
+
+            if success:
+                # 停止後の後処理
+                self._remove_running_task(task_id)
+
+                # レジストリー更新
+                registry = self._load_task_registry()
+                if task_id in registry:
+                    registry[task_id]["status"] = "killed"
+                    registry[task_id]["completed_at"] = datetime.now(timezone.utc).isoformat()
+                    registry[task_id]["error"] = "Task killed by user"
+                    self._save_task_registry(registry)
+
+                self.logger.info(f"タスク停止成功: {task_id} (PID: {pid})")
+                return True
+
+            return False
+
+        except Exception as e:
+            self.logger.error(f"タスク停止エラー: {task_id} - {str(e)}")
+            return False
+
+    def kill_all_tasks(self) -> int:
+        """
+        全実行中タスクを停止
+
+        Returns:
+            int: 停止したタスク数
+        """
+        try:
+            running_tasks = self._load_running_tasks()
+            killed_count = 0
+
+            for task_id in list(running_tasks.keys()):
+                if self.kill_task(task_id):
+                    killed_count += 1
+
+            self.logger.info(f"全タスク停止完了: {killed_count}件停止")
+            return killed_count
+
+        except Exception as e:
+            self.logger.error(f"全タスク停止エラー: {str(e)}")
+            return 0
+
+    def list_running_tasks(self) -> Dict:
+        """
+        実行中タスク一覧取得
+
+        Returns:
+            Dict: 実行中タスク情報
+        """
+        try:
+            running_tasks = self._load_running_tasks()
+
+            # 実際のプロセス存在確認
+            active_tasks = {}
+
+            for task_id, task in running_tasks.items():
+                pid = task.get("pid")
+                if pid and psutil.pid_exists(pid):
+                    try:
+                        proc = psutil.Process(pid)
+                        task["cpu_percent"] = proc.cpu_percent()
+                        task["memory_mb"] = proc.memory_info().rss // 1024 // 1024
+                        task["status_detail"] = proc.status()
+                        active_tasks[task_id] = task
+                    except psutil.NoSuchProcess:
+                        # プロセス終了済みの場合は削除
+                        self._remove_running_task(task_id)
+                else:
+                    # PID不正または存在しない場合は削除
+                    self._remove_running_task(task_id)
+
+            return {
+                "running_count": len(active_tasks),
+                "tasks": active_tasks
+            }
+
+        except Exception as e:
+            self.logger.error(f"実行中タスク一覧取得エラー: {str(e)}")
+            return {"error": str(e)}
+
+    def _terminate_process(self, pid: int) -> bool:
+        """
+        プロセスを安全に停止
+
+        Args:
+            pid: プロセスID
+
+        Returns:
+            bool: 停止成功フラグ
+        """
+        try:
+            if not psutil.pid_exists(pid):
+                self.logger.warning(f"プロセスが既に終了しています: PID {pid}")
+                return True
+
+            proc = psutil.Process(pid)
+
+            # 1. SIGTERM送信（正常終了要求）
+            self.logger.info(f"プロセス正常停止要求: PID {pid}")
+            proc.terminate()
+
+            # 2. 5秒間正常終了を待機
+            try:
+                proc.wait(timeout=5)
+                self.logger.info(f"プロセス正常停止完了: PID {pid}")
+                return True
+            except psutil.TimeoutExpired:
+                pass
+
+            # 3. SIGKILL送信（強制終了）
+            if proc.is_running():
+                self.logger.warning(f"プロセス強制停止実行: PID {pid}")
+                proc.kill()
+                try:
+                    proc.wait(timeout=3)
+                    self.logger.info(f"プロセス強制停止完了: PID {pid}")
+                except psutil.TimeoutExpired:
+                    self.logger.error(f"プロセス強制停止もタイムアウト: PID {pid}")
+                    # それでもTrueを返す（プロセス管理の一貫性のため）
+
+            return True
+
+        except psutil.NoSuchProcess:
+            self.logger.info(f"プロセス既に終了: PID {pid}")
+            return True
+        except Exception as e:
+            self.logger.error(f"プロセス停止エラー: PID {pid} - {str(e)}")
+            return False
+
+    def _save_running_task(self, task: Dict) -> None:
+        """実行中タスク記録"""
+        try:
+            running_tasks = self._load_running_tasks()
+            running_tasks[task["task_id"]] = {
+                "task_id": task["task_id"],
+                "pid": task.get("pid"),
+                "command": task["command"],
+                "started_at": task["started_at"],
+                "status": "running"
+            }
+
+            with open(self.running_tasks_file, 'w') as f:
+                json.dump(running_tasks, f, indent=2, ensure_ascii=False)
+
+        except Exception as e:
+            self.logger.error(f"実行中タスク記録エラー: {str(e)}")
+
+    def _remove_running_task(self, task_id: str) -> None:
+        """実行中タスク削除"""
+        try:
+            running_tasks = self._load_running_tasks()
+            if task_id in running_tasks:
+                del running_tasks[task_id]
+
+                with open(self.running_tasks_file, 'w') as f:
+                    json.dump(running_tasks, f, indent=2, ensure_ascii=False)
+
+        except Exception as e:
+            self.logger.error(f"実行中タスク削除エラー: {str(e)}")
+
+    def _load_running_tasks(self) -> Dict:
+        """実行中タスク読み込み"""
+        if self.running_tasks_file.exists():
+            try:
+                with open(self.running_tasks_file, 'r') as f:
+                    return json.load(f)
+            except Exception as e:
+                self.logger.error(f"実行中タスク読み込みエラー: {str(e)}")
+        return {}
+
     def _load_queue_state(self) -> Dict:
         """キュー状態読み込み"""
         if self.queue_state_file.exists():
@@ -520,6 +733,9 @@ def main():
         print("  execute                       - キューから次のタスクを実行")
         print("  status                        - キューステータス表示")
         print("  cleanup [days]                - 完了タスククリーンアップ")
+        print("  kill <task_id>                - 指定タスクを停止")
+        print("  kill-all                      - 全実行中タスクを停止")
+        print("  list-running                  - 実行中タスク一覧表示")
         return
     
     command = sys.argv[1]
@@ -573,7 +789,29 @@ def main():
         keep_days = int(sys.argv[2]) if len(sys.argv) > 2 else 7
         cleaned = queue.cleanup_completed_tasks(keep_days)
         print(f"✅ クリーンアップ完了: {cleaned}件削除")
-    
+
+    elif command == "kill":
+        if len(sys.argv) < 3:
+            print("使用方法: python subagent_wrapper.py kill <task_id>")
+            return
+
+        task_id = sys.argv[2]
+        success = queue.kill_task(task_id)
+
+        if success:
+            print(f"✅ タスク停止成功: {task_id}")
+        else:
+            print(f"❌ タスク停止失敗: {task_id}")
+
+    elif command == "kill-all":
+        killed_count = queue.kill_all_tasks()
+        print(f"✅ 全タスク停止完了: {killed_count}件停止")
+
+    elif command == "list-running":
+        running = queue.list_running_tasks()
+        print("🔄 実行中タスク一覧:")
+        print(json.dumps(running, indent=2, ensure_ascii=False))
+
     else:
         print(f"❌ 不明なコマンド: {command}")
 

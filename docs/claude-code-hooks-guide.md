@@ -93,6 +93,15 @@ python tools/queue/subagent_wrapper.py status
 
 # 完了タスククリーンアップ
 python tools/queue/subagent_wrapper.py cleanup 7
+
+# 実行中タスク停止
+python tools/queue/subagent_wrapper.py kill <task_id>
+
+# 全実行中タスク停止
+python tools/queue/subagent_wrapper.py kill-all
+
+# 実行中タスク一覧表示
+python tools/queue/subagent_wrapper.py list-running
 ```
 
 #### 2. extract_character.py 直接実行防止
@@ -119,6 +128,56 @@ python tools/queue/subagent_wrapper.py execute
 # 緊急時のみ使用
 SUBAGENT_EXECUTION=true python features/extraction/commands/extract_character.py [args...]
 ```
+
+### タスク停止機能詳細
+
+#### 1. 実行中タスクの確認
+```bash
+python tools/queue/subagent_wrapper.py list-running
+```
+
+**出力例:**
+```json
+{
+  "running_count": 1,
+  "tasks": {
+    "INTG-088_extract_1757923937": {
+      "task_id": "INTG-088_extract_1757923937",
+      "pid": 12345,
+      "command": "python features/extraction/commands/extract_character.py ...",
+      "started_at": "2025-09-15T08:12:23.749359+00:00",
+      "status": "running",
+      "cpu_percent": 15.2,
+      "memory_mb": 1024,
+      "status_detail": "running"
+    }
+  }
+}
+```
+
+#### 2. 特定タスクの停止
+```bash
+# タスクIDを指定して停止
+python tools/queue/subagent_wrapper.py kill INTG-088_extract_1757923937
+```
+
+**動作:**
+- SIGTERM（正常終了要求）を送信
+- 5秒待機後、応答がなければSIGKILL（強制終了）
+- 実行中タスクリストから自動削除
+- ログに停止理由を記録
+
+#### 3. 全タスクの一括停止
+```bash
+# 実行中の全タスクを停止
+python tools/queue/subagent_wrapper.py kill-all
+```
+
+#### 4. 安全な停止メカニズム
+- **段階的停止**: SIGTERM → 5秒待機 → SIGKILL
+- **状態管理**: タスクレジストリーに停止記録
+- **プロセス確認**: psutilによる実際のプロセス存在確認
+- **エラー処理**: 既に終了済みプロセスの適切な処理
 
 ### 品質保証システム使用方法
 
