@@ -1,105 +1,105 @@
-# Requirements Document
+# 要件定義書
 
-## Introduction
+## 概要
 
-This project addresses the critical structural problem identified as INCI-006: the systematic failure of AI agents (Claude Code) to consistently follow established workflows despite comprehensive documentation, checklists, and approval systems. The core issue is the **non-idempotent nature of AI behavior** where the same inputs produce different execution paths, leading to procedural violations, step skipping, and unauthorized progression.
+このプロジェクトは、INCI-006として特定された重要な構造的問題に対処します：包括的なドキュメント、チェックリスト、承認システムにもかかわらず、AIエージェント（Claude Code）が確立されたワークフローに一貫して従うことができないという体系的な失敗です。核心的な問題は**AIの動作の非冪等性**であり、同じ入力が異なる実行パスを生成し、手順違反、ステップスキップ、無許可の進行につながります。
 
-The existing analysis has identified that traditional approaches relying on AI cognitive capabilities (attention, memory, judgment) are fundamentally flawed. This spec defines requirements for a **Workflow Enforcement System** that removes critical decision points from AI cognitive domain and places them in external, mechanical systems that cannot be bypassed.
+既存の分析により、AI認知能力（注意、記憶、判断）に依存する従来のアプローチが根本的に欠陥があることが特定されました。この仕様は、重要な決定ポイントをAI認知領域から除去し、迂回できない外部の機械的システムに配置する**ワークフロー強制システム**の要件を定義します。
 
-## Requirements
+## 要件
 
-### Requirement 1: External State Management System
+### 要件1: 外部状態管理システム
 
-**User Story:** As a project manager, I want workflow progress to be tracked externally from the AI agent, so that the AI cannot bypass or misrepresent completion status through cognitive failures.
+**ユーザーストーリー:** プロジェクトマネージャーとして、ワークフローの進行状況をAIエージェントから外部で追跡し、AIが認知的失敗により完了状況を迂回または誤って表現できないようにしたい。
 
-#### Acceptance Criteria
+#### 受入基準
 
-1. WHEN a workflow step is initiated THEN the system SHALL record the step status in an external database that the AI cannot directly modify
-2. WHEN checking step completion THEN the system SHALL verify completion through external validation rather than AI self-reporting
-3. WHEN an AI session is interrupted THEN the system SHALL maintain accurate state that can be restored without relying on AI memory
-4. WHEN multiple AI sessions work on the same tracker THEN the system SHALL provide consistent state information across all sessions
-5. WHEN state conflicts occur THEN the system SHALL prioritize external validation over AI claims
+1. ワークフローステップが開始される際、システムはAIが直接変更できない外部データベースにステップ状況を記録しなければならない
+2. ステップ完了を確認する際、システムはAIの自己報告ではなく外部検証により完了を確認しなければならない
+3. AIセッションが中断される際、システムはAIメモリに依存せずに復元可能な正確な状態を維持しなければならない
+4. 複数のAIセッションが同じトラッカーで作業する際、システムはすべてのセッション間で一貫した状態情報を提供しなければならない
+5. 状態の競合が発生する際、システムはAIの主張よりも外部検証を優先しなければならない
 
-### Requirement 2: Mechanical Validation Gates
+### 要件2: 機械的検証ゲート
 
-**User Story:** As a quality assurance manager, I want automatic validation that prevents progression without proper completion, so that critical steps cannot be skipped through AI judgment or oversight.
+**ユーザーストーリー:** 品質保証マネージャーとして、適切な完了なしに進行を防ぐ自動検証を求め、重要なステップがAIの判断や見落としによってスキップされないようにしたい。
 
-#### Acceptance Criteria
+#### 受入基準
 
-1. WHEN attempting to proceed to the next step THEN the system SHALL automatically verify all prerequisites are met through file system checks
-2. WHEN validation fails THEN the system SHALL block progression and require remediation before allowing continuation
-3. WHEN the AI claims completion THEN the system SHALL verify through independent file existence, content validation, and output quality checks
-4. WHEN critical files are missing THEN the system SHALL prevent any workflow advancement until files are properly created
-5. WHEN validation passes THEN the system SHALL automatically update external state and unlock the next step
+1. 次のステップに進もうとする際、システムはファイルシステムチェックによりすべての前提条件が満たされていることを自動的に確認しなければならない
+2. 検証が失敗する際、システムは進行をブロックし、継続を許可する前に修復を要求しなければならない
+3. AIが完了を主張する際、システムは独立したファイル存在、コンテンツ検証、出力品質チェックにより確認しなければならない
+4. 重要なファイルが不足している際、システムはファイルが適切に作成されるまでワークフローの進行を防がなければならない
+5. 検証が通過する際、システムは自動的に外部状態を更新し、次のステップをアンロックしなければならない
 
-### Requirement 3: Forced Approval System
+### 要件3: 強制承認システム
 
-**User Story:** As a workflow supervisor, I want human approval requirements that cannot be bypassed or assumed by the AI, so that critical decision points always involve human oversight.
+**ユーザーストーリー:** ワークフロー監督者として、AIによって迂回または仮定されることのない人間の承認要件を求め、重要な決定ポイントが常に人間の監視を含むようにしたい。
 
-#### Acceptance Criteria
+#### 受入基準
 
-1. WHEN reaching an approval point THEN the system SHALL create an external approval request that blocks all progress until human response
-2. WHEN the AI attempts to proceed without approval THEN the system SHALL prevent execution and display the pending approval requirement
-3. WHEN approval is granted THEN the system SHALL record the approval with timestamp and allow progression to continue
-4. WHEN approval is denied THEN the system SHALL block progression and require issue resolution before re-requesting approval
-5. WHEN approval times out THEN the system SHALL escalate to designated human supervisors with clear context
+1. 承認ポイントに到達する際、システムは人間の応答まですべての進行をブロックする外部承認要求を作成しなければならない
+2. AIが承認なしに進行しようとする際、システムは実行を防ぎ、保留中の承認要件を表示しなければならない
+3. 承認が付与される際、システムはタイムスタンプ付きで承認を記録し、進行の継続を許可しなければならない
+4. 承認が拒否される際、システムは進行をブロックし、承認を再要求する前に問題解決を要求しなければならない
+5. 承認がタイムアウトする際、システムは明確なコンテキストとともに指定された人間の監督者にエスカレートしなければならない
 
-### Requirement 4: Cognitive Load Reduction Interface
+### 要件4: 認知負荷軽減インターフェース
 
-**User Story:** As an AI agent operator, I want simplified interfaces that present only current step requirements, so that information overload doesn't lead to procedural violations.
+**ユーザーストーリー:** AIエージェントオペレーターとして、現在のステップ要件のみを提示する簡素化されたインターフェースを求め、情報過多が手順違反につながらないようにしたい。
 
-#### Acceptance Criteria
+#### 受入基準
 
-1. WHEN starting a workflow step THEN the system SHALL present only the current step requirements without overwhelming documentation
-2. WHEN the AI requests context THEN the system SHALL provide step-specific guidance rather than full documentation sets
-3. WHEN multiple documents are referenced THEN the system SHALL consolidate requirements into a single, clear instruction set
-4. WHEN the AI completes a step THEN the system SHALL automatically advance to the next step presentation without requiring navigation
-5. WHEN errors occur THEN the system SHALL provide specific, actionable guidance rather than general troubleshooting information
+1. ワークフローステップを開始する際、システムは圧倒的なドキュメントなしに現在のステップ要件のみを提示しなければならない
+2. AIがコンテキストを要求する際、システムは完全なドキュメントセットではなくステップ固有のガイダンスを提供しなければならない
+3. 複数のドキュメントが参照される際、システムは要件を単一の明確な指示セットに統合しなければならない
+4. AIがステップを完了する際、システムはナビゲーションを要求せずに自動的に次のステップ提示に進まなければならない
+5. エラーが発生する際、システムは一般的なトラブルシューティング情報ではなく具体的で実行可能なガイダンスを提供しなければならない
 
-### Requirement 5: Automated Workflow Execution
+### 要件5: 自動ワークフロー実行
 
-**User Story:** As a system administrator, I want critical workflow steps to execute automatically without relying on AI judgment, so that essential processes cannot be forgotten or skipped.
+**ユーザーストーリー:** システム管理者として、AIの判断に依存せずに重要なワークフローステップが自動実行されることを求め、必須プロセスが忘れられたりスキップされたりしないようにしたい。
 
-#### Acceptance Criteria
+#### 受入基準
 
-1. WHEN prerequisites are met THEN the system SHALL automatically execute predefined scripts for critical steps like extraction and quality workflows
-2. WHEN automatic execution completes THEN the system SHALL validate results and update workflow state without AI intervention
-3. WHEN automatic execution fails THEN the system SHALL provide specific error information and prevent progression until issues are resolved
-4. WHEN manual intervention is required THEN the system SHALL clearly specify what human action is needed and block automation until completed
-5. WHEN execution is successful THEN the system SHALL generate completion artifacts and advance workflow state automatically
+1. 前提条件が満たされる際、システムは抽出や品質ワークフローなどの重要なステップに対して事前定義されたスクリプトを自動実行しなければならない
+2. 自動実行が完了する際、システムはAIの介入なしに結果を検証し、ワークフロー状態を更新しなければならない
+3. 自動実行が失敗する際、システムは具体的なエラー情報を提供し、問題が解決されるまで進行を防がなければならない
+4. 手動介入が必要な際、システムは必要な人間のアクションを明確に指定し、完了まで自動化をブロックしなければならない
+5. 実行が成功する際、システムは完了アーティファクトを生成し、ワークフロー状態を自動的に進めなければならない
 
-### Requirement 6: Compliance Monitoring and Reporting
+### 要件6: 遵守監視とレポート
 
-**User Story:** As a project stakeholder, I want real-time monitoring of workflow compliance and violation patterns, so that I can identify systemic issues and measure improvement effectiveness.
+**ユーザーストーリー:** プロジェクト関係者として、ワークフロー遵守と違反パターンのリアルタイム監視を求め、システム的問題を特定し、改善効果を測定したい。
 
-#### Acceptance Criteria
+#### 受入基準
 
-1. WHEN workflow violations occur THEN the system SHALL log detailed information about the violation type, context, and AI behavior
-2. WHEN compliance rates are measured THEN the system SHALL provide accurate metrics based on external validation rather than AI self-reporting
-3. WHEN patterns emerge THEN the system SHALL identify recurring violation types and suggest systemic improvements
-4. WHEN improvements are implemented THEN the system SHALL measure effectiveness through before/after compliance comparisons
-5. WHEN reporting is requested THEN the system SHALL provide comprehensive dashboards showing compliance trends, violation patterns, and system effectiveness
+1. ワークフロー違反が発生する際、システムは違反タイプ、コンテキスト、AI動作に関する詳細情報をログに記録しなければならない
+2. 遵守率が測定される際、システムはAIの自己報告ではなく外部検証に基づく正確なメトリクスを提供しなければならない
+3. パターンが現れる際、システムは反復的な違反タイプを特定し、システム的改善を提案しなければならない
+4. 改善が実装される際、システムは改善前後の遵守比較により効果を測定しなければならない
+5. レポートが要求される際、システムは遵守傾向、違反パターン、システム効果を示す包括的なダッシュボードを提供しなければならない
 
-### Requirement 7: Integration with Existing Systems
+### 要件7: 既存システムとの統合
 
-**User Story:** As a system maintainer, I want the enforcement system to integrate seamlessly with existing hooks, queues, and validation systems, so that current functionality is preserved while adding enforcement capabilities.
+**ユーザーストーリー:** システム保守担当者として、強制システムが既存のフック、キュー、検証システムとシームレスに統合され、強制機能を追加しながら現在の機能が保持されることを求める。
 
-#### Acceptance Criteria
+#### 受入基準
 
-1. WHEN integrating with existing hooks THEN the system SHALL enhance current `.claude/hooks.json` functionality without breaking existing workflows
-2. WHEN working with SubAgent systems THEN the system SHALL ensure long-running tasks respect workflow enforcement requirements
-3. WHEN using existing validation THEN the system SHALL extend current `input_validation.py` capabilities to cover workflow validation
-4. WHEN maintaining compatibility THEN the system SHALL preserve all current Google Sheets integration and progress tracking functionality
-5. WHEN upgrading systems THEN the system SHALL provide migration paths that don't disrupt ongoing work
+1. 既存のフックと統合する際、システムは既存のワークフローを破壊せずに現在の`.claude/hooks.json`機能を強化しなければならない
+2. SubAgentシステムと連携する際、システムは長時間実行タスクがワークフロー強制要件を尊重することを確保しなければならない
+3. 既存の検証を使用する際、システムは現在の`input_validation.py`機能を拡張してワークフロー検証をカバーしなければならない
+4. 互換性を維持する際、システムは現在のGoogle Sheets統合と進捗追跡機能をすべて保持しなければならない
+5. システムをアップグレードする際、システムは進行中の作業を中断しない移行パスを提供しなければならない
 
-### Requirement 8: Emergency Override and Recovery
+### 要件8: 緊急オーバーライドと復旧
 
-**User Story:** As a system operator, I want emergency procedures that allow recovery from system failures or edge cases, so that work can continue even when enforcement systems encounter unexpected conditions.
+**ユーザーストーリー:** システムオペレーターとして、システム障害やエッジケースからの復旧を可能にする緊急手順を求め、強制システムが予期しない条件に遭遇しても作業を継続できるようにしたい。
 
-#### Acceptance Criteria
+#### 受入基準
 
-1. WHEN enforcement systems fail THEN the system SHALL provide clearly documented emergency override procedures
-2. WHEN overrides are used THEN the system SHALL log all override actions with justification and require supervisor approval
-3. WHEN recovery is needed THEN the system SHALL provide tools to reconstruct workflow state from available artifacts
-4. WHEN edge cases occur THEN the system SHALL gracefully degrade to manual mode while maintaining audit trails
-5. WHEN normal operation resumes THEN the system SHALL validate all work completed during emergency mode and update state accordingly
+1. 強制システムが失敗する際、システムは明確に文書化された緊急オーバーライド手順を提供しなければならない
+2. オーバーライドが使用される際、システムは正当化とともにすべてのオーバーライドアクションをログに記録し、監督者の承認を要求しなければならない
+3. 復旧が必要な際、システムは利用可能なアーティファクトからワークフロー状態を再構築するツールを提供しなければならない
+4. エッジケースが発生する際、システムは監査証跡を維持しながら手動モードに優雅に劣化しなければならない
+5. 通常運用が再開される際、システムは緊急モード中に完了したすべての作業を検証し、それに応じて状態を更新しなければならない

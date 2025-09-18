@@ -1,72 +1,72 @@
-# Design Document
+# 設計書
 
-## Overview
+## 概要
 
-This design addresses the fundamental structural problems in the anime character extraction project where comprehensive workflow documentation and control mechanisms fail to ensure consistent AI agent behavior. The analysis reveals that despite having detailed 13-step workflows, 5-stage approval systems, extensive checklists, and multiple reference documents, the AI agent continues to exhibit non-idempotent behavior - making independent decisions, skipping steps, and bypassing approval requirements.
+この設計は、包括的なワークフロードキュメントと制御メカニズムが一貫したAIエージェントの動作を確保できないアニメキャラクター抽出プロジェクトの根本的な構造問題に対処します。分析により、詳細な13ステップワークフロー、5段階承認システム、広範なチェックリスト、複数の参照ドキュメントがあるにもかかわらず、AIエージェントは非冪等的動作を継続して示すことが明らかになりました - 独立した決定を行い、ステップをスキップし、承認要件を迂回しています。
 
-The core issue is architectural: the current system relies on AI cognitive capabilities (attention, memory, judgment) which are inherently unreliable for procedural compliance. The solution requires shifting from AI-dependent controls to external, mechanical enforcement systems.
+核心的な問題はアーキテクチャ的です：現在のシステムは手順遵守において本質的に信頼できないAI認知能力（注意、記憶、判断）に依存しています。解決策は、AI依存の制御から外部の機械的強制システムへの移行を必要とします。
 
-## Architecture
+## アーキテクチャ
 
-### Current System Analysis
+### 現在のシステム分析
 
-The existing system exhibits a **cognitive overload architecture** with the following characteristics:
-
-```
-Documentation Layer (Heavy)
-├── CLAUDE.md (2,000+ lines of instructions)
-├── 13-step workflow checklist
-├── 5-stage approval system  
-├── Multiple reference documents (10+ files)
-├── Specialized checklists and templates
-└── Exception handling procedures
-
-AI Agent Processing Layer (Unreliable)
-├── Attention mechanisms (probabilistic)
-├── Context management (degrading)
-├── Priority resolution (inconsistent)
-├── Memory systems (session-limited)
-└── Judgment calls (variable)
-
-Enforcement Layer (Weak)
-├── Human approval points (bypassable)
-├── Documentation references (ignorable)
-├── Checklist items (skippable)
-└── Process guidelines (interpretable)
-```
-
-### Proposed Architecture: External State Management
-
-The solution shifts critical controls outside the AI agent's cognitive domain:
+既存のシステムは以下の特徴を持つ**認知過負荷アーキテクチャ**を示しています：
 
 ```
-External Control Layer (Mechanical)
-├── State Management Database
-├── Workflow Enforcement Engine
-├── Automatic Validation Gates
-├── Mandatory Human Checkpoints
-└── Progress Tracking System
+ドキュメント層（重い）
+├── CLAUDE.md（2,000行以上の指示）
+├── 13ステップワークフローチェックリスト
+├── 5段階承認システム
+├── 複数の参照ドキュメント（10以上のファイル）
+├── 専門チェックリストとテンプレート
+└── 例外処理手順
 
-AI Agent Interface Layer (Constrained)
-├── Limited Action Scope
-├── Forced Validation Calls
-├── State Query Requirements
-├── Approval Wait States
-└── Error Prevention Blocks
+AIエージェント処理層（信頼できない）
+├── 注意メカニズム（確率的）
+├── コンテキスト管理（劣化する）
+├── 優先度解決（一貫性がない）
+├── メモリシステム（セッション制限）
+└── 判断呼び出し（可変）
 
-Human Oversight Layer (Strengthened)
-├── Explicit Approval Interfaces
-├── Progress Visibility Dashboard
-├── Override Mechanisms
-├── Quality Gates
-└── Escalation Procedures
+実施層（弱い）
+├── 人間承認ポイント（迂回可能）
+├── ドキュメント参照（無視可能）
+├── チェックリスト項目（スキップ可能）
+└── プロセスガイドライン（解釈可能）
 ```
 
-## Components and Interfaces
+### 提案アーキテクチャ：外部状態管理
 
-### 1. Workflow State Manager
+解決策は重要な制御をAIエージェントの認知領域外に移行します：
 
-**Purpose**: External tracking of workflow progress that cannot be bypassed by AI judgment
+```
+外部制御層（機械的）
+├── 状態管理データベース
+├── ワークフロー強制エンジン
+├── 自動検証ゲート
+├── 必須人間チェックポイント
+└── 進捗追跡システム
+
+AIエージェントインターフェース層（制約付き）
+├── 制限されたアクション範囲
+├── 強制検証呼び出し
+├── 状態クエリ要件
+├── 承認待機状態
+└── エラー防止ブロック
+
+人間監視層（強化）
+├── 明示的承認インターフェース
+├── 進捗可視化ダッシュボード
+├── オーバーライドメカニズム
+├── 品質ゲート
+└── エスカレーション手順
+```
+
+## コンポーネントとインターフェース
+
+### 1. ワークフロー状態マネージャー
+
+**目的**: AIの判断によって迂回できないワークフロー進捗の外部追跡
 
 ```python
 class WorkflowStateManager:
@@ -90,9 +90,9 @@ class WorkflowStateManager:
         return self._run_validation_checks(step_id)
 ```
 
-### 2. Approval Enforcement System
+### 2. 承認強制システム
 
-**Purpose**: Mandatory human checkpoints that cannot be skipped or assumed
+**目的**: スキップまたは仮定できない必須の人間チェックポイント
 
 ```python
 class ApprovalEnforcement:
@@ -118,9 +118,9 @@ class ApprovalEnforcement:
         return self._get_approval_result(token)
 ```
 
-### 3. Validation Gate System
+### 3. 検証ゲートシステム
 
-**Purpose**: Automatic checks that prevent progression without proper completion
+**目的**: 適切な完了なしに進行を防ぐ自動チェック
 
 ```python
 class ValidationGates:
@@ -151,9 +151,9 @@ class ValidationGates:
             raise ValidationError(f"Gate {step_id} failed: {result.message}")
 ```
 
-### 4. Simplified Workflow Interface
+### 4. 簡素化ワークフローインターフェース
 
-**Purpose**: Reduce cognitive load by presenting only current step requirements
+**目的**: 現在のステップ要件のみを提示することで認知負荷を軽減
 
 ```python
 class SimplifiedWorkflowInterface:
@@ -194,9 +194,9 @@ class SimplifiedWorkflowInterface:
         return StepResult.COMPLETED(self.get_current_step())
 ```
 
-## Data Models
+## データモデル
 
-### Workflow State Schema
+### ワークフロー状態スキーマ
 
 ```json
 {
@@ -230,7 +230,7 @@ class SimplifiedWorkflowInterface:
 }
 ```
 
-### Approval Request Schema
+### 承認要求スキーマ
 
 ```json
 {
@@ -258,9 +258,9 @@ class SimplifiedWorkflowInterface:
 }
 ```
 
-## Error Handling
+## エラーハンドリング
 
-### Validation Failure Recovery
+### 検証失敗復旧
 
 ```python
 class ValidationFailureHandler:
@@ -285,7 +285,7 @@ class ValidationFailureHandler:
         self._notify_human_operator()
 ```
 
-### Approval Timeout Handling
+### 承認タイムアウト処理
 
 ```python
 class ApprovalTimeoutHandler:
@@ -301,53 +301,53 @@ class ApprovalTimeoutHandler:
             return TimeoutAction.CONTINUE_WAITING
 ```
 
-## Testing Strategy
+## テスト戦略
 
-### Unit Testing Approach
+### 単体テストアプローチ
 
-1. **State Manager Tests**: Verify state transitions and validation logic
-2. **Approval System Tests**: Test approval request/response cycles
-3. **Validation Gate Tests**: Ensure gates properly block invalid progression
-4. **Interface Tests**: Verify simplified interface reduces cognitive load
+1. **状態マネージャーテスト**: 状態遷移と検証ロジックの確認
+2. **承認システムテスト**: 承認要求/応答サイクルのテスト
+3. **検証ゲートテスト**: ゲートが無効な進行を適切にブロックすることを確認
+4. **インターフェーステスト**: 簡素化されたインターフェースが認知負荷を軽減することを確認
 
-### Integration Testing Approach
+### 統合テストアプローチ
 
-1. **End-to-End Workflow Tests**: Complete workflow execution with external controls
-2. **Failure Recovery Tests**: Test system behavior under various failure conditions
-3. **Approval Flow Tests**: Test human approval integration
-4. **Performance Tests**: Ensure external controls don't significantly impact performance
+1. **エンドツーエンドワークフローテスト**: 外部制御による完全なワークフロー実行
+2. **障害復旧テスト**: 様々な障害条件下でのシステム動作テスト
+3. **承認フローテスト**: 人間承認統合のテスト
+4. **パフォーマンステスト**: 外部制御がパフォーマンスに大きく影響しないことを確認
 
-### Behavioral Testing
+### 行動テスト
 
-1. **AI Compliance Tests**: Verify AI cannot bypass controls
-2. **Idempotency Tests**: Ensure consistent behavior across sessions
-3. **Stress Tests**: Test system under high cognitive load scenarios
-4. **Edge Case Tests**: Test unusual but possible workflow scenarios
+1. **AI遵守テスト**: AIが制御を迂回できないことを確認
+2. **冪等性テスト**: セッション間での一貫した動作を確保
+3. **ストレステスト**: 高認知負荷シナリオ下でのシステムテスト
+4. **エッジケーステスト**: 異常だが可能なワークフローシナリオのテスト
 
-## Implementation Phases
+## 実装フェーズ
 
-### Phase 1: Core Infrastructure (Week 1-2)
-- Implement WorkflowStateManager
-- Create basic ApprovalEnforcement system
-- Build ValidationGates framework
-- Set up external state storage
+### フェーズ1: コアインフラストラクチャ（第1-2週）
+- WorkflowStateManagerの実装
+- 基本ApprovalEnforcementシステムの作成
+- ValidationGatesフレームワークの構築
+- 外部状態ストレージの設定
 
-### Phase 2: Workflow Integration (Week 3-4)
-- Integrate existing 13-step workflow with new controls
-- Implement mandatory approval points
-- Create simplified AI interface
-- Add automatic validation checks
+### フェーズ2: ワークフロー統合（第3-4週）
+- 既存の13ステップワークフローと新しい制御の統合
+- 必須承認ポイントの実装
+- 簡素化されたAIインターフェースの作成
+- 自動検証チェックの追加
 
-### Phase 3: Testing and Refinement (Week 5-6)
-- Comprehensive testing of all components
-- Performance optimization
-- User interface improvements
-- Documentation updates
+### フェーズ3: テストと改良（第5-6週）
+- すべてのコンポーネントの包括的テスト
+- パフォーマンス最適化
+- ユーザーインターフェースの改善
+- ドキュメントの更新
 
-### Phase 4: Deployment and Monitoring (Week 7-8)
-- Gradual rollout with existing workflows
-- Monitor AI compliance rates
-- Collect user feedback
-- Iterate on design based on real-world usage
+### フェーズ4: デプロイメントと監視（第7-8週）
+- 既存ワークフローでの段階的ロールアウト
+- AI遵守率の監視
+- ユーザーフィードバックの収集
+- 実世界の使用に基づく設計の反復
 
-This design addresses the fundamental issue of AI non-idempotency by removing critical decision points from the AI's cognitive domain and placing them in external, mechanical systems that cannot be bypassed through AI judgment or attention failures.
+この設計は、重要な決定ポイントをAIの認知領域から除去し、AIの判断や注意の失敗によって迂回できない外部の機械的システムに配置することで、AI非冪等性の根本的問題に対処します。

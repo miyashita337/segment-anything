@@ -1,51 +1,45 @@
-# Implementation Plan
+# 実装計画書
 
-## Overview
+## 概要
 
-This implementation plan creates a **Workflow Enforcement System** that shifts from "trust-based control" (expecting AI to follow instructions) to "verification-based control" (mechanically enforcing compliance). The system integrates with existing infrastructure while adding external state management, mechanical validation gates, and forced approval systems.
+この実装計画は、「信頼ベース制御」（AIが指示に従うことを期待）から「検証ベース制御」（機械的に遵守を強制）へのシフトを行う**ワークフロー強制システム**を作成します。システムは既存のインフラストラクチャと統合しながら、外部状態管理、機械的検証ゲート、強制承認システムを追加します。
 
-## Current System Integration Points
+## 現在のシステム統合ポイント
 
-**Existing Infrastructure to Leverage:**
-- `.claude/hooks.json` - 3 hooks (PreToolUse, PostToolUse, UserPromptSubmit)
-- `tools/hooks/` - 12 workflow control scripts
-- `tools/queue/` - SubAgent and long-task management
-- `features/common/input_validation.py` - Input validation framework
-- Google Sheets integration via `tools/progress_tracker/cli.py`
+**活用する既存インフラストラクチャ:**
+- `.claude/hooks.json` - 3つのフック（PreToolUse、PostToolUse、UserPromptSubmit）
+- `tools/hooks/` - 12のワークフロー制御スクリプト
+- `tools/queue/` - SubAgentと長時間タスク管理
+- `features/common/input_validation.py` - 入力検証フレームワーク
+- `tools/progress_tracker/cli.py`経由のGoogle Sheets統合
 
-**Integration Strategy:**
-- Enhance existing hooks rather than replace them
-- Extend current validation framework for workflow enforcement
-- Maintain compatibility with SubAgent systems
-- Preserve Google Sheets integration while adding external state management
+**統合戦略:**
+- 既存のフックを置き換えるのではなく強化する
+- ワークフロー強制のために現在の検証フレームワークを拡張する
+- SubAgentシステムとの互換性を維持する
+- 外部状態管理を追加しながらGoogle Sheets統合を保持する
 
-## Task Breakdown
+## タスク分解
 
-- [x] 1. Core External State Management System
+- [x] 1. コア外部状態管理システム
 
+  - [x] 1.1 ワークフロー状態データベースの作成
+    - SQLiteバックエンドで`tools/workflow/state_manager.py`を実装
+    - ワークフロー状態、検証、承認のデータベーススキーマを作成
+    - ロック機構付きのアトミック状態遷移を追加
+    - 状態復旧と一貫性チェックを実装
+    - _要件: 1.1, 1.2, 1.3, 1.4, 1.5_
 
+  - [x] 1.2 既存Google Sheetsシステムとの統合
+    - ローカル状態データベースと同期するように`tools/progress_tracker/cli.py`を拡張
+    - SQLiteとGoogle Sheets間の双方向同期を作成
+    - 状態不一致の競合解決を追加
+    - 既存のGoogle Sheets API機能を維持
+    - _要件: 7.4, 1.1_
 
+- [ ] 2. 機械的検証ゲートシステム
 
-  - [x] 1.1 Create Workflow State Database
-
-
-    - Implement `tools/workflow/state_manager.py` with SQLite backend
-    - Create database schema for workflow states, validations, and approvals
-    - Add atomic state transitions with locking mechanisms
-    - Implement state recovery and consistency checks
-    - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
-
-  - [x] 1.2 Integrate with Existing Google Sheets System
-
-    - Extend `tools/progress_tracker/cli.py` to sync with local state database
-    - Create bidirectional sync between SQLite and Google Sheets
-    - Add conflict resolution for state discrepancies
-    - Maintain existing Google Sheets API functionality
-    - _Requirements: 7.4, 1.1_
-
-- [ ] 2. Mechanical Validation Gate System
-
-  - [x] 2.1 Create File System Validators
+  - [x] 2.1 ファイルシステム検証器の作成
 
 
     - Implement `tools/validation/file_system_validator.py`
@@ -54,216 +48,210 @@ This implementation plan creates a **Workflow Enforcement System** that shifts f
     - Add quality workflow validation (dashboard generation, content verification)
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-  - [ ] 2.2 Create Validation Gate Controller
-    - Implement `tools/validation/validation_gate_controller.py`
-    - Add automatic blocking when validation fails
-    - Create validation result caching system
-    - Add validation retry mechanisms with exponential backoff
-    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
+  - [ ] 2.2 検証ゲートコントローラーの作成
+    - `tools/validation/validation_gate_controller.py`を実装
+    - 検証失敗時の自動ブロック機能を追加
+    - 検証結果キャッシュシステムを作成
+    - 指数バックオフ付きの検証再試行メカニズムを追加
+    - _要件: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-- [ ] 3. Forced Approval System
+- [ ] 3. 強制承認システム
 
+  - [ ] 3.1 承認ゲートコントローラーの作成
+    - `tools/approval/approval_gate_controller.py`を実装
+    - ファイルベースの承認要求/応答システムを作成
+    - 承認タイムアウトとエスカレーションメカニズムを追加
+    - 承認監査証跡とログ機能を実装
+    - _要件: 3.1, 3.2, 3.3, 3.4, 3.5_
 
+  - [ ] 3.2 人間承認インターフェースの作成
+    - 明確な承認要求表示システムを実装
+    - 検証付き承認ファイルテンプレートを作成
+    - 承認状況監視と通知機能を追加
+    - 承認履歴と監査機能を実装
+    - _要件: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-  - [ ] 3.1 Create Approval Gate Controller
-    - Implement `tools/approval/approval_gate_controller.py`
-    - Create file-based approval request/response system
-    - Add approval timeout and escalation mechanisms
-    - Implement approval audit trail and logging
-    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
+- [ ] 4. 自動ワークフロー実行器
 
-  - [ ] 3.2 Create Human Approval Interface
-    - Implement clear approval request display system
-    - Create approval file templates with validation
-    - Add approval status monitoring and notifications
-    - Implement approval history and audit capabilities
-    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
+  - [ ] 4.1 自動実行エンジンの作成
+    - `tools/execution/automatic_executor.py`を実装
+    - バックグラウンド処理付きの自動抽出実行を追加
+    - 自動品質ワークフロー実行を追加
+    - 実行監視と進捗追跡を実装
+    - _要件: 5.1, 5.2, 5.3, 5.4, 5.5_
 
+  - [ ] 4.2 既存SubAgentシステムとの統合
+    - ワークフロー強制のために`tools/queue/subagent_monitor.py`を拡張
+    - ワークフロー対応タスクスケジューリングを追加
+    - 強制遵守対応の長時間実行タスク実行を実装
+    - SubAgentタスク検証と承認統合を追加
+    - _要件: 7.2, 5.1, 5.2_
 
+- [ ] 5. 簡素化AIインターフェースシステム
 
-- [ ] 4. Automatic Workflow Executor
-
-  - [ ] 4.1 Create Automatic Execution Engine
-    - Implement `tools/execution/automatic_executor.py`
-    - Add automatic extraction execution with background processing
-    - Add automatic quality workflow execution
-    - Implement execution monitoring and progress tracking
-    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
-
-  - [ ] 4.2 Integrate with Existing SubAgent System
-    - Extend `tools/queue/subagent_monitor.py` for workflow enforcement
-    - Add workflow-aware task scheduling
-    - Implement enforcement-compliant long-running task execution
-    - Add SubAgent task validation and approval integration
-
-
-    - _Requirements: 7.2, 5.1, 5.2_
-
-- [ ] 5. Simplified AI Interface System
-
-  - [ ] 5.1 Create Step-by-Step Interface
-    - Implement `tools/interface/simplified_workflow_interface.py`
-    - Create current-step-only display system
+  - [ ] 5.1 ステップバイステップインターフェースの作成
+    - `tools/interface/simplified_workflow_interface.py`を実装
+    - 現在ステップのみ表示システムを作成
     - Add contextual help and guidance system
     - Implement automatic step advancement after validation
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
   - [ ] 5.2 Create Workflow Configuration System
     - Implement `tools/config/workflow_config.py`
-    - Create JSON-based step configuration system
-    - Add step dependency and prerequisite management
-    - Implement dynamic workflow customization
-    - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
+    - JSONベースのステップ設定システムを作成
+    - ステップ依存関係と前提条件管理を追加
+    - 動的ワークフローカスタマイゼーションを実装
+    - _要件: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [ ] 6. Enhanced Hook Integration
+- [ ] 6. 強化フック統合
 
-  - [ ] 6.1 Extend Existing Hook System
-    - Modify `tools/hooks/hybrid_workflow_compliance.sh` to use new state management
-    - Integrate validation gates with PreToolUse hook
-    - Add approval checking to PostToolUse hook
-    - Enhance `tools/hooks/analyze_tracker_context.sh` with new state queries
-    - _Requirements: 7.1, 1.1, 2.1, 3.1_
+  - [ ] 6.1 既存フックシステムの拡張
+    - 新しい状態管理を使用するように`tools/hooks/hybrid_workflow_compliance.sh`を修正
+    - PreToolUseフックと検証ゲートを統合
+    - PostToolUseフックに承認チェックを追加
+    - 新しい状態クエリで`tools/hooks/analyze_tracker_context.sh`を強化
+    - _要件: 7.1, 1.1, 2.1, 3.1_
 
-  - [ ] 6.2 Create Enforcement Hook Scripts
-    - Create `tools/hooks/enforce_workflow_compliance.sh`
-    - Add automatic validation triggering
-    - Implement approval gate enforcement
-    - Add state synchronization hooks
-    - _Requirements: 7.1, 2.1, 3.1_
+  - [ ] 6.2 強制フックスクリプトの作成
+    - `tools/hooks/enforce_workflow_compliance.sh`を作成
+    - 自動検証トリガーを追加
+    - 承認ゲート強制を実装
+    - 状態同期フックを追加
+    - _要件: 7.1, 2.1, 3.1_
 
-- [ ] 7. Compliance Monitoring and Reporting
+- [ ] 7. 遵守監視とレポート
 
-  - [ ] 7.1 Create Compliance Dashboard
-    - Implement `tools/monitoring/compliance_dashboard.py`
-    - Add real-time workflow compliance monitoring
-    - Create violation pattern analysis and reporting
-    - Implement compliance metrics and trend analysis
-    - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
+  - [ ] 7.1 遵守ダッシュボードの作成
+    - `tools/monitoring/compliance_dashboard.py`を実装
+    - リアルタイムワークフロー遵守監視を追加
+    - 違反パターン分析とレポートを作成
+    - 遵守メトリクスと傾向分析を実装
+    - _要件: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-  - [ ] 7.2 Create Violation Detection System
-    - Implement `tools/monitoring/violation_detector.py`
-    - Add automatic detection of workflow bypasses
-    - Create violation logging and alerting system
-    - Implement pattern analysis for systemic issues
-    - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5_
+  - [ ] 7.2 違反検出システムの作成
+    - `tools/monitoring/violation_detector.py`を実装
+    - ワークフロー迂回の自動検出を追加
+    - 違反ログとアラートシステムを作成
+    - システム的問題のパターン分析を実装
+    - _要件: 6.1, 6.2, 6.3, 6.4, 6.5_
 
-- [ ] 8. Error Handling and Recovery
+- [ ] 8. エラー処理と復旧
 
-  - [ ] 8.1 Create Recovery System
-    - Implement `tools/recovery/validation_failure_handler.py`
-    - Add automatic recovery for common failure patterns
-    - Create manual recovery procedures and documentation
-    - Implement recovery success tracking and optimization
-    - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
+  - [ ] 8.1 復旧システムの作成
+    - `tools/recovery/validation_failure_handler.py`を実装
+    - 一般的な失敗パターンの自動復旧を追加
+    - 手動復旧手順とドキュメントを作成
+    - 復旧成功追跡と最適化を実装
+    - _要件: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-  - [ ] 8.2 Create Emergency Override System
-    - Implement `tools/emergency/override_controller.py`
-    - Add documented emergency procedures
-    - Create override audit trail and approval system
-    - Implement automatic override expiration and review
-    - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
+  - [ ] 8.2 緊急オーバーライドシステムの作成
+    - `tools/emergency/override_controller.py`を実装
+    - 文書化された緊急手順を追加
+    - オーバーライド監査証跡と承認システムを作成
+    - 自動オーバーライド期限切れとレビューを実装
+    - _要件: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-- [ ] 9. Integration Testing and Validation
+- [ ] 9. 統合テストと検証
 
-  - [ ] 9.1 Create Comprehensive Test Suite
-    - Implement `tests/integration/test_workflow_enforcement.py`
-    - Add end-to-end workflow enforcement testing
-    - Create AI bypass prevention test scenarios
-    - Implement state consistency and recovery testing
-    - _Requirements: All requirements validation_
+  - [ ] 9.1 包括的テストスイートの作成
+    - `tests/integration/test_workflow_enforcement.py`を実装
+    - エンドツーエンドワークフロー強制テストを追加
+    - AI迂回防止テストシナリオを作成
+    - 状態一貫性と復旧テストを実装
+    - _要件: 全要件の検証_
 
-  - [ ] 9.2 Create Performance Testing
-    - Implement `tests/performance/test_enforcement_overhead.py`
-    - Add database performance testing
-    - Create file system validation performance tests
-    - Implement approval system response time testing
-    - _Requirements: Performance validation_
+  - [ ] 9.2 パフォーマンステストの作成
+    - `tests/performance/test_enforcement_overhead.py`を実装
+    - データベースパフォーマンステストを追加
+    - ファイルシステム検証パフォーマンステストを作成
+    - 承認システム応答時間テストを実装
+    - _要件: パフォーマンス検証_
 
-- [ ] 10. Deployment and Migration
+- [ ] 10. デプロイメントと移行
 
-  - [ ] 10.1 Create Migration System
-    - Implement `tools/migration/migrate_existing_workflows.py`
-    - Add existing tracker state migration
-    - Create backward compatibility layer
-    - Implement gradual rollout procedures
-    - _Requirements: 7.5_
+  - [ ] 10.1 移行システムの作成
+    - `tools/migration/migrate_existing_workflows.py`を実装
+    - 既存トラッカー状態移行を追加
+    - 後方互換性レイヤーを作成
+    - 段階的ロールアウト手順を実装
+    - _要件: 7.5_
 
-  - [ ] 10.2 Create Documentation and Training
-    - Create user documentation for new approval workflows
-    - Add troubleshooting guides for common issues
-    - Create training materials for human approvers
-    - Implement system administration documentation
-    - _Requirements: 7.5_
+  - [ ] 10.2 ドキュメントとトレーニングの作成
+    - 新しい承認ワークフローのユーザードキュメントを作成
+    - 一般的な問題のトラブルシューティングガイドを追加
+    - 人間承認者向けトレーニング資料を作成
+    - システム管理ドキュメントを実装
+    - _要件: 7.5_
 
-## Implementation Priority
+## 実装優先度
 
-### Phase 1: Core Infrastructure (Immediate - Week 1-2)
-**Critical Path:**
-- Task 1.1: Workflow State Database (Foundation for all other components)
-- Task 2.1: File System Validators (Essential for mechanical verification)
-- Task 3.1: Approval Gate Controller (Critical for forced approvals)
-- Task 6.1: Enhanced Hook Integration (Maintains existing functionality)
+### フェーズ1: コアインフラストラクチャ（即座 - 第1-2週）
+**クリティカルパス:**
+- タスク1.1: ワークフロー状態データベース（他のすべてのコンポーネントの基盤）
+- タスク2.1: ファイルシステム検証器（機械的検証に必須）
+- タスク3.1: 承認ゲートコントローラー（強制承認に重要）
+- タスク6.1: 強化フック統合（既存機能を維持）
 
-### Phase 2: Automatic Execution (Week 3-4)
-**High Priority:**
-- Task 4.1: Automatic Execution Engine (Removes AI dependency for critical steps)
-- Task 5.1: Simplified AI Interface (Reduces cognitive load)
-- Task 7.1: Compliance Dashboard (Provides visibility into system effectiveness)
+### フェーズ2: 自動実行（第3-4週）
+**高優先度:**
+- タスク4.1: 自動実行エンジン（重要なステップのAI依存を除去）
+- タスク5.1: 簡素化AIインターフェース（認知負荷を軽減）
+- タスク7.1: 遵守ダッシュボード（システム効果の可視性を提供）
 
-### Phase 3: Advanced Features (Week 5-6)
-**Medium Priority:**
-- Task 4.2: SubAgent Integration (Maintains existing long-task capabilities)
-- Task 8.1: Recovery System (Handles edge cases and failures)
-- Task 9.1: Comprehensive Testing (Ensures system reliability)
+### フェーズ3: 高度機能（第5-6週）
+**中優先度:**
+- タスク4.2: SubAgent統合（既存の長時間タスク機能を維持）
+- タスク8.1: 復旧システム（エッジケースと失敗を処理）
+- タスク9.1: 包括的テスト（システム信頼性を確保）
 
-### Phase 4: Production Readiness (Week 7-8)
-**Deployment Priority:**
-- Task 10.1: Migration System (Enables safe deployment)
-- Task 8.2: Emergency Override (Provides safety net)
-- Task 10.2: Documentation (Enables user adoption)
+### フェーズ4: 本番準備（第7-8週）
+**デプロイメント優先度:**
+- タスク10.1: 移行システム（安全なデプロイメントを可能にする）
+- タスク8.2: 緊急オーバーライド（セーフティネットを提供）
+- タスク10.2: ドキュメント（ユーザー採用を可能にする）
 
-## Success Criteria
+## 成功基準
 
-### Quantitative Metrics
-- **Workflow Compliance Rate**: Increase from current ~60% to target 95%
-- **Step Skipping Prevention**: Reduce unauthorized step skipping to <5%
-- **Approval Bypass Prevention**: Zero instances of approval bypass
-- **State Consistency**: 99%+ accuracy in external state tracking
-- **System Performance**: <2 second overhead for validation operations
+### 定量的メトリクス
+- **ワークフロー遵守率**: 現在の約60%から目標95%に向上
+- **ステップスキップ防止**: 無許可ステップスキップを5%未満に削減
+- **承認迂回防止**: 承認迂回のゼロインスタンス
+- **状態一貫性**: 外部状態追跡で99%以上の精度
+- **システムパフォーマンス**: 検証操作で2秒未満のオーバーヘッド
 
-### Qualitative Improvements
-- **Predictable Behavior**: Consistent workflow execution across AI sessions
-- **Reduced Cognitive Load**: Simplified interface reduces AI confusion
-- **Audit Trail**: Complete visibility into all workflow decisions and approvals
-- **Error Recovery**: Graceful handling of failures with clear recovery paths
-- **User Confidence**: Restored trust in workflow compliance systems
+### 質的改善
+- **予測可能な動作**: AIセッション間での一貫したワークフロー実行
+- **認知負荷軽減**: 簡素化されたインターフェースがAIの混乱を軽減
+- **監査証跡**: すべてのワークフロー決定と承認への完全な可視性
+- **エラー復旧**: 明確な復旧パスでの失敗の優雅な処理
+- **ユーザー信頼**: ワークフロー遵守システムへの信頼回復
 
-## Risk Mitigation
+## リスク軽減
 
-### Technical Risks
-- **Database Corruption**: Implement automatic backups and recovery procedures
-- **Performance Degradation**: Add caching and optimization for validation operations
-- **Integration Failures**: Maintain backward compatibility and gradual migration
-- **Approval Bottlenecks**: Implement timeout and escalation procedures
+### 技術的リスク
+- **データベース破損**: 自動バックアップと復旧手順を実装
+- **パフォーマンス劣化**: 検証操作のキャッシュと最適化を追加
+- **統合失敗**: 後方互換性と段階的移行を維持
+- **承認ボトルネック**: タイムアウトとエスカレーション手順を実装
 
-### Operational Risks
-- **User Resistance**: Provide clear documentation and training materials
-- **Emergency Situations**: Implement documented override procedures
-- **System Maintenance**: Create automated monitoring and alerting systems
-- **Knowledge Transfer**: Document all systems and procedures comprehensively
+### 運用リスク
+- **ユーザー抵抗**: 明確なドキュメントとトレーニング資料を提供
+- **緊急事態**: 文書化されたオーバーライド手順を実装
+- **システムメンテナンス**: 自動監視とアラートシステムを作成
+- **知識移転**: すべてのシステムと手順を包括的に文書化
 
-## Existing System Preservation
+## 既存システム保持
 
-### Maintained Functionality
-- All existing Google Sheets integration and progress tracking
-- Current SubAgent and queue management systems
-- Existing hook system functionality and monitoring
-- Current input validation and error handling
+### 維持される機能
+- 既存のGoogle Sheets統合と進捗追跡すべて
+- 現在のSubAgentとキュー管理システム
+- 既存のフックシステム機能と監視
+- 現在の入力検証とエラー処理
 
-### Enhanced Capabilities
-- External state management adds reliability to existing tracking
-- Mechanical validation enhances existing quality checks
-- Forced approvals strengthen existing approval workflows
-- Automatic execution reduces manual intervention requirements
+### 強化された機能
+- 外部状態管理が既存追跡に信頼性を追加
+- 機械的検証が既存品質チェックを強化
+- 強制承認が既存承認ワークフローを強化
+- 自動実行が手動介入要件を削減
 
-This implementation plan transforms the existing trust-based system into a verification-based system while preserving all current functionality and providing clear migration paths.
+この実装計画は、既存の信頼ベースシステムを検証ベースシステムに変換しながら、すべての現在の機能を保持し、明確な移行パスを提供します。

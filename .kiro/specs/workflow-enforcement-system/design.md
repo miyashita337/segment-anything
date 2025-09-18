@@ -1,53 +1,53 @@
-# Design Document
+# 設計書
 
-## Overview
+## 概要
 
-This design addresses the fundamental structural problem where comprehensive workflow documentation fails to ensure consistent AI agent behavior. The analysis reveals that the current system relies on "trust-based control" (expecting AI to follow instructions) rather than "verification-based control" (mechanically enforcing compliance). 
+この設計は、包括的なワークフロードキュメントが一貫したAIエージェントの動作を確保できない根本的な構造問題に対処します。分析により、現在のシステムは「検証ベース制御」（機械的に遵守を強制）ではなく「信頼ベース制御」（AIが指示に従うことを期待）に依存していることが明らかになりました。
 
-The core architectural shift required is from **cognitive dependency** (relying on AI attention, memory, judgment) to **mechanical dependency** (automated checks, external enforcement, physical blocking).
+必要な核心的なアーキテクチャシフトは、**認知依存**（AI注意、記憶、判断への依存）から**機械依存**（自動チェック、外部強制、物理的ブロック）への移行です。
 
-## Architecture
+## アーキテクチャ
 
-### Current System Analysis: Trust-Based Control
+### 現在のシステム分析：信頼ベース制御
 
 ```
-Current "Trust-Based" Architecture:
+現在の「信頼ベース」アーキテクチャ：
 ┌─────────────────────────────────────┐
-│ Documentation Layer (Heavy)         │
-│ ├── CLAUDE.md (1,200+ lines)       │
+│ ドキュメント層（重い）                │
+│ ├── CLAUDE.md（1,200行以上）        │
 │ ├── unified_tracker_template.md    │
 │ ├── tracker_workflow_checklist.md  │
-│ └── Multiple reference docs         │
+│ └── 複数の参照ドキュメント            │
 └─────────────────────────────────────┘
-           ↓ "Please follow"
+           ↓ "従ってください"
 ┌─────────────────────────────────────┐
-│ AI Cognitive Processing (Unreliable)│
-│ ├── Read & Interpret               │
-│ ├── Remember & Prioritize          │
-│ ├── Judge & Decide                 │
-│ └── Self-Report Completion         │
+│ AI認知処理（信頼できない）            │
+│ ├── 読み取りと解釈                   │
+│ ├── 記憶と優先順位付け               │
+│ ├── 判断と決定                      │
+│ └── 完了の自己報告                   │
 └─────────────────────────────────────┘
-           ↓ "I did it"
+           ↓ "やりました"
 ┌─────────────────────────────────────┐
-│ Trust-Based Verification (Weak)     │
-│ ├── Accept AI self-reports         │
-│ ├── Hope for compliance            │
-│ └── React to failures              │
+│ 信頼ベース検証（弱い）               │
+│ ├── AIの自己報告を受け入れ           │
+│ ├── 遵守への期待                    │
+│ └── 失敗への反応                    │
 └─────────────────────────────────────┘
 
-Problems:
-- AI can forget, misinterpret, or bypass instructions
-- No external verification of claimed completion
-- Cognitive overload leads to shortcuts
-- Non-idempotent behavior across sessions
+問題：
+- AIは指示を忘れ、誤解釈し、または迂回する可能性
+- 主張された完了の外部検証なし
+- 認知過負荷がショートカットにつながる
+- セッション間での非冪等的動作
 ```
 
-### Proposed Architecture: Verification-Based Control
+### 提案アーキテクチャ：検証ベース制御
 
 ```
-New "Verification-Based" Architecture:
+新しい「検証ベース」アーキテクチャ：
 ┌─────────────────────────────────────┐
-│ External Control Layer (Mechanical) │
+│ 外部制御層（機械的）                 │
 │ ├── State Database (SQLite)        │
 │ ├── File System Validators         │
 │ ├── Approval Gate Controllers      │
@@ -99,7 +99,7 @@ class StepValidation:
     validation_type: str  # file_exists, content_check, quality_gate
     validation_result: bool
     validation_timestamp: datetime
-    validation_evidence: str  # file path, checksum, etc.
+    validation_evidence: str  # ファイルパス、チェックサムなど
 
 class ApprovalRequest:
     approval_id: str
@@ -110,7 +110,7 @@ class ApprovalRequest:
     status: str  # pending, approved, denied, expired
 ```
 
-**Implementation**:
+**実装**:
 ```python
 class WorkflowStateManager:
     def __init__(self, db_path: str = "workflow_state.db"):
@@ -118,7 +118,7 @@ class WorkflowStateManager:
         self._init_tables()
     
     def can_proceed_to_step(self, tracker_id: str, step_id: str) -> bool:
-        """Mechanical check - no AI interpretation"""
+        """機械的チェック - AI解釈なし"""
         prerequisites = self._get_step_prerequisites(step_id)
         for prereq in prerequisites:
             if not self._is_step_validated(tracker_id, prereq):
@@ -126,27 +126,27 @@ class WorkflowStateManager:
         return True
     
     def validate_step_completion(self, tracker_id: str, step_id: str) -> ValidationResult:
-        """External validation through file system checks"""
+        """ファイルシステムチェックによる外部検証"""
         validators = self._get_step_validators(step_id)
         for validator in validators:
             result = validator.validate(tracker_id)
             if not result.passed:
                 return ValidationResult(False, result.errors)
         
-        # Update state only after successful validation
+        # 検証成功後のみ状態更新
         self._mark_step_completed(tracker_id, step_id)
         return ValidationResult(True, [])
     
     def require_approval(self, tracker_id: str, step_id: str) -> str:
-        """Create approval requirement that blocks progress"""
+        """進行をブロックする承認要件を作成"""
         approval_id = self._create_approval_request(tracker_id, step_id)
         self._block_actions_until_approved(tracker_id, approval_id)
         return approval_id
 ```
 
-### 2. File System Validators
+### 2. ファイルシステム検証器
 
-**Purpose**: Mechanical verification through file system evidence
+**目的**: ファイルシステム証拠による機械的検証
 
 ```python
 class FileSystemValidator:
@@ -154,41 +154,41 @@ class FileSystemValidator:
         self.workspace_base = workspace_base
     
     def validate_extraction_completion(self, tracker_id: str) -> ValidationResult:
-        """Verify extraction actually happened"""
+        """抽出が実際に発生したことを確認"""
         extraction_dir = f"{self.workspace_base}/{tracker_id}/extraction/"
         
-        # Check directory exists
+        # ディレクトリ存在チェック
         if not os.path.exists(extraction_dir):
-            return ValidationResult(False, ["Extraction directory not found"])
+            return ValidationResult(False, ["抽出ディレクトリが見つかりません"])
         
-        # Check for actual extracted files
+        # 実際の抽出ファイルをチェック
         extracted_files = glob.glob(f"{extraction_dir}/*_extracted.jpg")
         if len(extracted_files) == 0:
-            return ValidationResult(False, ["No extracted files found"])
+            return ValidationResult(False, ["抽出ファイルが見つかりません"])
         
-        # Check extraction_result.json exists and is valid
+        # extraction_result.jsonの存在と有効性をチェック
         result_file = f"{self.workspace_base}/{tracker_id}/extraction_result.json"
         if not os.path.exists(result_file):
-            return ValidationResult(False, ["extraction_result.json not found"])
+            return ValidationResult(False, ["extraction_result.jsonが見つかりません"])
         
         try:
             with open(result_file) as f:
                 data = json.load(f)
                 if data.get('successful_extractions', 0) == 0:
-                    return ValidationResult(False, ["No successful extractions recorded"])
+                    return ValidationResult(False, ["成功した抽出が記録されていません"])
         except Exception as e:
-            return ValidationResult(False, [f"Invalid extraction_result.json: {e}"])
+            return ValidationResult(False, [f"無効なextraction_result.json: {e}"])
         
         return ValidationResult(True, [])
     
     def validate_quality_workflow_completion(self, tracker_id: str) -> ValidationResult:
-        """Verify quality workflow actually ran"""
+        """品質ワークフローが実際に実行されたことを確認"""
         dashboard_file = f"{self.workspace_base}/{tracker_id}/dashboard/dashboard.html"
         
         if not os.path.exists(dashboard_file):
-            return ValidationResult(False, ["Dashboard file not found"])
+            return ValidationResult(False, ["ダッシュボードファイルが見つかりません"])
         
-        # Check dashboard contains required sections
+        # ダッシュボードに必要なセクションが含まれているかチェック
         with open(dashboard_file) as f:
             content = f.read()
             required_sections = [
@@ -199,14 +199,14 @@ class FileSystemValidator:
             ]
             for section in required_sections:
                 if section not in content:
-                    return ValidationResult(False, [f"Dashboard missing section: {section}"])
+                    return ValidationResult(False, [f"ダッシュボードにセクションが不足: {section}"])
         
         return ValidationResult(True, [])
 ```
 
-### 3. Approval Gate Controller
+### 3. 承認ゲートコントローラー
 
-**Purpose**: Physical blocking until human approval is received
+**目的**: 人間の承認を受けるまでの物理的ブロック
 
 ```python
 class ApprovalGateController:
