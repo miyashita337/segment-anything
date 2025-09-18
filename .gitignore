@@ -135,3 +135,5 @@ pytorch_install.log
 
 # Runtime generated config (QUAL-036)
 config/current_author_config.json
+# Workflow approval files (should be in tracker workspaces, not project root)
+.workflow_approvals/
