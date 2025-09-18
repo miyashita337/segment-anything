@@ -74,9 +74,8 @@ def create_tracker(tracker_id: str) -> bool:
         print(f"   ステータス: {task.status.value}")
         print(f"   作成日時: {task.created_date}")
         
-        # ステータスを「着手中」に更新
-        progress_manager.update_task_status(tracker_id, TaskStatus.IN_PROGRESS)
-        print(f"✅ Google Sheetsステータスを「着手中」に更新")
+        # ステータスは「着手前」のまま維持
+        print(f"✅ Google Sheetsステータス: {task.status.value}（着手前のまま維持）")
         
         return True
         
