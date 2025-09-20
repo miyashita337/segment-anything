@@ -252,7 +252,8 @@ def pytest_runtest_makereport(item, call):
 
 
 # 並列実行時の設定（pytest-xdistが利用可能な場合）
-def pytest_configure_node(node):
-    """並列実行ノードの設定"""
-    # 各ワーカーに固有の設定を追加
-    node.workerinput["worker_id"] = node.gateway.id
+# pytest_configure_nodeはpytest-xdist専用のため、コメントアウト
+# def pytest_configure_node(node):
+#     """並列実行ノードの設定"""
+#     # 各ワーカーに固有の設定を追加
+#     node.workerinput["worker_id"] = node.gateway.id
