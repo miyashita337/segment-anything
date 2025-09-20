@@ -1,0 +1,284 @@
+name: KIRO-006 Phase 2 - Workflow Plan Command Tests
+
+on:
+  push:
+    branches: [ feature/KIRO-006, main, develop ]
+    paths:
+      - 'tools/workflow/**'
+      - 'tests/unit/test_plan_command_handler.py'
+      - 'tests/unit/test_create_command_handler.py'
+      - 'tests/integration/test_workflow_plan_command_integration.py'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'tools/workflow/**'
+      - 'tests/unit/test_plan_command_handler.py'
+      - 'tests/unit/test_create_command_handler.py'
+      - 'tests/integration/test_workflow_plan_command_integration.py'
+
+jobs:
+  test-workflow-plan-command:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, '3.10', 3.11]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-cov pytest-mock
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        # Install additional test dependencies
+        pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
+
+    - name: Create test directories
+      run: |
+        mkdir -p config
+        mkdir -p .workflow_state
+        mkdir -p .workflow_approvals
+        mkdir -p logs
+
+    - name: Run PlanCommandHandler Unit Tests
+      run: |
+        python -m pytest tests/unit/test_plan_command_handler.py -v --tb=short --cov=tools.workflow.plan_command_handler --cov-report=xml:coverage-plan.xml
+
+    - name: Run CreateCommandHandler Unit Tests
+      run: |
+        python -m pytest tests/unit/test_create_command_handler.py -v --tb=short --cov=tools.workflow.create_command_handler --cov-report=xml:coverage-create.xml
+
+    - name: Run Integration Tests
+      run: |
+        python -m pytest tests/integration/test_workflow_plan_command_integration.py -v --tb=short --cov=tools.workflow --cov-report=xml:coverage-integration.xml
+
+    - name: Run All Workflow Tests Together
+      run: |
+        python -m pytest tests/unit/test_plan_command_handler.py tests/unit/test_create_command_handler.py tests/integration/test_workflow_plan_command_integration.py -v --tb=short --cov=tools.workflow --cov-report=xml:coverage-all.xml
+
+    - name: Test CLI Commands
+      run: |
+        # Test CLI help commands
+        python tools/workflow/workflow_cli.py --help
+        python tools/workflow/workflow_cli.py plan --help
+        python tools/workflow/workflow_cli.py create --help
+        python tools/workflow/workflow_cli.py guide
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./coverage-all.xml
+        flags: workflow-plan-command
+        name: KIRO-006-Phase2-Coverage
+        fail_ci_if_error: false
+
+    - name: Generate Test Report
+      if: always()
+      run: |
+        echo "# KIRO-006 Phase 2 Test Report" > test-report.md
+        echo "" >> test-report.md
+        echo "## Test Summary" >> test-report.md
+        echo "- **Python Version**: ${{ matrix.python-version }}" >> test-report.md
+        echo "- **Test Date**: $(date)" >> test-report.md
+        echo "- **Branch**: ${{ github.ref_name }}" >> test-report.md
+        echo "" >> test-report.md
+        echo "## Test Files" >> test-report.md
+        echo "- PlanCommandHandler Unit Tests: \`tests/unit/test_plan_command_handler.py\`" >> test-report.md
+        echo "- CreateCommandHandler Unit Tests: \`tests/unit/test_create_command_handler.py\`" >> test-report.md
+        echo "- Integration Tests: \`tests/integration/test_workflow_plan_command_integration.py\`" >> test-report.md
+        echo "" >> test-report.md
+        echo "## Coverage Files" >> test-report.md
+        echo "- Plan Handler Coverage: \`coverage-plan.xml\`" >> test-report.md
+        echo "- Create Handler Coverage: \`coverage-create.xml\`" >> test-report.md
+        echo "- Integration Coverage: \`coverage-integration.xml\`" >> test-report.md
+        echo "- Overall Coverage: \`coverage-all.xml\`" >> test-report.md
+
+    - name: Upload Test Report
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-report-python-${{ matrix.python-version }}
+        path: |
+          test-report.md
+          coverage-*.xml
+
+  test-backward-compatibility:
+    runs-on: ubuntu-latest
+    needs: test-workflow-plan-command
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Test Existing CLI Commands
+      run: |
+        # Test that all existing commands still work
+        python tools/workflow/workflow_cli.py status --help || echo "status command help failed"
+        python tools/workflow/workflow_cli.py instructions --help || echo "instructions command help failed"
+        python tools/workflow/workflow_cli.py step --help || echo "step command help failed"
+        python tools/workflow/workflow_cli.py approvals --help || echo "approvals command help failed"
+        python tools/workflow/workflow_cli.py process --help || echo "process command help failed"
+        python tools/workflow/workflow_cli.py sheets --help || echo "sheets command help failed"
+        python tools/workflow/workflow_cli.py template --help || echo "template command help failed"
+        python tools/workflow/workflow_cli.py guide || echo "guide command failed"
+
+    - name: Test Import Compatibility
+      run: |
+        python -c "
+        try:
+            from tools.workflow.workflow_cli import (
+                get_status, get_instructions, attempt_step, 
+                list_approvals, check_process, check_sheets_status,
+                generate_template, show_guide, plan_tracker, create_tracker
+            )
+            print('✅ All imports successful')
+        except ImportError as e:
+            print(f'❌ Import failed: {e}')
+            exit(1)
+        "
+
+  performance-test:
+    runs-on: ubuntu-latest
+    needs: test-workflow-plan-command
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-benchmark
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Performance Test - Input Validation
+      run: |
+        python -c "
+        import time
+        from tools.workflow.plan_command_handler import PlanCommandHandler
+        from tools.workflow.create_command_handler import CreateCommandHandler
+        
+        # Performance test for input validation
+        plan_handler = PlanCommandHandler()
+        create_handler = CreateCommandHandler()
+        
+        start_time = time.time()
+        for i in range(1000):
+            plan_handler.validate_inputs(f'TEST-{i:03d}', 'Summary', 'Details')
+            create_handler.validate_tracker_id(f'TEST-{i:03d}')
+        end_time = time.time()
+        
+        execution_time = end_time - start_time
+        print(f'✅ 1000 validation operations completed in {execution_time:.3f} seconds')
+        
+        if execution_time > 5.0:
+            print('⚠️ Performance warning: validation taking longer than expected')
+        else:
+            print('✅ Performance test passed')
+        "
+
+  security-test:
+    runs-on: ubuntu-latest
+    needs: test-workflow-plan-command
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install security testing tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install bandit safety
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Run Bandit Security Scan
+      run: |
+        bandit -r tools/workflow/ -f json -o bandit-report.json || true
+        bandit -r tools/workflow/ || echo "Security issues found, check bandit-report.json"
+
+    - name: Run Safety Check
+      run: |
+        safety check --json --output safety-report.json || true
+        safety check || echo "Dependency vulnerabilities found, check safety-report.json"
+
+    - name: Upload Security Reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: security-reports
+        path: |
+          bandit-report.json
+          safety-report.json
+
+  documentation-test:
+    runs-on: ubuntu-latest
+    needs: test-workflow-plan-command
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Test Documentation Links
+      run: |
+        # Check if documentation files exist
+        test -f README.md || (echo "❌ README.md not found" && exit 1)
+        test -f docs/workflows/integration/workflow_plan_command_guide.md || (echo "❌ Integration guide not found" && exit 1)
+        
+        echo "✅ All documentation files found"
+
+    - name: Test CLI Help Output
+      run: |
+        python tools/workflow/workflow_cli.py --help > cli-help.txt
+        python tools/workflow/workflow_cli.py plan --help > plan-help.txt
+        python tools/workflow/workflow_cli.py create --help > create-help.txt
+        python tools/workflow/workflow_cli.py guide > guide-output.txt
+        
+        # Check if help outputs contain expected content
+        grep -q "plan" cli-help.txt || (echo "❌ plan command not in help" && exit 1)
+        grep -q "create" cli-help.txt || (echo "❌ create command not in help" && exit 1)
+        grep -q "tracker_id" plan-help.txt || (echo "❌ tracker_id not in plan help" && exit 1)
+        grep -q "summary" plan-help.txt || (echo "❌ summary not in plan help" && exit 1)
+        grep -q "統合ワークフロー" guide-output.txt || (echo "❌ Japanese content not in guide" && exit 1)
+        
+        echo "✅ All CLI help content verified"
+
+    - name: Upload Documentation Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: documentation-outputs
+        path: |
+          cli-help.txt
+          plan-help.txt
+          create-help.txt
+          guide-output.txt

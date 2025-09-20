@@ -34,57 +34,30 @@ def get_workflow_controller():
         logger.error(f"ワークフローコントローラーのインポートに失敗: {e}")
         return None
 
-def create_tracker(tracker_id: str) -> bool:
-    """新しいトラッカーワークフローを作成"""
-    controller = get_workflow_controller()
-    if not controller:
-        return False
-    
-    # 1. ワークフロー状態管理システムでトラッカー作成
-    success = controller.create_tracker_workflow(tracker_id)
-    if not success:
-        print(f"❌ トラッカーのワークフロー作成に失敗: {tracker_id}")
-        return False
-    
-    print(f"✅ ワークフロー状態管理でトラッカーを作成: {tracker_id}")
-    print(f"   現在のステップ: {controller.state_manager.get_current_step(tracker_id)}")
-    
-    # 2. Google Sheetsにもトラッカーを作成
+def plan_tracker(tracker_id: str, summary: str, details: str, priority: str = "medium") -> bool:
+    """Google Sheetsにトラッカーを起票"""
     try:
-        # 既存のGoogle Sheets連携システムを使用
-        import sys
-        import os
-        current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        if current_dir not in sys.path:
-            sys.path.insert(0, current_dir)
-        
-        from tools.progress_tracker.progress_manager import ProgressManager
-        from tools.progress_tracker.data_models import TaskStatus
-        
-        # Google Sheetsマネージャー初期化
-        progress_manager = ProgressManager()
-        
-        # Google Sheetsでタスク作成
-        task = progress_manager.create_task(
-            tracker_id=tracker_id,
-            description=f"ワークフロー強制実行システムで作成されたトラッカー"
-        )
-        
-        print(f"✅ Google Sheetsにトラッカーを作成: {tracker_id}")
-        print(f"   ステータス: {task.status.value}")
-        print(f"   作成日時: {task.created_date}")
-        
-        # ステータスは「着手前」のまま維持
-        print(f"✅ Google Sheetsステータス: {task.status.value}（着手前のまま維持）")
-        
-        return True
-        
+        from tools.workflow.plan_command_handler import PlanCommandHandler
+        handler = PlanCommandHandler()
+        success, message = handler.execute_plan_command(tracker_id, summary, details, priority)
+        print(message)
+        return success
     except Exception as e:
-        print(f"⚠️  Google Sheets連携でエラーが発生しましたが、ワークフローは作成済みです")
-        print(f"   エラー詳細: {e}")
-        print(f"   手動でGoogle Sheetsを更新してください:")
-        print(f"   python tools/progress_tracker/cli.py create {tracker_id}")
-        return True  # ワークフロー自体は成功しているので True を返す
+        print(f"❌ planコマンド実行エラー: {e}")
+        return False
+
+
+def create_tracker(tracker_id: str) -> bool:
+    """新しいトラッカーワークフローを作成（SQLite専用）"""
+    try:
+        from tools.workflow.create_command_handler import CreateCommandHandler
+        handler = CreateCommandHandler()
+        success, message = handler.execute_create_command(tracker_id)
+        print(message)
+        return success
+    except Exception as e:
+        print(f"❌ createコマンド実行エラー: {e}")
+        return False
 
 def get_status(tracker_id: str) -> bool:
     """トラッカーのワークフロー状態を取得"""
@@ -470,58 +443,84 @@ def show_guide() -> bool:
     print("""
 🚀 **統合ワークフローガイド**
 
-## 基本的な使い方
+## 🆕 新しいワークフロー（推奨）
 
-### 1. 新しいトラッカーを開始
+### 1. Google Sheetsに起票
+```bash
+python tools/workflow/workflow_cli.py plan TRACKER-001 "概要" "詳細説明"
+```
+
+### 2. ワークフロー状態管理を開始
 ```bash
 python tools/workflow/workflow_cli.py create TRACKER-001
 ```
 
-### 2. 現在の状況を確認
+### 3. 現在の状況を確認
 ```bash
 python tools/workflow/workflow_cli.py status TRACKER-001
 ```
 
-### 3. 次に何をすべきか確認
+### 4. 次に何をすべきか確認
 ```bash
 python tools/workflow/workflow_cli.py instructions TRACKER-001
 ```
 
-### 4. ステップを実行
+### 5. ステップを実行
 ```bash
 python tools/workflow/workflow_cli.py step TRACKER-001
 ```
 
-### 5. 承認待ちを確認
+### 6. 承認待ちを確認
 ```bash
 python tools/workflow/workflow_cli.py approvals
 ```
 
-### 6. Google Sheets状態確認
+### 7. Google Sheets状態確認
 ```bash
 python tools/workflow/workflow_cli.py sheets TRACKER-001
 ```
 
-### 7. 統合テンプレート生成
+### 8. 統合テンプレート生成
 ```bash
 python tools/workflow/workflow_cli.py template TRACKER-001
 ```
 
-## 🔄 典型的なワークフロー
+## 🔄 統合ワークフロー手順
 
-1. **初期化**: `create` でワークフロー作成（Google Sheets連携含む）
-2. **状態確認**: `status` で現在状況把握
-3. **Google Sheets確認**: `sheets` でGoogle Sheets状態確認
-4. **指示確認**: `instructions` で次アクション確認
-5. **作業実行**: 指示に従って手動作業
-6. **進行**: `step` でステップ完了試行
-7. **承認**: 必要に応じて承認ファイル作成
-8. **繰り返し**: 2-7を完了まで繰り返し
+1. **起票**: `plan` でGoogle Sheetsに起票（概要・詳細・優先度設定）
+2. **開始**: `create` でワークフロー状態管理開始（SQLite専用）
+3. **状態確認**: `status` で現在状況把握
+4. **Google Sheets確認**: `sheets` でGoogle Sheets状態確認
+5. **指示確認**: `instructions` で次アクション確認
+6. **作業実行**: 指示に従って手動作業
+7. **進行**: `step` でステップ完了試行
+8. **承認**: 必要に応じて承認ファイル作成
+9. **繰り返し**: 3-8を完了まで繰り返し
+
+## 🚨 重要な変更点
+
+- **planコマンド新設**: Google Sheets起票専用（3引数必須、20,000文字制限）
+- **createコマンド変更**: SQLite専用に特化（Google Sheets機能削除）
+- **分離設計**: 起票と状態管理を明確に分離
+- **統合推奨**: plan→createの順序で実行を推奨
+
+## 📋 コマンド詳細
+
+### planコマンド
+- **目的**: Google Sheetsへの起票
+- **引数**: tracker_id, summary, details, [priority]
+- **制限**: 詳細20,000文字以内
+- **機能**: リトライ、エラーハンドリング、優先度設定
+
+### createコマンド  
+- **目的**: SQLiteワークフロー状態管理
+- **引数**: tracker_id
+- **機能**: 既存確認、状態作成、進行管理
 
 ## 🚨 重要なポイント
 
 - **ブランチ確認**: 必ず feature/{TRACKER_ID} ブランチで作業
-- **Google Sheets連携**: トラッカー作成時に自動でGoogle Sheetsにも登録
+- **統合ワークフロー**: plan→createの順序で実行
 - **承認システム**: 承認が必要な場合は指示に従ってファイル作成
 - **日本語表示**: すべてのメッセージが日本語で表示
 - **状態管理**: 外部データベースで状態を管理（改ざん不可）
@@ -542,22 +541,36 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 使用例:
-  %(prog)s create TRACKER-001          # 新しいトラッカーワークフローを作成
-  %(prog)s status TRACKER-001          # ワークフロー状態を取得
-  %(prog)s instructions TRACKER-001    # 現在のステップ指示を取得
-  %(prog)s step TRACKER-001            # 現在のステップの完了を試行
-  %(prog)s approvals                   # 承認待ちリストを表示
-  %(prog)s process TRACKER-001         # バックグラウンドプロセス状態を確認
-  %(prog)s sheets TRACKER-001          # Google Sheets状態を確認
-  %(prog)s template TRACKER-001        # 統合テンプレートを生成
-  %(prog)s guide                       # 統合ワークフローガイドを表示
+  %(prog)s plan TRACKER-001 "概要" "詳細"  # Google Sheetsにトラッカーを起票
+  %(prog)s create TRACKER-001             # 新しいトラッカーワークフローを作成（SQLite専用）
+  %(prog)s status TRACKER-001             # ワークフロー状態を取得
+  %(prog)s instructions TRACKER-001       # 現在のステップ指示を取得
+  %(prog)s step TRACKER-001               # 現在のステップの完了を試行
+  %(prog)s approvals                      # 承認待ちリストを表示
+  %(prog)s process TRACKER-001            # バックグラウンドプロセス状態を確認
+  %(prog)s sheets TRACKER-001             # Google Sheets状態を確認
+  %(prog)s template TRACKER-001           # 統合テンプレートを生成
+  %(prog)s guide                          # 統合ワークフローガイドを表示
+
+統合ワークフロー推奨手順:
+  1. %(prog)s plan TRACKER-001 "概要" "詳細"    # Google Sheets起票
+  2. %(prog)s create TRACKER-001               # ワークフロー状態管理開始
+  3. %(prog)s step TRACKER-001                 # ステップ実行
         """
     )
     
     subparsers = parser.add_subparsers(dest='command', help='利用可能なコマンド')
     
+    # Google Sheets起票
+    plan_parser = subparsers.add_parser('plan', help='Google Sheetsにトラッカーを起票')
+    plan_parser.add_argument('tracker_id', help='トラッカーID (例: TRACKER-001)')
+    plan_parser.add_argument('summary', help='概要（200文字以内推奨）')
+    plan_parser.add_argument('details', help='詳細（20,000文字以内）')
+    plan_parser.add_argument('--priority', choices=['highest', 'high', 'medium', 'low'], 
+                           default='medium', help='優先度 (デフォルト: medium)')
+    
     # トラッカー作成
-    create_parser = subparsers.add_parser('create', help='新しいトラッカーワークフローを作成')
+    create_parser = subparsers.add_parser('create', help='新しいトラッカーワークフローを作成（SQLite専用）')
     create_parser.add_argument('tracker_id', help='トラッカーID (例: TRACKER-001)')
     
     # 状態取得
@@ -598,7 +611,9 @@ def main():
         return 1
     
     try:
-        if args.command == 'create':
+        if args.command == 'plan':
+            success = plan_tracker(args.tracker_id, args.summary, args.details, args.priority)
+        elif args.command == 'create':
             success = create_tracker(args.tracker_id)
         elif args.command == 'status':
             success = get_status(args.tracker_id)

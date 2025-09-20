@@ -34,6 +34,45 @@ Please check out our new release on [**Segment Anything Model 2 (SAM 2)**](https
 
 ⚠️ **注意**: 本プロジェクトはまだ開発段階にあり、本番環境での使用は推奨されません。品質向上と安定性改善を継続的に実施中です。
 
+## 🚀 ワークフロー管理システム (KIRO-006)
+
+### 統合ワークフロー
+
+プロジェクトでは、Google Sheetsとの連携によるタスク管理とSQLiteベースのワークフロー状態管理を統合したシステムを提供しています。
+
+#### 基本的な使用方法
+
+```bash
+# 1. Google Sheetsに起票
+python tools/workflow/workflow_cli.py plan TRACKER-001 "概要" "詳細説明"
+
+# 2. ワークフロー状態管理開始
+python tools/workflow/workflow_cli.py create TRACKER-001
+
+# 3. ワークフロー実行
+python tools/workflow/workflow_cli.py step TRACKER-001
+```
+
+#### 主要機能
+
+- **planコマンド**: Google Sheets起票専用（3引数必須、20,000文字制限）
+- **createコマンド**: SQLite専用ワークフロー状態管理
+- **統合管理**: 起票から完了まで一貫した進捗管理
+- **承認システム**: 重要ステップでの人間承認機能
+- **自動実行**: 長時間タスクの自動実行とモニタリング
+
+#### 詳細ガイド
+
+```bash
+# 統合ワークフローガイド表示
+python tools/workflow/workflow_cli.py guide
+
+# コマンドヘルプ
+python tools/workflow/workflow_cli.py --help
+python tools/workflow/workflow_cli.py plan --help
+python tools/workflow/workflow_cli.py create --help
+```
+
 ![SAM design](assets/model_diagram.png?raw=true)
 
 The **Segment Anything Model (SAM)** produces high quality object masks from input prompts such as points or boxes, and it can be used to generate masks for all objects in an image. It has been trained on a [dataset](https://segment-anything.com/dataset/index.html) of 11 million images and 1.1 billion masks, and has strong zero-shot performance on a variety of segmentation tasks.
