@@ -215,8 +215,8 @@ class AsyncStageManager:
                 logger.info("📋 Ready for result collection")
             elif result['status'] == 'failed':
                 logger.info("❌ Task failed")
-                if result.get('details', {}).get('requires_planmode'):
-                    logger.info("⚠️ PlanMode review required")
+                if result.get('details', {}).get('requires_manual_review'):
+                    logger.info("⚠️ Manual review required")
             
             # 状態更新
             stage_status.update(result)

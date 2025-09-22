@@ -98,7 +98,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - TaskOrchestrator高レベルAPI（881行）- pytest/extract_character統合
   - LongTaskQueue（434行）- FIFO処理・リトライ機能・状態管理  
   - SubAgentMonitor（397行）- 同一セッション監視・コンテキスト継承
-  - NotificationBridge（573行）- Pushover通知・PlanModeエスカレーション
+  - NotificationBridge（573行）- Pushover通知・TaskFailureEscalation
   - AsyncStageManager（436行）- 非同期多段階実行制御
 
 - **QUAL-044-002品質ダッシュボード完成**

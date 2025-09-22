@@ -298,7 +298,7 @@ class LongTaskQueue:
                     'status': 'task_failed',
                     'task_id': task.task_id,
                     'error': task.error_message,
-                    'requires_planmode_review': True
+                    'requires_manual_review': True
                 })
         
         except Exception as e:

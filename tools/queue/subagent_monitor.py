@@ -132,10 +132,10 @@ class SubAgentMonitor:
                         logger.error(f"Task failed: {task_id}")
                         monitoring_result['final_status'] = 'failed'
                         
-                        # PlanMode連携が必要
-                        if status.get('requires_planmode_review'):
-                            monitoring_result['requires_planmode'] = True
-                            logger.info("Task requires PlanMode review")
+                        # 手動レビューが必要
+                        if status.get('requires_manual_review'):
+                            monitoring_result['requires_manual_review'] = True
+                            logger.info("Task requires manual review")
                         
                         if self.on_task_failed:
                             self.on_task_failed(status)
@@ -619,15 +619,15 @@ class SubAgentIntegration:
             
             return next_action
         
-        # 失敗時のPlanMode連携
+        # 失敗時の手動レビュー連携
         def on_failed(status):
             logger.error(f"Task {task_id} failed")
             
-            if status.get('requires_planmode_review'):
-                logger.info("Switching to PlanMode for error review")
-                # ここでPlanMode切り替え処理
+            if status.get('requires_manual_review'):
+                logger.info("Switching to manual review for error analysis")
+                # ここで手動レビュー切り替え処理
                 return {
-                    'action': 'switch_to_planmode',
+                    'action': 'switch_to_manual_review',
                     'reason': 'task_failure',
                     'task_id': task_id,
                     'error': status.get('error')
@@ -718,7 +718,7 @@ def demonstrate_subagent_monitoring():
     print("   1. 同一セッション内で監視・実行")
     print("   2. コンテキスト（トラッカーID、Todo）完全継承")
     print("   3. 自動的な次アクション判定・実行")
-    print("   4. PlanMode連携（エラー時）")
+    print("   4. 手動レビュー連携（エラー時）")
     print()
     
     return demo_result

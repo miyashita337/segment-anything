@@ -706,7 +706,7 @@ class TaskOrchestrator:
                 result['details'] = {
                     'raw_status': current_status.get('status'),
                     'error': current_status.get('error'),
-                    'requires_planmode': current_status.get('requires_planmode_review', False)
+                    'requires_manual_review': current_status.get('requires_manual_review', False)
                 }
             
             logger.info(f"Task status: {status}")
@@ -837,7 +837,7 @@ def demonstrate_task_integration():
     print("   2. 同一セッション内での監視")
     print("   3. 自動リトライ（2回まで）")
     print("   4. 結果解析とレポート生成")
-    print("   5. PlanModeエスカレーション準備")
+    print("   5. TaskFailureEscalation準備")
     
     # クリーンアップ
     orchestrator.cleanup()

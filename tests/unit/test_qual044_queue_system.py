@@ -22,7 +22,7 @@ sys.path.insert(0, str(project_root))
 from tools.queue.long_task_manager import LongTaskQueue, TaskStatus, QueueTask
 from tools.queue.subagent_monitor import SubAgentMonitor, SubAgentIntegration
 from tools.queue.task_integration import TaskIntegration, TaskOrchestrator
-from tools.queue.notification_bridge import PushoverNotifier, PlanModeEscalator, NotificationBridge
+from tools.queue.notification_bridge import PushoverNotifier, TaskFailureEscalator, NotificationBridge
 
 
 class TestLongTaskQueue(unittest.TestCase):
@@ -361,7 +361,7 @@ class TestNotificationBridge(unittest.TestCase):
         retry_count = 2
         command = "echo 'test'"
         
-        # Escalatorの戻り値をモック
+        # TaskFailureEscalatorの戻り値をモック
         self.bridge.escalator.create_escalation.return_value = {
             'task_id': task_id,
             'escalation_id': 'esc_001'
@@ -371,7 +371,7 @@ class TestNotificationBridge(unittest.TestCase):
             task_id, task_type, error, retry_count, command
         )
         
-        # Pushover通知とエスカレーションが呼ばれたことを確認
+        # Pushover通知とTaskFailureEscalationが呼ばれたことを確認
         self.bridge.pushover.send_task_failed.assert_called_once()
         self.bridge.escalator.create_escalation.assert_called_once()
         self.assertIn('task_id', escalation)
@@ -389,23 +389,23 @@ class TestNotificationBridge(unittest.TestCase):
         self.bridge.pushover.send_queue_status.assert_called_once_with(3, 'test_001')
 
 
-class TestPlanModeEscalator(unittest.TestCase):
-    """PlanModeEscalator単体テスト"""
+class TestTaskFailureEscalator(unittest.TestCase):
+    """TaskFailureEscalator単体テスト"""
     
     def setUp(self):
         """テスト準備"""
         self.temp_dir = tempfile.mkdtemp()
         self.workspace = Path(self.temp_dir) / "test_workspace"
         self.workspace.mkdir(parents=True)
-        self.escalator = PlanModeEscalator(str(self.workspace))
+        self.escalator = TaskFailureEscalator(str(self.workspace))
     
     def tearDown(self):
         """テストクリーンアップ"""
         import shutil
         shutil.rmtree(self.temp_dir, ignore_errors=True)
     
-    def test_escalation_creation(self):
-        """エスカレーション作成テスト"""
+    def test_task_failure_escalation_creation(self):
+        """タスク失敗エスカレーション作成テスト"""
         escalation = self.escalator.create_escalation(
             task_id="test_001",
             task_type="pytest",
@@ -435,8 +435,8 @@ class TestPlanModeEscalator(unittest.TestCase):
         self.assertIn("Check CUDA/GPU availability", suggestions)
         self.assertIn("Increase available memory or reduce batch size", suggestions)
     
-    def test_escalation_prompt_generation(self):
-        """エスカレーションプロンプト生成テスト"""
+    def test_task_failure_escalation_prompt_generation(self):
+        """タスク失敗エスカレーションプロンプト生成テスト"""
         escalation = {
             'task_id': 'test_001',
             'task_type': 'pytest',
