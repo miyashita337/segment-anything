@@ -18,7 +18,7 @@
 1. **同一セッション内での長時間タスク監視**
 2. **自動次アクション提案機能**
 3. **Pushover通知による外部連携**
-4. **PlanMode自動エスカレーション**
+4. **TaskFailureEscalation自動機能**
 
 ---
 
@@ -110,7 +110,7 @@ class PushoverNotifier:
     - Pushover API連携
     - 通知フォーマット管理
     - エラーハンドリング
-    - PlanMode自動エスカレーション
+    - TaskFailureEscalation自動機能
     """
 ```
 
@@ -448,7 +448,7 @@ class PushoverNotifier:
 ✅ **TaskOrchestrator高レベルAPI**: pytest・extract_character統合実行  
 ✅ **LongTaskQueue**: FIFO管理・リトライ・状態管理  
 ✅ **SubAgentMonitor**: 同一セッション監視・コンテキスト継承  
-✅ **NotificationBridge**: Pushover通知・PlanModeエスカレーション  
+✅ **NotificationBridge**: Pushover通知・TaskFailureEscalation  
 ✅ **統合テストスイート**: 22テスト・カバレッジ90%以上  
 ✅ **デモンストレーション機能**: 実行可能なサンプルコード  
 
