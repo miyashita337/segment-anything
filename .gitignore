@@ -137,3 +137,15 @@ pytorch_install.log
 config/current_author_config.json
 # Workflow approval files (should be in tracker workspaces, not project root)
 .workflow_approvals/
+
+# KIRO-006 ワークフロー実行時生成ファイル
+workflow_state.db
+workspace_config.db
+workspace/
+approval_*
+completed
+*.ps1
+*workflow.sh
+sow_document_*.md
+project_*.md
+Makefile
