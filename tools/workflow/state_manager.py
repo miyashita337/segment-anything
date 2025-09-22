@@ -6,6 +6,7 @@ INCI-006 解決策: AIがバイパスできない機械的ワークフロー状�
 
 import sqlite3
 import os
+import subprocess
 from datetime import datetime
 from typing import List, Dict, Optional, Tuple, Any
 from enum import Enum
@@ -195,9 +196,60 @@ class WorkflowStateManager:
         logger.info(f"Validating step completion: {tracker_id}/{step_id}")
 
         if step_id == "branch_verification":
-            return ValidationResult(True, [], "branch_verification_passed")
+            return self._validate_git_branch(tracker_id)
 
         return ValidationResult(True, [], f"{step_id}_completed")
+
+    def _validate_git_branch(self, tracker_id: str) -> ValidationResult:
+        """Validate that current git branch matches the tracker ID pattern."""
+        try:
+            # Get current git branch
+            result = subprocess.run(
+                ["git", "branch", "--show-current"],
+                capture_output=True,
+                text=True,
+                cwd=self._find_project_root(),
+                timeout=5
+            )
+
+            if result.returncode != 0:
+                return ValidationResult(
+                    False,
+                    [f"Failed to get current git branch: {result.stderr}"],
+                    "git_branch_check_failed"
+                )
+
+            current_branch = result.stdout.strip()
+            expected_pattern = f"feature/{tracker_id}"
+
+            if current_branch == expected_pattern:
+                return ValidationResult(
+                    True,
+                    [],
+                    f"Branch verification passed: {current_branch}"
+                )
+            else:
+                return ValidationResult(
+                    False,
+                    [
+                        f"Current branch '{current_branch}' does not match expected pattern '{expected_pattern}'",
+                        f"Please create and switch to branch: git checkout -b {expected_pattern}"
+                    ],
+                    f"branch_mismatch: {current_branch} != {expected_pattern}"
+                )
+
+        except subprocess.TimeoutExpired:
+            return ValidationResult(
+                False,
+                ["Git command timed out"],
+                "git_timeout"
+            )
+        except Exception as e:
+            return ValidationResult(
+                False,
+                [f"Error checking git branch: {str(e)}"],
+                f"git_error: {str(e)}"
+            )
 
     def _mark_step_completed(self, tracker_id: str, step_id: str, evidence: str = ""):
         """Mark a step as completed with evidence"""

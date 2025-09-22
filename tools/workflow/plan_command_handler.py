@@ -162,6 +162,10 @@ class PlanCommandHandler:
                     description=description
                 )
                 
+                # 更新日付を登録日付と同じ値に設定
+                task.updated_date = task.created_date
+                self.progress_manager.client.update_task(task)
+                
                 # 優先度設定（デフォルトは中）
                 if priority != PriorityLevel.MEDIUM:
                     try:

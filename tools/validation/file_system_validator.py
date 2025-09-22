@@ -144,9 +144,9 @@ class FileSystemValidator:
                 return ValidationResult(False, ["Could not determine Python path"])
                 
         except Exception as e:
-            return ValidationResult(False, [f"Virtual environment validation error: {str(e)}"])    
-  
-  def validate_google_sheets_sync(self, tracker_id: str) -> ValidationResult:
+            return ValidationResult(False, [f"Virtual environment validation error: {str(e)}"])
+    
+    def validate_google_sheets_sync(self, tracker_id: str) -> ValidationResult:
         """
         Validate that Google Sheets sync has occurred.
         Check for evidence of CLI execution and status update.
@@ -316,9 +316,9 @@ class FileSystemValidator:
                 return ValidationResult(False, ["Failed to check file modifications"])
                 
         except Exception as e:
-            return ValidationResult(False, [f"Implementation validation error: {str(e)}"])    
-  
-  def validate_testing(self, tracker_id: str) -> ValidationResult:
+            return ValidationResult(False, [f"Implementation validation error: {str(e)}"])
+    
+    def validate_testing(self, tracker_id: str) -> ValidationResult:
         """
         Validate that testing has been completed.
         Check for test execution evidence and results.

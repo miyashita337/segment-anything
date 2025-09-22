@@ -34,9 +34,24 @@ def get_workflow_controller():
         logger.error(f"ワークフローコントローラーのインポートに失敗: {e}")
         return None
 
-def plan_tracker(tracker_id: str, summary: str, details: str, priority: str = "medium") -> bool:
+def plan_tracker(tracker_id: str, summary: str, details: str, author_name: str, priority: str = "medium") -> bool:
     """Google Sheetsにトラッカーを起票"""
     try:
+        # ワークスペース設定を保存
+        from config.workspace_config import get_workspace_config
+        config = get_workspace_config()
+
+        workspace_path = f"/mnt/c/AItools/lora/train/{author_name}/tracker-workspace/{tracker_id}"
+        input_path = f"/mnt/c/AItools/lora/train/{author_name}/org/kana05"
+
+        if not config.set_workspace_config(tracker_id, author_name, workspace_path, input_path):
+            print(f"❌ ワークスペース設定の保存に失敗しました")
+            return False
+
+        print(f"✅ ワークスペース設定を保存しました:")
+        print(f"   作者名: {author_name}")
+        print(f"   ワークスペース: {workspace_path}")
+
         from tools.workflow.plan_command_handler import PlanCommandHandler
         handler = PlanCommandHandler()
         success, message = handler.execute_plan_command(tracker_id, summary, details, priority)
@@ -50,6 +65,15 @@ def plan_tracker(tracker_id: str, summary: str, details: str, priority: str = "m
 def create_tracker(tracker_id: str) -> bool:
     """新しいトラッカーワークフローを作成（SQLite専用）"""
     try:
+        # ワークスペース設定の検証
+        from config.workspace_config import validate_tracker_setup
+        validation = validate_tracker_setup(tracker_id)
+
+        if not validation['is_configured']:
+            for error in validation['errors']:
+                print(error)
+            return False
+
         from tools.workflow.create_command_handler import CreateCommandHandler
         handler = CreateCommandHandler()
         success, message = handler.execute_create_command(tracker_id)
@@ -61,6 +85,15 @@ def create_tracker(tracker_id: str) -> bool:
 
 def get_status(tracker_id: str) -> bool:
     """トラッカーのワークフロー状態を取得"""
+    # ワークスペース設定の検証
+    from config.workspace_config import validate_tracker_setup
+    validation = validate_tracker_setup(tracker_id)
+
+    if not validation['is_configured']:
+        for error in validation['errors']:
+            print(error)
+        return False
+
     controller = get_workflow_controller()
     if not controller:
         return False
@@ -541,21 +574,25 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 使用例:
-  %(prog)s plan TRACKER-001 "概要" "詳細"  # Google Sheetsにトラッカーを起票
-  %(prog)s create TRACKER-001             # 新しいトラッカーワークフローを作成（SQLite専用）
-  %(prog)s status TRACKER-001             # ワークフロー状態を取得
-  %(prog)s instructions TRACKER-001       # 現在のステップ指示を取得
-  %(prog)s step TRACKER-001               # 現在のステップの完了を試行
-  %(prog)s approvals                      # 承認待ちリストを表示
-  %(prog)s process TRACKER-001            # バックグラウンドプロセス状態を確認
-  %(prog)s sheets TRACKER-001             # Google Sheets状態を確認
-  %(prog)s template TRACKER-001           # 統合テンプレートを生成
-  %(prog)s guide                          # 統合ワークフローガイドを表示
+  %(prog)s plan TRACKER-001 "概要" "詳細" "作者名"  # Google Sheetsにトラッカーを起票
+  %(prog)s create TRACKER-001                     # 新しいトラッカーワークフローを作成（SQLite専用）
+  %(prog)s status TRACKER-001                     # ワークフロー状態を取得
+  %(prog)s instructions TRACKER-001               # 現在のステップ指示を取得
+  %(prog)s step TRACKER-001                       # 現在のステップの完了を試行
+  %(prog)s approvals                              # 承認待ちリストを表示
+  %(prog)s process TRACKER-001                    # バックグラウンドプロセス状態を確認
+  %(prog)s sheets TRACKER-001                     # Google Sheets状態を確認
+  %(prog)s template TRACKER-001                   # 統合テンプレートを生成
+  %(prog)s guide                                  # 統合ワークフローガイドを表示
 
 統合ワークフロー推奨手順:
-  1. %(prog)s plan TRACKER-001 "概要" "詳細"    # Google Sheets起票
-  2. %(prog)s create TRACKER-001               # ワークフロー状態管理開始
-  3. %(prog)s step TRACKER-001                 # ステップ実行
+  1. %(prog)s plan TRACKER-001 "概要" "詳細" "yado"  # Google Sheets起票（作者名必須）
+  2. %(prog)s create TRACKER-001                     # ワークフロー状態管理開始
+  3. %(prog)s step TRACKER-001                       # ステップ実行
+
+注意:
+- planコマンドでは作者名が必須です（例: yado, kiri, zundamon）
+- ワークスペースパスは /mnt/c/AItools/lora/train/{作者名}/tracker-workspace/{トラッカーID} となります
         """
     )
     
@@ -566,7 +603,8 @@ def main():
     plan_parser.add_argument('tracker_id', help='トラッカーID (例: TRACKER-001)')
     plan_parser.add_argument('summary', help='概要（200文字以内推奨）')
     plan_parser.add_argument('details', help='詳細（20,000文字以内）')
-    plan_parser.add_argument('--priority', choices=['highest', 'high', 'medium', 'low'], 
+    plan_parser.add_argument('author_name', help='作者名 (例: yado, kiri, zundamon)')
+    plan_parser.add_argument('--priority', choices=['highest', 'high', 'medium', 'low'],
                            default='medium', help='優先度 (デフォルト: medium)')
     
     # トラッカー作成
@@ -612,7 +650,7 @@ def main():
     
     try:
         if args.command == 'plan':
-            success = plan_tracker(args.tracker_id, args.summary, args.details, args.priority)
+            success = plan_tracker(args.tracker_id, args.summary, args.details, args.author_name, args.priority)
         elif args.command == 'create':
             success = create_tracker(args.tracker_id)
         elif args.command == 'status':
