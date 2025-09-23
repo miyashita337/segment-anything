@@ -20,7 +20,7 @@ from features.evaluation.qi004_dashboard_optimization_system import (
     QI004DashboardOptimizationSystem,
     create_qi004_optimized_dashboard
 )
-from features.common.dashboard_generator import StandardDashboardGenerator
+from features.common.dashboard_generator import DashboardGenerator
 
 
 class TestQI004SystemIntegration(unittest.TestCase):
@@ -120,7 +120,7 @@ class TestQI004SystemIntegration(unittest.TestCase):
     
     def test_dashboard_generation_with_real_images(self):
         """実画像を使用したダッシュボード生成テスト"""
-        generator = StandardDashboardGenerator()
+        generator = DashboardGenerator()
         
         # テスト用品質スコア（実際の解析結果をシミュレート）
         quality_scores = [0.85, 0.65, 0.35, 0.15]  # 各画像の想定品質

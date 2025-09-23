@@ -243,7 +243,7 @@ class TestQI004DashboardOptimizationSystem(unittest.TestCase):
         shutil.rmtree(self.temp_dir)
     
     @patch('features.evaluation.qi004_dashboard_optimization_system.PushoverImageSender')
-    @patch('features.evaluation.qi004_dashboard_optimization_system.StandardDashboardGenerator')
+    @patch('features.evaluation.qi004_dashboard_optimization_system.DashboardGenerator')
     def test_run_complete_optimization(self, mock_dashboard_gen, mock_pushover):
         """完全最適化プロセステスト（画像パス参照方式）"""
         # モック設定
