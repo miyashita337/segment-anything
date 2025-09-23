@@ -71,7 +71,7 @@ class StandardDashboardGenerator:
         quality_dist = {'高品質': 0, '中品質': 0, '低品質': 0, '要改善': 0}
         for r in results:
             if r.get('success'):
-                score = r.get('quality_score', 0.0)  # 修正: quality_metrics.overall_score → quality_score
+                score = r.get('quality_score', r.get('quality_metrics', {}).get('overall_score', 0.0))  # 両形式対応
                 if score >= 0.8:
                     quality_dist['高品質'] += 1
                 elif score >= 0.6:
@@ -187,9 +187,10 @@ class StandardDashboardGenerator:
         # 画像カード生成（修正版）
         for r in results:
             if r.get('success'):
-                # image_nameから実際のファイル名を取得（修正）
-                filename = r.get('image_name', 'unknown.jpg')  # 修正: image_path → image_name
-                score = r.get('quality_score', 0.0)  # 修正: quality_metrics.overall_score → quality_score
+                # 両形式対応: image_name（チェックリスト仕様）とimage_path（実装形式）
+                filename = r.get('image_name', r.get('image_path', 'unknown.jpg'))
+                # 両形式対応: quality_score（チェックリスト仕様）とquality_metrics.overall_score（実装形式）
+                score = r.get('quality_score', r.get('quality_metrics', {}).get('overall_score', 0.0))
                 quality_label = self._get_quality_label(score)
                 quality_class = self._get_quality_class(score)
                 

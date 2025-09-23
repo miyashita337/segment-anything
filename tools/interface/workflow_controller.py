@@ -70,6 +70,10 @@ class StepResult:
     def BLOCKED(cls, reasons: List[str]):
         return cls("blocked", f"Step blocked: {'; '.join(reasons)}")
 
+    @classmethod
+    def WAITING(cls, reasons: List[str]):
+        return cls("waiting", f"Step waiting: {'; '.join(reasons)}")
+
 class WorkflowController:
     """
     Unified workflow controller that enforces compliance through
@@ -453,7 +457,13 @@ class WorkflowController:
             return StepResult.FAILED([f"Unknown step configuration: {current_step_id}"])
         
         logger.info(f"Attempting step completion: {tracker_id}/{current_step_id}")
-        
+
+        # Check if current step is in waiting state
+        current_status = self.state_manager.get_step_status(tracker_id, current_step_id)
+        if current_status == "waiting":
+            logger.info(f"Step {current_step_id} is in waiting state for {tracker_id}")
+            return StepResult.WAITING([f"Step {current_step_id} is waiting for background task completion"])
+
         # Check if step can proceed (mechanical enforcement)
         can_proceed, blocking_reasons = self.state_manager.can_proceed_to_step(
             tracker_id, current_step_id
@@ -494,23 +504,35 @@ class WorkflowController:
         
         # Handle approval requirements
         if step_config.approval_required and self.approval_controller:
-            logger.info(f"Requesting approval for step: {current_step_id}")
-            
-            from tools.approval.approval_gate_controller import ApprovalContext
-            
-            context = ApprovalContext(
-                step_name=step_config.title,
-                description=step_config.description,
-                artifacts=self._get_step_artifacts(tracker_id, current_step_id),
-                approval_criteria=step_config.approval_criteria or [],
-                priority="high" if current_step_id in ["sow_creation", "final_approval"] else "normal"
-            )
-            
-            approval_id = self.approval_controller.request_approval(
-                tracker_id, current_step_id, context
-            )
-            
-            return StepResult.PENDING_APPROVAL(approval_id)
+            logger.info(f"Checking approval for step: {current_step_id}")
+
+            # First check if already approved
+            existing_approval = self.approval_controller.check_existing_approval(tracker_id, current_step_id)
+            if existing_approval:
+                logger.info(f"Step {current_step_id} is already approved, proceeding...")
+                # Continue to step completion below
+            else:
+                # Need to request approval
+                from tools.approval.approval_gate_controller import ApprovalContext
+
+                context = ApprovalContext(
+                    step_name=step_config.title,
+                    description=step_config.description,
+                    artifacts=self._get_step_artifacts(tracker_id, current_step_id),
+                    approval_criteria=step_config.approval_criteria or [],
+                    priority="high" if current_step_id in ["sow_creation", "final_approval"] else "normal"
+                )
+
+                approval_id = self.approval_controller.request_approval(
+                    tracker_id, current_step_id, context
+                )
+
+                # Check again if it was already approved (request_approval now returns existing approvals)
+                if self.approval_controller.check_existing_approval(tracker_id, current_step_id):
+                    logger.info(f"Step {current_step_id} has been approved, proceeding...")
+                    # Continue to step completion below
+                else:
+                    return StepResult.PENDING_APPROVAL(approval_id)
         
         # Step completed - advance to next
         next_step = self._get_next_step(current_step_id)

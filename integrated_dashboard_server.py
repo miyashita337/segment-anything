@@ -123,14 +123,15 @@ class IntegratedDashboardServer:
         self.dashboards = {}
         
         # WorkspaceConfigを使用して動的にワークスペースを検出
-        base_path = Path(WorkspaceConfig.BASE_TRAIN_PATH)
+        base_path = Path("/mnt/c/AItools/lora/train")
         
         # 存在する全作者ディレクトリを動的に検出
         if base_path.exists():
             for author_dir in base_path.iterdir():
                 if author_dir.is_dir():
                     # WorkspaceConfigの関数を使ってワークスペースパス生成
-                    workspace = Path(WorkspaceConfig.get_workspace_base_for_author(author_dir.name))
+                    config = WorkspaceConfig()
+                    workspace = Path(config.get_author_workspace_base(author_dir.name))
                     
                     if not workspace.exists():
                         continue
@@ -164,21 +165,24 @@ class IntegratedDashboardServer:
         # 環境変数から追加のワークスペースも確認
         if 'TRACKER_WORKSPACE_BASE' in os.environ:
             additional_workspace = Path(os.environ['TRACKER_WORKSPACE_BASE'])
-            if additional_workspace.exists() and additional_workspace not in [
-                Path(WorkspaceConfig.get_workspace_base_for_author(d.name)) 
-                for d in base_path.iterdir() if d.is_dir()
-            ]:
-                logger.info(f"📂 環境変数から追加ワークスペース: {additional_workspace}")
-                # 同様のスキャン処理を追加ワークスペースに対しても実行
-                for tracker_dir in additional_workspace.iterdir():
-                    if tracker_dir.is_dir():
-                        for pattern in ["dashboard"]:
-                            dashboard_dir = tracker_dir / pattern
-                            if dashboard_dir.exists():
-                                for html_file in dashboard_dir.glob("*.html"):
-                                    tracker_id = tracker_dir.name
-                                    dashboard_key = f"{tracker_id}/{html_file.stem}"
-                                    self.dashboards[dashboard_key] = html_file
+            if additional_workspace.exists():
+                config = WorkspaceConfig()
+                existing_workspaces = [
+                    Path(config.get_author_workspace_base(d.name))
+                    for d in base_path.iterdir() if d.is_dir()
+                ]
+                if additional_workspace not in existing_workspaces:
+                    logger.info(f"📂 環境変数から追加ワークスペース: {additional_workspace}")
+                    # 同様のスキャン処理を追加ワークスペースに対しても実行
+                    for tracker_dir in additional_workspace.iterdir():
+                        if tracker_dir.is_dir():
+                            for pattern in ["dashboard"]:
+                                dashboard_dir = tracker_dir / pattern
+                                if dashboard_dir.exists():
+                                    for html_file in dashboard_dir.glob("*.html"):
+                                        tracker_id = tracker_dir.name
+                                        dashboard_key = f"{tracker_id}/{html_file.stem}"
+                                        self.dashboards[dashboard_key] = html_file
         
         logger.info(f"🎯 {len(self.dashboards)}個のダッシュボードを検出完了")
     
@@ -301,12 +305,13 @@ class IntegratedDashboardServer:
             return web.Response(text="Forbidden", status=403)
         
         # WorkspaceConfigを使用して複数のワークスペースから探す
-        base_path = Path(WorkspaceConfig.BASE_TRAIN_PATH)
+        base_path = Path("/mnt/c/AItools/lora/train")
         
         # まず動的に全作者のワークスペースから探す
         for author_dir in base_path.iterdir():
             if author_dir.is_dir():
-                workspace = Path(WorkspaceConfig.get_workspace_base_for_author(author_dir.name))
+                config = WorkspaceConfig()
+                workspace = Path(config.get_author_workspace_base(author_dir.name))
                 file_path = workspace / path
                 
                 if file_path.exists() and file_path.is_file():
@@ -587,11 +592,12 @@ class IntegratedDashboardServer:
         )
         
         # 複数作者のワークスペースから探索
-        base_path = Path(WorkspaceConfig.BASE_TRAIN_PATH)
+        base_path = Path("/mnt/c/AItools/lora/train")
         
         for author_dir in base_path.iterdir():
             if author_dir.is_dir():
-                workspace = Path(WorkspaceConfig.get_workspace_base_for_author(author_dir.name))
+                config = WorkspaceConfig()
+                workspace = Path(config.get_author_workspace_base(author_dir.name))
                 extraction_dir = workspace / tracker_id / "extraction"
                 
                 if extraction_dir.exists() and extraction_dir.is_dir():
@@ -637,12 +643,13 @@ class IntegratedDashboardServer:
         dashboard_path = Path(dashboard_path)
         
         # kiriワークスペース判定
-        kiri_workspace = Path(WorkspaceConfig.get_workspace_base_for_author('kiri'))
+        config = WorkspaceConfig()
+        kiri_workspace = Path(config.get_author_workspace_base('kiri'))
         if str(dashboard_path).startswith(str(kiri_workspace)):
             return kiri_workspace
-        
+
         # yadoワークスペース判定
-        yado_workspace = Path(WorkspaceConfig.get_workspace_base_for_author('yado'))
+        yado_workspace = Path(config.get_author_workspace_base('yado'))
         if str(dashboard_path).startswith(str(yado_workspace)):
             return yado_workspace
         
@@ -653,7 +660,8 @@ class IntegratedDashboardServer:
                 train_path_idx = next((i for i, p in enumerate(dashboard_path.parts) if p == 'train'), None)
                 if train_path_idx is not None and train_path_idx + 1 < len(dashboard_path.parts):
                     author_name = dashboard_path.parts[train_path_idx + 1]
-                    return Path(WorkspaceConfig.get_workspace_base_for_author(author_name))
+                    config = WorkspaceConfig()
+                    return Path(config.get_author_workspace_base(author_name))
         
         # フォールバック: デフォルトワークスペース
         return Path(self.tracker_workspace)

@@ -19,6 +19,9 @@ logger = logging.getLogger(__name__)
 class WorkspaceConfig:
     """ワークスペース設定の管理クラス"""
 
+    # 後方互換性のための定数（integrated_dashboard_server.py等で使用）
+    BASE_TRAIN_PATH = "/mnt/c/AItools/lora/train"
+
     def __init__(self, db_path: str = None):
         if db_path is None:
             project_root = self._find_project_root()
@@ -120,6 +123,33 @@ class WorkspaceConfig:
         """作者名に基づくデフォルト入力パスを生成"""
         return f"/mnt/c/AItools/lora/train/{author_name}/org/kana05"
 
+    def get_input_directory(self, tracker_id: str) -> Optional[str]:
+        """トラッカーの入力ディレクトリを取得"""
+        try:
+            config = self.get_workspace_config(tracker_id)
+            if not config:
+                logger.error(f"No workspace config found for {tracker_id}")
+                return None
+
+            input_path = config.get('input_path')
+            if input_path and os.path.exists(input_path):
+                return input_path
+
+            # フォールバック: 作者名からデフォルトパスを生成
+            author_name = config.get('author_name')
+            if author_name:
+                default_path = self.get_default_input_path(author_name)
+                if os.path.exists(default_path):
+                    logger.info(f"Using default input path for {tracker_id}: {default_path}")
+                    return default_path
+
+            logger.error(f"No valid input directory found for {tracker_id}")
+            return None
+
+        except Exception as e:
+            logger.error(f"Failed to get input directory for {tracker_id}: {e}")
+            return None
+
     def _validate_workspace_path(self, workspace_path: str, author_name: str, tracker_id: str) -> bool:
         """ワークスペースパスの妥当性を検証"""
         expected_pattern = f"/mnt/c/AItools/lora/train/{author_name}/tracker-workspace/{tracker_id}"
@@ -196,6 +226,26 @@ class WorkspaceConfig:
         except Exception as e:
             logger.error(f"Failed to delete workspace config: {e}")
             return False
+
+    @classmethod
+    def export_environment_variables(cls, tracker_id: str = None) -> Dict[str, str]:
+        """環境変数として設定情報をエクスポート"""
+        config = cls()
+        env_vars = {}
+
+        # トラッカーIDが指定されている場合はその設定を取得
+        if tracker_id:
+            workspace_info = config.get_workspace_config(tracker_id)
+            if workspace_info:
+                env_vars['TRACKER_ID'] = tracker_id
+                env_vars['AUTHOR_NAME'] = workspace_info.get('author_name', '')
+                env_vars['WORKSPACE_PATH'] = workspace_info.get('workspace_path', '')
+                env_vars['INPUT_PATH'] = workspace_info.get('input_path', '')
+
+        # デフォルト値も設定
+        env_vars.setdefault('WORKSPACE_BASE', '/mnt/c/AItools/lora/train/yado/tracker-workspace')
+
+        return env_vars
 
 
 # グローバルインスタンス

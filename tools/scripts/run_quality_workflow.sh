@@ -69,7 +69,7 @@ WORKSPACE_CONFIG_OUTPUT=$(sam-env/bin/python3 -c "
 import sys
 sys.path.insert(0, '$(dirname "$0")/../..')
 from config.workspace_config import WorkspaceConfig
-env_vars = WorkspaceConfig.export_environment_variables()
+env_vars = WorkspaceConfig.export_environment_variables('$TRACKER_ID')
 for key, value in env_vars.items():
     print(f'{key}=\"{value}\"')
 ")
@@ -77,8 +77,13 @@ for key, value in env_vars.items():
 # 環境変数設定
 eval "$WORKSPACE_CONFIG_OUTPUT"
 
-WORKSPACE_BASE="$TRACKER_WORKSPACE_ROOT"
-OUTPUT_DIR="${WORKSPACE_BASE}/${TRACKER_ID}"
+# WORKSPACE_PATHが設定されていればそれを使用、なければデフォルト
+if [ -n "$WORKSPACE_PATH" ]; then
+    OUTPUT_DIR="$WORKSPACE_PATH"
+else
+    WORKSPACE_BASE="${WORKSPACE_BASE:-/mnt/c/AItools/lora/train/yado/tracker-workspace}"
+    OUTPUT_DIR="${WORKSPACE_BASE}/${TRACKER_ID}"
+fi
 
 # 引数チェック
 if [ -z "$TRACKER_ID" ]; then
@@ -115,11 +120,17 @@ mkdir -p "${OUTPUT_DIR}"/{extraction,quality,dashboard,tests}
 # 既存の抽出結果確認
 if [ -d "${OUTPUT_DIR}/extraction" ] && [ "$(ls -A ${OUTPUT_DIR}/extraction)" ]; then
     echo "ℹ️  既存の抽出結果が見つかりました: ${OUTPUT_DIR}/extraction"
-    read -p "抽出パイプラインをスキップしますか? (y/N): " skip_extraction
-    if [[ $skip_extraction =~ ^[Yy]$ ]]; then
-        SKIP_EXTRACTION=true
+    # 非対話的モードの場合は自動的にスキップ
+    if [ -t 0 ]; then
+        read -p "抽出パイプラインをスキップしますか? (y/N): " skip_extraction
+        if [[ $skip_extraction =~ ^[Yy]$ ]]; then
+            SKIP_EXTRACTION=true
+        else
+            SKIP_EXTRACTION=false
+        fi
     else
-        SKIP_EXTRACTION=false
+        echo "📝 非対話的モード: 抽出パイプラインを自動的にスキップします"
+        SKIP_EXTRACTION=true
     fi
 else
     SKIP_EXTRACTION=false
@@ -334,8 +345,8 @@ fi
 # 3. 抽出結果レポート生成
 echo "📊 抽出結果レポート生成中..."
 sam-env/bin/python3 create_phase1_extraction_report.py \
-    --input_dir "${OUTPUT_DIR}/extraction/" \
-    --output_file "${OUTPUT_DIR}/extraction_result.json"
+    "${OUTPUT_DIR}/extraction/" \
+    "${OUTPUT_DIR}/extraction_result.json"
 
 # 4. 品質チェック3コマンド実行
 echo "🔍 品質チェック3コマンド実行中..."
