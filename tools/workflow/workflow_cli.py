@@ -572,6 +572,11 @@ def check_virtual_environment():
     import os
     import sys
 
+    # CI環境の場合はチェックをスキップ
+    if os.environ.get('GITHUB_ACTIONS'):
+        print("🔧 CI環境のため仮想環境チェックをスキップします")
+        return True
+
     # VIRTUAL_ENVがsam-envを指しているかチェック
     virtual_env = os.environ.get('VIRTUAL_ENV', '')
 
