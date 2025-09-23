@@ -29,35 +29,42 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 「メジャーアップデートとして扱って」
 - 「ミドルバージョンを上げて」
 
-## ⚠️ 重要: トラッカーワークフロー必須要件（4 回目仕様違反の恒久対策）
+## ⚠️ 重要: 強制ワークフロー実行システム（KIRO-006実装）
 
-**13ステップ・4フェーズワークフローの詳細については以下を参照**:
+**このプロジェクトでは強制ワークフロー実行システムを採用しています**
 
-### 📋 ワークフロー必須参照ドキュメント
-- **詳細チェックリスト**: [`docs/workflows/checklists/tracker_workflow_checklist.md`](docs/workflows/checklists/tracker_workflow_checklist.md) - 13ステップ完了確認用
-- **統合テンプレート**: [`docs/workflows/templates/unified_tracker_template.md`](docs/workflows/templates/unified_tracker_template.md) - 計画・進捗・完了報告統合版
+### 🚀 ワークフロー実行コマンド
 
-### 🚨 絶対厳守事項（簡潔版）
+```bash
+# 新規トラッカー起票
+python tools/workflow/workflow_cli.py plan {TRACKER_ID} "概要" "詳細" "作者名"
 
-1. **Google Sheets必須確認**: トラッカー開始時に必ずGoogle Sheetsから概要・詳細を読み込み
-2. **13ステップ完了必須**: 上記チェックリストに従い全フェーズ・全ステップ完了
-3. **ワークスペース出力必須**: `/mnt/c/AItools/lora/train/yado/tracker-workspace/{TRACKER_ID}/`
-4. **品質ワークフロー実行必須**: `./tools/scripts/run_quality_workflow.sh {TRACKER_ID}`
-5. **シリアル処理厳守**: 複数トラッカー並行処理厳禁
-6. **例外処理手順遵守**: 技術的困難時のユーザー相談必須
+# ワークフロー状態管理開始
+python tools/workflow/workflow_cli.py create {TRACKER_ID}
 
-### 📋 **トラッカーワークフロー開始手順（必須）**
+# 現在のステップ指示確認
+python tools/workflow/workflow_cli.py instructions {TRACKER_ID}
 
-**ユーザーから「トラッカーID：XXX　内容を読み込んで調査実装を開始して」の指示があった場合**:
+# ステップ実行
+python tools/workflow/workflow_cli.py step {TRACKER_ID}
 
-1. **🚨 CRITICAL**: 既存トラッカー実装であり、新規作成ではない
-2. **Google Sheetsステータス更新**: `python tools/progress_tracker/cli.py update {TRACKER_ID} "着手中"`
-3. **Google Sheets内容読み込み**: `python tools/progress_tracker/cli.py status {TRACKER_ID}` で概要・詳細確認
-4. **読み込み内容に基づく計画書作成**: Google Sheetsの内容に即した実装計画策定
-5. **13ステップワークフロー開始**: 正規4フェーズ・5段階承認での実行
+# ワークフロー状態確認
+python tools/workflow/workflow_cli.py status {TRACKER_ID}
+```
 
-### ✅ 4フェーズ概要
-**詳細は** [`docs/workflows/checklists/tracker_workflow_checklist.md`](docs/workflows/checklists/tracker_workflow_checklist.md) **を参照**
+### 🛡️ システム特徴
+
+- **SQLiteベース状態管理**: 厳密なフェーズ・ステップ管理
+- **承認ゲートシステム**: 人間の承認が必要なステップで自動ブロック
+- **非冪等的動作制御**: AIの一貫した動作を保証
+- **検証ベース制御**: 各ステップの完了条件を自動検証
+
+### 📋 実行手順
+
+1. **plan**コマンドでGoogle Sheetsに起票
+2. **create**コマンドでローカルワークフロー開始
+3. **instructions** → **step**を繰り返してフェーズを進行
+4. 承認が必要なステップでは自動的に待機状態になる
 
 ## 🛡️ **入力ディレクトリ存在チェック必須要件**
 
