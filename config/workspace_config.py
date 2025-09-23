@@ -227,6 +227,29 @@ class WorkspaceConfig:
             logger.error(f"Failed to delete workspace config: {e}")
             return False
 
+    def _get_dynamic_workspace_base(self) -> str:
+        """SQLiteから動的にワークスペースベースを取得"""
+        try:
+            # SQLiteから任意のトラッカーの作者名を取得してベースパスを決定
+            with self.lock:
+                with sqlite3.connect(self.db_path) as conn:
+                    cursor = conn.execute("""
+                        SELECT author_name FROM workspace_configs
+                        ORDER BY updated_at DESC LIMIT 1
+                    """)
+                    row = cursor.fetchone()
+
+            if row:
+                author_name = row[0]
+                return self.get_author_workspace_base(author_name)
+
+            # フォールバック: デフォルト値
+            return '/mnt/c/AItools/lora/train/yado/tracker-workspace'
+
+        except Exception as e:
+            logger.warning(f"Failed to get dynamic workspace base: {e}")
+            return '/mnt/c/AItools/lora/train/yado/tracker-workspace'
+
     @classmethod
     def export_environment_variables(cls, tracker_id: str = None) -> Dict[str, str]:
         """環境変数として設定情報をエクスポート"""
@@ -242,8 +265,8 @@ class WorkspaceConfig:
                 env_vars['WORKSPACE_PATH'] = workspace_info.get('workspace_path', '')
                 env_vars['INPUT_PATH'] = workspace_info.get('input_path', '')
 
-        # デフォルト値も設定
-        env_vars.setdefault('WORKSPACE_BASE', '/mnt/c/AItools/lora/train/yado/tracker-workspace')
+        # 動的ワークスペースベース取得（ハードコード除去）
+        env_vars.setdefault('WORKSPACE_BASE', config._get_dynamic_workspace_base())
 
         return env_vars
 

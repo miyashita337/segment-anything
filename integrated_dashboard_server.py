@@ -51,22 +51,27 @@ def get_tracker_workspace(input_path: Optional[str] = None) -> Path:
         if 'TRACKER_WORKSPACE_BASE' in os.environ:
             return Path(os.environ['TRACKER_WORKSPACE_BASE'])
         
+        # WorkspaceConfig使用: ハードコード除去
+        workspace_config = WorkspaceConfig()
+
         # 入力パスから作者検出
         if input_path and AUTHOR_ADAPTER_AVAILABLE:
             detected_author = AuthorParameterAdapter.detect_author_from_path(input_path)
             if detected_author:
-                workspace = Path(f"/mnt/c/AItools/lora/train/{detected_author}/tracker-workspace")
+                workspace = Path(workspace_config.get_author_workspace_base(detected_author))
                 logger.info(f"🔍 作者検出成功: {detected_author} → {workspace}")
                 return workspace
-        
-        # フォールバック: デフォルト作者（yado）
-        default_workspace = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace")
+
+        # フォールバック: WorkspaceConfig.BASE_TRAIN_PATH使用
+        base_train_path = WorkspaceConfig.BASE_TRAIN_PATH
+        default_workspace = Path(f"{base_train_path}/yado/tracker-workspace")
         logger.info(f"📂 デフォルトワークスペース使用: {default_workspace}")
         return default_workspace
         
     except Exception as e:
         logger.error(f"❌ ワークスペース検出エラー: {e}")
-        return Path("/mnt/c/AItools/lora/train/yado/tracker-workspace")
+        # 例外時もWorkspaceConfig.BASE_TRAIN_PATH使用
+        return Path(f"{WorkspaceConfig.BASE_TRAIN_PATH}/yado/tracker-workspace")
 
 # Basic認証設定
 BASIC_AUTH_USERNAME = "admin"
