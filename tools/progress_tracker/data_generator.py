@@ -200,24 +200,30 @@ class ExtractionResultGenerator:
             }
             results.append(result)
         
-        # 統計サマリー生成
+        # トラッカーIDを抽出
+        tracker_id = tracker_dir.name
+
+        # ワークフロー互換統計サマリー生成
         extraction_result = {
-            "total_images": len(image_files),
-            "success_count": success_count,
-            "failure_count": len(image_files) - success_count,
-            "success_rate": round(success_count / len(image_files), 3),
-            "avg_processing_time": round(total_processing_time / len(image_files), 1),
-            "quality_distribution": quality_distribution,
-            "metadata": {
-                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "dataset_name": "mixed",
-                "processing_method": "QCC-022 Statistical Analysis Pipeline", 
-                "system_info": {
-                    "statistical_testing": True,
-                    "welch_t_test": True,
-                    "effect_size_calculation": True,
-                    "confidence_intervals": True,
-                    "multiple_comparison_correction": True
+            "tracker_id": tracker_id,
+            "extraction_results": {
+                "total_images": len(image_files),
+                "success_count": success_count,
+                "failure_count": len(image_files) - success_count,
+                "success_rate": round(success_count / len(image_files), 3),
+                "avg_processing_time": round(total_processing_time / len(image_files), 1),
+                "quality_distribution": quality_distribution,
+                "metadata": {
+                    "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    "dataset_name": "mixed",
+                    "processing_method": "QCC-022 Statistical Analysis Pipeline",
+                    "system_info": {
+                        "statistical_testing": True,
+                        "welch_t_test": True,
+                        "effect_size_calculation": True,
+                        "confidence_intervals": True,
+                        "multiple_comparison_correction": True
+                    }
                 }
             },
             "results": results

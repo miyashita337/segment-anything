@@ -101,10 +101,10 @@
 ### unified_dashboard_wrapper.py での使用
 
 ```python
-from features.common.dashboard_generator import StandardDashboardGenerator
+from features.common.dashboard_generator import DashboardGenerator
 
 # 標準ダッシュボード生成器の強制使用
-generator = StandardDashboardGenerator(
+generator = DashboardGenerator(
     tracker_id=tracker_id,
     template_path="docs/templates/dashboard_standard_template.md"
 )
