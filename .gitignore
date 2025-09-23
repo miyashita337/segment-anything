@@ -1,5 +1,8 @@
 .nfs*
 
+# Authentication configuration (sensitive)
+config/auth.conf
+
 # compilation and distribution
 __pycache__
 _ext

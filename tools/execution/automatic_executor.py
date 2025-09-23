@@ -380,18 +380,44 @@ class AutomaticWorkflowExecutor:
         
         try:
             start_time = time.time()
-            
-            # Check if dashboard.html exists
+
+            # Generate dashboard using unified dashboard system
+            logger.info(f"Generating dashboard for {tracker_id}")
+            dashboard_cmd = [
+                "sam-env/bin/python3",
+                "tools/scripts/unified_dashboard_wrapper.py",
+                tracker_id,
+                os.path.join(workspace, "extraction/"),
+                workspace
+            ]
+
+            dashboard_result = subprocess.run(
+                dashboard_cmd,
+                capture_output=True,
+                text=True,
+                cwd=self.project_root,
+                timeout=300  # 5 minute timeout
+            )
+
+            if dashboard_result.returncode != 0:
+                return ExecutionResult(
+                    False,
+                    f"Dashboard generation failed: {dashboard_result.stderr}",
+                    evidence=f"dashboard_stderr={dashboard_result.stderr}"
+                )
+
+            # Verify dashboard.html was created
             if not os.path.exists(dashboard_file):
                 return ExecutionResult(
                     False,
-                    "Dashboard file not found - quality workflow may not have completed",
+                    "Dashboard generation completed but dashboard.html not found",
                     evidence=f"dashboard_file={dashboard_file}"
                 )
-            
+
             # Copy dashboard.html to index.html for server integration
             import shutil
             shutil.copy2(dashboard_file, index_file)
+            logger.info(f"Copied dashboard.html to index.html for server integration")
             
             # Validate dashboard content
             if self.validator:

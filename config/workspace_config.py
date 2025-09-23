@@ -251,6 +251,12 @@ class WorkspaceConfig:
             return '/mnt/c/AItools/lora/train/yado/tracker-workspace'
 
     @classmethod
+    def get_workspace_base(cls) -> str:
+        """ワークスペースベースパスを取得（workflow_controller.py互換）"""
+        config = cls()
+        return config._get_dynamic_workspace_base()
+
+    @classmethod
     def export_environment_variables(cls, tracker_id: str = None) -> Dict[str, str]:
         """環境変数として設定情報をエクスポート"""
         config = cls()
