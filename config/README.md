@@ -101,6 +101,63 @@ print('Valid:', WorkspaceConfig.validate_workspace_path())
 
 ---
 
+## Basic認証設定
+
+統合ダッシュボードサーバーおよびワークフロー実行時のBasic認証設定です。
+
+### セキュリティファイル配置
+
+認証情報は機密情報のため、Gitからは除外されています：
+
+```bash
+# 設定ファイル例をコピー
+cp config/auth.conf.example config/auth.conf
+
+# 実際の認証情報を設定
+echo "username:password" > config/auth.conf
+```
+
+### 使用方法
+
+#### シェルスクリプトから使用
+
+```bash
+# 認証情報を動的に読み込み
+curl -u $(cat config/auth.conf) http://100.123.241.106:8088/tracker/TRACKER-001
+
+# または一時的に環境変数に設定
+AUTH_CREDS=$(cat config/auth.conf)
+curl -u "$AUTH_CREDS" http://example.com/api
+```
+
+#### Python から使用
+
+```python
+from pathlib import Path
+
+def load_auth_config():
+    """認証設定を安全に読み込み"""
+    auth_file = Path("config/auth.conf")
+    if auth_file.exists():
+        return auth_file.read_text().strip()
+    return None
+
+# 使用例
+auth_creds = load_auth_config()
+if auth_creds:
+    # requests.auth.HTTPBasicAuth などで使用
+    username, password = auth_creds.split(':', 1)
+```
+
+### セキュリティ注意事項
+
+- ✅ `config/auth.conf` は `.gitignore` により自動除外
+- ✅ 設定ファイルは600権限で保護推奨：`chmod 600 config/auth.conf`
+- ❌ コード内にパスワードのベタ書き禁止
+- ❌ 認証情報のコミット厳禁
+
+---
+
 ## Pushover通知設定（既存）
 
 バッチ処理完了時にスマートフォンに通知を送るためのPushover設定です。

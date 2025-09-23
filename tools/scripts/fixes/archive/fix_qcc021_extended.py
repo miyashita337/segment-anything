@@ -12,7 +12,7 @@ sys.path.insert(0, '/mnt/c/AItools/segment-anything')
 import json
 import logging
 from datetime import datetime
-from features.common.dashboard_generator import StandardDashboardGenerator
+from features.common.dashboard_generator import DashboardGenerator
 from features.evaluation.statistics.success_rate import UnifiedSuccessRateCalculator
 from pathlib import Path
 
@@ -132,7 +132,7 @@ def generate_fixed_dashboard(unified_stats):
     
     try:
         # ダッシュボード生成器初期化
-        generator = StandardDashboardGenerator(
+        generator = DashboardGenerator(
             tracker_id=tracker_id,
             input_directories=[]  # 制限のため空に設定
         )

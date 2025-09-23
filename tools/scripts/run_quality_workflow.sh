@@ -69,7 +69,7 @@ WORKSPACE_CONFIG_OUTPUT=$(sam-env/bin/python3 -c "
 import sys
 sys.path.insert(0, '$(dirname "$0")/../..')
 from config.workspace_config import WorkspaceConfig
-env_vars = WorkspaceConfig.export_environment_variables()
+env_vars = WorkspaceConfig.export_environment_variables('$TRACKER_ID')
 for key, value in env_vars.items():
     print(f'{key}=\"{value}\"')
 ")
@@ -77,8 +77,13 @@ for key, value in env_vars.items():
 # 環境変数設定
 eval "$WORKSPACE_CONFIG_OUTPUT"
 
-WORKSPACE_BASE="$TRACKER_WORKSPACE_ROOT"
-OUTPUT_DIR="${WORKSPACE_BASE}/${TRACKER_ID}"
+# WORKSPACE_PATHが設定されていればそれを使用、なければデフォルト
+if [ -n "$WORKSPACE_PATH" ]; then
+    OUTPUT_DIR="$WORKSPACE_PATH"
+else
+    WORKSPACE_BASE="${WORKSPACE_BASE:-/mnt/c/AItools/lora/train/yado/tracker-workspace}"
+    OUTPUT_DIR="${WORKSPACE_BASE}/${TRACKER_ID}"
+fi
 
 # 引数チェック
 if [ -z "$TRACKER_ID" ]; then
@@ -115,11 +120,17 @@ mkdir -p "${OUTPUT_DIR}"/{extraction,quality,dashboard,tests}
 # 既存の抽出結果確認
 if [ -d "${OUTPUT_DIR}/extraction" ] && [ "$(ls -A ${OUTPUT_DIR}/extraction)" ]; then
     echo "ℹ️  既存の抽出結果が見つかりました: ${OUTPUT_DIR}/extraction"
-    read -p "抽出パイプラインをスキップしますか? (y/N): " skip_extraction
-    if [[ $skip_extraction =~ ^[Yy]$ ]]; then
-        SKIP_EXTRACTION=true
+    # 非対話的モードの場合は自動的にスキップ
+    if [ -t 0 ]; then
+        read -p "抽出パイプラインをスキップしますか? (y/N): " skip_extraction
+        if [[ $skip_extraction =~ ^[Yy]$ ]]; then
+            SKIP_EXTRACTION=true
+        else
+            SKIP_EXTRACTION=false
+        fi
     else
-        SKIP_EXTRACTION=false
+        echo "📝 非対話的モード: 抽出パイプラインを自動的にスキップします"
+        SKIP_EXTRACTION=true
     fi
 else
     SKIP_EXTRACTION=false
@@ -334,8 +345,8 @@ fi
 # 3. 抽出結果レポート生成
 echo "📊 抽出結果レポート生成中..."
 sam-env/bin/python3 create_phase1_extraction_report.py \
-    --input_dir "${OUTPUT_DIR}/extraction/" \
-    --output_file "${OUTPUT_DIR}/extraction_result.json"
+    "${OUTPUT_DIR}/extraction/" \
+    "${OUTPUT_DIR}/extraction_result.json"
 
 # 4. 品質チェック3コマンド実行
 echo "🔍 品質チェック3コマンド実行中..."
@@ -346,24 +357,7 @@ sam-env/bin/python3 tools/core/unified_quality_checker.py \
     --results "${OUTPUT_DIR}/extraction_result.json" \
     --output "${OUTPUT_DIR}/quality/unified_quality_report.json"
 
-# 4-2. 統合ダッシュボード生成（一元化されたシステム）
-echo "  📊 統合ダッシュボード生成..."
-sam-env/bin/python3 tools/scripts/unified_dashboard_wrapper.py \
-    "$TRACKER_ID" \
-    "${OUTPUT_DIR}/extraction/" \
-    "$OUTPUT_DIR"
-
-# 統合ダッシュボード生成完了確認
-if [ -f "${OUTPUT_DIR}/dashboard/dashboard.html" ]; then
-    echo "✅ 統合ダッシュボード生成完了: http://100.123.241.106:8088/tracker/$TRACKER_ID"
-    
-    # ファイルサイズ表示
-    DASHBOARD_SIZE=$(du -h "${OUTPUT_DIR}/dashboard/dashboard.html" | cut -f1)
-    echo "  📄 ダッシュボードサイズ: $DASHBOARD_SIZE"
-    echo "  🎯 システム: 統合ダッシュボード（一元化）"
-else
-    echo "⚠️  統合ダッシュボード生成に失敗しました"
-fi
+# 4-2. [削除] 統合ダッシュボード生成は dashboard_generation ステップで実行
 
 # 4-3. 客観指標テスト
 echo "  🎯 客観指標テスト実行..."
@@ -443,7 +437,7 @@ cat > "$SUMMARY_FILE" << EOF
 $([ "$SKIP_EXTRACTION" = false ] && echo "✅ 抽出パイプライン実行" || echo "⏭️  抽出パイプライン（スキップ）")
 ✅ 抽出結果レポート生成
 ✅ 統合品質チェック
-✅ ダッシュボード生成
+⏭️  ダッシュボード生成（dashboard_generationステップで実行）
 ✅ 客観指標テスト
 $([ -f "${OUTPUT_DIR}/statistical_analysis_result.txt" ] && echo "✅ 統合統計分析（INCI-004）" || echo "⏭️  統合統計分析（ベースラインなし）")
 $([ -f "${OUTPUT_DIR}/improvement_report.json" ] && echo "✅ 改善効果測定（レガシー）" || echo "⏭️  改善効果測定（レガシー）")
@@ -451,8 +445,8 @@ $([ -f "${OUTPUT_DIR}/improvement_report.json" ] && echo "✅ 改善効果測定
 📁 生成ファイル
 - 抽出結果: ${OUTPUT_DIR}/extraction/
 - 品質レポート: ${OUTPUT_DIR}/quality/unified_quality_report.json
-- ダッシュボード: ${OUTPUT_DIR}/dashboard/dashboard.html
 - テスト結果: ${OUTPUT_DIR}/tests/
+※ ダッシュボード: dashboard_generationステップで生成されます
 $([ -f "${OUTPUT_DIR}/statistical_analysis_result.txt" ] && echo "- 統計分析結果: ${OUTPUT_DIR}/statistical_analysis_result.txt")
 $([ -f "${OUTPUT_DIR}/improvement_report.json" ] && echo "- 改善レポート: ${OUTPUT_DIR}/improvement_report.json")
 
@@ -462,7 +456,7 @@ $([ -f "${OUTPUT_DIR}/statistical_analysis_result.txt" ] && {
 } || echo "- 統計分析が実行されませんでした")
 
 📊 次のステップ（シリアル処理必須）
-1. ダッシュボードで品質確認: file://${OUTPUT_DIR}/dashboard/dashboard.html
+1. dashboard_generationステップ完了後にダッシュボードで品質確認
 2. 統計分析結果確認: ${OUTPUT_DIR}/statistical_analysis_result.txt
 3. Google Sheetsの統計列データ確認（X-AC列）
 4. 実装完了報告テンプレートの記入
@@ -485,11 +479,11 @@ else
     echo "   ⚠️  デフォルト設定を使用"
 fi
 echo ""
-echo "🔗 ダッシュボード: file://${OUTPUT_DIR}/dashboard/dashboard.html"
+echo "🔗 ダッシュボード: dashboard_generationステップで生成予定"
 echo ""
 echo "📋 ダッシュボード品質保証チェックリスト:"
 echo "   詳細確認: docs/checklists/dashboard_quality_checklist.md"
-echo "   🚨 毎回実行必須 - 統計データ・品質分布の完全性確認"
+echo "   🚨 dashboard_generation完了後に必須実行 - 統計データ・品質分布の完全性確認"
 echo ""
 echo "🔄 シリアル処理確認:"
 echo "   1. 本トラッカー(${TRACKER_ID})の品質確認完了後"

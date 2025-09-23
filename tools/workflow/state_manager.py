@@ -25,6 +25,7 @@ class StepStatus(Enum):
     FAILED = "failed"
     BLOCKED = "blocked"
     PENDING_APPROVAL = "pending_approval"
+    WAITING = "waiting"
 
 
 class ValidationResult:
@@ -266,6 +267,43 @@ class WorkflowStateManager:
 
                 conn.commit()
                 logger.info(f"Marked step {step_id} as completed for {tracker_id}")
+
+    def _mark_step_waiting(self, tracker_id: str, step_id: str, evidence: str = ""):
+        """Mark a step as waiting for external task completion"""
+        with self.lock:
+            with sqlite3.connect(self.db_path) as conn:
+                conn.execute(
+                    """
+                    INSERT OR REPLACE INTO step_completions
+                    (tracker_id, step_id, status, completed_at, validation_evidence)
+                    VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?)
+                """,
+                    (tracker_id, step_id, StepStatus.WAITING.value, evidence),
+                )
+
+                conn.commit()
+                logger.info(f"Marked step {step_id} as waiting for {tracker_id}")
+
+    def get_step_status(self, tracker_id: str, step_id: str) -> Optional[str]:
+        """Get the current status of a specific step"""
+        try:
+            with self.lock:
+                with sqlite3.connect(self.db_path) as conn:
+                    cursor = conn.execute(
+                        """
+                        SELECT status FROM step_completions
+                        WHERE tracker_id = ? AND step_id = ?
+                        ORDER BY completed_at DESC LIMIT 1
+                        """,
+                        (tracker_id, step_id)
+                    )
+                    row = cursor.fetchone()
+                    if row:
+                        return row[0]
+                    return None
+        except Exception as e:
+            logger.error(f"Error getting step status for {tracker_id}/{step_id}: {e}")
+            return None
 
     def require_approval(
         self, tracker_id: str, step_id: str, approval_criteria: List[str]

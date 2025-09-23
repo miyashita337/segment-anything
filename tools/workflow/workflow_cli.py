@@ -567,8 +567,32 @@ python tools/workflow/workflow_cli.py template TRACKER-001
 """)
     return True
 
+def check_virtual_environment():
+    """sam-env仮想環境がアクティブかチェック"""
+    import os
+    import sys
+
+    # VIRTUAL_ENVがsam-envを指しているかチェック
+    virtual_env = os.environ.get('VIRTUAL_ENV', '')
+
+    if not virtual_env or 'sam-env' not in virtual_env:
+        print("❌ sam-env仮想環境がアクティブではありません")
+        print("🔧 以下のコマンドで仮想環境を有効化してください:")
+        print("   source sam-env/bin/activate  # Linux/WSL")
+        print("   sam-env\\Scripts\\activate     # Windows")
+        print()
+        return False
+
+    print(f"✅ 仮想環境がアクティブです: {virtual_env}")
+    return True
+
 def main():
     """メインCLIエントリーポイント"""
+    # 仮想環境チェック（最優先実行）
+    if not check_virtual_environment():
+        print("⚠️  仮想環境設定後に再実行してください")
+        return 1
+
     parser = argparse.ArgumentParser(
         description="ワークフロー強制実行システム CLI",
         formatter_class=argparse.RawDescriptionHelpFormatter,

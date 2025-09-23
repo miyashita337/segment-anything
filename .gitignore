@@ -1,5 +1,11 @@
 .nfs*
 
+# Authentication configuration (sensitive)
+config/auth.conf
+
+# Progress tracking files (auto-generated)
+progress_history.json
+
 # compilation and distribution
 __pycache__
 _ext

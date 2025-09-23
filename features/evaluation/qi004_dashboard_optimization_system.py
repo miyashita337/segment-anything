@@ -18,7 +18,7 @@ import os
 import time
 from dataclasses import dataclass
 # 既存システムのインポート
-from features.common.dashboard_generator import StandardDashboardGenerator
+from features.common.dashboard_generator import DashboardGenerator
 from features.common.notification.pushover_image_sender import PushoverImageSender
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -351,7 +351,7 @@ class QI004DashboardOptimizationSystem:
         self.logger = logging.getLogger(__name__)
         self.quality_analyzer = ImageQualityAnalyzer()
         self.dashboard_optimizer = DashboardOptimizer()
-        self.dashboard_generator = StandardDashboardGenerator()
+        self.dashboard_generator = DashboardGenerator()
         self.notification_sender = PushoverImageSender()
         
         self.logger.info("🎯 QI-004ダッシュボード最適化システム初期化完了")

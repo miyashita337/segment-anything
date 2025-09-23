@@ -22,14 +22,14 @@
 
 ### 1. メインダッシュボード生成システム拡張
 
-#### StandardDashboardGenerator クラス拡張
+#### DashboardGenerator クラス拡張
 ```python
 # 統計分析機能統合
 from scipy import stats
 from tools.progress_tracker.sheets_client import GoogleSheetsClient
 from tools.progress_tracker.config import get_default_config
 
-class StandardDashboardGenerator:
+class DashboardGenerator:
     def __init__(self):
         # 統計分析機能初期化
         self.statistical_analysis_enabled = True
@@ -152,10 +152,10 @@ def generate_improvement_chart(self, current_tracker: str, stats_result: Dict[st
 
 ### 基本的なダッシュボード生成（統計分析付き）
 ```python
-from features.common.dashboard_generator import StandardDashboardGenerator
+from features.common.dashboard_generator import DashboardGenerator
 
 # ダッシュボード生成（統計分析自動実行）
-generator = StandardDashboardGenerator()
+generator = DashboardGenerator()
 dashboard_file = generator.generate_standard_dashboard(
     data={
         'tracker_id': 'INCI-003',
@@ -186,7 +186,7 @@ dashboard_file = generator.generate_standard_dashboard(
 - ❌ Base64画像埋め込みダッシュボード
 
 ### 新しい統合システム
-- ✅ `features/common/dashboard_generator.StandardDashboardGenerator`
+- ✅ `features/common/dashboard_generator.DashboardGenerator`
 - ✅ 統計分析自動実行（`auto_statistical_analysis=True`）
 - ✅ 相対パス参照ダッシュボード（セキュリティ準拠）
 
@@ -198,8 +198,8 @@ analyzer = UniversalStatisticalAnalyzer()
 result = analyzer.analyze_tracker_comparison('TRACKER_A', 'TRACKER_B')
 
 # 新システム（推奨）
-from features.common.dashboard_generator import StandardDashboardGenerator
-generator = StandardDashboardGenerator()
+from features.common.dashboard_generator import DashboardGenerator
+generator = DashboardGenerator()
 # 統計分析はダッシュボード生成時に自動実行
 dashboard_file = generator.generate_standard_dashboard(data, output_dir)
 ```

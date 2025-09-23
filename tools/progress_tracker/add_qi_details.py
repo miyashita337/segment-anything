@@ -62,7 +62,7 @@ def update_qi_details():
         'details': '''【概要】ダッシュボード標準化・Base64画像表示システム構築
 
 【詳細実装内容】
-- StandardDashboardGeneratorクラス実装
+- DashboardGeneratorクラス実装
 - Base64画像埋め込み機能実装（2-3MB HTMLファイル生成）
 - 品質バッジシステム実装（高品質・中品質・低品質の自動判定）
 - Tailwind CSS使用のレスポンシブデザイン実装

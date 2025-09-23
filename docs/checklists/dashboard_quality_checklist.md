@@ -93,8 +93,8 @@ for i, r in enumerate(results):
 ```bash
 # 必須実行コマンド
 python3 -c "
-from features.common.dashboard_generator import StandardDashboardGenerator
-generator = StandardDashboardGenerator()
+from features.common.dashboard_generator import DashboardGenerator
+generator = DashboardGenerator()
 dashboard_path = generator.create_dashboard(
     tracker_id='{TRACKER_ID}', 
     workspace_dir='/mnt/c/AItools/lora/train/yado/tracker-workspace/{TRACKER_ID}'
@@ -332,8 +332,8 @@ print(f'✅ 平均品質スコア修正: {avg_score:.3f}')
 ### ダッシュボード強制再生成
 ```bash
 python3 -c "
-from features.common.dashboard_generator import StandardDashboardGenerator
-generator = StandardDashboardGenerator()
+from features.common.dashboard_generator import DashboardGenerator
+generator = DashboardGenerator()
 dashboard_path = generator.create_dashboard(
     tracker_id='{TRACKER_ID}',
     workspace_dir='/mnt/c/AItools/lora/train/yado/tracker-workspace/{TRACKER_ID}'

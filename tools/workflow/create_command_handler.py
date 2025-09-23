@@ -77,11 +77,11 @@ class CreateCommandHandler:
         
         try:
             status = self.workflow_controller.get_workflow_status(tracker_id)
-            
-            if "error" in status:
-                # エラーがある場合は存在しないと判断
+
+            # "not_found"または"error"の場合は存在しないと判断
+            if status.get('status') == 'not_found' or "error" in status:
                 return False, None
-            
+
             # 有効な状態情報がある場合は存在すると判断
             return True, {
                 'tracker_id': tracker_id,

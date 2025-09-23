@@ -68,18 +68,19 @@ class UnifiedQualityReport:
     timestamp: str
     dataset_name: str
     total_images: int
-    
+
     # メイン指標
     evaluation_metrics: List[QualityMetric]
     mask_metrics: List[QualityMetric]
     objective_metrics: List[QualityMetric]
-    
+
     # サマリー
     overall_score: float
+    average_quality_score: float
     passed_metrics: int
     total_metrics: int
     status: str  # PASS, FAIL, PARTIAL
-    
+
     # 改善提案
     priority_improvements: List[str]
     technical_recommendations: List[str]
@@ -848,7 +849,11 @@ class UnifiedQualityChecker:
         
         # 総合スコア計算（実装済み指標の合格率）
         overall_score = passed_metrics / len(implemented_metrics) if implemented_metrics else 0.0
-        
+
+        # 平均品質スコア計算（A/B評価率をベースに算出）
+        ab_evaluation_metrics = [m for m in evaluation_metrics if "A/B評価率" in m.name]
+        average_quality_score = ab_evaluation_metrics[0].value if ab_evaluation_metrics else 0.0
+
         # ステータス判定
         if overall_score >= 0.8:
             status = "PASS"
@@ -884,6 +889,7 @@ class UnifiedQualityChecker:
             mask_metrics=mask_metrics,
             objective_metrics=objective_metrics,
             overall_score=overall_score,
+            average_quality_score=average_quality_score,
             passed_metrics=passed_metrics,
             total_metrics=len(implemented_metrics),
             status=status,
