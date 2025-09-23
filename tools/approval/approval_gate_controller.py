@@ -91,15 +91,85 @@ class ApprovalGateController:
         approval_dir = os.path.join(workspace_base, tracker_id, ".approvals")
         os.makedirs(approval_dir, exist_ok=True)
         return approval_dir
-    
-    def request_approval(self, tracker_id: str, step_id: str, 
+
+    def check_existing_approval(self, tracker_id: str, step_id: str) -> Optional[str]:
+        """
+        Check if step is already approved (any approved.json exists for this step)
+        Returns approval_id if approved, None otherwise
+        """
+        approval_dir = self._get_tracker_approval_dir(tracker_id)
+        if not os.path.exists(approval_dir):
+            return None
+
+        # Check for any approved file for this tracker and step
+        for filename in os.listdir(approval_dir):
+            if f"{tracker_id}_{step_id}_" in filename and filename.endswith("_approved.json"):
+                # Extract approval_id from filename
+                approval_id = filename.replace("_approved.json", "")
+                logger.info(f"Found existing approval: {approval_id}")
+                return approval_id
+
+        return None
+
+    def get_pending_approval_request(self, tracker_id: str, step_id: str) -> Optional[str]:
+        """
+        Check for existing pending approval request
+        Returns approval_id if pending request exists, None otherwise
+        """
+        approval_dir = self._get_tracker_approval_dir(tracker_id)
+        if not os.path.exists(approval_dir):
+            return None
+
+        # Check for pending request files
+        pending_requests = []
+        for filename in os.listdir(approval_dir):
+            if f"{tracker_id}_{step_id}_" in filename and filename.endswith("_request.json"):
+                # Check if this request is already approved
+                approval_id = filename.replace("_request.json", "")
+                approved_file = os.path.join(approval_dir, f"{approval_id}_approved.json")
+                denied_file = os.path.join(approval_dir, f"{approval_id}_denied.json")
+
+                if not os.path.exists(approved_file) and not os.path.exists(denied_file):
+                    # This request is still pending
+                    pending_requests.append(approval_id)
+
+        if pending_requests:
+            # Return the most recent pending request
+            pending_requests.sort()
+            most_recent = pending_requests[-1]
+            logger.info(f"Found pending approval request: {most_recent}")
+            return most_recent
+
+        return None
+
+    def request_approval(self, tracker_id: str, step_id: str,
                         context: ApprovalContext) -> str:
         """
         Create approval request that physically blocks progress.
         Returns approval_id that must be resolved before proceeding.
         """
+        # First, check if already approved
+        existing_approval = self.check_existing_approval(tracker_id, step_id)
+        if existing_approval:
+            logger.info(f"Step {step_id} is already approved with ID: {existing_approval}")
+            return existing_approval
+
+        # Second, check for pending approval request
+        pending_approval = self.get_pending_approval_request(tracker_id, step_id)
+        if pending_approval:
+            logger.info(f"Reusing existing pending approval request: {pending_approval}")
+            # Re-display the approval request for user visibility
+            approval_dir = self._get_tracker_approval_dir(tracker_id)
+            request_file = os.path.join(approval_dir, f"{pending_approval}_request.json")
+            if os.path.exists(request_file):
+                with open(request_file, 'r', encoding='utf-8') as f:
+                    request_data = json.load(f)
+                self._display_approval_request(pending_approval, context, request_data)
+            return pending_approval
+
+        # If neither exists, create new approval request
         approval_id = f"{tracker_id}_{step_id}_{int(time.time())}"
-        
+
         with self.lock:
             # Get tracker-specific approval directory
             approval_dir = self._get_tracker_approval_dir(tracker_id)

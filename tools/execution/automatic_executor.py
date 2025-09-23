@@ -19,6 +19,10 @@ from dataclasses import dataclass
 import logging
 import threading
 
+# SubAgent統合とワークスペース設定
+from tools.queue.task_integration import TaskIntegration
+from config.workspace_config import get_workspace_config
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -88,153 +92,117 @@ class AutomaticWorkflowExecutor:
             except Exception as e:
                 return ExecutionResult(False, f"Failed to create workspace: {e}")
         
-        # Set default input directory
+        # Get input directory from workspace config
         if input_dir is None:
-            input_dir = "/mnt/c/AItools/lora/train/yado/org/kana05/"
-        
+            workspace_config = get_workspace_config()
+            input_dir = workspace_config.get_input_directory(tracker_id)
+
+            if not input_dir:
+                return ExecutionResult(
+                    False,
+                    f"No input directory configured for {tracker_id}",
+                    evidence=f"tracker_id={tracker_id}"
+                )
+
         # Verify input directory exists
         if not os.path.exists(input_dir):
             return ExecutionResult(
-                False, 
+                False,
                 f"Input directory not found: {input_dir}",
                 evidence=f"input_dir={input_dir}"
             )
         
-        # Prepare extraction command
+        # Prepare extraction using SubAgent queue system
         output_dir = os.path.join(workspace, "extraction")
         log_file = os.path.join(workspace, "extraction.log")
-        
-        cmd = [
-            "python3", "features/extraction/commands/extract_character.py",
-            input_dir, "-o", output_dir, "--batch", "--verbose"
-        ]
-        
-        # Set environment variables for extraction
-        env = os.environ.copy()
-        env["MEMORY_LIMIT_DISABLED"] = "true"
-        env["TRACKER_ID"] = tracker_id
-        
+
         try:
             start_time = time.time()
-            
-            if background:
-                # Run in background to avoid timeout
-                with open(log_file, 'w') as f:
-                    process = subprocess.Popen(
-                        cmd, 
-                        stdout=f, 
-                        stderr=subprocess.STDOUT,
-                        cwd=self.project_root,
-                        env=env
-                    )
-                
-                # Track the process
-                with self.lock:
-                    self.running_processes[tracker_id] = {
-                        'process': process,
-                        'step': 'extraction',
-                        'started_at': datetime.now(),
-                        'log_file': log_file
-                    }
-                
-                # Update state manager
-                if self.state_manager:
-                    self.state_manager._mark_step_in_progress(tracker_id, "extraction")
-                
-                execution_time = time.time() - start_time
-                
-                return ExecutionResult(
-                    True, 
-                    f"Extraction started in background (PID: {process.pid})",
-                    execution_time=execution_time,
-                    process_id=process.pid,
-                    log_file=log_file,
-                    evidence=f"pid={process.pid},log_file={log_file}"
-                )
-            
-            else:
-                # Run synchronously with timeout
-                with open(log_file, 'w') as f:
-                    result = subprocess.run(
-                        cmd,
-                        stdout=f,
-                        stderr=subprocess.STDOUT,
-                        cwd=self.project_root,
-                        env=env,
-                        timeout=1800  # 30 minute timeout
-                    )
-                
-                execution_time = time.time() - start_time
-                
-                if result.returncode == 0:
-                    # Validate extraction results
-                    if self.validator:
-                        validation_result = self.validator.validate_extraction_completion(tracker_id)
-                        if validation_result.passed:
-                            if self.state_manager:
-                                self.state_manager._mark_step_completed(
-                                    tracker_id, "extraction", validation_result.evidence
-                                )
-                            
-                            return ExecutionResult(
-                                True,
-                                "Extraction completed successfully",
-                                execution_time=execution_time,
-                                log_file=log_file,
-                                evidence=validation_result.evidence
-                            )
-                        else:
-                            return ExecutionResult(
-                                False,
-                                f"Extraction validation failed: {validation_result.errors}",
-                                execution_time=execution_time,
-                                log_file=log_file,
-                                evidence=f"validation_errors={validation_result.errors}"
-                            )
-                    else:
-                        return ExecutionResult(
-                            True,
-                            "Extraction completed (validation not available)",
-                            execution_time=execution_time,
-                            log_file=log_file,
-                            evidence="no_validation_available"
-                        )
-                else:
-                    return ExecutionResult(
-                        False,
-                        f"Extraction failed with return code {result.returncode}",
-                        execution_time=execution_time,
-                        log_file=log_file,
-                        evidence=f"return_code={result.returncode}"
-                    )
-            
-        except subprocess.TimeoutExpired:
-            return ExecutionResult(
-                False, 
-                "Extraction timeout (30 minutes)",
-                evidence="timeout_30min"
+
+            # Initialize TaskIntegration for SubAgent queue
+            integration = TaskIntegration(tracker_id)
+
+            # Submit extraction task to SubAgent queue
+            task_id = integration.execute_extract_character(
+                input_dir=input_dir,
+                output_dir=output_dir,
+                batch=True,
+                max_files=None  # No limit
             )
+
+            execution_time = time.time() - start_time
+
+            logger.info(f"Extraction task submitted to SubAgent queue: {task_id}")
+
+            # Start queue processing to actually execute the task
+            integration.start_queue_processing()
+            logger.info(f"SubAgent queue processing started for {tracker_id}")
+
+            # Save task ID for later monitoring
+            task_info_file = os.path.join(workspace, "subagent_task.json")
+            task_info = {
+                "task_id": task_id,
+                "tracker_id": tracker_id,
+                "step": "extraction",
+                "submitted_at": datetime.now().isoformat(),
+                "input_dir": input_dir,
+                "output_dir": output_dir
+            }
+
+            with open(task_info_file, 'w') as f:
+                json.dump(task_info, f, indent=2)
+
+            # Log task submission and execution start
+            with open(log_file, 'w') as f:
+                f.write(f"SubAgent extraction task submitted at {datetime.now()}\n")
+                f.write(f"Task ID: {task_id}\n")
+                f.write(f"Queue processing started: Yes\n")
+                f.write(f"Input directory: {input_dir}\n")
+                f.write(f"Output directory: {output_dir}\n")
+                f.write(f"Tracker ID: {tracker_id}\n")
+
+            return ExecutionResult(
+                True,
+                f"Extraction task started in SubAgent queue: {task_id}",
+                execution_time=execution_time,
+                evidence=f"task_id={task_id},log_file={log_file},task_info={task_info_file}"
+            )
+
         except Exception as e:
             return ExecutionResult(
-                False, 
+                False,
                 f"Extraction execution error: {str(e)}",
                 evidence=f"exception={str(e)}"
             ) 
    
     def execute_quality_workflow(self, tracker_id: str) -> ExecutionResult:
         """
-        Automatically execute quality workflow without AI involvement.
-        This runs the complete quality analysis and dashboard generation.
+        Automatically execute quality workflow with SubAgent task monitoring.
+        This checks if extraction is complete and then runs quality analysis.
         """
         logger.info(f"Starting automatic quality workflow for {tracker_id}")
-        
-        # Verify extraction completed first
+
+        # Check if SubAgent extraction task is completed
+        extraction_task_completed = self._check_extraction_task_status(tracker_id)
+
+        if not extraction_task_completed:
+            # Mark as waiting state and return
+            if self.state_manager:
+                self.state_manager._mark_step_waiting(tracker_id, "quality_workflow")
+
+            return ExecutionResult(
+                True,  # Success but waiting
+                "Waiting for extraction task to complete",
+                evidence="extraction_task_in_progress"
+            )
+
+        # Verify extraction results exist
         if self.validator:
             extraction_result = self.validator.validate_extraction_completion(tracker_id)
             if not extraction_result.passed:
                 return ExecutionResult(
-                    False, 
-                    f"Extraction not complete: {extraction_result.errors}",
+                    False,
+                    f"Extraction validation failed: {extraction_result.errors}",
                     evidence=f"extraction_validation_failed={extraction_result.errors}"
                 )
         
@@ -325,7 +293,80 @@ class AutomaticWorkflowExecutor:
                 f"Quality workflow execution error: {str(e)}",
                 evidence=f"exception={str(e)}"
             )
-    
+
+    def _check_extraction_task_status(self, tracker_id: str) -> bool:
+        """Check if SubAgent extraction task is completed"""
+        try:
+            workspace = os.path.join(self.workspace_base, tracker_id)
+
+            # First check queue status for completion
+            queue_status_file = os.path.join(workspace, "queue", "queue_status.json")
+            if os.path.exists(queue_status_file):
+                with open(queue_status_file, 'r') as f:
+                    queue_status = json.load(f)
+
+                # Check if status is idle (task completed) or has last_completed_task
+                if queue_status.get("status") == "idle":
+                    logger.info(f"Queue is idle for {tracker_id} - task completed")
+                    return True
+                elif queue_status.get("status") == "task_completed":
+                    logger.info(f"Task marked as completed in queue for {tracker_id}")
+                    return True
+                elif queue_status.get("status") == "task_running":
+                    logger.info(f"Task still running for {tracker_id}")
+                    return False
+
+            # Check if task info file exists
+            task_info_file = os.path.join(workspace, "subagent_task.json")
+            if not os.path.exists(task_info_file):
+                # If no task info, check if extraction has results
+                extraction_dir = os.path.join(workspace, "extraction")
+                if os.path.exists(extraction_dir):
+                    extracted_files = [f for f in os.listdir(extraction_dir) if f.endswith(('.jpg', '.png'))]
+                    if len(extracted_files) > 0:
+                        logger.info(f"Extraction results found for {tracker_id} - considering task completed")
+                        return True
+                logger.warning(f"No SubAgent task info found for {tracker_id}")
+                return False
+
+            # Load task information
+            with open(task_info_file, 'r') as f:
+                task_info = json.load(f)
+
+            task_id = task_info.get("task_id")
+            if not task_id:
+                logger.error(f"No task ID found in task info for {tracker_id}")
+                return False
+
+            # Check if extraction directory has results
+            extraction_dir = os.path.join(workspace, "extraction")
+            if not os.path.exists(extraction_dir):
+                logger.info(f"Extraction directory not found for {tracker_id} - task still running")
+                return False
+
+            # Check if any extracted files exist
+            extracted_files = [f for f in os.listdir(extraction_dir) if f.endswith(('.jpg', '.png'))]
+            if len(extracted_files) == 0:
+                logger.info(f"No extracted files found for {tracker_id} - task still running")
+                return False
+
+            # Check if extraction_result.json exists (completion indicator)
+            result_file = os.path.join(extraction_dir, "extraction_result.json")
+            if os.path.exists(result_file):
+                logger.info(f"Extraction completed for {tracker_id} - result file found")
+                return True
+
+            # If we have extracted files but no result file, check file count
+            if len(extracted_files) >= 1:
+                logger.info(f"Extraction appears completed for {tracker_id} - {len(extracted_files)} files found")
+                return True
+
+            return False
+
+        except Exception as e:
+            logger.error(f"Error checking extraction task status for {tracker_id}: {e}")
+            return False
+
     def execute_dashboard_generation(self, tracker_id: str) -> ExecutionResult:
         """
         Automatically generate final dashboard and ensure server integration.

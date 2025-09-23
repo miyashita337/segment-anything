@@ -117,23 +117,24 @@ class TaskIntegration:
         if output_dir is None:
             output_dir = str(self.workspace / "extraction")
         
-        # コマンド構築
+        # コマンド構築（SUBAGENT_EXECUTION=true環境変数付き）
         cmd_parts = [
+            "SUBAGENT_EXECUTION=true",
             "sam-env/bin/python3",
             "features/extraction/commands/extract_character.py",
             input_dir,
             "-o", output_dir
         ]
-        
+
         if batch:
             cmd_parts.append("--batch")
-        
+
         if max_files:
             cmd_parts.extend(["--max-files", str(max_files)])
-        
+
         cmd_parts.extend(["--quality-method", quality_method])
         cmd_parts.append("--verbose")
-        
+
         command = " ".join(cmd_parts)
         
         # タスクをキューに追加

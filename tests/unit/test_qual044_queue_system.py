@@ -255,7 +255,7 @@ class TestTaskIntegration(unittest.TestCase):
         args, kwargs = self.integration.queue.enqueue_task.call_args
         command, task_type = args
         
-        self.assertIn("python -m pytest tests/", command)
+        self.assertIn("sam-env/bin/python3 -m pytest tests/", command)
         self.assertIn("--cov=.", command)
         self.assertEqual(task_type, "pytest")
     
