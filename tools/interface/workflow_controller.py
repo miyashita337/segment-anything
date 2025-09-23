@@ -233,7 +233,7 @@ class WorkflowController:
                 step_id="dashboard_generation",
                 phase="phase_3",
                 title="Dashboard Generation",
-                description="Generate final dashboard and ensure server integration",
+                description="統一ダッシュボードシステム v2.0 でダッシュボード生成と統合サーバー連携",
                 prerequisites=["quality_workflow"],
                 validation_required=True,
                 approval_required=False,
@@ -306,7 +306,7 @@ class WorkflowController:
         )
         
         # Generate step-specific instructions
-        required_actions = self._generate_step_actions(step_config)
+        required_actions = self._generate_step_actions(step_config, tracker_id)
         validation_criteria = self._generate_validation_criteria(step_config)
         
         return StepInstructions(
@@ -320,15 +320,15 @@ class WorkflowController:
             blocking_reasons=blocking_reasons if not can_proceed else None
         )
     
-    def _generate_step_actions(self, step_config: WorkflowStep) -> List[str]:
+    def _generate_step_actions(self, step_config: WorkflowStep, tracker_id: str) -> List[str]:
         """Generate specific actions for a step"""
         actions = []
         
         if step_config.step_id == "branch_verification":
             actions = [
                 "Verify current Git branch with: git branch --show-current",
-                f"Ensure branch follows pattern: feature/{'{tracker_id}'}",
-                "Create feature branch if needed: git checkout -b feature/{tracker_id}"
+                f"Ensure branch follows pattern: feature/{tracker_id}",
+                f"Create feature branch if needed: git checkout -b feature/{tracker_id}"
             ]
         elif step_config.step_id == "sam_env_check":
             actions = [
@@ -338,8 +338,8 @@ class WorkflowController:
             ]
         elif step_config.step_id == "google_sheets_sync":
             actions = [
-                "Update tracker status: python tools/progress_tracker/cli.py update {tracker_id} '着手中'",
-                "Verify sync: python tools/progress_tracker/cli.py status {tracker_id}"
+                f"Update tracker status: python tools/progress_tracker/cli.py update {tracker_id} '着手中'",
+                f"Verify sync: python tools/progress_tracker/cli.py status {tracker_id}"
             ]
         elif step_config.step_id == "sow_creation":
             actions = [
@@ -348,7 +348,7 @@ class WorkflowController:
                 "- Deliverables specification", 
                 "- Responsibility boundaries",
                 "- Approval conditions",
-                "Save as: workspace/{tracker_id}/sow_document.md"
+                f"Save as: workspace/{tracker_id}/sow_document.md"
             ]
         elif step_config.step_id == "implementation":
             actions = [
@@ -367,18 +367,25 @@ class WorkflowController:
             actions = [
                 "Extraction will be executed automatically",
                 "Monitor progress in extraction.log",
-                "Verify results in workspace/{tracker_id}/extraction/"
+                f"Verify results in workspace/{tracker_id}/extraction/"
             ]
         elif step_config.step_id == "quality_workflow":
+            # 動的パス生成（作者名を動的検出）
+            from config.workspace_config import WorkspaceConfig
+            workspace_base = WorkspaceConfig.get_workspace_base()
+
             actions = [
-                "Quality workflow will be executed automatically",
-                "Monitor progress in quality_workflow.log",
-                "Verify dashboard generation"
+                f"./tools/scripts/run_quality_workflow.sh {tracker_id}",
+                f"tail -f {workspace_base}/{tracker_id}/quality_workflow.log",
+                f"ls -la {workspace_base}/{tracker_id}/dashboard/dashboard.html",
+                f"curl -u $(cat config/auth.conf) http://100.123.241.106:8088/tracker/{tracker_id}",
+                f"python tools/workflow/workflow_cli.py step {tracker_id}  # 完了後の次ステップ実行"
             ]
         elif step_config.step_id == "dashboard_generation":
             actions = [
-                "Dashboard generation will be executed automatically",
-                "Verify index.html creation",
+                "統一ダッシュボードシステム v2.0 で自動実行されます",
+                "features/evaluation/dashboard_generator.py が使用されます", 
+                "index.html が自動生成され、統合サーバーと連携されます",
                 "Test server accessibility"
             ]
         elif step_config.step_id == "final_approval":
@@ -433,9 +440,11 @@ class WorkflowController:
                 ]
             elif step_config.step_id == "dashboard_generation":
                 criteria = [
-                    "index.html exists",
+                    "index.html exists (統合サーバー用)",
+                    "dashboard/dashboard.html exists (統一システム生成)",
                     "Contains tracker-specific content",
-                    "Valid HTML structure"
+                    "Valid HTML structure",
+                    "統一ダッシュボードシステム v2.0 ヘッダー含有"
                 ]
         
         return criteria

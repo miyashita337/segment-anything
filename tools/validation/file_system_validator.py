@@ -44,8 +44,32 @@ class FileSystemValidator:
             workspace_base = "/mnt/c/AItools/lora/train/yado/tracker-workspace"
         self.workspace_base = workspace_base
         self.project_root = self._find_project_root()
+        self.dashboard_config = self._load_dashboard_config()
         logger.info(f"FileSystemValidator initialized: workspace={workspace_base}")
     
+    def _load_dashboard_config(self) -> Dict:
+        """Load dashboard section configuration"""
+        config_path = os.path.join(self._find_project_root(), "config", "dashboard_sections.json")
+        default_config = {
+            "required_sections": {
+                "statistical_analysis": "統計分析結果",
+                "extraction_gallery": "抽出結果ギャラリー",
+                "quality_distribution": "品質分布",
+                "evaluation_metrics": "評価メトリクス"
+            }
+        }
+
+        try:
+            if os.path.exists(config_path):
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            else:
+                logger.warning(f"Dashboard config not found at {config_path}, using defaults")
+                return default_config
+        except Exception as e:
+            logger.error(f"Failed to load dashboard config: {e}, using defaults")
+            return default_config
+
     def _find_project_root(self) -> str:
         """Find the project root directory"""
         current = os.path.dirname(os.path.abspath(__file__))
@@ -509,13 +533,14 @@ class FileSystemValidator:
             with open(dashboard_file, 'r', encoding='utf-8') as f:
                 dashboard_content = f.read()
             
-            # Check for required dashboard sections
-            required_sections = [
-                "統計分析結果",    # Statistical Analysis Results
-                "基本品質指標",    # Basic Quality Indicators
-                "品質分布",        # Quality Distribution
-                "画像ギャラリー"   # Image Gallery
-            ]
+            # Check for required dashboard sections from configuration
+            required_sections = list(self.dashboard_config.get("required_sections", {}).values())
+
+            # 後方互換性のために統計分析結果と抽出結果ギャラリーが必須
+            if "統計分析結果" not in required_sections:
+                required_sections.append("統計分析結果")
+            if "抽出結果ギャラリー" not in required_sections:
+                required_sections.append("抽出結果ギャラリー")
             
             missing_sections = []
             for section in required_sections:

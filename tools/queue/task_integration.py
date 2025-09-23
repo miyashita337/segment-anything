@@ -495,7 +495,7 @@ class TaskOrchestrator:
         logger.info(f"Starting dashboard generation for: {tracker_id}")
         
         # コマンド構築
-        command = f"python tools/core/dashboard_generator.py --tracker-id {tracker_id}"
+        command = f"python features/evaluation/dashboard_generator.py --tracker-id {tracker_id}"
         
         # オプション追加
         options = kwargs.get('options', [])
