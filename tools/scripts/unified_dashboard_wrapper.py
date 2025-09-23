@@ -28,10 +28,10 @@ def main():
     try:
         # features.common.dashboard_generator を使用
         sys.path.insert(0, '/mnt/c/AItools/segment-anything')
-        from features.common.dashboard_generator import StandardDashboardGenerator
+        from features.common.dashboard_generator import DashboardGenerator
         
         # ダッシュボード生成器初期化
-        generator = StandardDashboardGenerator()
+        generator = DashboardGenerator()
         
         # 抽出結果JSONパス
         extraction_result_path = output_dir / "extraction_result.json"
