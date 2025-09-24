@@ -23,6 +23,10 @@ pytestmark = pytest.mark.skipif(
 
 # Skip import if not available
 try:
+    import sys
+    from pathlib import Path
+    # Add tests/qc to path for imports
+    sys.path.insert(0, str(Path(__file__).parent))
     from compatible_extraction_system import QCCompatibleExtractor
 except ImportError:
     pytest.skip("QCCompatibleExtractor not available", allow_module_level=True)
