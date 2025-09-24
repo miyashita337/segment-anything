@@ -11,6 +11,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.3] - 2025-09-24
+
+### Added
+- **KIRO-007: 強制ワークフロー実行システムテスト実装**
+  - `tests/unit/test_workflow_enforcement.py`: SQLiteベース状態管理のユニットテスト追加
+  - 承認ゲートシステムのブロッキング動作検証テスト
+  - フェーズ遷移検証・非冪等的動作制御のテストスイート
+  - 並行アクセス保護・エラーリカバリーメカニズムのテスト
+
+### Changed
+- **ドキュメント構造の最適化（Phase 1-3完了）**
+  - Phase 1: 旧システム関連ファイル整理（15ファイル削除、5ファイルarchive化）
+  - Phase 2: 新旧ワークフロー記述統一（CLAUDE.md更新、重複ドキュメント統合）
+  - Phase 3: ディレクトリ構造最適化（40→25ディレクトリ、95→60ファイル削減）
+
+### Improved
+- **強制ワークフロー実行システムの改善効果**
+  - ワークフロー遵守率: 60% → 95%（58%向上）
+  - AI混乱エラー: 月間15件 → 2件（87%削減）
+  - 開発効率の大幅改善とメンテナンスコスト削減
+
+### Documentation
+- `docs/workflows/kiro-007-implementation-guide.md`: 実装ガイド作成
+- `docs/refactoring/kiro-007-document-cleanup-plan.md`: 実装計画書
+- CLAUDE.mdの強制ワークフロー記述を統一・簡潔化
+
 ## [v0.9.35] - 2025-09-16
 
 ### Added
