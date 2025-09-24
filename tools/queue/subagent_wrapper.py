@@ -827,6 +827,31 @@ class EnhancedSubAgentTaskQueue(SubAgentTaskQueue):
             self.logger.error(f"Failed to save checkpoint: {task_id} - {e}")
             return False
 
+    def load_checkpoint(self, task_id: str) -> Optional[Dict[str, Any]]:
+        """
+        チェックポイント読み込み
+
+        Args:
+            task_id: タスクID
+
+        Returns:
+            Optional[Dict[str, Any]]: チェックポイントデータ
+        """
+        try:
+            checkpoint_file = self.checkpoint_dir / f"{task_id}_checkpoint.json"
+            if not checkpoint_file.exists():
+                return None
+
+            with open(checkpoint_file, 'r') as f:
+                checkpoint = json.load(f)
+
+            self.logger.info(f"Checkpoint loaded: {task_id}")
+            return checkpoint
+
+        except Exception as e:
+            self.logger.error(f"Failed to load checkpoint: {task_id} - {e}")
+            return None
+
     def auto_checkpoint_if_needed(self, task_id: str, progress_data: Dict[str, Any]) -> bool:
         """
         必要に応じて自動チェックポイント保存

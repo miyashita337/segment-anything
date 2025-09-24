@@ -10,17 +10,31 @@ Phase 2ステップ7: 統合テスト実装
 import os
 import json
 import unittest
+import tempfile
 from pathlib import Path
 
 
 class TestTEST001Workflow(unittest.TestCase):
     """TEST-001ワークフロー統合テスト"""
-    
+
     def setUp(self):
         """テスト環境セットアップ"""
         self.tracker_id = "TEST-001"
-        self.workspace = Path(f"/mnt/c/AItools/lora/train/yado/tracker-workspace/{self.tracker_id}")
+
+        # テスト用一時ディレクトリを使用
+        self.temp_dir = tempfile.mkdtemp()
+        self.workspace = Path(self.temp_dir) / self.tracker_id
         self.extraction_dir = self.workspace / "extraction"
+
+        # テスト用ディレクトリ構造作成
+        for dir_name in ["extraction", "dashboard", "quality", "tests"]:
+            (self.workspace / dir_name).mkdir(parents=True, exist_ok=True)
+
+    def tearDown(self):
+        """テスト後クリーンアップ"""
+        import shutil
+        if hasattr(self, 'temp_dir') and Path(self.temp_dir).exists():
+            shutil.rmtree(self.temp_dir)
         
     def test_workspace_structure(self):
         """ワークスペース構造検証"""

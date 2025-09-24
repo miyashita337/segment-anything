@@ -18,7 +18,7 @@ sys.path.append(str(project_root / 'features/extraction'))
 sys.path.append(str(project_root / 'features/evaluation'))
 sys.path.append(str(project_root / 'features/common'))
 
-from commands.extract_character import extract_character_from_path
+from features.extraction.commands.extract_character import extract_character
 
 
 class TestPartialDetectionIntegration(unittest.TestCase):
@@ -43,19 +43,40 @@ class TestPartialDetectionIntegration(unittest.TestCase):
         self.temp_dir = tempfile.mkdtemp()
         self.test_image_path = str(Path(self.temp_dir) / "test_character.jpg")
         cv2.imwrite(self.test_image_path, self.test_image)
+
+    def _check_environment(self) -> bool:
+        """環境依存チェック（GPU・モデル存在）"""
+        import torch
+
+        # GPU利用可能性チェック
+        if not torch.cuda.is_available():
+            return False
+
+        # SAMモデルファイル存在チェック
+        sam_model = Path("sam_vit_h_4b8939.pth")
+        if not sam_model.exists():
+            return False
+
+        # YOLOモデル存在チェック
+        yolo_model = Path("yolov8n.pt")
+        if not yolo_model.exists():
+            return False
+
+        return True
     
     def test_extraction_with_partial_analysis(self):
         """部分抽出分析付きの抽出テスト"""
         try:
             # 抽出実行（verbose=Trueでログ確認）
-            result = extract_character_from_path(
-                image_path=self.test_image_path,
-                output_path=None,  # 保存はしない
+            # 環境チェック: GPU・モデル存在確認
+            if not self._check_environment():
+                self.skipTest("環境依存: GPU/モデルファイルが必要")
+
+            result = extract_character(
+                input_path=str(self.test_image_path),
+                output_path=None,
                 verbose=True,
-                enhance_contrast=False,
-                filter_text=False,
-                save_mask=False,
-                save_transparent=False
+                batch=False
             )
             
             # 基本的な抽出結果確認
@@ -111,8 +132,8 @@ class TestPartialDetectionIntegration(unittest.TestCase):
         """エラーハンドリング統合テスト"""
         # 存在しないファイルでのテスト
         try:
-            result = extract_character_from_path(
-                image_path="/nonexistent/image.jpg",
+            result = extract_character(
+                input_path="/nonexistent/image.jpg",
                 output_path=None,
                 verbose=False
             )
@@ -138,12 +159,11 @@ class TestPartialDetectionIntegration(unittest.TestCase):
         """詳細出力統合テスト"""
         try:
             # verboseモードでの実行
-            result = extract_character_from_path(
-                image_path=self.test_image_path,
+            result = extract_character(
+                input_path=str(self.test_image_path),
                 output_path=None,
                 verbose=True,  # 詳細ログを有効
-                enhance_contrast=False,
-                filter_text=False
+                batch=False
             )
             
             print("✅ Verbose mode integration test completed")
@@ -158,8 +178,8 @@ class TestPartialDetectionIntegration(unittest.TestCase):
     def test_performance_monitoring_integration(self):
         """パフォーマンス監視統合テスト"""
         try:
-            result = extract_character_from_path(
-                image_path=self.test_image_path,
+            result = extract_character(
+                input_path=str(self.test_image_path),
                 output_path=None,
                 verbose=True
             )
