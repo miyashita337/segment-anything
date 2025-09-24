@@ -138,8 +138,12 @@ jobs:
             --cov-report=xml:coverage-unit.xml \
             --cov-report=term \
             --junit-xml=junit-unit.xml \
-            -n ${{ env.PYTEST_WORKERS }} \
-            || echo "UNIT_TESTS_FAILED=true" >> $GITHUB_ENV
+            -n ${{ env.PYTEST_WORKERS }}
+          if [ $? -eq 0 ]; then
+            echo "UNIT_TESTS_FAILED=false" >> $GITHUB_ENV
+          else
+            echo "UNIT_TESTS_FAILED=true" >> $GITHUB_ENV
+          fi
         else
           echo "⚠️ No unit tests found"
         fi
@@ -158,8 +162,12 @@ jobs:
             --cov=tools \
             --cov-append \
             --cov-report=xml:coverage-integration.xml \
-            --junit-xml=junit-integration.xml \
-            || echo "INTEGRATION_TESTS_FAILED=true" >> $GITHUB_ENV
+            --junit-xml=junit-integration.xml
+          if [ $? -eq 0 ]; then
+            echo "INTEGRATION_TESTS_FAILED=false" >> $GITHUB_ENV
+          else
+            echo "INTEGRATION_TESTS_FAILED=true" >> $GITHUB_ENV
+          fi
         else
           echo "⚠️ No integration tests found"
         fi
@@ -179,8 +187,12 @@ jobs:
             --cov-append \
             --cov-report=xml:coverage-extraction.xml \
             --junit-xml=junit-extraction.xml \
-            -m "not gpu and not model_required" \
-            || echo "EXTRACTION_TESTS_FAILED=true" >> $GITHUB_ENV
+            -m "not gpu and not model_required"
+          if [ $? -eq 0 ]; then
+            echo "EXTRACTION_TESTS_FAILED=false" >> $GITHUB_ENV
+          else
+            echo "EXTRACTION_TESTS_FAILED=true" >> $GITHUB_ENV
+          fi
         else
           echo "⚠️ No extraction tests found"
         fi
@@ -198,8 +210,12 @@ jobs:
             --cov=tools.qc \
             --cov-append \
             --cov-report=xml:coverage-qc.xml \
-            --junit-xml=junit-qc.xml \
-            || echo "QC_TESTS_FAILED=true" >> $GITHUB_ENV
+            --junit-xml=junit-qc.xml
+          if [ $? -eq 0 ]; then
+            echo "QC_TESTS_FAILED=false" >> $GITHUB_ENV
+          else
+            echo "QC_TESTS_FAILED=true" >> $GITHUB_ENV
+          fi
         else
           echo "⚠️ No QC tests found"
         fi
@@ -217,8 +233,12 @@ jobs:
             --cov=tools.workflow \
             --cov-append \
             --cov-report=xml:coverage-workflow.xml \
-            --junit-xml=junit-workflow.xml \
-            || echo "WORKFLOW_TESTS_FAILED=true" >> $GITHUB_ENV
+            --junit-xml=junit-workflow.xml
+          if [ $? -eq 0 ]; then
+            echo "WORKFLOW_TESTS_FAILED=false" >> $GITHUB_ENV
+          else
+            echo "WORKFLOW_TESTS_FAILED=true" >> $GITHUB_ENV
+          fi
         else
           echo "⚠️ No workflow tests found"
         fi
@@ -237,8 +257,12 @@ jobs:
             --timeout=${{ env.PYTEST_TIMEOUT }} \
             --cov-append \
             --cov-report=xml:coverage-root.xml \
-            --junit-xml=junit-root.xml \
-            || echo "ROOT_TESTS_FAILED=true" >> $GITHUB_ENV
+            --junit-xml=junit-root.xml
+          if [ $? -eq 0 ]; then
+            echo "ROOT_TESTS_FAILED=false" >> $GITHUB_ENV
+          else
+            echo "ROOT_TESTS_FAILED=true" >> $GITHUB_ENV
+          fi
         else
           echo "⚠️ No root level tests found"
         fi
