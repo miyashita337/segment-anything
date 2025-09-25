@@ -11,6 +11,62 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.35] - 2025-09-25
+
+### Added
+- **KIRO-006/KIRO-007: 強制ワークフローシステム完全実装**
+  - `tools/workflow/workflow_cli.py`: SQLite状態管理による厳密なフェーズ・ステップ管理
+  - `tools/interface/workflow_controller.py`: 承認ゲートシステム・非冪等的動作制御
+  - `tools/approval/approval_gate_controller.py`: 人間承認必須ステップの自動ブロック機能
+  - `tools/execution/automatic_executor.py`: 自動実行ステップの品質保証機能
+  - `tools/validation/file_system_validator.py`: ファイルシステム検証による確実性保証
+
+- **INTG-089: SubAgent統合システム実時間監視・通知機能強化**
+  - SubAgentMonitor拡張: GPU異常検知、メモリリーク検出、温度監視機能
+  - NotificationBridge強化: ハッシュベース重複防止、優先度別通知制御
+  - EnhancedSubAgentTaskQueue: チェックポイント・レジューム機能による長時間タスク対応
+
+- **ワークスペース設定管理システム (KIRO-006)**
+  - `config/workspace_config.py`: 動的パス解決・作者別ワークスペース管理
+  - ハードコード除去による柔軟な設定管理
+  - 複数作者環境での自動ワークスペース振り分け機能
+
+- **新CI/CDパイプライン**
+  - `.github/workflows/full-test-ci.yml`: 全テストスイート実行
+  - GitHub Actions v4対応、v3廃止による最新化
+  - カバレッジ測定・品質ゲート統合
+
+### Changed
+- **ドキュメント構造大幅リファクタリング**
+  - アーカイブ整理: 40→25ディレクトリ、95→60ファイル削減
+  - 技術仕様統合: `docs/technical/specifications/` への集約
+  - レガシーファイル削除: 未使用の古いドキュメント27ファイル除去
+
+- **テストシステム改善**
+  - `tests/conftest.py`: 統一テスト設定・環境独立性向上
+  - `pytest.ini`: テスト実行設定標準化
+  - 依存関係解決・importパス問題修正
+
+### Fixed
+- **CI/CD安定性修正**
+  - GitHub Actions v3廃止対応・YAML構文エラー修正
+  - Python 3.11環境でのテスト依存関係解決
+  - 環境変数設定ロジックの改善
+
+- **SubAgent統合修正**
+  - `tools/queue/subagent_wrapper.py`: キュー統合・安定性向上
+  - `tools/queue/long_task_manager.py`: プロセス管理・リカバリー機能強化
+  - タスク状態管理の一貫性保証
+
+### Removed
+- **レガシーシステム削除**
+  - 古いワークフロー記述・重複ドキュメント27ファイル
+  - 使用されていないテンプレートファイル削除
+  - アーカイブ済み実装レポート・完了報告の整理
+
+### Thanks
+- @miyashita337 for implementing the comprehensive workflow enforcement system and SubAgent integration improvements
+
 ## [v0.9.3] - 2025-09-24
 
 ### Added
