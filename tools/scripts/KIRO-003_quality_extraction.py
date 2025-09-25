@@ -32,10 +32,21 @@ def setup_quality_config():
 def run_quality_extraction():
     """品質重視抽出の実行"""
     
-    # 設定
-    input_dir = "/mnt/c/AItools/lora/train/kiri/aichikan/"
-    output_dir = "/mnt/c/AItools/lora/train/kiri/tracker-workspace/KIRO-003/extraction/"
-    input_list = "/mnt/c/AItools/lora/train/kiri/tracker-workspace/KIRO-003/input_files.txt"
+    # WorkspaceConfigManagerを使って動的パス解決
+    from config.workspace_config import WorkspaceConfig
+    workspace_config = WorkspaceConfig()
+    config = workspace_config.get_workspace_config("KIRO-003")
+    
+    if config:
+        # 動的パス生成
+        input_dir = config.get('input_path', f"/mnt/c/AItools/lora/train/{config['author_name']}/aichikan/")
+        output_dir = f"{config['workspace_path']}/extraction/"
+        input_list = f"{config['workspace_path']}/input_files.txt"
+    else:
+        # フォールバック: 従来のハードコード
+        input_dir = "/mnt/c/AItools/lora/train/kiri/aichikan/"
+        output_dir = "/mnt/c/AItools/lora/train/kiri/tracker-workspace/KIRO-003/extraction/"
+        input_list = "/mnt/c/AItools/lora/train/kiri/tracker-workspace/KIRO-003/input_files.txt"
     
     # ログ設定
     logging.basicConfig(

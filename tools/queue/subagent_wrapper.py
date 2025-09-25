@@ -1825,11 +1825,20 @@ class IntegratedSubAgentSystem:
             # ディスク使用量チェック（出力ディレクトリ）
             output_size = 0
             try:
-                # extract_character.pyの出力パスを推定
-                workspace_dirs = [
-                    f"/mnt/c/AItools/lora/train/yado/tracker-workspace/{self.tracker_id}/extraction/",
-                    f"/mnt/c/AItools/lora/train/kiri/tracker-workspace/{self.tracker_id}/extraction/"
-                ]
+                # WorkspaceConfigManagerを使って動的パス解決
+                from config.workspace_config import WorkspaceConfig
+                workspace_config = WorkspaceConfig()
+                config = workspace_config.get_workspace_config(self.tracker_id)
+                
+                if config:
+                    extraction_path = f"{config['workspace_path']}/extraction/"
+                    workspace_dirs = [extraction_path]
+                else:
+                    # フォールバック: 従来の複数パス
+                    workspace_dirs = [
+                        f"/mnt/c/AItools/lora/train/yado/tracker-workspace/{self.tracker_id}/extraction/",
+                        f"/mnt/c/AItools/lora/train/kiri/tracker-workspace/{self.tracker_id}/extraction/"
+                    ]
                 
                 for output_dir in workspace_dirs:
                     if Path(output_dir).exists():
