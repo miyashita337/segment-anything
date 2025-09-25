@@ -1,0 +1,387 @@
+name: Full Test Suite CI
+
+# 全テストスイート実行CI - tests/以下の全103ファイルを網羅
+on:
+  push:
+    branches: [ main, 'feature/**' ]
+    paths:
+      - 'features/**'
+      - 'tools/**'
+      - 'tests/**'
+      - 'core/**'
+      - '*.py'
+      - 'requirements*.txt'
+      - '.github/workflows/full-test-ci.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'features/**'
+      - 'tools/**'
+      - 'tests/**'
+      - 'core/**'
+      - '*.py'
+      - 'requirements*.txt'
+  workflow_dispatch:
+    inputs:
+      test_scope:
+        description: 'Test scope (all/unit/integration/extraction/qc/workflow)'
+        required: false
+        default: 'all'
+      verbose:
+        description: 'Verbose output'
+        required: false
+        default: 'false'
+
+env:
+  CI_ENVIRONMENT: true
+  PYTHONPATH: ${{ github.workspace }}
+  # CI環境設定（CPU専用、軽量モデル）
+  CPU_ONLY: true
+  MEMORY_LIMIT_DISABLED: true
+  YOLO_MODEL: yolov8n.pt
+  SAM_MODEL: sam_vit_b_01ec64.pth
+  MAX_PROCESSING_TIME: 300
+  # pytest設定
+  PYTEST_TIMEOUT: 60
+  PYTEST_WORKERS: auto
+
+jobs:
+  full-test-suite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - name: 📥 Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # 全履歴取得（カバレッジ比較用）
+
+    - name: 🔧 WSL互換性設定
+      run: |
+        # GitHub Actions環境でWSLパスを模擬
+        sudo mkdir -p /mnt
+        sudo ln -sf "$GITHUB_WORKSPACE" /mnt/c
+        echo "✅ /mnt/c -> $GITHUB_WORKSPACE symlink created"
+
+    - name: 🐍 Set up Python 3.10
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: 📦 Cache pip packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/pip
+          ~/.local
+        key: ${{ runner.os }}-pip-full-${{ hashFiles('requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-full-
+          ${{ runner.os }}-pip-
+
+    - name: 📚 Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+
+        # 基本依存関係
+        pip install -e .
+
+        # テスト関連
+        pip install pytest==8.3.2 \
+                   pytest-cov==5.0.0 \
+                   pytest-xdist==3.6.1 \
+                   pytest-timeout==2.3.1 \
+                   pytest-mock==3.14.0 \
+                   pytest-json-report==1.5.0
+
+        # CI環境用軽量依存関係
+        pip install opencv-python-headless \
+                   pillow \
+                   numpy \
+                   scipy
+
+        # Linting tools（テスト品質チェック用）
+        pip install flake8 black mypy isort
+
+        echo "✅ All dependencies installed"
+
+    - name: 🔍 Verify test structure
+      run: |
+        echo "📊 Test Directory Structure:"
+        echo "================================"
+        find tests -type d -name "__pycache__" -prune -o -type d -print | sort
+        echo ""
+        echo "📋 Test Files Count by Directory:"
+        echo "================================"
+        for dir in tests/unit tests/integration tests/extraction tests/qc tests/workflow; do
+          if [ -d "$dir" ]; then
+            count=$(find "$dir" -name "test_*.py" -o -name "*_test.py" | wc -l)
+            echo "$dir: $count files"
+          fi
+        done
+        echo ""
+        echo "📈 Total test files: $(find tests -name "*.py" -type f | wc -l)"
+        echo "================================"
+
+    - name: 🧪 Run Unit Tests
+      id: unit_tests
+      continue-on-error: true
+      run: |
+        echo "🔬 Running Unit Tests..."
+        if [ -d "tests/unit" ]; then
+          pytest tests/unit/ \
+            -v \
+            --tb=short \
+            --timeout=${{ env.PYTEST_TIMEOUT }} \
+            --cov=features \
+            --cov=tools \
+            --cov-report=xml:coverage-unit.xml \
+            --cov-report=term \
+            --junit-xml=junit-unit.xml \
+            -n ${{ env.PYTEST_WORKERS }}
+          if [ $? -eq 0 ]; then
+            echo "UNIT_TESTS_FAILED=false" >> $GITHUB_ENV
+          else
+            echo "UNIT_TESTS_FAILED=true" >> $GITHUB_ENV
+          fi
+        else
+          echo "⚠️ No unit tests found"
+        fi
+
+    - name: 🔄 Run Integration Tests
+      id: integration_tests
+      continue-on-error: true
+      run: |
+        echo "🔗 Running Integration Tests..."
+        if [ -d "tests/integration" ]; then
+          pytest tests/integration/ \
+            -v \
+            --tb=short \
+            --timeout=${{ env.PYTEST_TIMEOUT }} \
+            --cov=features \
+            --cov=tools \
+            --cov-append \
+            --cov-report=xml:coverage-integration.xml \
+            --junit-xml=junit-integration.xml
+          if [ $? -eq 0 ]; then
+            echo "INTEGRATION_TESTS_FAILED=false" >> $GITHUB_ENV
+          else
+            echo "INTEGRATION_TESTS_FAILED=true" >> $GITHUB_ENV
+          fi
+        else
+          echo "⚠️ No integration tests found"
+        fi
+
+    - name: 🎨 Run Extraction Tests
+      id: extraction_tests
+      continue-on-error: true
+      run: |
+        echo "🖼️ Running Extraction Tests..."
+        if [ -d "tests/extraction" ]; then
+          # CI環境ではモデル依存テストをモック化
+          pytest tests/extraction/ \
+            -v \
+            --tb=short \
+            --timeout=${{ env.PYTEST_TIMEOUT }} \
+            --cov=features.extraction \
+            --cov-append \
+            --cov-report=xml:coverage-extraction.xml \
+            --junit-xml=junit-extraction.xml \
+            -m "not gpu and not model_required"
+          if [ $? -eq 0 ]; then
+            echo "EXTRACTION_TESTS_FAILED=false" >> $GITHUB_ENV
+          else
+            echo "EXTRACTION_TESTS_FAILED=true" >> $GITHUB_ENV
+          fi
+        else
+          echo "⚠️ No extraction tests found"
+        fi
+
+    - name: ✅ Run QC Tests
+      id: qc_tests
+      continue-on-error: true
+      run: |
+        echo "📊 Running QC Tests..."
+        if [ -d "tests/qc" ]; then
+          pytest tests/qc/ \
+            -v \
+            --tb=short \
+            --timeout=${{ env.PYTEST_TIMEOUT }} \
+            --cov=tools.qc \
+            --cov-append \
+            --cov-report=xml:coverage-qc.xml \
+            --junit-xml=junit-qc.xml
+          if [ $? -eq 0 ]; then
+            echo "QC_TESTS_FAILED=false" >> $GITHUB_ENV
+          else
+            echo "QC_TESTS_FAILED=true" >> $GITHUB_ENV
+          fi
+        else
+          echo "⚠️ No QC tests found"
+        fi
+
+    - name: 🔄 Run Workflow Tests
+      id: workflow_tests
+      continue-on-error: true
+      run: |
+        echo "⚙️ Running Workflow Tests..."
+        if [ -d "tests/workflow" ]; then
+          pytest tests/workflow/ \
+            -v \
+            --tb=short \
+            --timeout=${{ env.PYTEST_TIMEOUT }} \
+            --cov=tools.workflow \
+            --cov-append \
+            --cov-report=xml:coverage-workflow.xml \
+            --junit-xml=junit-workflow.xml
+          if [ $? -eq 0 ]; then
+            echo "WORKFLOW_TESTS_FAILED=false" >> $GITHUB_ENV
+          else
+            echo "WORKFLOW_TESTS_FAILED=true" >> $GITHUB_ENV
+          fi
+        else
+          echo "⚠️ No workflow tests found"
+        fi
+
+    - name: 📝 Run Root Level Tests
+      id: root_tests
+      continue-on-error: true
+      run: |
+        echo "📁 Running Root Level Tests..."
+        # tests/直下のtest_*.pyファイルを実行
+        root_tests=$(find tests -maxdepth 1 -name "test_*.py" -type f)
+        if [ -n "$root_tests" ]; then
+          pytest $root_tests \
+            -v \
+            --tb=short \
+            --timeout=${{ env.PYTEST_TIMEOUT }} \
+            --cov-append \
+            --cov-report=xml:coverage-root.xml \
+            --junit-xml=junit-root.xml
+          if [ $? -eq 0 ]; then
+            echo "ROOT_TESTS_FAILED=false" >> $GITHUB_ENV
+          else
+            echo "ROOT_TESTS_FAILED=true" >> $GITHUB_ENV
+          fi
+        else
+          echo "⚠️ No root level tests found"
+        fi
+
+    - name: 📊 Generate Coverage Report
+      if: always()
+      run: |
+        # カバレッジレポートの統合
+        if command -v coverage &> /dev/null; then
+          pip install coverage
+
+          # XMLレポートが存在する場合のみ統合
+          xml_files=""
+          for file in coverage-*.xml; do
+            if [ -f "$file" ]; then
+              xml_files="$xml_files $file"
+            fi
+          done
+
+          if [ -n "$xml_files" ]; then
+            echo "📈 Combining coverage reports..."
+            coverage combine $xml_files 2>/dev/null || true
+            coverage report --format=markdown > coverage-summary.md || true
+            coverage html --directory=htmlcov || true
+
+            echo "📊 Coverage Summary:"
+            cat coverage-summary.md 2>/dev/null || echo "No coverage data available"
+          fi
+        fi
+
+    - name: 📤 Upload Test Results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: |
+          junit-*.xml
+          coverage-*.xml
+          coverage-summary.md
+          htmlcov/
+        retention-days: 30
+
+    - name: 📝 Test Report Summary
+      if: always()
+      run: |
+        echo "# 📊 Test Execution Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        # 結果テーブル作成
+        echo "| Test Suite | Status | Details |" >> $GITHUB_STEP_SUMMARY
+        echo "|------------|--------|---------|" >> $GITHUB_STEP_SUMMARY
+
+        # 各テストスイートの結果
+        if [ "$UNIT_TESTS_FAILED" = "true" ]; then
+          echo "| Unit Tests | ❌ Failed | Check junit-unit.xml |" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "| Unit Tests | ✅ Passed | All tests passed |" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        if [ "$INTEGRATION_TESTS_FAILED" = "true" ]; then
+          echo "| Integration Tests | ❌ Failed | Check junit-integration.xml |" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "| Integration Tests | ✅ Passed | All tests passed |" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        if [ "$EXTRACTION_TESTS_FAILED" = "true" ]; then
+          echo "| Extraction Tests | ❌ Failed | Check junit-extraction.xml |" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "| Extraction Tests | ✅ Passed | All tests passed |" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        if [ "$QC_TESTS_FAILED" = "true" ]; then
+          echo "| QC Tests | ❌ Failed | Check junit-qc.xml |" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "| QC Tests | ✅ Passed | All tests passed |" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        if [ "$WORKFLOW_TESTS_FAILED" = "true" ]; then
+          echo "| Workflow Tests | ❌ Failed | Check junit-workflow.xml |" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "| Workflow Tests | ✅ Passed | All tests passed |" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        if [ "$ROOT_TESTS_FAILED" = "true" ]; then
+          echo "| Root Tests | ❌ Failed | Check junit-root.xml |" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "| Root Tests | ✅ Passed | All tests passed |" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        # テスト統計
+        echo "## 📈 Test Statistics" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- Total test files: $(find tests -name "*.py" -type f | wc -l)" >> $GITHUB_STEP_SUMMARY
+        echo "- Test directories: $(find tests -type d | wc -l)" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+
+        # カバレッジサマリーがあれば追加
+        if [ -f "coverage-summary.md" ]; then
+          echo "## 📊 Coverage Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          cat coverage-summary.md >> $GITHUB_STEP_SUMMARY
+        fi
+
+        # 最終ステータス判定
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if [ "$UNIT_TESTS_FAILED" = "true" ] || \
+           [ "$INTEGRATION_TESTS_FAILED" = "true" ] || \
+           [ "$EXTRACTION_TESTS_FAILED" = "true" ] || \
+           [ "$QC_TESTS_FAILED" = "true" ] || \
+           [ "$WORKFLOW_TESTS_FAILED" = "true" ] || \
+           [ "$ROOT_TESTS_FAILED" = "true" ]; then
+          echo "## ⚠️ Overall Status: FAILED" >> $GITHUB_STEP_SUMMARY
+          echo "Some tests failed. Please check the test results above." >> $GITHUB_STEP_SUMMARY
+          exit 1
+        else
+          echo "## ✅ Overall Status: PASSED" >> $GITHUB_STEP_SUMMARY
+          echo "All tests passed successfully!" >> $GITHUB_STEP_SUMMARY
+        fi

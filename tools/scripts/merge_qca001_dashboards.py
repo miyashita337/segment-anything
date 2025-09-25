@@ -14,9 +14,24 @@ from datetime import datetime
 def merge_qca001_dashboards():
     """QCA-001の複数作者結果を統合ダッシュボードに統合"""
     
-    # パス設定
-    yado_workspace = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/QCA-001")
-    kiri_workspace = Path("/mnt/c/AItools/lora/train/kiri/tracker-workspace/QCA-001")
+    # WorkspaceConfigManagerを使って動的パス解決
+    from config.workspace_config import WorkspaceConfig
+    workspace_config = WorkspaceConfig()
+    config = workspace_config.get_workspace_config("QCA-001")
+    
+    if config:
+        # 動的パス生成
+        primary_workspace = Path(config['workspace_path'])
+        # セカンダリパス（マルチ作者対応）
+        if config['author_name'] == 'yado':
+            secondary_workspace = Path("/mnt/c/AItools/lora/train/kiri/tracker-workspace/QCA-001")
+        else:
+            secondary_workspace = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/QCA-001")
+        yado_workspace, kiri_workspace = primary_workspace, secondary_workspace
+    else:
+        # フォールバック: 従来のハードコード
+        yado_workspace = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/QCA-001")
+        kiri_workspace = Path("/mnt/c/AItools/lora/train/kiri/tracker-workspace/QCA-001")
     
     print("🔄 QCA-001統合ダッシュボード生成開始...")
     
