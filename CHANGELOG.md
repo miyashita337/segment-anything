@@ -11,6 +11,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.36] - 2025-09-27
+
+### Added
+- **KIRO-010: Lost-in-the-Middle問題解決・コンテキスト最適化システム**
+  - Lost-in-the-Middle現象対策による精度最優先コンテキスト最適化実装
+  - KIRO-011設計: SubAgent-workflow統合システム（waiting_for_subagent状態、ロックファイル機構）
+  - KIRO-012設計: DataValidationAPI・検証ロジックモジュール化システム
+  - context_engineering_analysis_report.md: 問題分析・解決方針文書化
+
+### Removed
+- **レガシードキュメント大規模クリーンアップ**
+  - docs_backup_20250903/ ディレクトリ完全削除（88ファイル、約20,000行削減）
+  - 使用されていない履歴ファイル progress_history.json 削除
+  - 古いアーカイブファイル削除による構造最適化
+
+### Changed
+- **CLAUDE.md大幅簡素化**
+  - Lost-in-the-Middle問題解決のための必須規約のみ記載
+  - 情報過多による規約違反防止・dangerous permission問題根本解決
+  - コンテキスト最適化による運用効率向上
+
+### Fixed
+- approval_gate_controller.py改善による承認フロー安定化
+- git tracking問題解決・不要ファイル除去
+
+### Thanks
+- @miyashita337 for implementing Lost-in-the-Middle optimization and comprehensive documentation cleanup
+
 ## [v0.9.35] - 2025-09-25
 
 ### Added
