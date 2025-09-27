@@ -1,0 +1,214 @@
+# KIRO-012: 判定処理モジュール設定ファイル
+# 各判定処理の閾値・パラメータ設定
+
+# グローバル設定
+global:
+  version: "1.0.0"
+  default_timeout: 30.0
+  max_parallel_workers: 3
+  enable_logging: true
+  log_level: "INFO"
+
+# 品質評価モジュール設定
+quality_assessment:
+  enabled: true
+  priority: 1
+  thresholds:
+    grade_a_threshold: 0.85
+    grade_b_threshold: 0.70
+    grade_c_threshold: 0.55
+    grade_d_threshold: 0.40
+    min_character_area: 1000.0
+    ideal_character_ratio: 0.15
+    min_contrast: 30.0
+    min_edge_density: 0.05
+    max_edge_density: 0.3
+    min_solidity: 0.4
+    max_solidity: 0.9
+    texture_variance_threshold: 50.0
+
+# 信頼度評価モジュール設定
+confidence_evaluation:
+  enabled: true
+  priority: 2
+  thresholds:
+    grade_a_threshold: 0.90
+    grade_b_threshold: 0.75
+    grade_c_threshold: 0.60
+    grade_d_threshold: 0.45
+    sam_confidence_weight: 0.4
+    mask_consistency_weight: 0.3
+    boundary_quality_weight: 0.2
+    stability_weight: 0.1
+    min_mask_area_ratio: 0.01
+    max_mask_holes: 5
+    boundary_smoothness_threshold: 0.7
+
+# サイズ検証モジュール設定
+size_validation:
+  enabled: true
+  priority: 3
+  thresholds:
+    grade_a_threshold: 0.85
+    grade_b_threshold: 0.70
+    grade_c_threshold: 0.55
+    grade_d_threshold: 0.40
+    min_character_pixels: 2000
+    max_character_pixels: 500000
+    ideal_character_ratio: 0.25
+    min_character_ratio: 0.03
+    max_character_ratio: 0.85
+    ideal_aspect_ratio: 0.6
+    min_aspect_ratio: 0.3
+    max_aspect_ratio: 3.0
+    resolution_quality_threshold: 64
+    size_consistency_weight: 0.3
+    aspect_ratio_weight: 0.25
+    resolution_weight: 0.25
+    positioning_weight: 0.2
+
+# 全身検出モジュール設定
+fullbody_detection:
+  enabled: true
+  priority: 4
+  thresholds:
+    grade_a_threshold: 0.90
+    grade_b_threshold: 0.75
+    grade_c_threshold: 0.60
+    grade_d_threshold: 0.45
+    head_detection_weight: 0.25
+    torso_detection_weight: 0.30
+    limbs_detection_weight: 0.25
+    proportions_weight: 0.20
+    min_fullbody_ratio: 0.15
+    ideal_head_ratio: 0.12
+    min_aspect_ratio: 1.2
+    max_aspect_ratio: 4.0
+    completeness_threshold: 0.8
+
+# 中央配置判定モジュール設定
+central_positioning:
+  enabled: true
+  priority: 5
+  thresholds:
+    grade_a_threshold: 0.85
+    grade_b_threshold: 0.70
+    grade_c_threshold: 0.55
+    grade_d_threshold: 0.40
+    center_alignment_weight: 0.35
+    mass_distribution_weight: 0.25
+    margin_balance_weight: 0.25
+    composition_weight: 0.15
+    perfect_center_radius: 0.1
+    good_center_radius: 0.2
+    acceptable_center_radius: 0.35
+    min_margin_ratio: 0.05
+    ideal_margin_ratio: 0.15
+    mass_center_tolerance: 0.15
+
+# オーケストレーター設定
+orchestrator:
+  max_workers: 3
+  timeout_seconds: 30.0
+  fallback_enabled: true
+  fail_fast: false
+
+  # 実行戦略
+  execution_strategy: "parallel"  # "parallel", "sequential", "adaptive"
+
+  # 動的調整
+  adaptive_timeout: true
+  timeout_multiplier: 1.5
+
+# アグリゲーター設定
+aggregator:
+  consensus_threshold: 0.7
+  confidence_weight: 0.3
+  score_weight: 0.7
+  outlier_threshold: 2.0
+  min_agreement_ratio: 0.6
+  enable_weighted_voting: true
+  enable_outlier_removal: true
+  enable_confidence_boost: true
+
+  # 最終判定戦略
+  final_grade_strategy: "consensus"  # "consensus", "average", "conservative", "weighted"
+
+# プリセット設定
+presets:
+  # 高精度モード（厳しい評価）
+  high_precision:
+    quality_assessment:
+      thresholds:
+        grade_a_threshold: 0.90
+        grade_b_threshold: 0.80
+        grade_c_threshold: 0.70
+    confidence_evaluation:
+      thresholds:
+        grade_a_threshold: 0.95
+        grade_b_threshold: 0.85
+    aggregator:
+      consensus_threshold: 0.8
+      outlier_threshold: 1.5
+
+  # 高速モード（緩い評価）
+  high_speed:
+    global:
+      max_parallel_workers: 5
+      default_timeout: 15.0
+    quality_assessment:
+      thresholds:
+        grade_a_threshold: 0.75
+        grade_b_threshold: 0.60
+        grade_c_threshold: 0.45
+    orchestrator:
+      timeout_seconds: 15.0
+      fail_fast: true
+
+  # バランスモード（デフォルト）
+  balanced:
+    # デフォルト設定を使用
+
+  # 全身重視モード
+  fullbody_focus:
+    fullbody_detection:
+      priority: 1
+      thresholds:
+        grade_a_threshold: 0.95
+        head_detection_weight: 0.30
+        torso_detection_weight: 0.35
+        limbs_detection_weight: 0.35
+    aggregator:
+      final_grade_strategy: "weighted"
+
+  # 中央配置重視モード
+  central_focus:
+    central_positioning:
+      priority: 1
+      thresholds:
+        grade_a_threshold: 0.90
+        center_alignment_weight: 0.50
+        mass_distribution_weight: 0.30
+    aggregator:
+      final_grade_strategy: "weighted"
+
+# デバッグ・開発設定
+debug:
+  enable_detailed_logging: false
+  save_intermediate_results: false
+  export_metrics: false
+  performance_profiling: false
+
+# 通知設定
+notifications:
+  enable_pushover: false
+  enable_google_sheets: false
+  notify_on_conflicts: true
+  notify_on_low_confidence: true
+  confidence_threshold: 0.6
+
+# 互換性設定
+compatibility:
+  legacy_support: true
+  migration_mode: false
+  api_version: "v1"
