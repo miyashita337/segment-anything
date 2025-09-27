@@ -11,6 +11,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.37] - 2025-09-28
+
+### Added
+- **SubAgent-ワークフロー統合システム**: 完全自動化されたワークフロー実行システム (KIRO-011)
+  - `tools/workflow/subagent_command_handler.py`: SubAgent管理専用コマンドハンドラー実装
+  - `tools/workflow/subagent_lock_manager.py`: プロセス間ロック管理・競合状態防止
+  - `tools/workflow/subagent_monitor.py`: SubAgent実行状況監視・自動復旧機能
+  - SubAgent管理コマンド11個追加: `subagent-extraction`, `subagent-status`, `subagent-retry`等
+- **包括的ユニットテスト**: ワークフローCLI全21コマンドのテストカバレッジ91%達成
+  - `tests/workflow/`: 完全なテストスイート・モックシステム実装
+  - `tests/test_kiro_011_subagent_integration.py`: 統合テスト完備
+- **承認ゲートシステム強化**: dashboard_generation→final_approval遷移時の自動チェック機能
+
+### Changed
+- **ファイル処理制限解除**: `--max-files`制限をデフォルトで無効化、全ファイル処理を標準化
+- **extraction処理最適化**: バッチ処理効率向上・リソース管理改善
+
+### Fixed
+- **ワークフロー自動進行バグ**: `completed`ステップ定義追加でfinal_approvalからの遷移問題を解決
+- **CI対応**: 仮想環境チェックをヘルプ表示後に移動してGitHub Actions互換性を改善
+
+### Documentation
+- **KIRO-011実装レポート**: SubAgent統合システムの技術仕様と状態遷移表を追加
+- **プルリクエスト説明文書**: 詳細な変更内容・影響範囲の文書化
+
+### Thanks
+- @miyashita337 for implementing comprehensive SubAgent-workflow integration system with 91% test coverage
+
 ## [v0.9.36] - 2025-09-27
 
 ### Added
