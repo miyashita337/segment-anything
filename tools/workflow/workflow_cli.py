@@ -657,11 +657,6 @@ def check_virtual_environment():
 
 def main():
     """メインCLIエントリーポイント"""
-    # 仮想環境チェック（最優先実行）
-    if not check_virtual_environment():
-        print("⚠️  仮想環境設定後に再実行してください")
-        return 1
-
     parser = argparse.ArgumentParser(
         description="ワークフロー強制実行システム CLI",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -774,6 +769,11 @@ def main():
     
     if not args.command:
         parser.print_help()
+        return 1
+    
+    # 仮想環境チェック（最優先実行）- ヘルプ表示後に実行
+    if not check_virtual_environment():
+        print("⚠️  仮想環境設定後に再実行してください")
         return 1
     
     try:
