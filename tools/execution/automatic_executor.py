@@ -642,82 +642,56 @@ class AutomaticWorkflowExecutor:
         
         try:
             # Import SubAgent monitor for result validation
-            from tools.workflow.subagent_monitor import SubAgentMonitor
+            from tools.workflow.subagent_monitor import SubAgentMonitor, SubAgentStatus
+            from config.workspace_config import WorkspaceConfig
+            from pathlib import Path
             
             monitor = SubAgentMonitor()
+            workspace_base = WorkspaceConfig.get_workspace_base()
+            extraction_dir = Path(workspace_base) / tracker_id / "extraction_full"
             
-            # Check if extraction process completed
-            process_status = monitor.get_process_status(tracker_id, "extraction")
+            # Primary validation: Check if extraction files exist
+            if extraction_dir.exists():
+                extracted_files = list(extraction_dir.glob("*.jpg")) + list(extraction_dir.glob("*.png"))
+                if len(extracted_files) > 0:
+                    # Files exist, validation successful
+                    return ExecutionResult(
+                        True,
+                        f"SubAgent validation successful: {len(extracted_files)} files extracted",
+                        evidence=f"tracker_id={tracker_id},files_count={len(extracted_files)}"
+                    )
             
-            if not process_status:
+            # Secondary validation: Check process status for diagnostic information
+            process_status = monitor.check_subagent_status(tracker_id, "extraction")
+            
+            if process_status == SubAgentStatus.NOT_STARTED:
                 return ExecutionResult(
                     False,
                     "No SubAgent process found for validation",
                     evidence=f"tracker_id={tracker_id},process_found=false"
                 )
             
-            if process_status.status.value != "COMPLETED":
+            # No files extracted, process status indicates failure
+            if process_status == SubAgentStatus.FAILED:
                 return ExecutionResult(
                     False,
-                    f"SubAgent process not completed: {process_status.status.value}",
-                    evidence=f"tracker_id={tracker_id},status={process_status.status.value}"
+                    f"SubAgent process failed: {process_status.value}",
+                    evidence=f"tracker_id={tracker_id},status={process_status.value},files_count=0"
                 )
             
-            # Validate extraction results
-            from config.workspace_config import WorkspaceConfig
-            workspace_base = WorkspaceConfig.get_workspace_base()
-            extraction_dir = Path(workspace_base) / tracker_id / "extraction"
+            # Process still running or other states
+            if process_status == SubAgentStatus.RUNNING:
+                return ExecutionResult(
+                    False,
+                    "SubAgent process still running, validation pending",
+                    evidence=f"tracker_id={tracker_id},status={process_status.value}"
+                )
             
-            if not extraction_dir.exists():
-                # Trigger retry if needed
-                retry_count = getattr(process_status, 'retry_count', 0)
-                if retry_count < 3:
-                    logger.info(f"Triggering SubAgent retry {retry_count + 1}/3")
-                    from tools.workflow.subagent_command_handler import SubAgentCommandHandler
-                    handler = SubAgentCommandHandler()
-                    handler.handle_subagent_extraction(tracker_id)
-                    
-                    return ExecutionResult(
-                        False,
-                        f"No extraction results, triggered retry {retry_count + 1}/3",
-                        evidence=f"tracker_id={tracker_id},retry_triggered=true"
-                    )
-                else:
-                    return ExecutionResult(
-                        False,
-                        "Maximum retries reached, SubAgent validation failed",
-                        evidence=f"tracker_id={tracker_id},max_retries_reached=true"
-                    )
-            
-            # Count extraction results
-            extracted_files = list(extraction_dir.glob("*.jpg")) + list(extraction_dir.glob("*.png"))
-            
-            if len(extracted_files) == 0:
-                # Trigger retry for zero files
-                retry_count = getattr(process_status, 'retry_count', 0)
-                if retry_count < 3:
-                    logger.info(f"Zero files extracted, triggering retry {retry_count + 1}/3")
-                    from tools.workflow.subagent_command_handler import SubAgentCommandHandler
-                    handler = SubAgentCommandHandler()
-                    handler.handle_subagent_extraction(tracker_id)
-                    
-                    return ExecutionResult(
-                        False,
-                        f"Zero files extracted, triggered retry {retry_count + 1}/3",
-                        evidence=f"tracker_id={tracker_id},files_count=0,retry_triggered=true"
-                    )
-                else:
-                    return ExecutionResult(
-                        False,
-                        "Maximum retries reached, zero files extracted",
-                        evidence=f"tracker_id={tracker_id},files_count=0,max_retries_reached=true"
-                    )
-            
-            # Validation successful
+            # Other process states without extracted files
             return ExecutionResult(
-                True,
-                f"SubAgent validation successful: {len(extracted_files)} files extracted",
-                evidence=f"tracker_id={tracker_id},files_count={len(extracted_files)}"
+                False,
+                f"SubAgent validation failed: no files extracted, status={process_status.value}",
+                evidence=f"tracker_id={tracker_id},status={process_status.value},files_count=0"
             )
             
         except Exception as e:
