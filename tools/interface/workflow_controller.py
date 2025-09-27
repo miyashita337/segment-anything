@@ -209,12 +209,42 @@ class WorkflowController:
                 approval_required=False,
                 auto_executable=False
             ),
+            "subagent_extraction": WorkflowStep(
+                step_id="subagent_extraction",
+                phase="phase_2",
+                title="SubAgent Character Extraction",
+                description="Execute character extraction via SubAgent system",
+                prerequisites=["testing"],
+                validation_required=True,
+                approval_required=False,
+                auto_executable=True
+            ),
+            "waiting_for_subagent": WorkflowStep(
+                step_id="waiting_for_subagent",
+                phase="phase_2",
+                title="Waiting for SubAgent Completion",
+                description="Monitor SubAgent execution and wait for completion",
+                prerequisites=["subagent_extraction"],
+                validation_required=True,
+                approval_required=False,
+                auto_executable=False
+            ),
+            "subagent_validation": WorkflowStep(
+                step_id="subagent_validation",
+                phase="phase_2",
+                title="SubAgent Results Validation",
+                description="Validate SubAgent extraction results and trigger retry if needed",
+                prerequisites=["waiting_for_subagent"],
+                validation_required=True,
+                approval_required=False,
+                auto_executable=True
+            ),
             "extraction": WorkflowStep(
                 step_id="extraction",
                 phase="phase_2",
                 title="Character Extraction",
                 description="Execute character extraction pipeline",
-                prerequisites=["testing"],
+                prerequisites=["subagent_validation"],
                 validation_required=True,
                 approval_required=False,
                 auto_executable=True
@@ -363,6 +393,24 @@ class WorkflowController:
                 "Execute integration tests: pytest tests/integration/",
                 "Verify all tests pass"
             ]
+        elif step_config.step_id == "subagent_extraction":
+            actions = [
+                "SubAgent extraction will be executed automatically",
+                "Monitor SubAgent process status",
+                f"Check logs: workspace/{tracker_id}/logs/extraction.log"
+            ]
+        elif step_config.step_id == "waiting_for_subagent":
+            actions = [
+                "Monitor SubAgent execution status",
+                "Wait for SubAgent process completion",
+                "Check for extraction results"
+            ]
+        elif step_config.step_id == "subagent_validation":
+            actions = [
+                "Validate SubAgent extraction results",
+                "Check for zero-file output detection",
+                "Trigger retry if needed (max 3 retries)"
+            ]
         elif step_config.step_id == "extraction":
             actions = [
                 "Extraction will be executed automatically",
@@ -425,6 +473,24 @@ class WorkflowController:
                     "Test execution evidence found",
                     "No test failures recorded"
                 ]
+            elif step_config.step_id == "subagent_extraction":
+                criteria = [
+                    "SubAgent process started successfully",
+                    "Lock file created",
+                    "Process PID recorded"
+                ]
+            elif step_config.step_id == "waiting_for_subagent":
+                criteria = [
+                    "SubAgent process completed",
+                    "Exit code available",
+                    "Lock file cleaned up"
+                ]
+            elif step_config.step_id == "subagent_validation":
+                criteria = [
+                    "Extraction results validated",
+                    "Output files count > 0 OR retry triggered",
+                    "Final status determined"
+                ]
             elif step_config.step_id == "extraction":
                 criteria = [
                     "Extraction directory exists",
@@ -480,6 +546,18 @@ class WorkflowController:
         
         if not can_proceed:
             return StepResult.BLOCKED(blocking_reasons)
+        
+        # Special handling for dashboard_generation → final_approval transition
+        if current_step_id == "dashboard_generation":
+            next_step = self._get_next_step(current_step_id)
+            if next_step == "final_approval":
+                # Check approval conditions before allowing transition
+                approval_check_result = self._check_final_approval_conditions(tracker_id)
+                if not approval_check_result.success:
+                    return StepResult.FAILED([
+                        "Dashboard to final_approval transition requires approval conditions:",
+                        *approval_check_result.errors
+                    ])
         
         # Handle auto-executable steps
         if step_config.auto_executable and self.executor:
@@ -573,7 +651,8 @@ class WorkflowController:
         """Get the next step in the workflow"""
         step_order = [
             "branch_verification", "sam_env_check", "google_sheets_sync",
-            "sow_creation", "implementation", "testing", "extraction",
+            "sow_creation", "implementation", "testing", "subagent_extraction",
+            "waiting_for_subagent", "subagent_validation", "extraction",
             "quality_workflow", "dashboard_generation", "final_approval"
         ]
         
@@ -627,6 +706,131 @@ class WorkflowController:
             return StepResult.COMPLETED("approval_granted")
         else:
             return StepResult.FAILED([approval_result.error_message])
+    
+    def _check_final_approval_conditions(self, tracker_id: str) -> 'ApprovalResult':
+        """
+        Check conditions required for dashboard_generation → final_approval transition
+        
+        Returns:
+            ApprovalResult with success=True if all conditions met, False otherwise
+        """
+        from dataclasses import dataclass
+        from typing import List
+        import os
+        import json
+        import requests
+        from config.workspace_config import WorkspaceConfig
+        
+        @dataclass
+        class ApprovalResult:
+            success: bool
+            errors: List[str]
+        
+        errors = []
+        workspace_base = WorkspaceConfig.get_workspace_base()
+        tracker_workspace = os.path.join(workspace_base, tracker_id)
+        
+        # 1. Check dashboard accessibility
+        try:
+            dashboard_url = f"http://100.123.241.106:8088/tracker/{tracker_id}"
+            response = requests.get(dashboard_url, timeout=10, auth=('admin', 'secure_track_2025_q3_8f9a'))
+            if response.status_code != 200:
+                errors.append(f"Dashboard not accessible: {dashboard_url} returned {response.status_code}")
+        except Exception as e:
+            errors.append(f"Dashboard accessibility check failed: {str(e)}")
+        
+        # 2. Check statistical analysis results
+        stats_file = os.path.join(tracker_workspace, "statistical_analysis_result.txt")
+        if not os.path.exists(stats_file):
+            errors.append("Statistical analysis result file not found")
+        else:
+            try:
+                with open(stats_file, 'r', encoding='utf-8') as f:
+                    stats_content = f.read()
+                
+                # Check for required statistical values (not N/A or 0)
+                required_stats = {
+                    "Current": ["平均=", "Current"],
+                    "BaseLine": ["BaseLine"],  
+                    "p値": ["p値:", "p値"],
+                    "効果サイズ": ["Cohen's d:", "効果サイズ"],
+                    "改善率": ["改善率:", "%"],
+                    "統計的有意性": ["統計的有意性:", "有意"],
+                    "信頼区間": ["信頼区間:", "[", "]"]
+                }
+                
+                for stat_name, patterns in required_stats.items():
+                    found = False
+                    for pattern in patterns:
+                        if pattern in stats_content:
+                            # Extract value and check it's not N/A or 0
+                            lines = [line for line in stats_content.split('\n') if pattern in line]
+                            if lines:
+                                line = lines[0]
+                                if "N/A" not in line and not any(x in line for x in ["0.0000", "0.000", ": 0"]):
+                                    found = True
+                                    break
+                    
+                    if not found:
+                        errors.append(f"統計分析結果で{stat_name}が有効な値ではありません")
+                        
+            except Exception as e:
+                errors.append(f"Statistical analysis file read error: {str(e)}")
+        
+        # 3. Check extraction gallery (images displayed from paths, not Base64)
+        extraction_dir = os.path.join(tracker_workspace, "extraction")
+        extraction_full_dir = os.path.join(tracker_workspace, "extraction_full")
+        
+        # Use extraction_full if it exists, otherwise extraction
+        active_extraction_dir = extraction_full_dir if os.path.exists(extraction_full_dir) else extraction_dir
+        
+        if not os.path.exists(active_extraction_dir):
+            errors.append("Extraction directory not found")
+        else:
+            # Check for actual image files
+            image_files = [f for f in os.listdir(active_extraction_dir) 
+                          if f.lower().endswith(('.jpg', '.jpeg', '.png', '.gif'))]
+            if len(image_files) == 0:
+                errors.append("No image files found in extraction directory")
+            
+            # Check dashboard HTML contains image references (not Base64)
+            dashboard_html = os.path.join(tracker_workspace, "dashboard", "dashboard.html")
+            if os.path.exists(dashboard_html):
+                try:
+                    with open(dashboard_html, 'r', encoding='utf-8') as f:
+                        html_content = f.read()
+                    
+                    # Check that images are referenced by path, not Base64
+                    if "data:image" in html_content:
+                        errors.append("Dashboard contains Base64 encoded images (should use file paths)")
+                    
+                    # Check that extraction images are referenced
+                    image_references = sum(1 for img_file in image_files if img_file in html_content)
+                    if image_references == 0:
+                        errors.append("Dashboard does not reference extraction images")
+                        
+                except Exception as e:
+                    errors.append(f"Dashboard HTML check error: {str(e)}")
+        
+        # 4. Check quality report exists and is valid
+        quality_report = os.path.join(tracker_workspace, "quality", "unified_quality_report.json")
+        if not os.path.exists(quality_report):
+            errors.append("Quality report not found")
+        else:
+            try:
+                with open(quality_report, 'r', encoding='utf-8') as f:
+                    quality_data = json.load(f)
+                
+                # Check essential quality metrics exist
+                if "evaluation_metrics" not in quality_data:
+                    errors.append("Quality report missing evaluation_metrics")
+                elif len(quality_data["evaluation_metrics"]) == 0:
+                    errors.append("Quality report has no evaluation metrics")
+                    
+            except Exception as e:
+                errors.append(f"Quality report validation error: {str(e)}")
+        
+        return ApprovalResult(success=len(errors) == 0, errors=errors)
 
 # Global instance for easy access
 _workflow_controller = None

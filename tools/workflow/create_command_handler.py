@@ -106,7 +106,7 @@ class CreateCommandHandler:
             Tuple[bool, str]: (成功, メッセージ)
         """
         if not self.workflow_controller:
-            return False, """❌ ワークフロー状態管理が利用できません
+            return False, """❌ ワークフローコントローラーが利用できません
 
 🔧 トラブルシューティング:
 1. ワークフローコントローラーの初期化確認

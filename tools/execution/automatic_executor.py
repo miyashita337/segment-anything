@@ -602,6 +602,105 @@ class AutomaticWorkflowExecutor:
             
             return running_info
     
+    def execute_subagent_extraction_step(self, tracker_id: str, **kwargs) -> ExecutionResult:
+        """Execute SubAgent extraction step"""
+        logger.info(f"Starting SubAgent extraction for {tracker_id}")
+        
+        try:
+            # Import SubAgent command handler
+            from tools.workflow.subagent_command_handler import SubAgentCommandHandler
+            
+            handler = SubAgentCommandHandler()
+            success = handler.handle_subagent_extraction(tracker_id)
+            
+            if success:
+                # SubAgent started successfully - state will be managed by monitor
+                logger.info(f"SubAgent extraction started for {tracker_id}")
+                
+                return ExecutionResult(
+                    True,
+                    "SubAgent extraction started successfully",
+                    evidence=f"tracker_id={tracker_id},subagent_started=true"
+                )
+            else:
+                return ExecutionResult(
+                    False,
+                    "Failed to start SubAgent extraction",
+                    evidence=f"tracker_id={tracker_id},subagent_started=false"
+                )
+                
+        except Exception as e:
+            return ExecutionResult(
+                False,
+                f"SubAgent extraction error: {str(e)}",
+                evidence=f"tracker_id={tracker_id},exception={str(e)}"
+            )
+    
+    def execute_subagent_validation_step(self, tracker_id: str, **kwargs) -> ExecutionResult:
+        """Execute SubAgent validation step"""
+        logger.info(f"Validating SubAgent results for {tracker_id}")
+        
+        try:
+            # Import SubAgent monitor for result validation
+            from tools.workflow.subagent_monitor import SubAgentMonitor, SubAgentStatus
+            from config.workspace_config import WorkspaceConfig
+            from pathlib import Path
+            
+            monitor = SubAgentMonitor()
+            workspace_base = WorkspaceConfig.get_workspace_base()
+            extraction_dir = Path(workspace_base) / tracker_id / "extraction_full"
+            
+            # Primary validation: Check if extraction files exist
+            if extraction_dir.exists():
+                extracted_files = list(extraction_dir.glob("*.jpg")) + list(extraction_dir.glob("*.png"))
+                if len(extracted_files) > 0:
+                    # Files exist, validation successful
+                    return ExecutionResult(
+                        True,
+                        f"SubAgent validation successful: {len(extracted_files)} files extracted",
+                        evidence=f"tracker_id={tracker_id},files_count={len(extracted_files)}"
+                    )
+            
+            # Secondary validation: Check process status for diagnostic information
+            process_status = monitor.check_subagent_status(tracker_id, "extraction")
+            
+            if process_status == SubAgentStatus.NOT_STARTED:
+                return ExecutionResult(
+                    False,
+                    "No SubAgent process found for validation",
+                    evidence=f"tracker_id={tracker_id},process_found=false"
+                )
+            
+            # No files extracted, process status indicates failure
+            if process_status == SubAgentStatus.FAILED:
+                return ExecutionResult(
+                    False,
+                    f"SubAgent process failed: {process_status.value}",
+                    evidence=f"tracker_id={tracker_id},status={process_status.value},files_count=0"
+                )
+            
+            # Process still running or other states
+            if process_status == SubAgentStatus.RUNNING:
+                return ExecutionResult(
+                    False,
+                    "SubAgent process still running, validation pending",
+                    evidence=f"tracker_id={tracker_id},status={process_status.value}"
+                )
+            
+            # Other process states without extracted files
+            return ExecutionResult(
+                False,
+                f"SubAgent validation failed: no files extracted, status={process_status.value}",
+                evidence=f"tracker_id={tracker_id},status={process_status.value},files_count=0"
+            )
+            
+        except Exception as e:
+            return ExecutionResult(
+                False,
+                f"SubAgent validation error: {str(e)}",
+                evidence=f"tracker_id={tracker_id},exception={str(e)}"
+            )
+
     def execute_step_automatically(self, tracker_id: str, step_id: str, **kwargs) -> ExecutionResult:
         """
         Execute any step automatically based on step_id.
@@ -613,7 +712,9 @@ class AutomaticWorkflowExecutor:
         step_executors = {
             'extraction': self.execute_extraction_step,
             'quality_workflow': self.execute_quality_workflow,
-            'dashboard_generation': self.execute_dashboard_generation
+            'dashboard_generation': self.execute_dashboard_generation,
+            'subagent_extraction': self.execute_subagent_extraction_step,
+            'subagent_validation': self.execute_subagent_validation_step
         }
         
         executor = step_executors.get(step_id)

@@ -414,7 +414,13 @@ class FileSystemValidator:
         This is a critical validation - checks for actual extracted files.
         """
         workspace_path = os.path.join(self.workspace_base, tracker_id)
+        # Check both extraction and extraction_full directories
         extraction_dir = os.path.join(workspace_path, "extraction")
+        extraction_full_dir = os.path.join(workspace_path, "extraction_full")
+        
+        # Use extraction_full if it exists, otherwise fall back to extraction
+        if os.path.exists(extraction_full_dir):
+            extraction_dir = extraction_full_dir
         
         # Check if extraction directory exists
         if not os.path.exists(extraction_dir):
