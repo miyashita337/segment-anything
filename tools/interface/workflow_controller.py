@@ -209,12 +209,42 @@ class WorkflowController:
                 approval_required=False,
                 auto_executable=False
             ),
+            "subagent_extraction": WorkflowStep(
+                step_id="subagent_extraction",
+                phase="phase_2",
+                title="SubAgent Character Extraction",
+                description="Execute character extraction via SubAgent system",
+                prerequisites=["testing"],
+                validation_required=True,
+                approval_required=False,
+                auto_executable=True
+            ),
+            "waiting_for_subagent": WorkflowStep(
+                step_id="waiting_for_subagent",
+                phase="phase_2",
+                title="Waiting for SubAgent Completion",
+                description="Monitor SubAgent execution and wait for completion",
+                prerequisites=["subagent_extraction"],
+                validation_required=True,
+                approval_required=False,
+                auto_executable=False
+            ),
+            "subagent_validation": WorkflowStep(
+                step_id="subagent_validation",
+                phase="phase_2",
+                title="SubAgent Results Validation",
+                description="Validate SubAgent extraction results and trigger retry if needed",
+                prerequisites=["waiting_for_subagent"],
+                validation_required=True,
+                approval_required=False,
+                auto_executable=True
+            ),
             "extraction": WorkflowStep(
                 step_id="extraction",
                 phase="phase_2",
                 title="Character Extraction",
                 description="Execute character extraction pipeline",
-                prerequisites=["testing"],
+                prerequisites=["subagent_validation"],
                 validation_required=True,
                 approval_required=False,
                 auto_executable=True
@@ -363,6 +393,24 @@ class WorkflowController:
                 "Execute integration tests: pytest tests/integration/",
                 "Verify all tests pass"
             ]
+        elif step_config.step_id == "subagent_extraction":
+            actions = [
+                "SubAgent extraction will be executed automatically",
+                "Monitor SubAgent process status",
+                f"Check logs: workspace/{tracker_id}/logs/extraction.log"
+            ]
+        elif step_config.step_id == "waiting_for_subagent":
+            actions = [
+                "Monitor SubAgent execution status",
+                "Wait for SubAgent process completion",
+                "Check for extraction results"
+            ]
+        elif step_config.step_id == "subagent_validation":
+            actions = [
+                "Validate SubAgent extraction results",
+                "Check for zero-file output detection",
+                "Trigger retry if needed (max 3 retries)"
+            ]
         elif step_config.step_id == "extraction":
             actions = [
                 "Extraction will be executed automatically",
@@ -424,6 +472,24 @@ class WorkflowController:
                 criteria = [
                     "Test execution evidence found",
                     "No test failures recorded"
+                ]
+            elif step_config.step_id == "subagent_extraction":
+                criteria = [
+                    "SubAgent process started successfully",
+                    "Lock file created",
+                    "Process PID recorded"
+                ]
+            elif step_config.step_id == "waiting_for_subagent":
+                criteria = [
+                    "SubAgent process completed",
+                    "Exit code available",
+                    "Lock file cleaned up"
+                ]
+            elif step_config.step_id == "subagent_validation":
+                criteria = [
+                    "Extraction results validated",
+                    "Output files count > 0 OR retry triggered",
+                    "Final status determined"
                 ]
             elif step_config.step_id == "extraction":
                 criteria = [
@@ -573,7 +639,8 @@ class WorkflowController:
         """Get the next step in the workflow"""
         step_order = [
             "branch_verification", "sam_env_check", "google_sheets_sync",
-            "sow_creation", "implementation", "testing", "extraction",
+            "sow_creation", "implementation", "testing", "subagent_extraction",
+            "waiting_for_subagent", "subagent_validation", "extraction",
             "quality_workflow", "dashboard_generation", "final_approval"
         ]
         

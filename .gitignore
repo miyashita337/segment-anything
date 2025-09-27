@@ -150,6 +150,7 @@ config/current_author_config.json
 # KIRO-006 ワークフロー実行時生成ファイル
 workflow_state.db
 workspace_config.db
+subagent_monitor.db
 workspace/
 approval_*
 completed

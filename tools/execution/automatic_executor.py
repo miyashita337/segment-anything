@@ -602,6 +602,131 @@ class AutomaticWorkflowExecutor:
             
             return running_info
     
+    def execute_subagent_extraction_step(self, tracker_id: str, **kwargs) -> ExecutionResult:
+        """Execute SubAgent extraction step"""
+        logger.info(f"Starting SubAgent extraction for {tracker_id}")
+        
+        try:
+            # Import SubAgent command handler
+            from tools.workflow.subagent_command_handler import SubAgentCommandHandler
+            
+            handler = SubAgentCommandHandler()
+            success = handler.handle_subagent_extraction(tracker_id)
+            
+            if success:
+                # SubAgent started successfully - state will be managed by monitor
+                logger.info(f"SubAgent extraction started for {tracker_id}")
+                
+                return ExecutionResult(
+                    True,
+                    "SubAgent extraction started successfully",
+                    evidence=f"tracker_id={tracker_id},subagent_started=true"
+                )
+            else:
+                return ExecutionResult(
+                    False,
+                    "Failed to start SubAgent extraction",
+                    evidence=f"tracker_id={tracker_id},subagent_started=false"
+                )
+                
+        except Exception as e:
+            return ExecutionResult(
+                False,
+                f"SubAgent extraction error: {str(e)}",
+                evidence=f"tracker_id={tracker_id},exception={str(e)}"
+            )
+    
+    def execute_subagent_validation_step(self, tracker_id: str, **kwargs) -> ExecutionResult:
+        """Execute SubAgent validation step"""
+        logger.info(f"Validating SubAgent results for {tracker_id}")
+        
+        try:
+            # Import SubAgent monitor for result validation
+            from tools.workflow.subagent_monitor import SubAgentMonitor
+            
+            monitor = SubAgentMonitor()
+            
+            # Check if extraction process completed
+            process_status = monitor.get_process_status(tracker_id, "extraction")
+            
+            if not process_status:
+                return ExecutionResult(
+                    False,
+                    "No SubAgent process found for validation",
+                    evidence=f"tracker_id={tracker_id},process_found=false"
+                )
+            
+            if process_status.status.value != "COMPLETED":
+                return ExecutionResult(
+                    False,
+                    f"SubAgent process not completed: {process_status.status.value}",
+                    evidence=f"tracker_id={tracker_id},status={process_status.status.value}"
+                )
+            
+            # Validate extraction results
+            from config.workspace_config import WorkspaceConfig
+            workspace_base = WorkspaceConfig.get_workspace_base()
+            extraction_dir = Path(workspace_base) / tracker_id / "extraction"
+            
+            if not extraction_dir.exists():
+                # Trigger retry if needed
+                retry_count = getattr(process_status, 'retry_count', 0)
+                if retry_count < 3:
+                    logger.info(f"Triggering SubAgent retry {retry_count + 1}/3")
+                    from tools.workflow.subagent_command_handler import SubAgentCommandHandler
+                    handler = SubAgentCommandHandler()
+                    handler.handle_subagent_extraction(tracker_id)
+                    
+                    return ExecutionResult(
+                        False,
+                        f"No extraction results, triggered retry {retry_count + 1}/3",
+                        evidence=f"tracker_id={tracker_id},retry_triggered=true"
+                    )
+                else:
+                    return ExecutionResult(
+                        False,
+                        "Maximum retries reached, SubAgent validation failed",
+                        evidence=f"tracker_id={tracker_id},max_retries_reached=true"
+                    )
+            
+            # Count extraction results
+            extracted_files = list(extraction_dir.glob("*.jpg")) + list(extraction_dir.glob("*.png"))
+            
+            if len(extracted_files) == 0:
+                # Trigger retry for zero files
+                retry_count = getattr(process_status, 'retry_count', 0)
+                if retry_count < 3:
+                    logger.info(f"Zero files extracted, triggering retry {retry_count + 1}/3")
+                    from tools.workflow.subagent_command_handler import SubAgentCommandHandler
+                    handler = SubAgentCommandHandler()
+                    handler.handle_subagent_extraction(tracker_id)
+                    
+                    return ExecutionResult(
+                        False,
+                        f"Zero files extracted, triggered retry {retry_count + 1}/3",
+                        evidence=f"tracker_id={tracker_id},files_count=0,retry_triggered=true"
+                    )
+                else:
+                    return ExecutionResult(
+                        False,
+                        "Maximum retries reached, zero files extracted",
+                        evidence=f"tracker_id={tracker_id},files_count=0,max_retries_reached=true"
+                    )
+            
+            # Validation successful
+            return ExecutionResult(
+                True,
+                f"SubAgent validation successful: {len(extracted_files)} files extracted",
+                evidence=f"tracker_id={tracker_id},files_count={len(extracted_files)}"
+            )
+            
+        except Exception as e:
+            return ExecutionResult(
+                False,
+                f"SubAgent validation error: {str(e)}",
+                evidence=f"tracker_id={tracker_id},exception={str(e)}"
+            )
+
     def execute_step_automatically(self, tracker_id: str, step_id: str, **kwargs) -> ExecutionResult:
         """
         Execute any step automatically based on step_id.
@@ -613,7 +738,9 @@ class AutomaticWorkflowExecutor:
         step_executors = {
             'extraction': self.execute_extraction_step,
             'quality_workflow': self.execute_quality_workflow,
-            'dashboard_generation': self.execute_dashboard_generation
+            'dashboard_generation': self.execute_dashboard_generation,
+            'subagent_extraction': self.execute_subagent_extraction_step,
+            'subagent_validation': self.execute_subagent_validation_step
         }
         
         executor = step_executors.get(step_id)

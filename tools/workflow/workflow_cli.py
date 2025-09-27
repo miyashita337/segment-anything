@@ -10,9 +10,17 @@ INCI-006 解決策: ワークフロー強制実行との対話用シンプルCLI
 import argparse
 import json
 import sys
+import os
 from typing import Optional
 import logging
 from datetime import datetime
+
+# プロジェクトルートをパスに追加
+current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
+
+from tools.workflow.subagent_command_handler import SubAgentCommandHandler
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
@@ -292,6 +300,62 @@ def check_process(tracker_id: str) -> bool:
     
     return True
 
+
+# SubAgent関連のコマンドハンドラー関数
+def subagent_extraction(tracker_id: str) -> bool:
+    """SubAgent抽出処理開始"""
+    handler = SubAgentCommandHandler()
+    return handler.handle_subagent_extraction(tracker_id)
+
+def subagent_status(tracker_id: str) -> bool:
+    """SubAgent状態確認"""
+    handler = SubAgentCommandHandler()
+    return handler.handle_subagent_status(tracker_id)
+
+def subagent_retry(tracker_id: str) -> bool:
+    """SubAgent再実行"""
+    handler = SubAgentCommandHandler()
+    return handler.handle_subagent_retry(tracker_id)
+
+def subagent_terminate(tracker_id: str, force: bool = False) -> bool:
+    """SubAgent終了"""
+    handler = SubAgentCommandHandler()
+    return handler.handle_subagent_terminate(tracker_id, force)
+
+def subagent_wait(tracker_id: str, timeout_minutes: int = 60) -> bool:
+    """SubAgent完了待機"""
+    handler = SubAgentCommandHandler()
+    return handler.handle_subagent_wait(tracker_id, timeout_minutes)
+
+def subagent_cleanup(tracker_id: str) -> bool:
+    """SubAgentロック強制クリーンアップ"""
+    handler = SubAgentCommandHandler()
+    return handler.handle_subagent_cleanup(tracker_id)
+
+def subagent_locks_status() -> bool:
+    """全SubAgentロック状況確認"""
+    handler = SubAgentCommandHandler()
+    return handler.handle_subagent_locks_status()
+
+def subagent_cleanup_all() -> bool:
+    """全SubAgentロック強制クリーンアップ"""
+    handler = SubAgentCommandHandler()
+    return handler.handle_subagent_cleanup_all()
+
+def subagent_auto_retry_check(tracker_id: str) -> bool:
+    """SubAgent自動再実行条件確認"""
+    handler = SubAgentCommandHandler()
+    return handler.handle_subagent_auto_retry_check(tracker_id)
+
+def subagent_auto_retry(tracker_id: str) -> bool:
+    """SubAgent自動再実行実行"""
+    handler = SubAgentCommandHandler()
+    return handler.handle_subagent_auto_retry(tracker_id)
+
+def subagent_auto_retry_all() -> bool:
+    """全SubAgent自動再実行バッチ実行"""
+    handler = SubAgentCommandHandler()
+    return handler.handle_subagent_auto_retry_all()
 
 def generate_template(tracker_id: str, output_path: str = None) -> bool:
     """統合テンプレートを生成"""
@@ -670,7 +734,40 @@ def main():
     
     # ガイド表示
     subparsers.add_parser('guide', help='統合ワークフローガイドを表示')
-    
+
+    # SubAgentコマンド
+    subagent_extraction_parser = subparsers.add_parser('subagent-extraction', help='SubAgent抽出処理開始')
+    subagent_extraction_parser.add_argument('tracker_id', help='トラッカーID')
+
+    subagent_status_parser = subparsers.add_parser('subagent-status', help='SubAgent状態確認')
+    subagent_status_parser.add_argument('tracker_id', help='トラッカーID')
+
+    subagent_retry_parser = subparsers.add_parser('subagent-retry', help='SubAgent再実行')
+    subagent_retry_parser.add_argument('tracker_id', help='トラッカーID')
+
+    subagent_terminate_parser = subparsers.add_parser('subagent-terminate', help='SubAgent終了')
+    subagent_terminate_parser.add_argument('tracker_id', help='トラッカーID')
+    subagent_terminate_parser.add_argument('--force', action='store_true', help='強制終了')
+
+    subagent_wait_parser = subparsers.add_parser('subagent-wait', help='SubAgent完了待機')
+    subagent_wait_parser.add_argument('tracker_id', help='トラッカーID')
+    subagent_wait_parser.add_argument('--timeout', type=int, default=60, help='タイムアウト（分）')
+
+    subagent_cleanup_parser = subparsers.add_parser('subagent-cleanup', help='SubAgentロック強制クリーンアップ')
+    subagent_cleanup_parser.add_argument('tracker_id', help='トラッカーID')
+
+    subparsers.add_parser('subagent-locks-status', help='全SubAgentロック状況確認')
+
+    subparsers.add_parser('subagent-cleanup-all', help='全SubAgentロック強制クリーンアップ')
+
+    subagent_auto_retry_check_parser = subparsers.add_parser('subagent-auto-retry-check', help='SubAgent自動再実行条件確認')
+    subagent_auto_retry_check_parser.add_argument('tracker_id', help='トラッカーID')
+
+    subagent_auto_retry_parser = subparsers.add_parser('subagent-auto-retry', help='SubAgent自動再実行実行')
+    subagent_auto_retry_parser.add_argument('tracker_id', help='トラッカーID')
+
+    subparsers.add_parser('subagent-auto-retry-all', help='全SubAgent自動再実行バッチ実行')
+
     args = parser.parse_args()
     
     if not args.command:
@@ -698,6 +795,29 @@ def main():
             success = check_sheets_status(args.tracker_id)
         elif args.command == 'guide':
             success = show_guide()
+        # SubAgentコマンド処理
+        elif args.command == 'subagent-extraction':
+            success = subagent_extraction(args.tracker_id)
+        elif args.command == 'subagent-status':
+            success = subagent_status(args.tracker_id)
+        elif args.command == 'subagent-retry':
+            success = subagent_retry(args.tracker_id)
+        elif args.command == 'subagent-terminate':
+            success = subagent_terminate(args.tracker_id, args.force)
+        elif args.command == 'subagent-wait':
+            success = subagent_wait(args.tracker_id, args.timeout)
+        elif args.command == 'subagent-cleanup':
+            success = subagent_cleanup(args.tracker_id)
+        elif args.command == 'subagent-locks-status':
+            success = subagent_locks_status()
+        elif args.command == 'subagent-cleanup-all':
+            success = subagent_cleanup_all()
+        elif args.command == 'subagent-auto-retry-check':
+            success = subagent_auto_retry_check(args.tracker_id)
+        elif args.command == 'subagent-auto-retry':
+            success = subagent_auto_retry(args.tracker_id)
+        elif args.command == 'subagent-auto-retry-all':
+            success = subagent_auto_retry_all()
         else:
             print(f"❌ 不明なコマンド: {args.command}")
             return 1
