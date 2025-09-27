@@ -16,6 +16,7 @@ from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 import logging
 import threading
+from config.workspace_config import get_workspace_config
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -64,7 +65,40 @@ class ApprovalGateController:
         self.lock = threading.Lock()
         
         logger.info(f"承認ゲートコントローラー初期化完了: ワークスペースベース承認")
-    
+
+    def _get_all_workspace_bases(self) -> List[str]:
+        """Get all workspace bases dynamically from configuration and existing directories"""
+        workspace_bases = set()
+
+        try:
+            # Get workspace bases from configuration database
+            config_manager = get_workspace_config()
+            project_root = self._find_project_root()
+            db_path = os.path.join(project_root, "workspace_config.db")
+
+            if os.path.exists(db_path):
+                import sqlite3
+                with sqlite3.connect(db_path) as conn:
+                    cursor = conn.execute("SELECT DISTINCT author_name FROM workspace_configs")
+                    authors = cursor.fetchall()
+
+                    for (author_name,) in authors:
+                        workspace_base = config_manager.get_author_workspace_base(author_name)
+                        workspace_bases.add(workspace_base)
+        except Exception as e:
+            logger.warning(f"Failed to get workspace bases from config: {e}")
+
+        # Add fallback workspace bases for backward compatibility
+        fallback_bases = [
+            "/mnt/c/AItools/lora/train/kiri/tracker-workspace",
+            "/mnt/c/AItools/lora/train/yado/tracker-workspace",
+            "/mnt/c/AItools/lora/train/generic/tracker-workspace"
+        ]
+        workspace_bases.update(fallback_bases)
+
+        return list(workspace_bases)
+
+
     def _find_project_root(self) -> str:
         """Find the project root directory"""
         current = os.path.dirname(os.path.abspath(__file__))
@@ -79,14 +113,32 @@ class ApprovalGateController:
         if self.base_approval_dir:
             return self.base_approval_dir
             
-        # Determine workspace base from tracker ID
-        if tracker_id.startswith("KIRO"):
-            workspace_base = "/mnt/c/AItools/lora/train/kiri/tracker-workspace"
-        elif tracker_id.startswith("TRACKER"):
-            workspace_base = "/mnt/c/AItools/lora/train/yado/tracker-workspace"
-        else:
-            # Fallback to generic workspace
-            workspace_base = "/mnt/c/AItools/lora/train/generic/tracker-workspace"
+        # Get workspace configuration using the standard workspace config system
+        try:
+            config_manager = get_workspace_config()
+            workspace_config = config_manager.get_workspace_config(tracker_id)
+
+            if workspace_config and workspace_config.get('author_name'):
+                author_name = workspace_config['author_name']
+                workspace_base = config_manager.get_author_workspace_base(author_name)
+            else:
+                # Fallback: determine from tracker ID pattern (legacy behavior)
+                if tracker_id.startswith("KIRO"):
+                    workspace_base = "/mnt/c/AItools/lora/train/kiri/tracker-workspace"
+                elif tracker_id.startswith("TRACKER"):
+                    workspace_base = "/mnt/c/AItools/lora/train/yado/tracker-workspace"
+                else:
+                    # Fallback to generic workspace
+                    workspace_base = "/mnt/c/AItools/lora/train/generic/tracker-workspace"
+        except Exception as e:
+            logger.warning(f"Failed to get workspace config for {tracker_id}: {e}")
+            # Fallback: legacy behavior
+            if tracker_id.startswith("KIRO"):
+                workspace_base = "/mnt/c/AItools/lora/train/kiri/tracker-workspace"
+            elif tracker_id.startswith("TRACKER"):
+                workspace_base = "/mnt/c/AItools/lora/train/yado/tracker-workspace"
+            else:
+                workspace_base = "/mnt/c/AItools/lora/train/generic/tracker-workspace"
         
         approval_dir = os.path.join(workspace_base, tracker_id, ".approvals")
         os.makedirs(approval_dir, exist_ok=True)
@@ -486,12 +538,8 @@ class ApprovalGateController:
         pending_approvals = []
         
         try:
-            # Scan all possible workspace locations
-            workspace_bases = [
-                "/mnt/c/AItools/lora/train/kiri/tracker-workspace",
-                "/mnt/c/AItools/lora/train/yado/tracker-workspace",
-                "/mnt/c/AItools/lora/train/generic/tracker-workspace"
-            ]
+            # Dynamically get all workspace bases from configuration
+            workspace_bases = self._get_all_workspace_bases()
             
             for workspace_base in workspace_bases:
                 if not os.path.exists(workspace_base):
