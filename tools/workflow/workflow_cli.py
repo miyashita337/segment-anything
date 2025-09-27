@@ -302,10 +302,10 @@ def check_process(tracker_id: str) -> bool:
 
 
 # SubAgent関連のコマンドハンドラー関数
-def subagent_extraction(tracker_id: str) -> bool:
+def subagent_extraction(tracker_id: str, input_path: str = None, max_files: int = None) -> bool:
     """SubAgent抽出処理開始"""
     handler = SubAgentCommandHandler()
-    return handler.handle_subagent_extraction(tracker_id)
+    return handler.handle_subagent_extraction(tracker_id, input_path, max_files)
 
 def subagent_status(tracker_id: str) -> bool:
     """SubAgent状態確認"""
@@ -738,6 +738,8 @@ def main():
     # SubAgentコマンド
     subagent_extraction_parser = subparsers.add_parser('subagent-extraction', help='SubAgent抽出処理開始')
     subagent_extraction_parser.add_argument('tracker_id', help='トラッカーID')
+    subagent_extraction_parser.add_argument('input_path', nargs='?', help='入力ディレクトリパス（省略時はワークスペース設定から自動取得）')
+    subagent_extraction_parser.add_argument('--max-files', type=int, help='処理する最大ファイル数（省略時は全ファイル処理）')
 
     subagent_status_parser = subparsers.add_parser('subagent-status', help='SubAgent状態確認')
     subagent_status_parser.add_argument('tracker_id', help='トラッカーID')
@@ -797,7 +799,7 @@ def main():
             success = show_guide()
         # SubAgentコマンド処理
         elif args.command == 'subagent-extraction':
-            success = subagent_extraction(args.tracker_id)
+            success = subagent_extraction(args.tracker_id, getattr(args, 'input_path', None), getattr(args, 'max_files', None))
         elif args.command == 'subagent-status':
             success = subagent_status(args.tracker_id)
         elif args.command == 'subagent-retry':

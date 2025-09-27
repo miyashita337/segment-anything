@@ -34,7 +34,7 @@ class SubAgentCommandHandler:
         self.lock_manager = get_lock_manager()
         self.workspace_config = get_workspace_config()
 
-    def handle_subagent_extraction(self, tracker_id: str) -> bool:
+    def handle_subagent_extraction(self, tracker_id: str, input_path: str = None, max_files: int = None) -> bool:
         """SubAgent抽出処理の開始"""
         logger.info(f"SubAgent抽出処理開始: {tracker_id}")
 
@@ -68,16 +68,24 @@ class SubAgentCommandHandler:
                 return False
 
             workspace_path = config['workspace_path']
-            input_directory = self.workspace_config.get_input_directory(tracker_id)
 
-            if not input_directory:
-                logger.error(f"入力ディレクトリが見つかりません: {tracker_id}")
-                print(f"❌ エラー: トラッカー {tracker_id} の入力ディレクトリが見つかりません")
-                return False
+            # 入力パスの決定
+            if input_path:
+                # カスタムパスが指定された場合
+                input_directory = input_path
+                logger.info(f"カスタム入力パス使用: {input_path}")
+                print(f"📁 カスタム入力パス: {input_path}")
+            else:
+                # 従来通りワークスペース設定から取得
+                input_directory = self.workspace_config.get_input_directory(tracker_id)
+                if not input_directory:
+                    logger.error(f"入力ディレクトリが見つかりません: {tracker_id}")
+                    print(f"❌ エラー: トラッカー {tracker_id} の入力ディレクトリが見つかりません")
+                    return False
 
             # SubAgent抽出コマンド構築
             extraction_command = self._build_extraction_command(
-                input_directory, workspace_path, tracker_id
+                input_directory, workspace_path, tracker_id, max_files
             )
 
             # SubAgent監視システムに登録
@@ -440,7 +448,7 @@ class SubAgentCommandHandler:
             print(f"❌ エラー: {e}")
             return False
 
-    def _build_extraction_command(self, input_directory: str, workspace_path: str, tracker_id: str) -> str:
+    def _build_extraction_command(self, input_directory: str, workspace_path: str, tracker_id: str, max_files: int = None) -> str:
         """SubAgent抽出コマンド構築"""
         output_directory = os.path.join(workspace_path, "extraction")
 
@@ -448,11 +456,15 @@ class SubAgentCommandHandler:
         # KIRO-011修正: 仮想環境絶対パス指定でsubprocess環境問題を解決
         project_root = "/mnt/c/AItools/segment-anything"
         python_path = f"{project_root}/sam-env/bin/python"
+
+        # max_filesが指定された場合のみ--max-filesオプションを追加
+        max_files_option = f"--max-files {max_files}" if max_files else ""
+
         command = (
             f"SUBAGENT_EXECUTION=true {python_path} "
             f"features/extraction/commands/extract_character.py "
             f"'{input_directory}' -o '{output_directory}' "
-            f"--batch --max-files 10 --resume --verbose"
+            f"--batch {max_files_option} --resume --verbose".strip()
         )
 
         return command
