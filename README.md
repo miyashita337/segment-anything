@@ -18,6 +18,11 @@ Please check out our new release on [**Segment Anything Model 2 (SAM 2)**](https
 
 [[`Paper`](https://ai.facebook.com/research/publications/segment-anything/)] [[`Project`](https://segment-anything.com/)] [[`Demo`](https://segment-anything.com/demo)] [[`Dataset`](https://segment-anything.com/dataset/index.html)] [[`Blog`](https://ai.facebook.com/blog/segment-anything-foundation-model-image-segmentation/)] [[`BibTeX`](#citing-segment-anything)]
 
+## Contributor Resources
+
+- [Repository Guidelines](AGENTS.md) — high-level agent workflow and contribution expectations.
+- [Contribution Guide](CONTRIBUTING.md) — detailed process for proposing changes.
+
 ## 🚧 開発状態
 
 **現在のバージョン**: v0.9.1 (開発中)
@@ -240,3 +245,4 @@ If you use SAM or SA-1B in your research, please use the following BibTeX entry.
 # PRINCIPLE
 
 The principle of this project are described at PRINCIPLE.md
+# CI再実行用の軽微な変更 Sun Sep 28 19:40:52 JST 2025
