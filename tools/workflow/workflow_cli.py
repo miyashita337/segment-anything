@@ -117,6 +117,24 @@ def get_status(tracker_id: str) -> bool:
     print(f"   現在のステップ: {status.get('current_step', '不明')}")
     print(f"   進行可能: {'✅' if status.get('can_proceed', False) else '❌'}")
     
+    # 統合ダッシュボードサーバー状態を表示
+    print(f"\n🌐 統合ダッシュボードサーバー:")
+    try:
+        import requests
+        response = requests.get("http://100.123.241.106:8088/refresh", 
+                              timeout=3, 
+                              auth=('admin', 'secure_track_2025_q3_8f9a'))
+        if response.status_code == 200:
+            print(f"   状態: ✅ 稼働中 (http://100.123.241.106:8088)")
+            data = response.json()
+            if 'message' in data:
+                print(f"   情報: {data['message']}")
+        else:
+            print(f"   状態: ⚠️  応答異常 (HTTP {response.status_code})")
+    except Exception as e:
+        print(f"   状態: ❌ 停止中 (Error: {str(e)})")
+        print(f"   起動方法: python integrated_dashboard_server.py")
+    
     # 完了したステップを表示
     completed_steps = status.get('completed_steps', [])
     if completed_steps:

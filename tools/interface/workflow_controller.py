@@ -777,7 +777,7 @@ class WorkflowController:
                             lines = [line for line in stats_content.split('\n') if pattern in line]
                             if lines:
                                 line = lines[0]
-                                if "N/A" not in line and not any(x in line for x in ["0.0000", "0.000", ": 0"]):
+                                if "N/A" not in line and not (": 0\n" in line or ": 0 " in line or line.endswith(": 0")):
                                     found = True
                                     break
                     
