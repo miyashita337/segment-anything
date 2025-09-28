@@ -21,6 +21,8 @@ if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
 from tools.workflow.subagent_command_handler import SubAgentCommandHandler
+from tools.safety.error_detection_system import ErrorDetectionSystem
+from tools.safety.contradiction_detector import ContradictionDetector
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
@@ -233,14 +235,54 @@ def get_instructions(tracker_id: str) -> bool:
 
 def attempt_step(tracker_id: str) -> bool:
     """現在のステップの完了を試行"""
+    # エラー検出システム初期化
+    error_detector = ErrorDetectionSystem()
+
+    # 停止状態チェック
+    is_stopped, stop_data = error_detector.is_stopped(tracker_id)
+    if is_stopped:
+        print(f"🚨 {tracker_id} は安全システムにより停止中です")
+        print(f"   理由: {stop_data.get('reason', '不明')}")
+        print(f"   停止時刻: {stop_data.get('triggered_at', '不明')}")
+        print(f"   承認コマンド: python tools/safety/error_detection_system.py approve {tracker_id}")
+        return False
+
     controller = get_workflow_controller()
     if not controller:
         return False
-    
+
+    # 現在のステップ情報取得
+    status = controller.get_workflow_status(tracker_id)
+    current_step_id = status.get('current_step', 'unknown')
+
     print(f"🔄 {tracker_id} の現在のステップ完了を試行中...")
-    
+
     result = controller.attempt_step_completion(tracker_id)
-    
+
+    # エラー検出実行
+    if result.status in ["failed", "blocked"]:
+        error_patterns = error_detector.check_for_errors(
+            tracker_id=tracker_id,
+            step_id=current_step_id,
+            message=result.message,
+            context={
+                "step_status": result.status,
+                "command": "attempt_step",
+                "timestamp": datetime.now().isoformat()
+            }
+        )
+
+        if error_patterns:
+            print(f"⚠️  エラーパターン検出: {', '.join(error_patterns)}")
+
+            # 再度停止状態チェック（自動停止がトリガーされた可能性）
+            is_stopped_after, stop_data_after = error_detector.is_stopped(tracker_id)
+            if is_stopped_after:
+                print(f"🚨 自動停止がトリガーされました")
+                print(f"   理由: {stop_data_after.get('reason', '不明')}")
+                print(f"   承認が必要です: python tools/safety/error_detection_system.py approve {tracker_id}")
+                return False
+
     if result.status == "completed":
         print(f"✅ ステップが正常に完了しました!")
         print(f"   メッセージ: {result.message}")
@@ -257,7 +299,7 @@ def attempt_step(tracker_id: str) -> bool:
     elif result.status == "failed":
         print(f"❌ ステップが失敗しました")
         print(f"   メッセージ: {result.message}")
-    
+
     return result.status in ["completed", "pending_approval"]
 
 def list_approvals() -> bool:
@@ -374,6 +416,122 @@ def subagent_auto_retry_all() -> bool:
     """全SubAgent自動再実行バッチ実行"""
     handler = SubAgentCommandHandler()
     return handler.handle_subagent_auto_retry_all()
+
+def check_error_status(tracker_id: str) -> bool:
+    """エラー検出システム状態確認"""
+    error_detector = ErrorDetectionSystem()
+
+    is_stopped, stop_data = error_detector.is_stopped(tracker_id)
+
+    print(f"🔍 {tracker_id} エラー検出システム状態:")
+
+    if is_stopped:
+        print(f"   状態: 🚨 停止中")
+        print(f"   理由: {stop_data.get('reason', '不明')}")
+        print(f"   停止時刻: {stop_data.get('triggered_at', '不明')}")
+        print(f"   パターンID: {', '.join(stop_data.get('pattern_ids', []))}")
+        print(f"   承認コマンド: python tools/safety/error_detection_system.py approve {tracker_id}")
+    else:
+        print(f"   状態: ✅ 正常稼働中")
+
+    # エラー統計取得
+    stats = error_detector.get_error_statistics(tracker_id, hours=24)
+
+    if stats['total_errors'] > 0:
+        print(f"\n📊 過去24時間のエラー統計:")
+        print(f"   総エラー数: {stats['total_errors']}")
+        for pattern_id, count in stats['pattern_statistics'].items():
+            print(f"   {pattern_id}: {count}回")
+    else:
+        print(f"\n✅ 過去24時間でエラーは検出されていません")
+
+    return True
+
+def approve_error_recovery(tracker_id: str, approver: str = "user") -> bool:
+    """エラー回復承認"""
+    error_detector = ErrorDetectionSystem()
+
+    success = error_detector.approve_continuation(tracker_id, approver)
+
+    if success:
+        print(f"✅ {tracker_id} のエラー回復が承認されました (承認者: {approver})")
+        print(f"   ワークフローが再開されます")
+    else:
+        print(f"❌ {tracker_id} のエラー回復承認に失敗しました")
+        print(f"   停止状態でない可能性があります")
+
+    return success
+
+def check_contradictions(tracker_id: str) -> bool:
+    """矛盾指示チェック"""
+    detector = ContradictionDetector()
+
+    contradictions = detector.get_active_contradictions(tracker_id)
+
+    print(f"🔍 {tracker_id} 矛盾指示チェック結果:")
+
+    if not contradictions:
+        print(f"   ✅ 矛盾は検出されていません")
+        return True
+
+    print(f"   🚨 {len(contradictions)} 件の矛盾が検出されています:")
+
+    for i, contradiction in enumerate(contradictions, 1):
+        pattern_info = {
+            "add_remove_conflict": "追加・削除の競合",
+            "enable_disable_conflict": "有効・無効の競合",
+            "priority_contradiction": "優先度の矛盾",
+            "version_conflict": "バージョン管理の矛盾",
+            "automation_manual_conflict": "自動・手動の競合"
+        }.get(contradiction['pattern_id'], contradiction['pattern_id'])
+
+        print(f"\n   {i}. 検出ID: {contradiction['detection_id']}")
+        print(f"      パターン: {pattern_info}")
+        print(f"      信頼度: {contradiction['confidence_score']:.2f}")
+        print(f"      検出時刻: {contradiction['detected_at']}")
+        print(f"      指示A ({contradiction['instruction_a']['step_id']}): {contradiction['instruction_a']['content'][:80]}...")
+        print(f"      指示B ({contradiction['instruction_b']['step_id']}): {contradiction['instruction_b']['content'][:80]}...")
+
+        if contradiction['alert_sent']:
+            print(f"      🚨 アラート送信済み")
+
+    print(f"\n💡 対処方法:")
+    print(f"   1. 矛盾する指示を確認してください")
+    print(f"   2. 優先すべき指示を決定してください")
+    print(f"   3. 解決後: python tools/safety/contradiction_detector.py resolve <検出ID>")
+
+    return len(contradictions) == 0
+
+def record_user_instruction(tracker_id: str, content: str, step_id: str = "user_input") -> bool:
+    """ユーザー指示の記録（矛盾検出付き）"""
+    detector = ContradictionDetector()
+
+    try:
+        instruction_id = detector.record_instruction(
+            tracker_id=tracker_id,
+            content=content,
+            category="requirement",
+            priority=2,  # ユーザー指示は高優先度
+            source="user",
+            step_id=step_id
+        )
+
+        print(f"✅ ユーザー指示を記録しました: {instruction_id}")
+
+        # 矛盾チェック
+        contradictions = detector.get_active_contradictions(tracker_id)
+        new_contradictions = [c for c in contradictions if c['instruction_a'] == instruction_id or c['instruction_b'] == instruction_id]
+
+        if new_contradictions:
+            print(f"⚠️  新しい矛盾が検出されました ({len(new_contradictions)} 件)")
+            for contradiction in new_contradictions:
+                print(f"   - {contradiction['pattern_id']}: 信頼度 {contradiction['confidence_score']:.2f}")
+
+        return True
+
+    except Exception as e:
+        print(f"❌ 指示記録エラー: {e}")
+        return False
 
 def generate_template(tracker_id: str, output_path: str = None) -> bool:
     """統合テンプレートを生成"""
@@ -783,6 +941,23 @@ def main():
 
     subparsers.add_parser('subagent-auto-retry-all', help='全SubAgent自動再実行バッチ実行')
 
+    # エラー検出システムコマンド
+    error_status_parser = subparsers.add_parser('error-status', help='エラー検出システム状態確認')
+    error_status_parser.add_argument('tracker_id', help='トラッカーID')
+
+    error_approve_parser = subparsers.add_parser('error-approve', help='エラー回復承認')
+    error_approve_parser.add_argument('tracker_id', help='トラッカーID')
+    error_approve_parser.add_argument('--approver', default='user', help='承認者名')
+
+    # 矛盾検出システムコマンド
+    contradiction_check_parser = subparsers.add_parser('contradiction-check', help='矛盾指示チェック')
+    contradiction_check_parser.add_argument('tracker_id', help='トラッカーID')
+
+    record_instruction_parser = subparsers.add_parser('record-instruction', help='ユーザー指示記録')
+    record_instruction_parser.add_argument('tracker_id', help='トラッカーID')
+    record_instruction_parser.add_argument('content', help='指示内容')
+    record_instruction_parser.add_argument('--step-id', default='user_input', help='ステップID')
+
     args = parser.parse_args()
     
     if not args.command:
@@ -838,6 +1013,14 @@ def main():
             success = subagent_auto_retry(args.tracker_id)
         elif args.command == 'subagent-auto-retry-all':
             success = subagent_auto_retry_all()
+        elif args.command == 'error-status':
+            success = check_error_status(args.tracker_id)
+        elif args.command == 'error-approve':
+            success = approve_error_recovery(args.tracker_id, args.approver)
+        elif args.command == 'contradiction-check':
+            success = check_contradictions(args.tracker_id)
+        elif args.command == 'record-instruction':
+            success = record_user_instruction(args.tracker_id, args.content, args.step_id)
         else:
             print(f"❌ 不明なコマンド: {args.command}")
             return 1

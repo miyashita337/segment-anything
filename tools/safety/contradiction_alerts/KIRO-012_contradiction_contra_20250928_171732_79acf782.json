@@ -1,0 +1,35 @@
+{
+  "detection_id": "contra_20250928_171732_79acf782",
+  "tracker_id": "KIRO-012",
+  "alert_type": "contradiction_detected",
+  "severity": "critical",
+  "detected_at": "2025-09-28T17:17:32.483346",
+  "pattern": {
+    "id": "add_remove_conflict",
+    "type": "semantic",
+    "description": "追加と削除の指示が同時に存在"
+  },
+  "contradicting_instructions": {
+    "instruction_a": {
+      "id": "inst_20250928_171732_0a12ddd6",
+      "content": "機能を削除してください",
+      "timestamp": "2025-09-28T17:17:32.465583",
+      "step_id": "user_input",
+      "source": "user"
+    },
+    "instruction_b": {
+      "id": "inst_20250928_171728_a0249bf3",
+      "content": "機能を追加してください",
+      "timestamp": "2025-09-28T17:17:28.133326",
+      "step_id": "user_input",
+      "source": "user"
+    }
+  },
+  "confidence_score": 1.0,
+  "recommended_actions": [
+    "1. 矛盾する指示を確認してください",
+    "2. 優先すべき指示を決定してください",
+    "3. 不要な指示を取り消してください",
+    "4. 矛盾解決後に承認してください"
+  ]
+}
