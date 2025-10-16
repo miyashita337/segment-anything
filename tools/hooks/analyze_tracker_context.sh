@@ -30,25 +30,30 @@ log() {
 get_workspace_path() {
     local tracker_id="$1"
     local workspace_path
-    
+
     workspace_path=$(python3 -c "
 import sys
 sys.path.insert(0, '/mnt/c/AItools/segment-anything')
 try:
     from config.workspace_config import WorkspaceConfig
     tracker_id = '$tracker_id'
-    workspace = WorkspaceConfig.get_tracker_workspace(tracker_id)
-    print(workspace)
+    config = WorkspaceConfig()
+    workspace_config = config.get_workspace_config(tracker_id)
+    if workspace_config:
+        print(workspace_config['workspace_path'])
+    else:
+        print('ERROR: No workspace config found', file=sys.stderr)
+        sys.exit(1)
 except Exception as e:
     print('ERROR:', str(e), file=sys.stderr)
     sys.exit(1)
 " 2>&1)
-    
+
     if [[ "$workspace_path" == ERROR:* ]]; then
         log "❌ workspace_config.py エラー: ${workspace_path#ERROR:}"
         return 1
     fi
-    
+
     echo "$workspace_path"
 }
 

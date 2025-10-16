@@ -189,7 +189,7 @@ class TaskRecord:
     
     def to_sheets_row(self) -> List[str]:
         """Google Sheets行データに変換（20列：A-T、実際の構造に合わせて）"""
-        # 実際のシート構造: A=ID, B=優先度, C=ステータス, D=登録日, E=更新日, F=概要, ...
+        # 実際のシート構造: A=ID, B=優先度, C=ステータス, D=登録日, E=更新日, F=概要, G=詳細, H=動作確認, ...
         row = [
             self.tracker_id,                                                       # A
             self.priority.value,                                                   # B  
@@ -197,20 +197,20 @@ class TaskRecord:
             self.created_date.strftime('%Y-%m-%d %H:%M:%S') if self.created_date else "",  # D
             self.updated_date.strftime('%Y-%m-%d %H:%M:%S') if self.updated_date else "",  # E
             self.description,                                                      # F
-            self.operation_check.value,                                           # G
-            self.unit_test.value,                                                 # H
-            self.quality_evaluation.value,                                        # I
-            self.integration_script.value,                                        # J
-            self.dashboard_generation.value,                                      # K
-            self.extraction_pipeline.value,                                       # L
-            "",  # M - LCA
-            "",  # N - A/B評価率
-            "",  # O - FPS
-            "",  # P - C以上評価率
-            "",  # Q - 平均カバレッジ率
-            "",  # R - 平均コンパクトネス
-            "",  # S - 平均フィル率
-            ""   # T - SCI, PLA
+            self.details,                                                          # G - 詳細（修正）
+            self.operation_check.value,                                           # H - 動作確認（1つずらす）
+            self.unit_test.value,                                                 # I - テストUNIT
+            self.quality_evaluation.value,                                        # J - 品質評価
+            self.integration_script.value,                                        # K - 統合実行スクリプト
+            self.dashboard_generation.value,                                      # L - ダッシュボード生成
+            self.extraction_pipeline.value,                                       # M - 抽出パイプライン
+            "",  # N - Current
+            "",  # O - BaseLine
+            "",  # P - p値
+            "",  # Q - 効果サイズ、Cohen's d
+            "",  # R - 改善率
+            "",  # S - 統計的有意性
+            ""   # T - 20250825実装済みか？
         ]
         
         return row
@@ -273,18 +273,18 @@ class TaskRecord:
         
         return cls(
             tracker_id=row[0],                                                    # A
-            priority=safe_priority(row[1]),                                      # B (実際のシート構造に合わせて)
+            priority=safe_priority(row[1]),                                      # B
             status=TaskStatus(row[2]) if row[2] else TaskStatus.NOT_STARTED,     # C 
             created_date=cls._parse_date_flexible(row[3]) if row[3] else None,   # D
             updated_date=cls._parse_date_flexible(row[4]) if row[4] else None,   # E
             description=row[5],                                                   # F
-            details="",  # 詳細は別途管理
-            operation_check=safe_component_status(row[6]) if len(row) > 6 else ComponentStatus.EMPTY,
-            unit_test=safe_component_status(row[7]) if len(row) > 7 else ComponentStatus.EMPTY,
-            quality_evaluation=safe_component_status(row[8]) if len(row) > 8 else ComponentStatus.EMPTY,
-            integration_script=safe_component_status(row[9]) if len(row) > 9 else ComponentStatus.EMPTY,
-            dashboard_generation=safe_component_status(row[10]) if len(row) > 10 else ComponentStatus.EMPTY,
-            extraction_pipeline=safe_component_status(row[11]) if len(row) > 11 else ComponentStatus.EMPTY,
+            details=row[6] if len(row) > 6 else "",                              # G - 詳細（修正）
+            operation_check=safe_component_status(row[7]) if len(row) > 7 else ComponentStatus.EMPTY,      # H - 動作確認
+            unit_test=safe_component_status(row[8]) if len(row) > 8 else ComponentStatus.EMPTY,           # I - テストUNIT
+            quality_evaluation=safe_component_status(row[9]) if len(row) > 9 else ComponentStatus.EMPTY,  # J - 品質評価
+            integration_script=safe_component_status(row[10]) if len(row) > 10 else ComponentStatus.EMPTY, # K - 統合実行スクリプト
+            dashboard_generation=safe_component_status(row[11]) if len(row) > 11 else ComponentStatus.EMPTY, # L - ダッシュボード生成
+            extraction_pipeline=safe_component_status(row[12]) if len(row) > 12 else ComponentStatus.EMPTY, # M - 抽出パイプライン
             statistics=statistics
         )
 
