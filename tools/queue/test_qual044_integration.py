@@ -410,7 +410,7 @@ QUAL-044長時間処理キューシステムの統合テストが完了しまし
 1. **LongTaskQueue**: FIFO処理、リトライ機能、状態管理
 2. **SubAgentMonitor**: 同一セッション監視、コンテキスト継承
 3. **TaskIntegration**: pytest・extract_character統合
-4. **NotificationBridge**: Pushover通知・PlanModeエスカレーション
+4. **NotificationBridge**: Pushover通知・TaskFailureEscalation
 
 ### 次のステップ
 1. 実際の長時間処理での動作確認
@@ -449,7 +449,7 @@ def main():
         print("   - 2分タイムアウト制約の回避")
         print("   - 同一セッション内でのコンテキスト継承")
         print("   - SubAgent技術による背景処理監視")
-        print("   - Pushover通知とPlanModeエスカレーション")
+        print("   - Pushover通知とTaskFailureEscalation")
         
     else:
         # 実際のテスト実行

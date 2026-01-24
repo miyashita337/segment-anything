@@ -827,6 +827,31 @@ class EnhancedSubAgentTaskQueue(SubAgentTaskQueue):
             self.logger.error(f"Failed to save checkpoint: {task_id} - {e}")
             return False
 
+    def load_checkpoint(self, task_id: str) -> Optional[Dict[str, Any]]:
+        """
+        チェックポイント読み込み
+
+        Args:
+            task_id: タスクID
+
+        Returns:
+            Optional[Dict[str, Any]]: チェックポイントデータ
+        """
+        try:
+            checkpoint_file = self.checkpoint_dir / f"{task_id}_checkpoint.json"
+            if not checkpoint_file.exists():
+                return None
+
+            with open(checkpoint_file, 'r') as f:
+                checkpoint = json.load(f)
+
+            self.logger.info(f"Checkpoint loaded: {task_id}")
+            return checkpoint
+
+        except Exception as e:
+            self.logger.error(f"Failed to load checkpoint: {task_id} - {e}")
+            return None
+
     def auto_checkpoint_if_needed(self, task_id: str, progress_data: Dict[str, Any]) -> bool:
         """
         必要に応じて自動チェックポイント保存
@@ -1800,11 +1825,20 @@ class IntegratedSubAgentSystem:
             # ディスク使用量チェック（出力ディレクトリ）
             output_size = 0
             try:
-                # extract_character.pyの出力パスを推定
-                workspace_dirs = [
-                    f"/mnt/c/AItools/lora/train/yado/tracker-workspace/{self.tracker_id}/extraction/",
-                    f"/mnt/c/AItools/lora/train/kiri/tracker-workspace/{self.tracker_id}/extraction/"
-                ]
+                # WorkspaceConfigManagerを使って動的パス解決
+                from config.workspace_config import WorkspaceConfig
+                workspace_config = WorkspaceConfig()
+                config = workspace_config.get_workspace_config(self.tracker_id)
+                
+                if config:
+                    extraction_path = f"{config['workspace_path']}/extraction/"
+                    workspace_dirs = [extraction_path]
+                else:
+                    # フォールバック: 従来の複数パス
+                    workspace_dirs = [
+                        f"/mnt/c/AItools/lora/train/yado/tracker-workspace/{self.tracker_id}/extraction/",
+                        f"/mnt/c/AItools/lora/train/kiri/tracker-workspace/{self.tracker_id}/extraction/"
+                    ]
                 
                 for output_dir in workspace_dirs:
                     if Path(output_dir).exists():

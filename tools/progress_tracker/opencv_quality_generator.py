@@ -218,30 +218,32 @@ class OpenCVQualityGenerator:
             # 統計計算
             mean_quality = total_quality / successful_count if successful_count > 0 else 0.0
             
-            # extraction_result.json構造作成
+            # ワークフロー互換extraction_result.json構造作成
             extraction_result = {
                 'tracker_id': tracker_id,
-                'analysis_timestamp': datetime.now().isoformat(),
-                'opencv_version': cv2.__version__,
-                'total_images': len(image_files),
-                'successful_extractions': successful_count,
-                'failed_extractions': failed_count,
-                'success_rate': successful_count / len(image_files) if image_files else 0.0,
-                'mean_quality_score': mean_quality,
-                'quality_statistics': self._calculate_quality_statistics(analysis_results),
-                'results': analysis_results,
-                'generation_method': 'opencv_analysis',
-                'quality_score_range': [0.0, 1.0],
-                'quality_algorithm': 'weighted_composite_score',
-                'metadata': {
-                    'extraction_dir': str(extraction_dir),
-                    'image_extensions': list(self.image_extensions),
-                    'analysis_components': [
-                        'edge_sharpness', 'contrast', 'brightness', 
-                        'edge_ratio', 'noise_level', 'color_richness', 
-                        'structural_quality'
-                    ]
-                }
+                'extraction_results': {
+                    'analysis_timestamp': datetime.now().isoformat(),
+                    'opencv_version': cv2.__version__,
+                    'total_images': len(image_files),
+                    'successful_extractions': successful_count,
+                    'failed_extractions': failed_count,
+                    'success_rate': successful_count / len(image_files) if image_files else 0.0,
+                    'mean_quality_score': mean_quality,
+                    'quality_statistics': self._calculate_quality_statistics(analysis_results),
+                    'generation_method': 'opencv_analysis',
+                    'quality_score_range': [0.0, 1.0],
+                    'quality_algorithm': 'weighted_composite_score',
+                    'metadata': {
+                        'extraction_dir': str(extraction_dir),
+                        'image_extensions': list(self.image_extensions),
+                        'analysis_components': [
+                            'edge_sharpness', 'contrast', 'brightness',
+                            'edge_ratio', 'noise_level', 'color_richness',
+                            'structural_quality'
+                        ]
+                    }
+                },
+                'results': analysis_results
             }
             
             # JSONファイル保存

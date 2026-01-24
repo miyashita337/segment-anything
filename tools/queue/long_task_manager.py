@@ -298,7 +298,7 @@ class LongTaskQueue:
                     'status': 'task_failed',
                     'task_id': task.task_id,
                     'error': task.error_message,
-                    'requires_planmode_review': True
+                    'requires_manual_review': True
                 })
         
         except Exception as e:
@@ -315,6 +315,24 @@ class LongTaskQueue:
         
         finally:
             self.running_process = None
+
+            # タスク完了時のステータス更新
+            if self.current_task:
+                if self.current_task.status == TaskStatus.COMPLETED:
+                    logger.info(f"✅ Task completed successfully: {self.current_task.task_id}")
+                    self._update_status_file({
+                        'status': 'idle',
+                        'last_completed_task': self.current_task.task_id,
+                        'completed_at': datetime.now().isoformat()
+                    })
+                elif self.current_task.status == TaskStatus.FAILED:
+                    logger.info(f"❌ Task failed: {self.current_task.task_id}")
+                    self._update_status_file({
+                        'status': 'idle',
+                        'last_failed_task': self.current_task.task_id,
+                        'failed_at': datetime.now().isoformat()
+                    })
+
             self.current_task = None
             self._save_queue_state()
     

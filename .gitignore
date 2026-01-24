@@ -1,5 +1,14 @@
 .nfs*
 
+# Authentication configuration (sensitive)
+config/auth.conf
+
+# Progress tracking files (auto-generated)
+progress_history.json
+
+# PR description files (temporary)
+pull_request_description.md
+
 # compilation and distribution
 __pycache__
 _ext
@@ -135,3 +144,18 @@ pytorch_install.log
 
 # Runtime generated config (QUAL-036)
 config/current_author_config.json
+# Workflow approval files (should be in tracker workspaces, not project root)
+.workflow_approvals/
+
+# KIRO-006 ワークフロー実行時生成ファイル
+workflow_state.db
+workspace_config.db
+subagent_monitor.db
+workspace/
+approval_*
+completed
+*.ps1
+*workflow.sh
+sow_document_*.md
+project_*.md
+Makefile

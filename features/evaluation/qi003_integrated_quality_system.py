@@ -15,7 +15,7 @@ import cv2
 
 import logging
 from dataclasses import dataclass
-from features.common.dashboard_generator import StandardDashboardGenerator
+from features.common.dashboard_generator import DashboardGenerator
 from features.common.notification.pushover_image_sender import PushoverImageSender
 # 既存システムのインポート
 from features.evaluation.detectors.black_screen_detector import BlackScreenDetector
@@ -60,7 +60,7 @@ class QI003IntegratedQualitySystem:
         # コンポーネント初期化
         self.black_screen_detector = BlackScreenDetector(brightness_threshold)
         self.quality_monitor = IntegratedQualityMonitor()
-        self.dashboard_generator = StandardDashboardGenerator()
+        self.dashboard_generator = DashboardGenerator()
         self.pushover_sender = PushoverImageSender()
         
         # ログ設定

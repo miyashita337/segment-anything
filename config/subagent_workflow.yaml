@@ -93,8 +93,8 @@ notification:
       - "task_failed"
       - "workflow_completed"
       
-  # PlanMode連携
-  planmode:
+  # TaskFailureEscalation連携
+  task_failure_escalation:
     enabled: true
     escalation_on_error: true
     require_review_threshold: 0.5  # 品質スコア閾値
@@ -126,7 +126,7 @@ error_handling:
     - "log_error"
     - "send_notification"
     - "save_state"
-    - "escalate_to_planmode"
+    - "escalate_to_task_failure"
 
 # パフォーマンス設定
 performance:

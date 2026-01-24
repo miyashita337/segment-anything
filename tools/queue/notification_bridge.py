@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
 通知ブリッジシステム
-QUAL-044: Pushover通知とPlanModeエスカレーション統合
+QUAL-044: Pushover通知とTaskFailureEscalation統合
 
-タスク完了・失敗時の通知とエラー時のPlanMode連携
+タスク完了・失敗時の通知とエラー時のTaskFailureEscalation連携
 """
 
 import json
@@ -167,7 +167,7 @@ Status: Failed after {retry_count} retries
 Error: {error[:200]}
 
 ⚠️ Manual intervention required
-Consider switching to PlanMode for resolution"""
+Consider manual intervention for resolution"""
         
         return self.send_notification(title, message, priority=1)
     
@@ -195,8 +195,8 @@ Consider switching to PlanMode for resolution"""
         return self.send_notification(title, message, priority=-1)
 
 
-class PlanModeEscalator:
-    """PlanModeエスカレーター"""
+class TaskFailureEscalator:
+    """タスク失敗エスカレーター"""
     
     def __init__(self, workspace_path: str):
         """
@@ -206,8 +206,8 @@ class PlanModeEscalator:
             workspace_path: ワークスペースパス
         """
         self.workspace = Path(workspace_path)
-        self.escalation_file = self.workspace / "planmode_escalation.json"
-        logger.info("PlanModeEscalator initialized")
+        self.escalation_file = self.workspace / "task_failure_escalation.json"
+        logger.info("TaskFailureEscalator initialized")
     
     def create_escalation(self,
                          task_id: str,
@@ -216,7 +216,7 @@ class PlanModeEscalator:
                          retry_count: int,
                          command: str) -> Dict[str, Any]:
         """
-        PlanModeエスカレーション作成
+        タスク失敗エスカレーション作成
         
         Args:
             task_id: タスクID
@@ -243,7 +243,7 @@ class PlanModeEscalator:
         try:
             with open(self.escalation_file, 'w') as f:
                 json.dump(escalation, f, indent=2)
-            logger.info(f"PlanMode escalation created for {task_id}")
+            logger.info(f"Task failure escalation created for {task_id}")
         except Exception as e:
             logger.error(f"Failed to create escalation file: {e}")
         
@@ -301,15 +301,15 @@ class PlanModeEscalator:
     
     def get_escalation_prompt(self, escalation: Dict[str, Any]) -> str:
         """
-        PlanMode用プロンプト生成
+        タスク失敗エスカレーション用プロンプト生成
         
         Args:
             escalation: エスカレーション情報
             
         Returns:
-            PlanModeプロンプト
+            エスカレーションプロンプト
         """
-        prompt = f"""🚨 タスク失敗のためPlanModeレビューが必要です
+        prompt = f"""🚨 タスク失敗のためレビューが必要です
 
 ## エラー情報
 - **タスクID**: {escalation['task_id']}
@@ -360,9 +360,12 @@ class NotificationBridge:
         self.workspace_path = workspace_path
         self.tracker_id = tracker_id
         
+        # ファイル移行（旧PlanModeエスカレーションファイル）
+        self._migrate_escalation_files()
+        
         # コンポーネント初期化
         self.pushover = PushoverNotifier()
-        self.escalator = PlanModeEscalator(workspace_path)
+        self.escalator = TaskFailureEscalator(workspace_path)
 
         # INTG-089: 重複通知防止・優先度管理機能
         self.notification_history: Set[str] = set()  # 通知ハッシュ履歴
@@ -425,6 +428,35 @@ class NotificationBridge:
         logger.info(f"NotificationBridge initialized for {tracker_id}")
         logger.info("INTG-089: Enhanced notification management enabled")
     
+    def _migrate_escalation_files(self):
+        """旧PlanModeエスカレーションファイルの移行"""
+        workspace = Path(self.workspace_path)
+        old_file = workspace / "planmode_escalation.json"
+        new_file = workspace / "task_failure_escalation.json"
+        
+        if old_file.exists() and not new_file.exists():
+            try:
+                import shutil
+                shutil.move(str(old_file), str(new_file))
+                logger.info(f"Migrated escalation file: {old_file} -> {new_file}")
+            except Exception as e:
+                logger.error(f"Failed to migrate escalation file: {e}")
+                # フォールバック: コピーして削除
+                try:
+                    import json
+                    with open(old_file, 'r') as f:
+                        data = json.load(f)
+                    with open(new_file, 'w') as f:
+                        json.dump(data, f, indent=2)
+                    old_file.unlink()
+                    logger.info(f"Fallback migration successful: {old_file} -> {new_file}")
+                except Exception as fallback_error:
+                    logger.error(f"Fallback migration failed: {fallback_error}")
+        elif old_file.exists() and new_file.exists():
+            logger.info(f"Both files exist, keeping new format: {new_file}")
+        elif new_file.exists():
+            logger.info(f"New format file already exists: {new_file}")
+    
     def handle_task_completion(self,
                               task_id: str,
                               task_type: str,
@@ -484,7 +516,7 @@ class NotificationBridge:
             retry_count=retry_count
         )
         
-        # PlanModeエスカレーション作成
+        # タスク失敗エスカレーション作成
         escalation = self.escalator.create_escalation(
             task_id=task_id,
             task_type=task_type,
@@ -885,9 +917,9 @@ def demonstrate_notification_bridge():
         results=demo_results
     )
     
-    print("\n2️⃣ タスク失敗通知とPlanModeエスカレーション")
+    print("\n2️⃣ タスク失敗通知とTaskFailureEscalation")
     print("   - Pushover通知送信")
-    print("   - PlanModeエスカレーション作成")
+    print("   - TaskFailureEscalation作成")
     print("   - 推奨アクション生成")
     
     # デモ: タスク失敗
@@ -901,13 +933,13 @@ def demonstrate_notification_bridge():
     
     # エスカレーションプロンプト表示
     prompt = bridge.escalator.get_escalation_prompt(escalation)
-    print("\n📝 生成されたPlanModeプロンプト:")
+    print("\n📝 生成されたエスカレーションプロンプト:")
     print("-" * 40)
     print(prompt[:500] + "...")  # 最初の500文字のみ表示
     
     print("\n✅ 通知ブリッジの特徴:")
     print("   1. Pushover通知（トークン効率的）")
-    print("   2. PlanModeエスカレーション")
+    print("   2. TaskFailureEscalation")
     print("   3. 推奨アクション自動生成")
     print("   4. イベントログ記録")
     print("   5. キュー状態通知")
@@ -940,16 +972,21 @@ def main():
             # エスカレーションテスト
             escalation = bridge.handle_task_failure(
                 task_id="test_task_001",
-                task_type="test",
-                error="Test error for demonstration",
+                task_type="pytest",
+                error="ImportError: No module named 'test_module'",
                 retry_count=2,
-                command="echo 'test'"
+                command="python -m pytest tests/"
             )
-            print(f"Escalation created: {json.dumps(escalation, indent=2)}")
+            
+            # エスカレーションプロンプト表示
+            prompt = bridge.escalator.get_escalation_prompt(escalation)
+            print(f"TaskFailureEscalation test: {'✅ Success' if escalation else '❌ Failed'}")
+            print(f"Escalation ID: {escalation.get('task_id', 'N/A')}")
+            print(f"Prompt length: {len(prompt)} characters")
         
         else:
-            print(f"Unknown command: {command}")
-            print("Usage: python notification_bridge.py [test-pushover|test-escalation]")
+            print(f"❌ 不明なコマンド: {command}")
+            print("利用可能なコマンド: test-pushover, test-escalation")
 
 
 if __name__ == "__main__":

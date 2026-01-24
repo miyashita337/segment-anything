@@ -23,7 +23,7 @@ import os
 
 # テスト対象となる新機能のインポート（まだ実装されていない）
 from features.evaluation.qi003_integrated_quality_system import QI003IntegratedQualitySystem
-from features.common.dashboard_generator import StandardDashboardGenerator
+from features.common.dashboard_generator import DashboardGenerator
 from features.common.notification.pushover_image_sender import PushoverImageSender
 
 
@@ -155,12 +155,12 @@ class TestQI003IntegratedQualitySystem:
             assert method in unified_results['executed_methods']
 
 
-class TestStandardDashboardGenerator:
+class TestDashboardGenerator:
     """標準ダッシュボード生成システムのテスト"""
 
     def setup_method(self):
         """セットアップ"""
-        self.generator = StandardDashboardGenerator()
+        self.generator = DashboardGenerator()
         self.temp_dir = tempfile.mkdtemp()
 
     def teardown_method(self):

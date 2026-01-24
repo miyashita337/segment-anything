@@ -24,7 +24,7 @@ from features.evaluation.statistics.success_rate import (
     ExtractionStats
 )
 from features.common.dashboard_generator import (
-    StandardDashboardGenerator,
+    DashboardGenerator,
     create_standard_dashboard
 )
 

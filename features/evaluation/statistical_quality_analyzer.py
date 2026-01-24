@@ -93,14 +93,42 @@ class StatisticalQualityAnalyzer:
             else:
                 success_rate = 0.0
                 sample_size = 0
-            
-            # 個別結果がある場合 - 正しいキー名で処理
-            if 'extraction_results' in data:  # 🔧 修正: 'results' → 'extraction_results'
-                for result in data['extraction_results']:
-                    if 'quality_score' in result:
-                        quality_scores.append(result['quality_score'])
-                    if 'extraction_time' in result:
-                        extraction_times.append(result['extraction_time'])
+
+            # 個別結果がある場合 - 複数の形式に対応
+            if 'extraction_results' in data:
+                extraction_results = data['extraction_results']
+
+                # パターン1: extraction_resultsがリスト（QUAL-044形式）
+                if isinstance(extraction_results, list):
+                    for result in extraction_results:
+                        if isinstance(result, dict) and 'quality_score' in result:
+                            quality_scores.append(result['quality_score'])
+                        if isinstance(result, dict) and 'extraction_time' in result:
+                            extraction_times.append(result['extraction_time'])
+
+                # パターン2: extraction_resultsが辞書（TRACKER-006形式）
+                elif isinstance(extraction_results, dict):
+                    # 統計情報から抽出
+                    if 'success_rate' in extraction_results:
+                        success_rate = extraction_results['success_rate']
+                    if 'total_images' in extraction_results:
+                        sample_size = extraction_results['total_images']
+                    if 'average_quality_score' in extraction_results:
+                        avg_score = extraction_results['average_quality_score']
+                        # 個別スコア情報がない場合は平均から推定
+                        if sample_size > 0:
+                            # 品質分布から個別スコアを推定
+                            quality_dist = extraction_results.get('quality_distribution', {})
+                            if quality_dist:
+                                # 各グレードの代表値で推定
+                                grade_scores = {'A': 0.9, 'B': 0.7, 'C': 0.5, 'D': 0.3, 'E': 0.1, 'F': 0.05}
+                                for grade, count in quality_dist.items():
+                                    if grade in grade_scores and count > 0:
+                                        quality_scores.extend([grade_scores[grade]] * count)
+                            else:
+                                # 分布情報がない場合は平均値を使用
+                                quality_scores = [avg_score] * sample_size
+
             elif 'results' in data:  # 従来形式のサポート
                 for result in data['results']:
                     if 'quality_score' in result:

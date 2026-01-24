@@ -1,0 +1,19 @@
+{
+  "required_sections": {
+    "statistical_analysis": "統計分析結果",
+    "extraction_gallery": "抽出結果ギャラリー",
+    "quality_distribution": "品質分布"
+  },
+  "optional_sections": {
+    "evaluation_metrics": "評価メトリクス",
+    "improvement_comparison": "改善効果比較",
+    "technical_details": "技術詳細",
+    "recommendations": "推奨事項"
+  },
+  "section_descriptions": {
+    "統計分析結果": "Cohen's d、p値、改善率などの統計指標",
+    "抽出結果ギャラリー": "抽出された画像のビジュアル表示",
+    "品質分布": "A-Fグレードの分布グラフ",
+    "評価メトリクス": "各種評価指標の合否状況"
+  }
+}

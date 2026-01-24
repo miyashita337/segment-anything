@@ -136,7 +136,7 @@ def check_subagent_execution():
    docs/claude-code-hooks-guide.md を参照
 
 ⚠️ この制限は品質保証・リソース管理・進捗追跡のために設けられています。
-   緊急時のみ SUBAGENT_EXECUTION=true 環境変数で直接実行可能です。
+   正しい実行方法: python tools/workflow/workflow_cli.py subagent-extraction TRACKER_ID
 """
     
     print(error_message)

@@ -103,7 +103,7 @@ class TestEnhancedSubAgentTaskQueueINTG089(unittest.TestCase):
         loaded_data = self.task_queue.load_checkpoint(checkpoint_id)
         
         self.assertIsNotNone(loaded_data)
-        self.assertEqual(loaded_data['task_data'], test_data)
+        self.assertEqual(loaded_data['progress_data'], test_data)
     
     def test_checkpoint_load_nonexistent(self):
         """存在しないチェックポイント読み込みテスト"""
@@ -123,7 +123,7 @@ class TestEnhancedSubAgentTaskQueueINTG089(unittest.TestCase):
         
         # 全て存在することを確認
         for test_id in test_ids:
-            checkpoint_file = self.task_queue.checkpoint_dir / f"{test_id}.json"
+            checkpoint_file = self.task_queue.checkpoint_dir / f"{test_id}_checkpoint.json"
             self.assertTrue(checkpoint_file.exists())
         
         # クリーンアップ実行

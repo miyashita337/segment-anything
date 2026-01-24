@@ -1,213 +1,339 @@
 #!/usr/bin/env python3
 """
-ワークスペースパス設定管理
-すべてのワークスペースパス設定を一元管理するconfig
+ワークスペース設定管理 - 作者名・ワークフローパス管理システム
+KIRO-006 解決策: ハードコードされたパスの動的設定化
 """
 
+import sqlite3
 import os
-import re
+from typing import Optional, Dict, Any
 from pathlib import Path
-from typing import Optional
+import threading
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class WorkspaceConfig:
-    """ワークスペース設定一元管理クラス"""
-    
-    # デフォルトワークスペースパス（動的作者名検出で上書き可能）
-    DEFAULT_WORKSPACE_BASE = "/mnt/c/AItools/lora/train/yado/tracker-workspace"
+    """ワークスペース設定の管理クラス"""
+
+    # 後方互換性のための定数（integrated_dashboard_server.py等で使用）
     BASE_TRAIN_PATH = "/mnt/c/AItools/lora/train"
-    
-    @classmethod
-    def detect_author_from_input_path(cls, input_path: str) -> Optional[str]:
-        """
-        入力パスから作者名を動的検出
-        
-        Args:
-            input_path: 入力パス（例: /mnt/c/AItools/lora/train/kiri/aichikan/）
-            
-        Returns:
-            検出された作者名（例: "kiri"）、検出失敗時はNone
-        """
+
+    def __init__(self, db_path: str = None):
+        if db_path is None:
+            project_root = self._find_project_root()
+            db_path = os.path.join(project_root, "workspace_config.db")
+
+        self.db_path = db_path
+        self.lock = threading.Lock()
+        self._init_database()
+        logger.info(f"ワークスペース設定管理が初期化されました: {db_path}")
+
+    def _find_project_root(self) -> str:
+        """プロジェクトルートディレクトリを探索"""
+        current = os.path.abspath(__file__)
+        while current != os.path.dirname(current):
+            current = os.path.dirname(current)
+            if os.path.exists(os.path.join(current, "CLAUDE.md")):
+                return current
+        return os.path.dirname(os.path.abspath(__file__))
+
+    def _init_database(self):
+        """データベースとテーブルを初期化"""
+        with self.lock:
+            with sqlite3.connect(self.db_path) as conn:
+                conn.execute("""
+                    CREATE TABLE IF NOT EXISTS workspace_configs (
+                        tracker_id TEXT PRIMARY KEY,
+                        author_name TEXT NOT NULL,
+                        workspace_path TEXT NOT NULL,
+                        input_path TEXT,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    )
+                """)
+                conn.commit()
+                logger.info("Workspace config database tables initialized successfully")
+
+    def set_workspace_config(
+        self,
+        tracker_id: str,
+        author_name: str,
+        workspace_path: str,
+        input_path: Optional[str] = None
+    ) -> bool:
+        """トラッカーのワークスペース設定を保存"""
         try:
-            # パスを正規化
-            normalized_path = os.path.normpath(input_path)
-            
-            # BASE_TRAIN_PATHパターンでマッチ
-            pattern = re.escape(cls.BASE_TRAIN_PATH) + r'/([^/]+)(?:/.*)?'
-            match = re.match(pattern, normalized_path)
-            
-            if match:
-                author_name = match.group(1)
-                # 有効な作者名かチェック（英数字、ハイフン、アンダースコア）
-                if re.match(r'^[a-zA-Z0-9_-]+$', author_name):
-                    return author_name
-            
+            # パスの検証
+            if not self._validate_workspace_path(workspace_path, author_name, tracker_id):
+                return False
+
+            with self.lock:
+                with sqlite3.connect(self.db_path) as conn:
+                    conn.execute("""
+                        INSERT OR REPLACE INTO workspace_configs
+                        (tracker_id, author_name, workspace_path, input_path, updated_at)
+                        VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+                    """, (tracker_id, author_name, workspace_path, input_path))
+                    conn.commit()
+
+            logger.info(f"Workspace config saved: {tracker_id} -> {author_name}@{workspace_path}")
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to save workspace config: {e}")
+            return False
+
+    def get_workspace_config(self, tracker_id: str) -> Optional[Dict[str, Any]]:
+        """トラッカーのワークスペース設定を取得"""
+        try:
+            with self.lock:
+                with sqlite3.connect(self.db_path) as conn:
+                    cursor = conn.execute("""
+                        SELECT tracker_id, author_name, workspace_path, input_path,
+                               created_at, updated_at
+                        FROM workspace_configs
+                        WHERE tracker_id = ?
+                    """, (tracker_id,))
+                    row = cursor.fetchone()
+
+            if row:
+                return {
+                    'tracker_id': row[0],
+                    'author_name': row[1],
+                    'workspace_path': row[2],
+                    'input_path': row[3],
+                    'created_at': row[4],
+                    'updated_at': row[5]
+                }
             return None
-        except Exception:
+
+        except Exception as e:
+            logger.error(f"Failed to get workspace config: {e}")
             return None
-    
-    @classmethod 
-    def get_workspace_base_for_author(cls, author_name: str) -> str:
-        """
-        指定された作者名に対応するワークスペースベースパス生成
-        
-        Args:
-            author_name: 作者名（例: "kiri"）
-            
-        Returns:
-            作者専用ワークスペースベースパス
-        """
-        return f"{cls.BASE_TRAIN_PATH}/{author_name}/tracker-workspace"
-    
-    @classmethod
-    def update_workspace_for_author(cls, author_name: str) -> None:
-        """
-        検出された作者名でワークスペース設定を環境変数に設定
-        
-        Args:
-            author_name: 作者名
-        """
-        workspace_base = cls.get_workspace_base_for_author(author_name)
-        os.environ['TRACKER_WORKSPACE_BASE'] = workspace_base
-    
-    @classmethod
-    def auto_detect_and_configure(cls, input_path: str) -> Optional[str]:
-        """
-        入力パスから作者名を検出してワークスペース設定を自動更新
-        
-        Args:
-            input_path: 入力パス
-            
-        Returns:
-            検出・設定された作者名（失敗時はNone）
-        """
-        author_name = cls.detect_author_from_input_path(input_path)
-        if author_name:
-            cls.update_workspace_for_author(author_name)
-            return author_name
-        return None
+
+    def get_author_workspace_base(self, author_name: str) -> str:
+        """作者名に基づくワークスペースベースパスを生成"""
+        return f"/mnt/c/AItools/lora/train/{author_name}/tracker-workspace"
+
+    def get_default_input_path(self, author_name: str) -> str:
+        """作者名に基づくデフォルト入力パスを生成"""
+        return f"/mnt/c/AItools/lora/train/{author_name}/org/kana05"
+
+    def get_input_directory(self, tracker_id: str) -> Optional[str]:
+        """トラッカーの入力ディレクトリを取得"""
+        try:
+            config = self.get_workspace_config(tracker_id)
+            if not config:
+                logger.error(f"No workspace config found for {tracker_id}")
+                return None
+
+            input_path = config.get('input_path')
+            if input_path and os.path.exists(input_path):
+                return input_path
+
+            # フォールバック: 作者名からデフォルトパスを生成
+            author_name = config.get('author_name')
+            if author_name:
+                default_path = self.get_default_input_path(author_name)
+                if os.path.exists(default_path):
+                    logger.info(f"Using default input path for {tracker_id}: {default_path}")
+                    return default_path
+
+            logger.error(f"No valid input directory found for {tracker_id}")
+            return None
+
+        except Exception as e:
+            logger.error(f"Failed to get input directory for {tracker_id}: {e}")
+            return None
+
+    def _validate_workspace_path(self, workspace_path: str, author_name: str, tracker_id: str) -> bool:
+        """ワークスペースパスの妥当性を検証"""
+        expected_pattern = f"/mnt/c/AItools/lora/train/{author_name}/tracker-workspace/{tracker_id}"
+
+        if workspace_path != expected_pattern:
+            logger.error(f"Invalid workspace path: {workspace_path}")
+            logger.error(f"Expected: {expected_pattern}")
+            return False
+
+        return True
+
+    def ensure_workspace_exists(self, tracker_id: str) -> bool:
+        """ワークスペースディレクトリの存在を確保"""
+        config = self.get_workspace_config(tracker_id)
+        if not config:
+            logger.error(f"No workspace config found for {tracker_id}")
+            return False
+
+        workspace_path = Path(config['workspace_path'])
+        try:
+            workspace_path.mkdir(parents=True, exist_ok=True)
+
+            # 必要なサブディレクトリを作成
+            subdirs = ['extraction', 'dashboard', '.approvals', 'logs']
+            for subdir in subdirs:
+                (workspace_path / subdir).mkdir(exist_ok=True)
+
+            logger.info(f"Workspace directory ensured: {workspace_path}")
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to create workspace directory: {e}")
+            return False
+
+    def list_author_trackers(self, author_name: str) -> list:
+        """指定した作者のトラッカー一覧を取得"""
+        try:
+            with self.lock:
+                with sqlite3.connect(self.db_path) as conn:
+                    cursor = conn.execute("""
+                        SELECT tracker_id, workspace_path, created_at
+                        FROM workspace_configs
+                        WHERE author_name = ?
+                        ORDER BY created_at DESC
+                    """, (author_name,))
+                    rows = cursor.fetchall()
+
+            return [
+                {
+                    'tracker_id': row[0],
+                    'workspace_path': row[1],
+                    'created_at': row[2]
+                }
+                for row in rows
+            ]
+
+        except Exception as e:
+            logger.error(f"Failed to list author trackers: {e}")
+            return []
+
+    def delete_workspace_config(self, tracker_id: str) -> bool:
+        """ワークスペース設定を削除"""
+        try:
+            with self.lock:
+                with sqlite3.connect(self.db_path) as conn:
+                    cursor = conn.execute("""
+                        DELETE FROM workspace_configs WHERE tracker_id = ?
+                    """, (tracker_id,))
+                    conn.commit()
+
+            logger.info(f"Workspace config deleted: {tracker_id}")
+            return cursor.rowcount > 0
+
+        except Exception as e:
+            logger.error(f"Failed to delete workspace config: {e}")
+            return False
+
+    def _get_dynamic_workspace_base(self) -> str:
+        """SQLiteから動的にワークスペースベースを取得"""
+        try:
+            # SQLiteから任意のトラッカーの作者名を取得してベースパスを決定
+            with self.lock:
+                with sqlite3.connect(self.db_path) as conn:
+                    cursor = conn.execute("""
+                        SELECT author_name FROM workspace_configs
+                        ORDER BY updated_at DESC LIMIT 1
+                    """)
+                    row = cursor.fetchone()
+
+            if row:
+                author_name = row[0]
+                return self.get_author_workspace_base(author_name)
+
+            # フォールバック: デフォルト値
+            return '/mnt/c/AItools/lora/train/yado/tracker-workspace'
+
+        except Exception as e:
+            logger.warning(f"Failed to get dynamic workspace base: {e}")
+            return '/mnt/c/AItools/lora/train/yado/tracker-workspace'
 
     @classmethod
     def get_workspace_base(cls) -> str:
-        """
-        ワークスペースベースパス取得
-        
-        優先順位:
-        1. 環境変数 TRACKER_WORKSPACE_BASE
-        2. デフォルトパス
-        
-        Returns:
-            ワークスペースベースパス（/workspaceサフィックスなし）
-        """
-        return os.getenv('TRACKER_WORKSPACE_BASE', cls.DEFAULT_WORKSPACE_BASE)
-    
+        """ワークスペースベースパスを取得（workflow_controller.py互換）"""
+        config = cls()
+        return config._get_dynamic_workspace_base()
+
     @classmethod
-    def get_workspace_root(cls) -> Path:
-        """
-        ワークスペースルートパス取得
-        
-        Returns:
-            ワークスペースルートパス（直接ベースパス）
-        """
-        base = cls.get_workspace_base()
-        return Path(base)
-    
-    @classmethod
-    def get_tracker_workspace(cls, tracker_id: str) -> Path:
-        """
-        特定トラッカーのワークスペースパス取得
-        
-        Args:
-            tracker_id: トラッカーID（例: P1-010, PHS-005）
-            
-        Returns:
-            完全なトラッカーワークスペースパス
-        """
-        return cls.get_workspace_root() / tracker_id
-    
-    @classmethod
-    def export_environment_variables(cls) -> dict:
-        """
-        環境変数エクスポート用の値取得
-        
-        Returns:
-            シェルスクリプトで使用する環境変数辞書
-        """
-        return {
-            'TRACKER_WORKSPACE_BASE': cls.get_workspace_base(),
-            'TRACKER_WORKSPACE_ROOT': str(cls.get_workspace_root())
-        }
-    
-    @classmethod
-    def validate_workspace_path(cls, custom_path: Optional[str] = None) -> bool:
-        """
-        ワークスペースパスの妥当性検証
-        
-        Args:
-            custom_path: カスタムパス（未指定時はデフォルト使用）
-            
-        Returns:
-            パスが有効かどうか
-        """
-        path_to_check = Path(custom_path) if custom_path else cls.get_workspace_root()
-        
-        try:
-            # 親ディレクトリの存在確認
-            parent = path_to_check.parent
-            if not parent.exists():
-                return False
-                
-            # 書き込み権限確認（ディレクトリが存在しない場合は親の権限確認）
-            test_path = path_to_check if path_to_check.exists() else parent
-            return os.access(test_path, os.W_OK)
-            
-        except Exception:
-            return False
-    
-    @classmethod
-    def get_config_summary(cls) -> dict:
-        """
-        設定サマリー取得
-        
-        Returns:
-            現在の設定情報
-        """
-        workspace_base = cls.get_workspace_base()
-        workspace_root = cls.get_workspace_root()
-        
-        return {
-            'workspace_base': workspace_base,
-            'workspace_root': str(workspace_root),
-            'from_environment': 'TRACKER_WORKSPACE_BASE' in os.environ,
-            'path_valid': cls.validate_workspace_path(),
-            'example_tracker_path': str(workspace_root / "P1-010")
-        }
+    def export_environment_variables(cls, tracker_id: str = None) -> Dict[str, str]:
+        """環境変数として設定情報をエクスポート"""
+        config = cls()
+        env_vars = {}
+
+        # トラッカーIDが指定されている場合はその設定を取得
+        if tracker_id:
+            workspace_info = config.get_workspace_config(tracker_id)
+            if workspace_info:
+                env_vars['TRACKER_ID'] = tracker_id
+                env_vars['AUTHOR_NAME'] = workspace_info.get('author_name', '')
+                env_vars['WORKSPACE_PATH'] = workspace_info.get('workspace_path', '')
+                env_vars['INPUT_PATH'] = workspace_info.get('input_path', '')
+
+        # 動的ワークスペースベース取得（ハードコード除去）
+        env_vars.setdefault('WORKSPACE_BASE', config._get_dynamic_workspace_base())
+
+        return env_vars
 
 
-# モジュールレベル関数（後方互換性のため）
-def get_workspace_base() -> str:
-    """ワークスペースベースパス取得（後方互換性）"""
-    return WorkspaceConfig.get_workspace_base()
+# グローバルインスタンス
+_workspace_config = None
 
 
-def get_workspace_root() -> Path:
-    """ワークスペースルートパス取得（後方互換性）"""
-    return WorkspaceConfig.get_workspace_root()
+def get_workspace_config() -> WorkspaceConfig:
+    """ワークスペース設定のグローバルインスタンスを取得"""
+    global _workspace_config
+    if _workspace_config is None:
+        _workspace_config = WorkspaceConfig()
+    return _workspace_config
+
+
+def validate_tracker_setup(tracker_id: str) -> Dict[str, Any]:
+    """トラッカーのセットアップ状況を検証"""
+    config = get_workspace_config()
+    workspace_config = config.get_workspace_config(tracker_id)
+
+    result = {
+        'tracker_id': tracker_id,
+        'is_configured': workspace_config is not None,
+        'errors': [],
+        'warnings': []
+    }
+
+    if not workspace_config:
+        result['errors'].append(f"❌ ワークスペース設定が未設定です: {tracker_id}")
+        result['errors'].append("🔧 以下のコマンドで設定してください:")
+        result['errors'].append(f"python tools/workflow/workflow_cli.py plan {tracker_id} <概要> <詳細> <作者名>")
+        return result
+
+    result['config'] = workspace_config
+
+    # ワークスペースディレクトリの存在確認
+    workspace_path = Path(workspace_config['workspace_path'])
+    if not workspace_path.exists():
+        result['warnings'].append(f"⚠️ ワークスペースディレクトリが存在しません: {workspace_path}")
+
+    return result
 
 
 if __name__ == "__main__":
-    # 設定確認用
-    print("=== Workspace Configuration ===")
-    config = WorkspaceConfig.get_config_summary()
-    
-    print(f"Workspace Base: {config['workspace_base']}")
-    print(f"Workspace Root: {config['workspace_root']}")
-    print(f"From Environment: {config['from_environment']}")
-    print(f"Path Valid: {config['path_valid']}")
-    print(f"Example Tracker: {config['example_tracker_path']}")
-    
-    # 環境変数エクスポート例
-    print("\n=== Environment Variables ===")
-    env_vars = WorkspaceConfig.export_environment_variables()
-    for key, value in env_vars.items():
-        print(f"export {key}=\"{value}\"")
+    # テスト用
+    config = WorkspaceConfig()
+
+    # テスト設定
+    test_tracker = "TEST-001"
+    test_author = "test_user"
+    test_workspace = f"/mnt/c/AItools/lora/train/{test_author}/tracker-workspace/{test_tracker}"
+
+    # 設定保存テスト
+    success = config.set_workspace_config(test_tracker, test_author, test_workspace)
+    print(f"設定保存: {'成功' if success else '失敗'}")
+
+    # 設定取得テスト
+    retrieved = config.get_workspace_config(test_tracker)
+    print(f"設定取得: {retrieved}")
+
+    # 検証テスト
+    validation = validate_tracker_setup(test_tracker)
+    print(f"検証結果: {validation}")
