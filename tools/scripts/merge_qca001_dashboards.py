@@ -7,23 +7,26 @@ yado作者とkiri作者の結果を統合表示
 import json
 import os
 import shutil
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
 # 統合ダッシュボード生成は直接HTML生成するため、インポート不要
+
 
 def merge_qca001_dashboards():
     """QCA-001の複数作者結果を統合ダッシュボードに統合"""
-    
+
     # WorkspaceConfigManagerを使って動的パス解決
     from config.workspace_config import WorkspaceConfig
+
     workspace_config = WorkspaceConfig()
     config = workspace_config.get_workspace_config("QCA-001")
-    
+
     if config:
         # 動的パス生成
-        primary_workspace = Path(config['workspace_path'])
+        primary_workspace = Path(config["workspace_path"])
         # セカンダリパス（マルチ作者対応）
-        if config['author_name'] == 'yado':
+        if config["author_name"] == "yado":
             secondary_workspace = Path("/mnt/c/AItools/lora/train/kiri/tracker-workspace/QCA-001")
         else:
             secondary_workspace = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/QCA-001")
@@ -32,96 +35,105 @@ def merge_qca001_dashboards():
         # フォールバック: 従来のハードコード
         yado_workspace = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/QCA-001")
         kiri_workspace = Path("/mnt/c/AItools/lora/train/kiri/tracker-workspace/QCA-001")
-    
+
     print("🔄 QCA-001統合ダッシュボード生成開始...")
-    
+
     # 抽出画像の統合
     all_images = []
-    
+
     # yado作者の画像
     yado_extraction_dir = yado_workspace / "extraction"
     if yado_extraction_dir.exists():
         for img_file in yado_extraction_dir.glob("*.jpg"):
-            all_images.append({
-                'path': str(img_file),
-                'name': img_file.name,
-                'size': img_file.stat().st_size,
-                'author': 'yado',
-                'quality': 'high' if img_file.stat().st_size > 100000 else 'low'
-            })
-    
+            all_images.append(
+                {
+                    "path": str(img_file),
+                    "name": img_file.name,
+                    "size": img_file.stat().st_size,
+                    "author": "yado",
+                    "quality": "high" if img_file.stat().st_size > 100000 else "low",
+                }
+            )
+
     # kiri作者の画像をyado ワークスペースにコピーして統合
     kiri_extraction_dir = kiri_workspace / "extraction"
     yado_extraction_dir = yado_workspace / "extraction"
-    
+
     if kiri_extraction_dir.exists():
         for img_file in kiri_extraction_dir.glob("*.jpg"):
             # kiri作者の画像をyado ワークスペースにコピー（プレフィックス付き）
             dest_name = f"kiri_{img_file.name}"
             dest_path = yado_extraction_dir / dest_name
             shutil.copy2(img_file, dest_path)
-            
-            all_images.append({
-                'path': str(dest_path),
-                'name': dest_name,
-                'size': dest_path.stat().st_size,
-                'author': 'kiri',
-                'quality': 'high' if dest_path.stat().st_size > 50000 else 'low'
-            })
+
+            all_images.append(
+                {
+                    "path": str(dest_path),
+                    "name": dest_name,
+                    "size": dest_path.stat().st_size,
+                    "author": "kiri",
+                    "quality": "high" if dest_path.stat().st_size > 50000 else "low",
+                }
+            )
             print(f"📋 kiri画像コピー: {img_file.name} → {dest_name}")
-    
+
     print(f"✅ 統合対象画像: {len(all_images)}枚")
     print(f"   - yado作者: {len([img for img in all_images if img['author'] == 'yado'])}枚")
     print(f"   - kiri作者: {len([img for img in all_images if img['author'] == 'kiri'])}枚")
-    
+
     # 統合ダッシュボード生成は直接HTML生成
-    
+
     # yado作者のワークスペースに統合ダッシュボードを作成（既存URL維持）
     merged_dashboard_path = yado_workspace / "dashboard" / "dashboard.html"
-    
+
     dashboard_content = generate_merged_dashboard_html(all_images)
-    
+
     # ダッシュボード保存
     merged_dashboard_path.parent.mkdir(exist_ok=True)
-    with open(merged_dashboard_path, 'w', encoding='utf-8') as f:
+    with open(merged_dashboard_path, "w", encoding="utf-8") as f:
         f.write(dashboard_content)
-    
+
     print(f"✅ 統合ダッシュボード生成完了:")
     print(f"   - パス: {merged_dashboard_path}")
     print(f"   - サイズ: {merged_dashboard_path.stat().st_size:,} bytes")
     print(f"   - URL: http://100.123.241.106:8088/tracker/QCA-001")
-    
+
     return str(merged_dashboard_path)
+
 
 def generate_merged_dashboard_html(all_images):
     """統合ダッシュボードHTML生成"""
-    
+
     # 品質分析
-    high_quality = len([img for img in all_images if img['quality'] == 'high'])
+    high_quality = len([img for img in all_images if img["quality"] == "high"])
     low_quality = len(all_images) - high_quality
     quality_score = (high_quality / len(all_images) * 100) if all_images else 0
-    
+
     # 作者別統計
-    yado_images = [img for img in all_images if img['author'] == 'yado']
-    kiri_images = [img for img in all_images if img['author'] == 'kiri']
-    
+    yado_images = [img for img in all_images if img["author"] == "yado"]
+    kiri_images = [img for img in all_images if img["author"] == "kiri"]
+
     # 画像ギャラリー生成
     gallery_html = ""
-    
+
     # yado作者セクション
     if yado_images:
-        gallery_html += '<div class="author-section"><h3>👤 yado作者（バランス型・キャラクター重視）</h3><div class="images-grid">'
+        gallery_html += (
+            '<div class="author-section"><h3>👤 yado作者（バランス型・キャラクター重視）</h3><div class="images-grid">'
+        )
         for img in yado_images:
-            quality_class = img['quality']
-            quality_label = '高品質' if quality_class == 'high' else '低品質'
-            size_kb = img['size'] // 1024
-            
+            quality_class = img["quality"]
+            quality_label = "高品質" if quality_class == "high" else "低品質"
+            size_kb = img["size"] // 1024
+
             # QCA-001統合ダッシュボード用パス変換
             # /mnt/c/AItools/lora/train/yado/tracker-workspace/QCA-001/extraction/xxx.jpg
             # → QCA-001/extraction/xxx.jpg
-            relative_path = img['path'].replace('/mnt/c/AItools/lora/train/yado/tracker-workspace/', '')
-            
-            gallery_html += f'''
+            relative_path = img["path"].replace(
+                "/mnt/c/AItools/lora/train/yado/tracker-workspace/", ""
+            )
+
+            gallery_html += f"""
         <div class="image-card">
             <div class="image-container">
                 <img src="/{relative_path}" alt="{img['name']}" loading="lazy">
@@ -134,22 +146,26 @@ def generate_merged_dashboard_html(all_images):
                     <span>{quality_label}</span>
                 </div>
             </div>
-        </div>'''
-        
-        gallery_html += '</div></div>'
-    
+        </div>"""
+
+        gallery_html += "</div></div>"
+
     # kiri作者セクション
     if kiri_images:
-        gallery_html += '<div class="author-section"><h3>🎨 kiri作者（細密描写・高品質重視）</h3><div class="images-grid">'
+        gallery_html += (
+            '<div class="author-section"><h3>🎨 kiri作者（細密描写・高品質重視）</h3><div class="images-grid">'
+        )
         for img in kiri_images:
-            quality_class = img['quality']
-            quality_label = '高品質' if quality_class == 'high' else '低品質'
-            size_kb = img['size'] // 1024
-            
+            quality_class = img["quality"]
+            quality_label = "高品質" if quality_class == "high" else "低品質"
+            size_kb = img["size"] // 1024
+
             # QCA-001統合ダッシュボード用パス変換（yado ワークスペースに統合済み）
-            relative_path = img['path'].replace('/mnt/c/AItools/lora/train/yado/tracker-workspace/', '')
-            
-            gallery_html += f'''
+            relative_path = img["path"].replace(
+                "/mnt/c/AItools/lora/train/yado/tracker-workspace/", ""
+            )
+
+            gallery_html += f"""
         <div class="image-card">
             <div class="image-container">
                 <img src="/{relative_path}" alt="{img['name']}" loading="lazy">
@@ -162,12 +178,12 @@ def generate_merged_dashboard_html(all_images):
                     <span>{quality_label}</span>
                 </div>
             </div>
-        </div>'''
-        
-        gallery_html += '</div></div>'
-    
+        </div>"""
+
+        gallery_html += "</div></div>"
+
     # HTMLテンプレート
-    html_template = f'''<!DOCTYPE html>
+    html_template = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -285,9 +301,10 @@ def generate_merged_dashboard_html(all_images):
         </div>
     </div>
 </body>
-</html>'''
-    
+</html>"""
+
     return html_template
+
 
 if __name__ == "__main__":
     dashboard_path = merge_qca001_dashboards()

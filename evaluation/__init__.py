@@ -14,12 +14,12 @@ __version__ = "1.0.0"
 __author__ = "Claude + GPT-4O Collaboration"
 
 __all__ = [
-    'EvaluatorBase',
-    'EvaluationResult', 
-    'EvaluationConfig',
-    'IoUEvaluator',
-    'ContentEvaluator',
-    'RegionMatcher',
-    'MultiCharacterMatcher',
-    'EvaluationOrchestrator'
+    "EvaluatorBase",
+    "EvaluationResult",
+    "EvaluationConfig",
+    "IoUEvaluator",
+    "ContentEvaluator",
+    "RegionMatcher",
+    "MultiCharacterMatcher",
+    "EvaluationOrchestrator",
 ]

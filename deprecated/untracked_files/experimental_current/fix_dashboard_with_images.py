@@ -21,13 +21,14 @@ from pathlib import Path
 def get_image_base64(image_path):
     """画像をBase64エンコードして返す"""
     try:
-        with open(image_path, 'rb') as f:
+        with open(image_path, "rb") as f:
             image_data = f.read()
-            base64_data = base64.b64encode(image_data).decode('utf-8')
+            base64_data = base64.b64encode(image_data).decode("utf-8")
             return f"data:image/jpeg;base64,{base64_data}"
     except Exception as e:
         print(f"⚠️ 画像読み込みエラー: {image_path} - {e}")
         return None
+
 
 def get_file_size_mb(file_path):
     """ファイルサイズをMBで取得"""
@@ -35,6 +36,7 @@ def get_file_size_mb(file_path):
         return os.path.getsize(file_path) / (1024 * 1024)
     except:
         return 0
+
 
 def get_image_quality_badge(file_size_bytes):
     """ファイルサイズに基づいて品質バッジを返す"""
@@ -46,6 +48,7 @@ def get_image_quality_badge(file_size_bytes):
     else:
         return ("low", "低品質")
 
+
 def generate_complete_dashboard():
     """
     画像付き完全ダッシュボードを生成
@@ -53,35 +56,35 @@ def generate_complete_dashboard():
     tracker_id = "QUAL-006-EXTENDED"
     workspace_path = fget_path("output", "{tracker_id}")
     extraction_dir = os.path.join(workspace_path, "extraction")
-    
+
     # 修正統計データ読み込み
     stats_file = os.path.join(workspace_path, "quality", "fixed_unified_statistics.json")
-    with open(stats_file, 'r') as f:
+    with open(stats_file, "r") as f:
         unified_stats = json.load(f)
-    
+
     # 抽出ファイルリスト取得（最初の20枚のみ表示）
-    extracted_files = sorted([f for f in os.listdir(extraction_dir) if f.endswith('.jpg')])[:20]
-    
+    extracted_files = sorted([f for f in os.listdir(extraction_dir) if f.endswith(".jpg")])[:20]
+
     print(f"🖼️ 画像ギャラリー生成開始...")
     print(f"  総画像数: {len(os.listdir(extraction_dir))}枚")
     print(f"  表示画像数: {len(extracted_files)}枚")
-    
+
     # 画像カード生成
     image_cards_html = []
     high_count = medium_count = low_count = 0
-    
+
     for i, filename in enumerate(extracted_files):
         image_path = os.path.join(extraction_dir, filename)
-        
+
         # Base64エンコード
         base64_data = get_image_base64(image_path)
         if not base64_data:
             continue
-            
+
         # ファイル情報取得
         file_size = os.path.getsize(image_path)
         quality_class, quality_label = get_image_quality_badge(file_size)
-        
+
         # 品質カウント
         if quality_class == "high":
             high_count += 1
@@ -89,9 +92,9 @@ def generate_complete_dashboard():
             medium_count += 1
         else:
             low_count += 1
-        
+
         # 画像カードHTML生成
-        card_html = f'''        <div class="image-card">
+        card_html = f"""        <div class="image-card">
             <div class="image-container">
                 <img src="{base64_data}" alt="{filename}" loading="lazy">
                 <div class="quality-badge {quality_class}">{quality_label}</div>
@@ -103,18 +106,18 @@ def generate_complete_dashboard():
                     <span>{quality_label}</span>
                 </div>
             </div>
-        </div>'''
-        
+        </div>"""
+
         image_cards_html.append(card_html)
-        
+
         if (i + 1) % 5 == 0:
             print(f"  処理完了: {i + 1}/{len(extracted_files)}枚")
-    
+
     # HTML生成
     success_count = high_count + medium_count
     success_rate = (success_count / len(extracted_files)) * 100 if extracted_files else 0
-    
-    html_content = f'''<!DOCTYPE html>
+
+    html_content = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -290,26 +293,27 @@ def generate_complete_dashboard():
         </div>
     </div>
 </body>
-</html>'''
+</html>"""
 
     # HTMLファイル保存
     dashboard_dir = os.path.join(workspace_path, "dashboard")
     os.makedirs(dashboard_dir, exist_ok=True)
     dashboard_path = os.path.join(dashboard_dir, "dashboard.html")
-    
-    with open(dashboard_path, 'w', encoding='utf-8') as f:
+
+    with open(dashboard_path, "w", encoding="utf-8") as f:
         f.write(html_content)
-    
+
     file_size_mb = get_file_size_mb(dashboard_path)
-    
+
     print(f"\n✅ 画像付きダッシュボード生成完了!")
     print(f"📁 ファイル: {dashboard_path}")
     print(f"📏 サイズ: {file_size_mb:.1f}MB")
     print(f"🖼️ 画像表示: {len(extracted_files)}枚（Base64埋め込み）")
     print(f"📊 品質分布: 高品質{high_count}枚・中品質{medium_count}枚・低品質{low_count}枚")
     print(f"🌐 アクセスURL: http://100.123.241.106:8088/tracker/{tracker_id}")
-    
+
     return dashboard_path
+
 
 if __name__ == "__main__":
     generate_complete_dashboard()

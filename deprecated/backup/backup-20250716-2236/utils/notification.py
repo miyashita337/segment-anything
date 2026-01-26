@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional
 
 class PushoverNotifier:
     """Pushover通知クライアント"""
-    
+
     def __init__(self, config_path: Optional[str] = None):
         """
         Args:
@@ -19,11 +19,11 @@ class PushoverNotifier:
         """
         if config_path is None:
             config_path = Path(__file__).parent.parent / "config" / "pushover.json"
-        
+
         self.config_path = Path(config_path)
         self.config = self._load_config()
         self.api_url = "https://api.pushover.net/1/messages.json"
-    
+
     def _load_config(self) -> Optional[Dict[str, Any]]:
         """設定ファイルを読み込み"""
         try:
@@ -31,39 +31,45 @@ class PushoverNotifier:
                 print(f"⚠️ Pushover設定ファイルが見つかりません: {self.config_path}")
                 print(f"   {self.config_path}.example をコピーして設定してください")
                 return None
-            
-            with open(self.config_path, 'r', encoding='utf-8') as f:
+
+            with open(self.config_path, "r", encoding="utf-8") as f:
                 config = json.load(f)
-            
+
             # 必須項目チェック
-            required_fields = ['token', 'user']
+            required_fields = ["token", "user"]
             for field in required_fields:
-                if not config.get(field) or config[field] == f"your_{field}_here" or config[field] == f"your_{field}_key_here":
+                if (
+                    not config.get(field)
+                    or config[field] == f"your_{field}_here"
+                    or config[field] == f"your_{field}_key_here"
+                ):
                     print(f"⚠️ Pushover設定の{field}が設定されていません")
                     return None
-            
+
             return config
-            
+
         except Exception as e:
             print(f"❌ Pushover設定読み込みエラー: {e}")
             return None
-    
-    def send_notification(self, message: str, title: Optional[str] = None, priority: int = 0) -> bool:
+
+    def send_notification(
+        self, message: str, title: Optional[str] = None, priority: int = 0
+    ) -> bool:
         """
         Pushover通知を送信
-        
+
         Args:
             message: 通知メッセージ
             title: 通知タイトル（Noneの場合は設定ファイルのデフォルトを使用）
             priority: 優先度 (-2: 最低, -1: 低, 0: 通常, 1: 高, 2: 緊急)
-        
+
         Returns:
             bool: 送信成功かどうか
         """
         if not self.config:
             print("⚠️ Pushover設定が無効なため通知をスキップします")
             return False
-        
+
         try:
             # 通知データ作成
             data = {
@@ -71,16 +77,16 @@ class PushoverNotifier:
                 "user": self.config["user"],
                 "message": message,
                 "title": title or self.config.get("title", "Character Extraction"),
-                "priority": priority
+                "priority": priority,
             }
-            
+
             # デバイス指定がある場合
             if self.config.get("device"):
                 data["device"] = self.config["device"]
-            
+
             # API送信
             response = requests.post(self.api_url, data=data, timeout=10)
-            
+
             if response.status_code == 200:
                 result = response.json()
                 if result.get("status") == 1:
@@ -92,29 +98,31 @@ class PushoverNotifier:
             else:
                 print(f"❌ Pushover HTTP エラー: {response.status_code}")
                 return False
-                
+
         except requests.exceptions.RequestException as e:
             print(f"❌ Pushover通信エラー: {e}")
             return False
         except Exception as e:
             print(f"❌ Pushover送信エラー: {e}")
             return False
-    
-    def send_batch_complete(self, successful: int, total: int, failed: int, total_time: float) -> bool:
+
+    def send_batch_complete(
+        self, successful: int, total: int, failed: int, total_time: float
+    ) -> bool:
         """
         バッチ処理完了通知を送信
-        
+
         Args:
             successful: 成功数
             total: 総数
             failed: 失敗数
             total_time: 処理時間（秒）
-        
+
         Returns:
             bool: 送信成功かどうか
         """
         success_rate = (successful / total * 100) if total > 0 else 0
-        
+
         message = f"""🎯 バッチ処理完了
 
 📊 結果:
@@ -123,7 +131,7 @@ class PushoverNotifier:
    処理時間: {total_time:.1f}秒
 
 ⚡ 1画像あたり平均: {total_time/total:.1f}秒"""
-        
+
         # 成功率に応じて優先度設定
         if success_rate >= 90:
             priority = 0  # 通常
@@ -134,42 +142,44 @@ class PushoverNotifier:
         else:
             priority = 1  # 高
             title = "❌ キャラクター抽出完了（多数失敗）"
-        
+
         return self.send_notification(message, title, priority)
 
 
 def send_batch_notification(successful: int, total: int, failed: int, total_time: float) -> bool:
     """
     バッチ処理完了通知の簡易送信関数
-    
+
     Args:
         successful: 成功数
         total: 総数
         failed: 失敗数
         total_time: 処理時間（秒）
-    
+
     Returns:
         bool: 送信成功かどうか
     """
     # 既存のPushoverNotifierを優先使用
     notifier = PushoverNotifier()
     result = notifier.send_batch_complete(successful, total, failed, total_time)
-    
+
     # 既存の方法で失敗した場合はglobal_pushoverを試行
     if not result:
         try:
             from .global_pushover import notify_process_complete
+
             result = notify_process_complete(
                 title="キャラクター抽出完了",
                 successful=successful,
                 total=total,
                 failed=failed,
-                duration=total_time
+                duration=total_time,
             )
         except ImportError:
             pass
-    
+
     return result
+
 
 # 便利な関数群を追加（global_pushoverとの互換性）
 def notify_success(title: str = "処理完了", message: str = "処理が正常に完了しました") -> bool:
@@ -177,10 +187,12 @@ def notify_success(title: str = "処理完了", message: str = "処理が正常�
     notifier = PushoverNotifier()
     return notifier.send_notification(message, title, priority=0)
 
+
 def notify_error(title: str = "エラー発生", message: str = "処理中にエラーが発生しました") -> bool:
     """エラー通知"""
     notifier = PushoverNotifier()
     return notifier.send_notification(message, title, priority=1)
+
 
 def notify_warning(title: str = "警告", message: str = "注意が必要な状況が発生しました") -> bool:
     """警告通知"""

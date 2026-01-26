@@ -13,20 +13,21 @@ sys.path.insert(0, str(project_root))
 
 from features.common.notification.pushover_image_sender import send_pushover_with_image
 
+
 def main():
     """修正したアルゴリズムの抽出結果を通知"""
-    
+
     result_image = Path("test_algo_fix_result.jpg")
-    
+
     if not result_image.exists():
         print(f"❌ 結果画像が見つかりません: {result_image}")
         return False
-    
+
     # ファイル情報
     file_size = result_image.stat().st_size
-    
+
     title = "🎯 抽出アルゴリズム修正テスト結果"
-    
+
     message = f"""✅ アルゴリズム修正テスト完了
 
 📊 テスト対象: kana08_0014.jpg
@@ -51,21 +52,19 @@ def main():
    ✅ YOLO bbox→SAM hybrid実装
 
 複数キャラクター時の最大面積選択が正常動作確認！"""
-    
+
     # Pushover送信
     success = send_pushover_with_image(
-        title=title,
-        message=message,
-        image_path=str(result_image),
-        priority=1  # 高優先度
+        title=title, message=message, image_path=str(result_image), priority=1  # 高優先度
     )
-    
+
     if success:
         print("✅ 抽出結果Pushover通知送信完了")
         return True
     else:
         print("❌ Pushover通知送信失敗")
         return False
+
 
 if __name__ == "__main__":
     success = main()

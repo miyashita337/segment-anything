@@ -7,6 +7,7 @@ PH2-006: リアルタイムWebダッシュボード
 import asyncio
 import json
 import logging
+
 # プロジェクトルート追加
 import sys
 import threading
@@ -22,11 +23,11 @@ from features.evaluation.realtime_dashboard.monitoring_system import PH2006Monit
 
 class PH2006WebDashboard:
     """PH2-006 リアルタイムWebダッシュボード"""
-    
+
     def __init__(self, monitoring_system: PH2006MonitoringSystem, port: int = 5000):
         """
         初期化
-        
+
         Args:
             monitoring_system: 監視システムインスタンス
             port: Webサーバーポート
@@ -34,29 +35,29 @@ class PH2006WebDashboard:
         self.monitoring_system = monitoring_system
         self.port = port
         self.logger = logging.getLogger(__name__)
-        
+
         # Flask アプリ初期化
         self.app = Flask(__name__)
-        self.app.config['JSON_AS_ASCII'] = False
-        
+        self.app.config["JSON_AS_ASCII"] = False
+
         # ルート設定
         self._setup_routes()
-        
+
         # サーバースレッド
         self.server_thread: threading.Thread = None
         self.server_running = False
-        
+
         self.logger.info(f"Webダッシュボード初期化完了: ポート {port}")
-    
+
     def _setup_routes(self):
         """ルート設定"""
-        
-        @self.app.route('/')
+
+        @self.app.route("/")
         def dashboard():
             """メインダッシュボード"""
             return render_template_string(self._get_dashboard_template())
-        
-        @self.app.route('/api/status')
+
+        @self.app.route("/api/status")
         def api_status():
             """監視状態API"""
             try:
@@ -64,122 +65,125 @@ class PH2006WebDashboard:
                 return jsonify(status)
             except Exception as e:
                 self.logger.error(f"Status API エラー: {e}")
-                return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/report')
+                return jsonify({"error": str(e)}), 500
+
+        @self.app.route("/api/report")
         def api_report():
             """監視レポートAPI"""
             try:
-                duration_hours = request.args.get('hours', 1, type=int)
+                duration_hours = request.args.get("hours", 1, type=int)
                 report = self.monitoring_system.generate_report(duration_hours)
                 return jsonify(report)
             except Exception as e:
                 self.logger.error(f"Report API エラー: {e}")
-                return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/alerts')
+                return jsonify({"error": str(e)}), 500
+
+        @self.app.route("/api/alerts")
         def api_alerts():
             """アラートAPI"""
             try:
                 active_alerts = self.monitoring_system.alert_manager.get_active_alerts()
                 alerts_data = [
                     {
-                        'timestamp': datetime.fromtimestamp(alert.timestamp).isoformat(),
-                        'message': alert.message,
-                        'severity': alert.rule.severity,
-                        'metric_name': alert.rule.metric_name,
-                        'current_value': alert.current_value,
-                        'threshold': alert.rule.threshold
+                        "timestamp": datetime.fromtimestamp(alert.timestamp).isoformat(),
+                        "message": alert.message,
+                        "severity": alert.rule.severity,
+                        "metric_name": alert.rule.metric_name,
+                        "current_value": alert.current_value,
+                        "threshold": alert.rule.threshold,
                     }
                     for alert in active_alerts
                 ]
-                return jsonify({'alerts': alerts_data})
+                return jsonify({"alerts": alerts_data})
             except Exception as e:
                 self.logger.error(f"Alerts API エラー: {e}")
-                return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/metrics/history')
+                return jsonify({"error": str(e)}), 500
+
+        @self.app.route("/api/metrics/history")
         def api_metrics_history():
             """メトリクス履歴API"""
             try:
-                minutes = request.args.get('minutes', 10, type=int)
+                minutes = request.args.get("minutes", 10, type=int)
                 end_time = datetime.now().timestamp()
                 start_time = end_time - (minutes * 60)
-                
-                system_metrics, processing_metrics = self.monitoring_system.metrics_collector.get_metrics_in_range(
+
+                (
+                    system_metrics,
+                    processing_metrics,
+                ) = self.monitoring_system.metrics_collector.get_metrics_in_range(
                     start_time, end_time
                 )
-                
+
                 # データポイント数制限（最大100ポイント）
                 max_points = 100
                 if len(system_metrics) > max_points:
                     step = len(system_metrics) // max_points
                     system_metrics = system_metrics[::step]
-                
+
                 metrics_data = [
                     {
-                        'timestamp': datetime.fromtimestamp(m.timestamp).isoformat(),
-                        'cpu_percent': m.cpu_percent,
-                        'memory_percent': m.memory_percent,
-                        'gpu_utilization': m.gpu_utilization,
-                        'gpu_memory_used_mb': m.gpu_memory_used_mb
+                        "timestamp": datetime.fromtimestamp(m.timestamp).isoformat(),
+                        "cpu_percent": m.cpu_percent,
+                        "memory_percent": m.memory_percent,
+                        "gpu_utilization": m.gpu_utilization,
+                        "gpu_memory_used_mb": m.gpu_memory_used_mb,
                     }
                     for m in system_metrics
                 ]
-                
-                return jsonify({'metrics': metrics_data})
+
+                return jsonify({"metrics": metrics_data})
             except Exception as e:
                 self.logger.error(f"Metrics History API エラー: {e}")
-                return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/control/start')
+                return jsonify({"error": str(e)}), 500
+
+        @self.app.route("/api/control/start")
         def api_start_monitoring():
             """監視開始API"""
             try:
                 self.monitoring_system.start_monitoring()
-                return jsonify({'status': 'monitoring started'})
+                return jsonify({"status": "monitoring started"})
             except Exception as e:
-                return jsonify({'error': str(e)}), 500
-        
-        @self.app.route('/api/control/stop')
+                return jsonify({"error": str(e)}), 500
+
+        @self.app.route("/api/control/stop")
         def api_stop_monitoring():
             """監視停止API"""
             try:
                 self.monitoring_system.stop_monitoring()
-                return jsonify({'status': 'monitoring stopped'})
+                return jsonify({"status": "monitoring stopped"})
             except Exception as e:
-                return jsonify({'error': str(e)}), 500
-    
+                return jsonify({"error": str(e)}), 500
+
     def start_server(self):
         """Webサーバー開始"""
         if self.server_running:
             self.logger.warning("Webサーバーは既に実行中です")
             return
-        
+
         self.server_running = True
         self.server_thread = threading.Thread(target=self._run_server)
         self.server_thread.daemon = True
         self.server_thread.start()
-        
+
         self.logger.info(f"🌐 Webダッシュボード開始: http://localhost:{self.port}")
-    
+
     def stop_server(self):
         """Webサーバー停止"""
         self.server_running = False
         if self.server_thread and self.server_thread.is_alive():
             self.server_thread.join(timeout=5.0)
-        
+
         self.logger.info("Webダッシュボード停止")
-    
+
     def _run_server(self):
         """サーバー実行"""
         try:
-            self.app.run(host='0.0.0.0', port=self.port, debug=False, threaded=True)
+            self.app.run(host="0.0.0.0", port=self.port, debug=False, threaded=True)
         except Exception as e:
             self.logger.error(f"Webサーバーエラー: {e}")
         finally:
             self.server_running = False
-    
+
     def _get_dashboard_template(self) -> str:
         """ダッシュボードHTMLテンプレート"""
         return """
@@ -715,6 +719,8 @@ class PH2006WebDashboard:
         """
 
 
-def create_web_dashboard(monitoring_system: PH2006MonitoringSystem, port: int = 5000) -> PH2006WebDashboard:
+def create_web_dashboard(
+    monitoring_system: PH2006MonitoringSystem, port: int = 5000
+) -> PH2006WebDashboard:
     """Webダッシュボード作成"""
     return PH2006WebDashboard(monitoring_system, port)

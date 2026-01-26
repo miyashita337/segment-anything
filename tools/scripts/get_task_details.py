@@ -3,33 +3,34 @@
 指定されたトラッカーIDの詳細情報を取得するスクリプト
 """
 
-import sys
 import logging
+import sys
 from pathlib import Path
 
 # プロジェクトルートをパスに追加
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from tools.progress_tracker.progress_manager import ProgressManager
 from tools.progress_tracker.config import get_default_config
+from tools.progress_tracker.progress_manager import ProgressManager
+
 
 def get_task_details(tracker_id: str):
     """指定されたトラッカーIDの詳細情報を取得"""
     try:
         # 設定取得
         config = get_default_config()
-        
+
         # 進捗管理システム初期化
         manager = ProgressManager(config)
-        
+
         # タスク詳細取得
         task = manager.client.get_task(tracker_id)
-        
+
         if task is None:
             print(f"❌ タスク {tracker_id} が見つかりません")
             return
-        
+
         print(f"📋 タスク詳細: {tracker_id}")
         print("=" * 60)
         print(f"📍 ステータス: {task.status.value}")
@@ -43,8 +44,8 @@ def get_task_details(tracker_id: str):
         print(f"  統合実行スクリプト: {task.integration_script.value}")
         print(f"  ダッシュボード生成: {task.dashboard_generation.value}")
         print(f"  抽出パイプライン: {task.extraction_pipeline.value}")
-        
-        if hasattr(task, 'metrics') and task.metrics:
+
+        if hasattr(task, "metrics") and task.metrics:
             print("\n📊 品質メトリクス:")
             if task.metrics.lca is not None:
                 print(f"  LCA: {task.metrics.lca}")
@@ -66,18 +67,19 @@ def get_task_details(tracker_id: str):
                 print(f"  PLA: {task.metrics.pla}")
             if task.metrics.ple is not None:
                 print(f"  PLE: {task.metrics.ple}")
-        
+
         print("=" * 60)
-        
+
     except Exception as e:
         print(f"❌ エラー: {e}")
         logging.error(f"タスク詳細取得エラー: {e}", exc_info=True)
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("使用方法: python get_task_details.py <TRACKER_ID>")
         print("例: python get_task_details.py P1-016")
         sys.exit(1)
-    
+
     tracker_id = sys.argv[1]
     get_task_details(tracker_id)

@@ -9,15 +9,15 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 # プロジェクトルートをパスに追加
-sys.path.append('.')
+sys.path.append(".")
 
 try:
-    from features.common.resource_manager import ResourceManager
-    from features.common.scalability import ScalabilityManager, ParallelProcessor
     from features.common.error_handling import global_error_handler
+    from features.common.resource_manager import ResourceManager
+    from features.common.scalability import ParallelProcessor, ScalabilityManager
 except ImportError as e:
     print(f"警告: PH2-002モジュールのインポートに失敗: {e}")
     print("ダッシュボードはモックデータで生成されます")
@@ -25,13 +25,15 @@ except ImportError as e:
 
 class PH2002DashboardGenerator:
     """PH2-002総合ダッシュボード生成器"""
-    
+
     def __init__(self):
         self.timestamp = datetime.now()
         # 仕様書準拠: workspace/PH2-002/dashboard に出力
-        self.output_dir = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace/PH2-002/dashboard")
+        self.output_dir = Path(
+            "/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace/PH2-002/dashboard"
+        )
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # システム初期化
         try:
             self.resource_manager = ResourceManager()
@@ -42,17 +44,17 @@ class PH2002DashboardGenerator:
         except Exception as e:
             print(f"システム初期化警告: {e}")
             self.systems_available = False
-    
+
     def collect_system_metrics(self) -> Dict[str, Any]:
         """システムメトリクス収集"""
         if not self.systems_available:
             return self._get_mock_metrics()
-        
+
         try:
             # リソース使用状況
             usage = self.resource_manager.get_usage_summary()
             current_usage = self.resource_manager.get_current_usage()
-            
+
             return {
                 "resource_usage": {
                     "cpu_percent": current_usage.cpu_percent,
@@ -60,21 +62,23 @@ class PH2002DashboardGenerator:
                     "memory_percent": current_usage.memory_percent,
                     "gpu_memory_mb": current_usage.gpu_memory_mb,
                     "gpu_utilization": current_usage.gpu_utilization,
-                    "gpu_available": self.resource_manager.gpu_available
+                    "gpu_available": self.resource_manager.gpu_available,
                 },
                 "system_info": {
-                    "gpu_device": self.resource_manager.gpu_device if self.resource_manager.gpu_available else None,
+                    "gpu_device": self.resource_manager.gpu_device
+                    if self.resource_manager.gpu_available
+                    else None,
                     "max_workers": self.parallel_processor.max_workers,
                     "chunk_size": self.parallel_processor.chunk_size,
-                    "use_processes": self.parallel_processor.use_processes
+                    "use_processes": self.parallel_processor.use_processes,
                 },
                 "performance_recommendations": self.scalability_manager.get_performance_recommendations(),
-                "error_summary": global_error_handler.get_error_summary()
+                "error_summary": global_error_handler.get_error_summary(),
             }
         except Exception as e:
             print(f"メトリクス収集エラー: {e}")
             return self._get_mock_metrics()
-    
+
     def _get_mock_metrics(self) -> Dict[str, Any]:
         """モックメトリクス（システム利用不可時）"""
         return {
@@ -84,27 +88,27 @@ class PH2002DashboardGenerator:
                 "memory_percent": 15.2,
                 "gpu_memory_mb": 512.0,
                 "gpu_utilization": 8.5,
-                "gpu_available": True
+                "gpu_available": True,
             },
             "system_info": {
                 "gpu_device": "NVIDIA GeForce RTX 4070 Ti SUPER",
                 "max_workers": 8,
                 "chunk_size": 4,
-                "use_processes": True
+                "use_processes": True,
             },
             "performance_recommendations": [
                 "CPU使用率が低い（12.5%）- 並列処理の活用を検討",
                 "8コアCPU活用のため並列処理を推奨",
-                "GPU メモリ使用量が少ない - GPU並列処理の活用を検討"
+                "GPU メモリ使用量が少ない - GPU並列処理の活用を検討",
             ],
             "error_summary": {
                 "total_errors": 3,
                 "by_severity": {"medium": 2, "low": 1},
                 "by_category": {"processing": 1, "resource": 1, "validation": 1},
-                "recoverable_count": 2
-            }
+                "recoverable_count": 2,
+            },
         }
-    
+
     def generate_html_dashboard(self, metrics: Dict[str, Any]) -> str:
         """HTML ダッシュボード生成"""
         html_content = f"""
@@ -587,7 +591,7 @@ class PH2002DashboardGenerator:
 </html>
 """
         return html_content
-    
+
     def generate_json_report(self, metrics: Dict[str, Any]) -> Dict[str, Any]:
         """JSON レポート生成"""
         return {
@@ -599,15 +603,15 @@ class PH2002DashboardGenerator:
                         "components": [
                             "BaseCustomError 基底クラス",
                             "ProcessingError 処理エラー",
-                            "ResourceError リソースエラー", 
+                            "ResourceError リソースエラー",
                             "ValidationError 検証エラー",
                             "InsufficientMemoryError メモリ不足",
                             "GPUNotAvailableError GPU利用不可",
-                            "自動リカバリー戦略"
-                        ]
+                            "自動リカバリー戦略",
+                        ],
                     },
                     "resource_management": {
-                        "status": "completed", 
+                        "status": "completed",
                         "components": [
                             "ResourceManager 統合管理",
                             "GPU メモリ監視・自動クリア",
@@ -615,20 +619,20 @@ class PH2002DashboardGenerator:
                             "自動クリーンアップ機能",
                             "閾値ベース警告システム",
                             "リアルタイム監視ループ",
-                            "バッチ処理最適化"
-                        ]
+                            "バッチ処理最適化",
+                        ],
                     },
                     "scalability": {
                         "status": "completed",
                         "components": [
                             "ParallelProcessor 並列処理",
-                            "AsyncProcessor 非同期処理", 
+                            "AsyncProcessor 非同期処理",
                             "PipelineProcessor パイプライン",
                             "GPUParallelProcessor GPU並列",
                             "適応的バッチサイズ調整",
                             "動的ワーカー数調整",
-                            "戦略自動選択システム"
-                        ]
+                            "戦略自動選択システム",
+                        ],
                     },
                     "integration_testing": {
                         "status": "completed",
@@ -639,114 +643,108 @@ class PH2002DashboardGenerator:
                             "メモリ使用量最適化",
                             "並列処理成功率100%",
                             "GPU メモリ管理正常",
-                            "エラー自動回復確認"
-                        ]
-                    }
+                            "エラー自動回復確認",
+                        ],
+                    },
                 },
                 "system_metrics": metrics,
                 "performance_summary": {
                     "cpu_utilization": f"{metrics['resource_usage']['cpu_percent']:.1f}%",
                     "memory_utilization": f"{metrics['resource_usage']['memory_percent']:.1f}%",
-                    "gpu_available": metrics['resource_usage']['gpu_available'],
-                    "parallel_workers": metrics['system_info']['max_workers'],
-                    "error_recovery_rate": f"{metrics['error_summary']['recoverable_count']}/{metrics['error_summary']['total_errors']}" if metrics['error_summary']['total_errors'] > 0 else "N/A"
+                    "gpu_available": metrics["resource_usage"]["gpu_available"],
+                    "parallel_workers": metrics["system_info"]["max_workers"],
+                    "error_recovery_rate": f"{metrics['error_summary']['recoverable_count']}/{metrics['error_summary']['total_errors']}"
+                    if metrics["error_summary"]["total_errors"] > 0
+                    else "N/A",
                 },
                 "file_locations": {
                     "error_handling": "features/common/error_handling.py",
-                    "resource_manager": "features/common/resource_manager.py", 
+                    "resource_manager": "features/common/resource_manager.py",
                     "scalability": "features/common/scalability.py",
                     "examples": [
                         "examples/resource_optimization_example.py",
-                        "examples/scalability_integration_example.py"
-                    ]
-                }
+                        "examples/scalability_integration_example.py",
+                    ],
+                },
             }
         }
-    
+
     def run_performance_benchmark(self) -> Dict[str, Any]:
         """パフォーマンスベンチマーク実行"""
         if not self.systems_available:
             return {
                 "parallel_processing": {"duration": 0.15, "success_rate": 1.0},
                 "memory_management": {"cleanup_time": 0.08, "efficiency": 0.95},
-                "error_handling": {"recovery_time": 0.02, "success_rate": 1.0}
+                "error_handling": {"recovery_time": 0.02, "success_rate": 1.0},
             }
-        
+
         try:
             # 並列処理ベンチマーク
             test_data = list(range(100))
             start_time = time.time()
-            
-            results = self.parallel_processor.process_batch(
-                lambda x: x * 2, test_data
-            )
-            
+
+            results = self.parallel_processor.process_batch(lambda x: x * 2, test_data)
+
             parallel_duration = time.time() - start_time
             success_rate = sum(1 for r in results if r.success) / len(results)
-            
+
             # メモリ管理ベンチマーク
             start_time = time.time()
             self.resource_manager.cleanup_memory()
             cleanup_time = time.time() - start_time
-            
+
             return {
                 "parallel_processing": {
                     "duration": parallel_duration,
-                    "success_rate": success_rate
+                    "success_rate": success_rate,
                 },
-                "memory_management": {
-                    "cleanup_time": cleanup_time,
-                    "efficiency": 0.95
-                },
-                "error_handling": {
-                    "recovery_time": 0.02,
-                    "success_rate": 1.0
-                }
+                "memory_management": {"cleanup_time": cleanup_time, "efficiency": 0.95},
+                "error_handling": {"recovery_time": 0.02, "success_rate": 1.0},
             }
         except Exception as e:
             print(f"ベンチマーク実行エラー: {e}")
             return self.run_performance_benchmark()  # モックデータにフォールバック
-    
+
     def generate_comprehensive_dashboard(self):
         """包括的ダッシュボード生成"""
         print("🎯 PH2-002 総合ダッシュボード生成開始")
         print("=" * 60)
-        
+
         # メトリクス収集
         print("📊 システムメトリクス収集中...")
         metrics = self.collect_system_metrics()
-        
+
         # パフォーマンスベンチマーク
         print("🚀 パフォーマンスベンチマーク実行中...")
         benchmark = self.run_performance_benchmark()
         metrics["benchmark"] = benchmark
-        
+
         # HTML ダッシュボード生成
         print("🌐 HTML ダッシュボード生成中...")
         html_content = self.generate_html_dashboard(metrics)
         html_path = self.output_dir / "ph2_002_comprehensive_dashboard.html"
-        
-        with open(html_path, 'w', encoding='utf-8') as f:
+
+        with open(html_path, "w", encoding="utf-8") as f:
             f.write(html_content)
-        
+
         # JSON レポート生成
         print("📋 JSON レポート生成中...")
         json_report = self.generate_json_report(metrics)
         json_path = self.output_dir / "ph2_002_comprehensive_report.json"
-        
-        with open(json_path, 'w', encoding='utf-8') as f:
+
+        with open(json_path, "w", encoding="utf-8") as f:
             json.dump(json_report, f, indent=2, ensure_ascii=False)
-        
+
         # サマリー出力
         self._print_summary(metrics, benchmark)
-        
+
         return {
             "html_path": str(html_path),
             "json_path": str(json_path),
             "metrics": metrics,
-            "benchmark": benchmark
+            "benchmark": benchmark,
         }
-    
+
     def _print_summary(self, metrics: Dict[str, Any], benchmark: Dict[str, Any]):
         """サマリー出力"""
         print("\n🎯 PH2-002 実装完了サマリー")
@@ -755,13 +753,17 @@ class PH2002DashboardGenerator:
         print(f"💾 メモリ使用率: {metrics['resource_usage']['memory_percent']:.1f}%")
         print(f"🎮 GPU: {'利用可能' if metrics['resource_usage']['gpu_available'] else '利用不可'}")
         print(f"⚙️ 並列ワーカー数: {metrics['system_info']['max_workers']}")
-        print(f"⚠️ エラー件数: {metrics['error_summary']['total_errors']} (リカバリー可能: {metrics['error_summary']['recoverable_count']})")
-        
+        print(
+            f"⚠️ エラー件数: {metrics['error_summary']['total_errors']} (リカバリー可能: {metrics['error_summary']['recoverable_count']})"
+        )
+
         print(f"\n🚀 パフォーマンスベンチマーク")
-        print(f"📈 並列処理: {benchmark['parallel_processing']['duration']:.3f}s (成功率: {benchmark['parallel_processing']['success_rate']:.1%})")
+        print(
+            f"📈 並列処理: {benchmark['parallel_processing']['duration']:.3f}s (成功率: {benchmark['parallel_processing']['success_rate']:.1%})"
+        )
         print(f"🧹 メモリクリーンアップ: {benchmark['memory_management']['cleanup_time']:.3f}s")
         print(f"🔧 エラー回復時間: {benchmark['error_handling']['recovery_time']:.3f}s")
-        
+
         print("\n✅ 実装完了システム:")
         print("   📋 階層エラーハンドリング (6種類)")
         print("   💾 リソース管理最適化 (GPU/CPU/メモリ)")
@@ -773,7 +775,7 @@ def main():
     """メイン実行"""
     generator = PH2002DashboardGenerator()
     result = generator.generate_comprehensive_dashboard()
-    
+
     print(f"\n📁 出力ファイル:")
     print(f"   HTML: {result['html_path']}")
     print(f"   JSON: {result['json_path']}")

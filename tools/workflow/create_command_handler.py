@@ -8,10 +8,10 @@ Google Sheets機能は削除され、ローカル状態管理のみに特化し�
 """
 
 import logging
-from typing import Dict, Any, Optional, Tuple
-from datetime import datetime
-import sys
 import os
+import sys
+from datetime import datetime
+from typing import Any, Dict, Optional, Tuple
 
 # プロジェクトルートをパスに追加
 current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -23,90 +23,94 @@ logger = logging.getLogger(__name__)
 
 class CreateCommandHandler:
     """SQLite専用ワークフロー状態管理コマンドハンドラー"""
-    
+
     def __init__(self):
         """初期化"""
         self.workflow_controller = None
         self._initialize_workflow_controller()
-    
+
     def _initialize_workflow_controller(self) -> None:
         """ワークフローコントローラーを初期化"""
         try:
             from tools.interface.workflow_controller import get_workflow_controller
+
             self.workflow_controller = get_workflow_controller()
             logger.info("ワークフローコントローラー初期化完了")
         except Exception as e:
             logger.error(f"ワークフローコントローラー初期化失敗: {e}")
             self.workflow_controller = None
-    
+
     def validate_tracker_id(self, tracker_id: str) -> Tuple[bool, Optional[str]]:
         """
         トラッカーID検証
-        
+
         Args:
             tracker_id: トラッカーID
-            
+
         Returns:
             Tuple[bool, Optional[str]]: (検証成功, エラーメッセージ)
         """
         if not tracker_id or not tracker_id.strip():
             return False, "❌ トラッカーIDが指定されていません"
-        
+
         tracker_id = tracker_id.strip()
-        
+
         # 基本的な形式チェック
         import re
-        pattern = r'^[A-Z][A-Z0-9]*-[0-9]+$'
+
+        pattern = r"^[A-Z][A-Z0-9]*-[0-9]+$"
         if not re.match(pattern, tracker_id):
             return False, f"❌ トラッカーID形式が無効です: {tracker_id}\n   形式例: TRACKER-001, KIRO-006, QUAL-044"
-        
+
         return True, None
-    
+
     def check_existing_workflow(self, tracker_id: str) -> Tuple[bool, Optional[Dict[str, Any]]]:
         """
         既存ワークフロー状態の確認
-        
+
         Args:
             tracker_id: トラッカーID
-            
+
         Returns:
             Tuple[bool, Optional[Dict]]: (存在するか, 既存状態情報)
         """
         if not self.workflow_controller:
             return False, None
-        
+
         try:
             status = self.workflow_controller.get_workflow_status(tracker_id)
 
             # "not_found"または"error"の場合は存在しないと判断
-            if status.get('status') == 'not_found' or "error" in status:
+            if status.get("status") == "not_found" or "error" in status:
                 return False, None
 
             # 有効な状態情報がある場合は存在すると判断
             return True, {
-                'tracker_id': tracker_id,
-                'current_phase': status.get('current_phase', '不明'),
-                'current_step': status.get('current_step', '不明'),
-                'can_proceed': status.get('can_proceed', False),
-                'completed_steps': len(status.get('completed_steps', [])),
-                'pending_approvals': len(status.get('pending_approvals', []))
+                "tracker_id": tracker_id,
+                "current_phase": status.get("current_phase", "不明"),
+                "current_step": status.get("current_step", "不明"),
+                "can_proceed": status.get("can_proceed", False),
+                "completed_steps": len(status.get("completed_steps", [])),
+                "pending_approvals": len(status.get("pending_approvals", [])),
             }
         except Exception as e:
             logger.error(f"既存ワークフロー確認エラー: {e}")
             return False, None
-    
+
     def create_workflow_state(self, tracker_id: str) -> Tuple[bool, str]:
         """
         SQLiteワークフロー状態を作成
-        
+
         Args:
             tracker_id: トラッカーID
-            
+
         Returns:
             Tuple[bool, str]: (成功, メッセージ)
         """
         if not self.workflow_controller:
-            return False, """❌ ワークフローコントローラーが利用できません
+            return (
+                False,
+                """❌ ワークフローコントローラーが利用できません
 
 🔧 トラブルシューティング:
 1. ワークフローコントローラーの初期化確認
@@ -115,14 +119,17 @@ class CreateCommandHandler:
 
 📋 手動確認コマンド:
    python tools/interface/workflow_controller.py --test
-"""
-        
+""",
+            )
+
         try:
             # ワークフロー状態作成
             success = self.workflow_controller.create_tracker_workflow(tracker_id)
-            
+
             if not success:
-                return False, f"""❌ ワークフロー状態作成に失敗しました: {tracker_id}
+                return (
+                    False,
+                    f"""❌ ワークフロー状態作成に失敗しました: {tracker_id}
 
 🔧 考えられる原因:
 - SQLiteデータベースの書き込み権限不足
@@ -131,12 +138,13 @@ class CreateCommandHandler:
 
 📋 確認コマンド:
    python tools/workflow/workflow_cli.py status {tracker_id}
-"""
-            
+""",
+                )
+
             # 作成後の状態確認
             status = self.workflow_controller.get_workflow_status(tracker_id)
-            current_step = status.get('current_step', '不明')
-            
+            current_step = status.get("current_step", "不明")
+
             success_message = f"""✅ ワークフロー状態管理を開始しました
 
 📋 ワークフロー情報:
@@ -165,10 +173,10 @@ class CreateCommandHandler:
      1. planコマンド（Google Sheets起票）
      2. createコマンド（ワークフロー状態管理開始）
 """
-            
+
             logger.info(f"ワークフロー状態作成成功: {tracker_id}")
             return True, success_message
-            
+
         except Exception as e:
             error_message = f"""❌ ワークフロー状態作成でエラーが発生しました
 
@@ -193,24 +201,24 @@ class CreateCommandHandler:
 """
             logger.error(f"ワークフロー状態作成エラー: {tracker_id} - {e}")
             return False, error_message
-    
+
     def execute_create_command(self, tracker_id: str) -> Tuple[bool, str]:
         """
         createコマンドを実行
-        
+
         Args:
             tracker_id: トラッカーID
-            
+
         Returns:
             Tuple[bool, str]: (成功, メッセージ)
         """
         logger.info(f"createコマンド実行開始: {tracker_id}")
-        
+
         # 1. トラッカーID検証
         is_valid, error_message = self.validate_tracker_id(tracker_id)
         if not is_valid:
             return False, error_message
-        
+
         # 2. 既存ワークフロー確認
         exists, existing_info = self.check_existing_workflow(tracker_id)
         if exists:
@@ -237,17 +245,17 @@ class CreateCommandHandler:
 📝 注意: 既存のワークフロー状態は上書きされません
 """
             return False, warning_message
-        
+
         # 3. ワークフロー状態作成実行
         success, message = self.create_workflow_state(tracker_id)
-        
+
         if success:
             logger.info(f"createコマンド実行成功: {tracker_id}")
         else:
             logger.error(f"createコマンド実行失敗: {tracker_id}")
-        
+
         return success, message
-    
+
     def get_usage_help(self) -> str:
         """使用方法ヘルプを取得"""
         return """
@@ -313,19 +321,20 @@ python tools/workflow/workflow_cli.py step KIRO-007
 def main():
     """テスト用メイン関数"""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="CreateCommandHandler テスト")
-    parser.add_argument('tracker_id', help='トラッカーID')
-    
+    parser.add_argument("tracker_id", help="トラッカーID")
+
     args = parser.parse_args()
-    
+
     handler = CreateCommandHandler()
     success, message = handler.execute_create_command(args.tracker_id)
-    
+
     print(message)
     return 0 if success else 1
 
 
 if __name__ == "__main__":
     import sys
+
     sys.exit(main())

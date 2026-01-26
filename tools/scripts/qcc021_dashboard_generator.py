@@ -4,54 +4,55 @@ QCC-021専用ダッシュボード生成システム
 サンプルサイズ妥当性検証結果の可視化
 """
 
-import json
 import base64
-from pathlib import Path
+import json
 from datetime import datetime
-from typing import Dict, Any, List
+from pathlib import Path
+from typing import Any, Dict, List
+
 
 class QCC021DashboardGenerator:
     """QCC-021専用ダッシュボード生成クラス"""
-    
+
     def __init__(self, workspace_base: str = "/mnt/c/AItools/lora/train/yado/tracker-workspace"):
         self.workspace_base = Path(workspace_base)
         self.qcc021_workspace = self.workspace_base / "QCC-021"
-        
+
     def generate_dashboard(self) -> str:
         """
         QCC-021のダッシュボード生成
-        
+
         Returns:
             生成されたダッシュボードパス
         """
         print("🎯 QCC-021ダッシュボード生成開始...")
-        
+
         # 検証結果読み込み
         validation_data = self._load_validation_data()
-        
+
         # ダッシュボードHTML生成
         dashboard_html = self._generate_dashboard_html(validation_data)
-        
+
         # ダッシュボード保存
         dashboard_path = self.qcc021_workspace / "dashboard" / "dashboard.html"
         dashboard_path.parent.mkdir(parents=True, exist_ok=True)
-        
-        with open(dashboard_path, 'w', encoding='utf-8') as f:
+
+        with open(dashboard_path, "w", encoding="utf-8") as f:
             f.write(dashboard_html)
-        
+
         print(f"✅ QCC-021ダッシュボード生成完了:")
         print(f"   - パス: {dashboard_path}")
         print(f"   - サイズ: {dashboard_path.stat().st_size:,} bytes")
         print(f"   - URL: http://100.123.241.106:8088/tracker/QCC-021")
-        
+
         return str(dashboard_path)
-    
+
     def _load_validation_data(self) -> Dict[str, Any]:
         """検証結果データ読み込み"""
         json_path = self.qcc021_workspace / "quality" / "qca001_sample_validation.json"
-        
+
         if json_path.exists():
-            with open(json_path, 'r', encoding='utf-8') as f:
+            with open(json_path, "r", encoding="utf-8") as f:
                 return json.load(f)
         else:
             # デフォルトデータ
@@ -59,54 +60,44 @@ class QCC021DashboardGenerator:
                 "qca001_sample_info": {
                     "current_sample_size": 14,
                     "workspace_path": str(self.workspace_base / "QCA-001"),
-                    "image_files": []
+                    "image_files": [],
                 },
                 "statistical_validation": {
                     "overall_adequacy": False,
                     "recommended_n": 393,
                     "current_power": 0.113,
-                    "precision_assessment": "低精度"
+                    "precision_assessment": "低精度",
                 },
                 "detailed_requirements": [],
                 "warnings_and_suggestions": {
-                    "statistical_warnings": [
-                        "統計的サンプル数不足",
-                        "検出力不十分",
-                        "精度レベル低下"
-                    ],
-                    "improvement_suggestions": [
-                        "追加サンプル収集推奨",
-                        "効果サイズ見直し",
-                        "検定手法最適化"
-                    ],
+                    "statistical_warnings": ["統計的サンプル数不足", "検出力不十分", "精度レベル低下"],
+                    "improvement_suggestions": ["追加サンプル収集推奨", "効果サイズ見直し", "検定手法最適化"],
                     "qca001_specific_recommendations": [
                         "QCA-001の統計的信頼性向上には追加379サンプル推奨",
-                        "他作者（kiri, zundamon）からの画像追加でサンプル数拡張を検討"
-                    ]
+                        "他作者（kiri, zundamon）からの画像追加でサンプル数拡張を検討",
+                    ],
                 },
-                "analysis_results": {
-                    "overall_assessment": "❌ 統計的妥当性には379サンプル追加が必要です（推奨: 393サンプル）"
-                }
+                "analysis_results": {"overall_assessment": "❌ 統計的妥当性には379サンプル追加が必要です（推奨: 393サンプル）"},
             }
-    
+
     def _generate_dashboard_html(self, validation_data: Dict[str, Any]) -> str:
         """ダッシュボードHTML生成"""
-        
-        sample_info = validation_data['qca001_sample_info']
-        stat_validation = validation_data['statistical_validation']
-        warnings = validation_data['warnings_and_suggestions']
-        analysis = validation_data['analysis_results']
-        
+
+        sample_info = validation_data["qca001_sample_info"]
+        stat_validation = validation_data["statistical_validation"]
+        warnings = validation_data["warnings_and_suggestions"]
+        analysis = validation_data["analysis_results"]
+
         # 統計チャートデータ準備
-        current_n = sample_info['current_sample_size']
-        recommended_n = stat_validation['recommended_n']
+        current_n = sample_info["current_sample_size"]
+        recommended_n = stat_validation["recommended_n"]
         shortage = recommended_n - current_n
-        
-        adequacy_status = "✅ 適切" if stat_validation['overall_adequacy'] else "❌ 不適切"
-        adequacy_color = "#27ae60" if stat_validation['overall_adequacy'] else "#e74c3c"
-        
+
+        adequacy_status = "✅ 適切" if stat_validation["overall_adequacy"] else "❌ 不適切"
+        adequacy_color = "#27ae60" if stat_validation["overall_adequacy"] else "#e74c3c"
+
         # 検出力レベル
-        power = stat_validation['current_power']
+        power = stat_validation["current_power"]
         if power >= 0.8:
             power_level = "高"
             power_color = "#27ae60"
@@ -116,37 +107,33 @@ class QCC021DashboardGenerator:
         else:
             power_level = "低"
             power_color = "#e74c3c"
-        
+
         # 精度レベル色
-        precision = stat_validation['precision_assessment']
-        precision_colors = {
-            "高精度": "#27ae60",
-            "中精度": "#f39c12", 
-            "低精度": "#e74c3c"
-        }
+        precision = stat_validation["precision_assessment"]
+        precision_colors = {"高精度": "#27ae60", "中精度": "#f39c12", "低精度": "#e74c3c"}
         precision_color = precision_colors.get(precision, "#95a5a6")
-        
+
         # 警告・推奨事項HTML
         warnings_html = ""
-        for warning in warnings['statistical_warnings'][:5]:
+        for warning in warnings["statistical_warnings"][:5]:
             warnings_html += f'<li class="warning-item">⚠️ {warning}</li>'
-        
+
         suggestions_html = ""
-        for suggestion in warnings['improvement_suggestions'][:5]:
+        for suggestion in warnings["improvement_suggestions"][:5]:
             suggestions_html += f'<li class="suggestion-item">💡 {suggestion}</li>'
-        
+
         qca001_recommendations_html = ""
-        for rec in warnings['qca001_specific_recommendations'][:3]:
+        for rec in warnings["qca001_specific_recommendations"][:3]:
             qca001_recommendations_html += f'<li class="qca001-rec-item">🎯 {rec}</li>'
-        
+
         # 詳細要件HTML
         requirements_html = ""
-        for req in validation_data.get('detailed_requirements', [])[:4]:
-            is_adequate = req.get('is_adequate', False)
+        for req in validation_data.get("detailed_requirements", [])[:4]:
+            is_adequate = req.get("is_adequate", False)
             status_icon = "✅" if is_adequate else "❌"
             status_color = "#27ae60" if is_adequate else "#e74c3c"
-            
-            requirements_html += f'''
+
+            requirements_html += f"""
             <div class="requirement-item">
                 <div class="req-status" style="color: {status_color}">{status_icon}</div>
                 <div class="req-details">
@@ -154,9 +141,9 @@ class QCC021DashboardGenerator:
                     <div class="req-numbers">現在: {req.get('current_n', 0)} / 必要: {req.get('required_n', 0)}</div>
                     <div class="req-precision">精度: {req.get('precision_level', 'Unknown')}</div>
                 </div>
-            </div>'''
-        
-        return f'''<!DOCTYPE html>
+            </div>"""
+
+        return f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -456,7 +443,7 @@ class QCC021DashboardGenerator:
         </div>
     </div>
 </body>
-</html>'''
+</html>"""
 
 
 def main():

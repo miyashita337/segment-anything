@@ -5,27 +5,27 @@
 """
 
 import argparse
-import sys
 import logging
+import sys
 from pathlib import Path
 
 # プロジェクトルート追加
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
 from tools.progress_tracker.config import (  # noqa: E402
-    get_default_config,
     check_configuration,
+    get_default_config,
     print_setup_instructions,
 )
-from tools.progress_tracker.progress_manager import ProgressManager  # noqa: E402
-from tools.progress_tracker.data_models import TaskStatus, ComponentStatus  # noqa: E402
 from tools.progress_tracker.connection_monitor import show_user_friendly_status  # noqa: E402
+from tools.progress_tracker.data_models import ComponentStatus, TaskStatus  # noqa: E402
 from tools.progress_tracker.execution_permission import (  # noqa: E402
-    PermissionLevel,
     ActionType,
-    require_permission,
+    PermissionLevel,
     get_permission_manager,
+    require_permission,
 )
+from tools.progress_tracker.progress_manager import ProgressManager  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)

@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional
 @dataclass
 class ExtractionConfig:
     """Configuration for extraction operations."""
-    
+
     input_path: str
     output_path: str
     batch: bool = False
@@ -20,7 +20,7 @@ class ExtractionConfig:
     no_images: bool = False
     max_files: Optional[int] = None
     resume: bool = False
-    sam_optimization_profile: str = 'p1_020_optimized'
+    sam_optimization_profile: str = "p1_020_optimized"
     enable_dashboard: bool = False
     dashboard_port: int = 8080
     enable_backup: bool = False
@@ -31,36 +31,37 @@ class ExtractionConfig:
 
 class BaseExtractionCommand(ABC):
     """Abstract base class for extraction commands."""
-    
+
     def __init__(self, config: ExtractionConfig):
         self.config = config
         self._setup_logging()
-    
+
     def _setup_logging(self):
         """Setup logging configuration."""
         import logging
+
         level = logging.DEBUG if self.config.verbose else logging.INFO
         logging.basicConfig(level=level)
         self.logger = logging.getLogger(self.__class__.__name__)
-    
+
     @abstractmethod
     def execute(self) -> Dict[str, Any]:
         """Execute the extraction command.
-        
+
         Returns:
             Dict containing execution results
         """
         pass
-    
+
     def validate_config(self) -> bool:
         """Validate configuration parameters.
-        
+
         Returns:
             True if configuration is valid
         """
         # 🚨 入力ディレクトリ存在チェック必須要件
         input_path = Path(self.config.input_path)
-        
+
         # 入力パス未指定チェック
         if not self.config.input_path or self.config.input_path.strip() == "":
             error_msg = (
@@ -74,7 +75,7 @@ class BaseExtractionCommand(ABC):
             )
             self.logger.error(error_msg)
             return False
-        
+
         # 入力パス存在チェック
         if not input_path.exists():
             error_msg = (
@@ -90,7 +91,7 @@ class BaseExtractionCommand(ABC):
             )
             self.logger.error(error_msg)
             return False
-        
+
         # バッチモード固有チェック
         if self.config.batch and not input_path.is_dir():
             error_msg = (
@@ -106,8 +107,8 @@ class BaseExtractionCommand(ABC):
             )
             self.logger.error(error_msg)
             return False
-        
-        # シングルモード固有チェック  
+
+        # シングルモード固有チェック
         if not self.config.batch and not input_path.is_file():
             error_msg = (
                 f"❌ エラー: シングルモードには画像ファイルが必要です\n"
@@ -122,14 +123,14 @@ class BaseExtractionCommand(ABC):
             )
             self.logger.error(error_msg)
             return False
-        
+
         # バッチモード時の空ディレクトリチェック
         if self.config.batch and input_path.is_dir():
-            image_extensions = ['*.jpg', '*.jpeg', '*.png', '*.bmp']
+            image_extensions = ["*.jpg", "*.jpeg", "*.png", "*.bmp"]
             image_files = []
             for ext in image_extensions:
                 image_files.extend(input_path.glob(ext))
-            
+
             if not image_files:
                 error_msg = (
                     f"❌ エラー: 指定されたディレクトリに画像ファイルがありません\n"
@@ -145,7 +146,7 @@ class BaseExtractionCommand(ABC):
                 )
                 self.logger.error(error_msg)
                 return False
-        
+
         # 出力パスの親ディレクトリ作成可能性チェック
         output_path = Path(self.config.output_path)
         try:
@@ -165,6 +166,6 @@ class BaseExtractionCommand(ABC):
             )
             self.logger.error(error_msg)
             return False
-        
+
         self.logger.info(f"✅ 設定検証完了: 入力={input_path}, 出力={output_path}")
         return True

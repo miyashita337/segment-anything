@@ -107,9 +107,7 @@ class DetectionEnsembleSystem:
         pose_high_quality = self.pose_detector.detect_pose_comprehensive(
             image, efficient_mode=False
         )
-        pose_efficient = self.pose_detector.detect_pose_comprehensive(
-            image, efficient_mode=True
-        )
+        pose_efficient = self.pose_detector.detect_pose_comprehensive(image, efficient_mode=True)
 
         # 4. ポーズ結果のアンサンブル
         pose_ensemble_result = self._ensemble_pose_detections(pose_high_quality, pose_efficient)
@@ -125,7 +123,9 @@ class DetectionEnsembleSystem:
         )
 
         # 7. 手法寄与度分析
-        method_contributions = self._analyze_method_contributions(face_detections_raw, pose_ensemble_result)
+        method_contributions = self._analyze_method_contributions(
+            face_detections_raw, pose_ensemble_result
+        )
 
         processing_time = (datetime.now() - start_time).total_seconds()
 
@@ -200,7 +200,9 @@ class DetectionEnsembleSystem:
         eff_weight = self.weights.pose_efficient
 
         # 統合信頼度計算
-        ensemble_confidence = (high_quality.confidence * hq_weight) + (efficient.confidence * eff_weight)
+        ensemble_confidence = (high_quality.confidence * hq_weight) + (
+            efficient.confidence * eff_weight
+        )
 
         # 統合可視性スコア計算
         ensemble_visibility = (high_quality.visibility_score * hq_weight) + (
@@ -235,7 +237,9 @@ class DetectionEnsembleSystem:
             keypoints_detected=ensemble_keypoints,
         )
 
-    def _weighted_voting_for_cluster(self, cluster_detections: List[FaceDetection]) -> Optional[VotingResult]:
+    def _weighted_voting_for_cluster(
+        self, cluster_detections: List[FaceDetection]
+    ) -> Optional[VotingResult]:
         """クラスタ内重み付き投票"""
         if not cluster_detections:
             return None
@@ -276,7 +280,9 @@ class DetectionEnsembleSystem:
         consensus_level = best_score / total_votes if total_votes > 0 else 0.0
 
         # 信頼度ブースト計算（多手法一致による信頼度向上）
-        method_diversity = len(set(self._standardize_method_name(d.method) for d in cluster_detections))
+        method_diversity = len(
+            set(self._standardize_method_name(d.method) for d in cluster_detections)
+        )
         confidence_boost = min(0.2, method_diversity * 0.05)  # 最大20%ブースト
 
         # 最終信頼度調整
@@ -325,7 +331,9 @@ class DetectionEnsembleSystem:
 
         return clusters
 
-    def _calculate_bbox_iou(self, bbox1: Tuple[int, int, int, int], bbox2: Tuple[int, int, int, int]) -> float:
+    def _calculate_bbox_iou(
+        self, bbox1: Tuple[int, int, int, int], bbox2: Tuple[int, int, int, int]
+    ) -> float:
         """バウンディングボックス間のIoU計算"""
         x1_1, y1_1, w1, h1 = bbox1
         x2_1, y2_1 = x1_1 + w1, y1_1 + h1

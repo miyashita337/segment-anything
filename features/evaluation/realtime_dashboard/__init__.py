@@ -8,4 +8,4 @@ P1-B002: 品質ダッシュボード - リアルタイム可視化
 from .dashboard_server import DashboardServer
 from .metrics_collector import MetricsCollector
 
-__all__ = ['DashboardServer', 'MetricsCollector']
+__all__ = ["DashboardServer", "MetricsCollector"]

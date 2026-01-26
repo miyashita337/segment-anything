@@ -4,9 +4,9 @@ KIRO-001-002 ダッシュボード画像表示修正スクリプト
 ブラウザで実際に画像が表示されるよう修正
 """
 
+import base64
 import json
 import os
-import base64
 from datetime import datetime
 from pathlib import Path
 
@@ -14,8 +14,8 @@ from pathlib import Path
 def get_image_as_base64(image_path):
     """画像をBase64エンコードして返す"""
     try:
-        with open(image_path, 'rb') as f:
-            return base64.b64encode(f.read()).decode('utf-8')
+        with open(image_path, "rb") as f:
+            return base64.b64encode(f.read()).decode("utf-8")
     except Exception as e:
         print(f"画像読み込みエラー: {image_path} - {e}")
         return None
@@ -28,30 +28,31 @@ def generate_dashboard_with_image_display():
     tracker_id = "KIRO-001-002"
     workspace_path = f"/mnt/c/AItools/lora/train/yado/tracker-workspace/{tracker_id}"
     extraction_dir = os.path.join(workspace_path, "extraction")
-    
+
     # 統計分析データ読み込み
     stats_file = os.path.join(workspace_path, "statistical_analysis_final.json")
-    with open(stats_file, 'r') as f:
+    with open(stats_file, "r") as f:
         stats = json.load(f)
-    
+
     # 抽出ファイルリスト取得
-    extracted_files = sorted([f for f in os.listdir(extraction_dir) 
-                            if f.endswith('.jpg') and f.startswith('extracted_')])
-    
+    extracted_files = sorted(
+        [f for f in os.listdir(extraction_dir) if f.endswith(".jpg") and f.startswith("extracted_")]
+    )
+
     print(f"🖼️ KIRO-001-002 画像表示対応ダッシュボード生成開始...")
     print(f"  総画像数: {len(extracted_files)}枚")
     print(f"  Base64エンコード処理中...")
-    
+
     # 画像カード生成（最初の12枚をBase64で埋め込み）
     image_cards_html = []
     high_count = medium_count = low_count = 0
-    
+
     for i, filename in enumerate(extracted_files):
         # ファイル情報取得
         file_path = os.path.join(extraction_dir, filename)
         file_size = os.path.getsize(file_path)
         file_size_kb = file_size // 1024
-        
+
         # 品質判定
         if file_size_kb > 100:
             quality_class = "high"
@@ -71,12 +72,12 @@ def generate_dashboard_with_image_display():
             badge_color = "bg-red-500"
             border_color = "border-red-500"
             low_count += 1
-        
+
         # 最初の12枚のみBase64で画像表示
         if i < 12:
             base64_image = get_image_as_base64(file_path)
             if base64_image:
-                card_html = f'''                <div class="bg-white rounded-lg shadow-md overflow-hidden {border_color} border-l-4">
+                card_html = f"""                <div class="bg-white rounded-lg shadow-md overflow-hidden {border_color} border-l-4">
                     <div class="relative">
                         <img src="data:image/jpeg;base64,{base64_image}" alt="{filename}" 
                              class="w-full h-48 object-contain bg-gray-100">
@@ -91,11 +92,11 @@ def generate_dashboard_with_image_display():
                             <span>{quality_label}</span>
                         </div>
                     </div>
-                </div>'''
+                </div>"""
                 image_cards_html.append(card_html)
             else:
                 # Base64変換失敗時の代替表示
-                card_html = f'''                <div class="bg-white rounded-lg shadow-md overflow-hidden {border_color} border-l-4">
+                card_html = f"""                <div class="bg-white rounded-lg shadow-md overflow-hidden {border_color} border-l-4">
                     <div class="relative">
                         <div class="w-full h-48 flex items-center justify-center bg-gray-200">
                             <div class="text-center text-gray-600">
@@ -114,9 +115,9 @@ def generate_dashboard_with_image_display():
                             <span>{quality_label}</span>
                         </div>
                     </div>
-                </div>'''
+                </div>"""
                 image_cards_html.append(card_html)
-        
+
         if (i + 1) % 10 == 0:
             print(f"  処理完了: {i + 1}/{len(extracted_files)}枚")
 
@@ -125,7 +126,7 @@ def generate_dashboard_with_image_display():
     for i, filename in enumerate(extracted_files[12:], 13):
         file_path = os.path.join(extraction_dir, filename)
         file_size_kb = os.path.getsize(file_path) // 1024
-        
+
         if file_size_kb > 100:
             quality_label = "高品質"
             badge_color = "text-green-600"
@@ -135,17 +136,19 @@ def generate_dashboard_with_image_display():
         else:
             quality_label = "低品質"
             badge_color = "text-red-600"
-        
-        remaining_files_list.append(f'''        <div class="flex justify-between items-center p-2 border-b border-gray-200">
+
+        remaining_files_list.append(
+            f"""        <div class="flex justify-between items-center p-2 border-b border-gray-200">
             <div>
                 <div class="font-medium text-sm text-gray-800">{filename}</div>
                 <div class="text-xs text-gray-500">{file_size_kb} KB</div>
             </div>
             <div class="text-xs font-semibold {badge_color}">{quality_label}</div>
-        </div>''')
+        </div>"""
+        )
 
     # HTML生成
-    html_content = f'''<!DOCTYPE html>
+    html_content = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -287,25 +290,26 @@ def generate_dashboard_with_image_display():
         </div>
     </div>
 </body>
-</html>'''
+</html>"""
 
     # HTMLファイル保存
     dashboard_dir = os.path.join(workspace_path, "dashboard")
     dashboard_path = os.path.join(dashboard_dir, "dashboard.html")
-    
-    with open(dashboard_path, 'w', encoding='utf-8') as f:
+
+    with open(dashboard_path, "w", encoding="utf-8") as f:
         f.write(html_content)
-    
+
     file_size_mb = os.path.getsize(dashboard_path) / (1024 * 1024)
-    
+
     print(f"\n✅ 画像表示対応ダッシュボード生成完了!")
     print(f"📁 ファイル: {dashboard_path}")
     print(f"📏 サイズ: {file_size_mb:.1f}MB")
     print(f"🖼️ 画像表示: 12枚（Base64埋め込み）")
     print(f"📊 品質分布: 高品質{high_count}枚・中品質{medium_count}枚・低品質{low_count}枚")
     print(f"🌐 アクセスURL: http://100.123.241.106:8088/tracker/{tracker_id}")
-    
+
     return dashboard_path
+
 
 if __name__ == "__main__":
     generate_dashboard_with_image_display()

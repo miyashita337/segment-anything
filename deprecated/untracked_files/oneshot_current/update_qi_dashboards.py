@@ -24,26 +24,28 @@ def get_image_quality(file_size: int) -> Tuple[str, str]:
     else:
         return "low", "低品質"
 
+
 def image_to_base64(image_path: str) -> str:
     """画像をBase64エンコードして返す"""
     try:
-        with open(image_path, 'rb') as img_file:
-            return base64.b64encode(img_file.read()).decode('utf-8')
+        with open(image_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode("utf-8")
     except Exception as e:
         print(f"Error encoding {image_path}: {e}")
         return ""
 
+
 def create_dashboard_html(tracker_id: str, images: List[str]) -> str:
     """ダッシュボードHTMLを生成"""
-    
+
     # 品質統計計算
     high_count = medium_count = low_count = 0
-    
+
     for image_path in images:
         try:
             file_size = os.path.getsize(image_path)
             quality, _ = get_image_quality(file_size)
-            
+
             if quality == "high":
                 high_count += 1
             elif quality == "medium":
@@ -63,7 +65,7 @@ def create_dashboard_html(tracker_id: str, images: List[str]) -> str:
             filename = os.path.basename(image_path)
             file_size = os.path.getsize(image_path)
             quality, quality_label = get_image_quality(file_size)
-            
+
             base64_data = image_to_base64(image_path)
             if not base64_data:
                 continue
@@ -189,44 +191,46 @@ def create_dashboard_html(tracker_id: str, images: List[str]) -> str:
 </body>
 </html>"""
 
+
 def main():
     """メイン処理"""
-    trackers = ['QI-003', 'QI-004']
-    
+    trackers = ["QI-003", "QI-004"]
+
     for tracker_id in trackers:
         extraction_dir = fget_path("output", "{tracker_id}/extraction")
         dashboard_path = fget_path("output", "{tracker_id}/dashboard/dashboard.html")
-        
+
         print(f"Processing {tracker_id}...")
-        
+
         if not os.path.exists(extraction_dir):
             print(f"❌ {tracker_id}: 抽出ディレクトリが見つかりません: {extraction_dir}")
             continue
-        
+
         # 画像ファイル収集
         images = []
         for file in os.listdir(extraction_dir):
-            if file.lower().endswith(('.jpg', '.jpeg', '.png')):
+            if file.lower().endswith((".jpg", ".jpeg", ".png")):
                 images.append(os.path.join(extraction_dir, file))
-        
+
         images.sort()
         print(f"  🖼️  {tracker_id}: {len(images)}個の画像を検出")
-        
+
         if not images:
             print(f"❌ {tracker_id}: 画像が見つかりません")
             continue
-        
+
         # ダッシュボード生成
         html_content = create_dashboard_html(tracker_id, images)
-        
+
         # ダッシュボードディレクトリ作成
         os.makedirs(os.path.dirname(dashboard_path), exist_ok=True)
-        
+
         # HTMLファイル書き込み
-        with open(dashboard_path, 'w', encoding='utf-8') as f:
+        with open(dashboard_path, "w", encoding="utf-8") as f:
             f.write(html_content)
-        
+
         print(f"✅ {tracker_id}: ダッシュボード更新完了: {dashboard_path}")
+
 
 if __name__ == "__main__":
     main()

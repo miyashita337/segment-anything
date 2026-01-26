@@ -5,45 +5,45 @@ P1-B004ダッシュボードHTML生成（最終版）
 """
 
 import json
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 
 def generate_dashboard_html(tracker_id: str = "P1-B004"):
     """P1-B004ダッシュボードHTML生成"""
     print(f"🎨 {tracker_id} ダッシュボードHTML生成")
-    
+
     workspace_dir = Path(f"/mnt/c/AItools/lora/train/yado/tracker-workspace/{tracker_id}")
     dashboard_dir = workspace_dir / "dashboard"
     extraction_dir = workspace_dir / "extraction"
     quality_dir = workspace_dir / "quality"
-    
+
     dashboard_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # レポート読み込み
     quality_report = {}
     quality_report_path = quality_dir / "quality_report.json"
     if quality_report_path.exists():
-        with open(quality_report_path, 'r', encoding='utf-8') as f:
+        with open(quality_report_path, "r", encoding="utf-8") as f:
             quality_report = json.load(f)
         print("✅ 品質レポート読み込み")
-    
+
     extraction_report = {}
     extraction_report_path = workspace_dir / "extraction_report.json"
     if extraction_report_path.exists():
-        with open(extraction_report_path, 'r', encoding='utf-8') as f:
+        with open(extraction_report_path, "r", encoding="utf-8") as f:
             extraction_report = json.load(f)
         print("✅ 抽出レポート読み込み")
-    
+
     # 画像ファイル取得
     output_files = list(extraction_dir.glob("*.png")) + list(extraction_dir.glob("*.jpg"))
     print(f"📸 画像ファイル: {len(output_files)}個")
-    
+
     # 品質指標取得
     quality_metrics = quality_report.get("quality_metrics", {})
     evaluation = quality_report.get("evaluation_results", {})
     improvements = quality_report.get("p1_b004_improvements", {})
-    
+
     # HTML生成
     html_content = f"""<!DOCTYPE html>
 <html lang="ja">
@@ -348,12 +348,12 @@ def generate_dashboard_html(tracker_id: str = "P1-B004"):
         <div class="image-gallery">
             <h3>📸 抽出結果ギャラリー</h3>
             <div class="image-grid">"""
-    
+
     # 画像カード生成
     for i, img_file in enumerate(output_files):
         file_size = img_file.stat().st_size / 1024  # KB
         relative_path = img_file.relative_to(workspace_dir)
-        
+
         html_content += f"""
                 <div class="image-card">
                     <img src="../{relative_path}" class="image-thumb" alt="{img_file.name}">
@@ -362,7 +362,7 @@ def generate_dashboard_html(tracker_id: str = "P1-B004"):
                         <div class="image-size">{file_size:.1f}KB</div>
                     </div>
                 </div>"""
-    
+
     html_content += f"""
             </div>
         </div>
@@ -396,36 +396,38 @@ def generate_dashboard_html(tracker_id: str = "P1-B004"):
     </script>
 </body>
 </html>"""
-    
+
     # HTML保存
     dashboard_path = dashboard_dir / "dashboard.html"
-    with open(dashboard_path, 'w', encoding='utf-8') as f:
+    with open(dashboard_path, "w", encoding="utf-8") as f:
         f.write(html_content)
-    
+
     print(f"✅ ダッシュボードHTML生成: {dashboard_path}")
-    
+
     # ダッシュボード統計
     print(f"\n📊 ダッシュボード統計:")
     print(f"  - 画像表示: {len(output_files)}枚")
-    print(f"  - 品質指標: PLA={quality_metrics.get('PLA', 0.88):.2f}, SCI={quality_metrics.get('SCI', 0.85):.2f}")
+    print(
+        f"  - 品質指標: PLA={quality_metrics.get('PLA', 0.88):.2f}, SCI={quality_metrics.get('SCI', 0.85):.2f}"
+    )
     print(f"  - A/B評価率: {evaluation.get('ab_rate', 100):.1f}%")
     print(f"  - ファイルサイズ: {dashboard_path.stat().st_size / 1024:.1f}KB")
-    
+
     return dashboard_path
 
 
 def main():
     """メイン実行"""
-    print("="*60)
+    print("=" * 60)
     print("🎨 P1-B004ダッシュボードHTML生成")
     print("  - 実際の抽出結果表示")
     print("  - 品質レポート統合")
     print("  - レスポンシブデザイン")
-    print("="*60)
-    
+    print("=" * 60)
+
     try:
         dashboard_path = generate_dashboard_html("P1-B004")
-        
+
         if dashboard_path and dashboard_path.exists():
             print(f"\n✅ P1-B004ダッシュボード生成完了")
             print(f"🌐 ブラウザで確認: file://{dashboard_path}")
@@ -433,7 +435,7 @@ def main():
         else:
             print("\n❌ P1-B004ダッシュボード生成失敗")
             return 1
-            
+
     except Exception as e:
         print(f"\n❌ エラー: {e}")
         return 1

@@ -17,6 +17,7 @@ def get_file_size_mb(file_path):
     except:
         return 0
 
+
 def get_image_quality_badge(file_size_bytes):
     """ファイルサイズに基づいて品質バッジを返す"""
     size_kb = file_size_bytes / 1024
@@ -27,6 +28,7 @@ def get_image_quality_badge(file_size_bytes):
     else:
         return ("low", "低品質")
 
+
 def generate_complete_dashboard_all_images():
     """
     全画像パス参照ダッシュボードを生成（Base64禁止）
@@ -34,30 +36,30 @@ def generate_complete_dashboard_all_images():
     tracker_id = "QCC-021-EXTENDED"
     workspace_path = f"/mnt/c/AItools/lora/train/yado/tracker-workspace/{tracker_id}"
     extraction_dir = os.path.join(workspace_path, "extraction")
-    
+
     # 修正統計データ読み込み
     stats_file = os.path.join(workspace_path, "quality", "fixed_unified_statistics.json")
-    with open(stats_file, 'r') as f:
+    with open(stats_file, "r") as f:
         unified_stats = json.load(f)
-    
+
     # 全抽出ファイルリスト取得（制限なし）
-    extracted_files = sorted([f for f in os.listdir(extraction_dir) if f.endswith('.jpg')])
-    
+    extracted_files = sorted([f for f in os.listdir(extraction_dir) if f.endswith(".jpg")])
+
     print(f"🖼️ 全画像ダッシュボード生成開始...")
     print(f"  総画像数: {len(extracted_files)}枚（全表示）")
     print(f"  Base64埋め込み: 禁止（パス参照方式）")
-    
+
     # 画像カード生成（パス参照）
     image_cards_html = []
     high_count = medium_count = low_count = 0
-    
+
     for i, filename in enumerate(extracted_files):
         image_path = os.path.join(extraction_dir, filename)
-        
+
         # ファイル情報取得
         file_size = os.path.getsize(image_path)
         quality_class, quality_label = get_image_quality_badge(file_size)
-        
+
         # 品質カウント
         if quality_class == "high":
             high_count += 1
@@ -65,11 +67,11 @@ def generate_complete_dashboard_all_images():
             medium_count += 1
         else:
             low_count += 1
-        
+
         # パス参照での画像カードHTML生成
         image_url = f"/{tracker_id}/extraction/{filename}"
-        
-        card_html = f'''        <div class="image-card">
+
+        card_html = f"""        <div class="image-card">
             <div class="image-container">
                 <img src="{image_url}" alt="{filename}" loading="lazy">
                 <div class="quality-badge {quality_class}">{quality_label}</div>
@@ -81,18 +83,18 @@ def generate_complete_dashboard_all_images():
                     <span>{quality_label}</span>
                 </div>
             </div>
-        </div>'''
-        
+        </div>"""
+
         image_cards_html.append(card_html)
-        
+
         if (i + 1) % 50 == 0:
             print(f"  処理完了: {i + 1}/{len(extracted_files)}枚")
-    
+
     # HTML生成
     success_count = high_count + medium_count
     success_rate = (success_count / len(extracted_files)) * 100 if extracted_files else 0
-    
-    html_content = f'''<!DOCTYPE html>
+
+    html_content = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -277,18 +279,18 @@ def generate_complete_dashboard_all_images():
         </div>
     </div>
 </body>
-</html>'''
+</html>"""
 
     # HTMLファイル保存
     dashboard_dir = os.path.join(workspace_path, "dashboard")
     os.makedirs(dashboard_dir, exist_ok=True)
     dashboard_path = os.path.join(dashboard_dir, "dashboard.html")
-    
-    with open(dashboard_path, 'w', encoding='utf-8') as f:
+
+    with open(dashboard_path, "w", encoding="utf-8") as f:
         f.write(html_content)
-    
+
     file_size_mb = get_file_size_mb(dashboard_path)
-    
+
     print(f"\n✅ 全画像パス参照ダッシュボード生成完了!")
     print(f"📁 ファイル: {dashboard_path}")
     print(f"📏 サイズ: {file_size_mb:.1f}MB（軽量化済み）")
@@ -296,8 +298,9 @@ def generate_complete_dashboard_all_images():
     print(f"📊 品質分布: 高品質{high_count}枚・中品質{medium_count}枚・低品質{low_count}枚")
     print(f"🚀 Base64埋め込み: 禁止（パフォーマンス最適化）")
     print(f"🌐 アクセスURL: http://100.123.241.106:8088/tracker/{tracker_id}")
-    
+
     return dashboard_path
+
 
 if __name__ == "__main__":
     generate_complete_dashboard_all_images()

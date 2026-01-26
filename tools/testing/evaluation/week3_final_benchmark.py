@@ -9,10 +9,11 @@ Week 3最終目標達成確認ベンチマーク
 - SCI総合スコア: 0.70以上
 """
 
+import numpy as np
 import cv2
+
 import json
 import logging
-import numpy as np
 import sys
 import time
 from dataclasses import asdict, dataclass
@@ -133,8 +134,10 @@ class Week3FinalBenchmark:
 
         # 目標達成判定
         target_achievement = {
-            "face_detection_rate": statistics["face_detection_rate"] >= self.targets["face_detection_rate"],
-            "pose_detection_rate": statistics["pose_detection_rate"] >= self.targets["pose_detection_rate"],
+            "face_detection_rate": statistics["face_detection_rate"]
+            >= self.targets["face_detection_rate"],
+            "pose_detection_rate": statistics["pose_detection_rate"]
+            >= self.targets["pose_detection_rate"],
             "sci_score": statistics["sci_anime_average"] >= self.targets["sci_score"],
         }
 
@@ -170,14 +173,17 @@ class Week3FinalBenchmark:
 
         # SCI評価（従来 vs アニメ特化）
         rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        sci_result_standard = self.evaluation_system.evaluate_single_extraction(rgb_image, anime_optimized=False)
-        sci_result_anime = self.evaluation_system.evaluate_single_extraction(rgb_image, anime_optimized=True)
+        sci_result_standard = self.evaluation_system.evaluate_single_extraction(
+            rgb_image, anime_optimized=False
+        )
+        sci_result_anime = self.evaluation_system.evaluate_single_extraction(
+            rgb_image, anime_optimized=True
+        )
 
         # 改善指標計算
         improvement_metrics = {
-            "ensemble_boost": ensemble_result.ensemble_confidence - max(
-                [d.confidence for d in ensemble_result.face_detections], default=0.0
-            ),
+            "ensemble_boost": ensemble_result.ensemble_confidence
+            - max([d.confidence for d in ensemble_result.face_detections], default=0.0),
             "sci_anime_improvement": sci_result_anime.sci_total - sci_result_standard.sci_total,
             "detection_diversity": len(ensemble_result.method_contributions),
         }
@@ -187,7 +193,9 @@ class Week3FinalBenchmark:
         return BenchmarkResult(
             image_path=str(image_path),
             face_detection_success=len(ensemble_result.face_detections) > 0,
-            face_confidence=max([d.confidence for d in ensemble_result.face_detections], default=0.0),
+            face_confidence=max(
+                [d.confidence for d in ensemble_result.face_detections], default=0.0
+            ),
             pose_detection_success=ensemble_result.pose_result.detected,
             pose_confidence=ensemble_result.pose_result.confidence,
             sci_score=sci_result_standard.sci_total,
@@ -262,7 +270,9 @@ class Week3FinalBenchmark:
         avg_ensemble_improvement = np.mean(ensemble_improvements)
 
         # SCI アニメ特化改善効果
-        sci_improvements = [r.improvement_metrics.get("sci_anime_improvement", 0.0) for r in results]
+        sci_improvements = [
+            r.improvement_metrics.get("sci_anime_improvement", 0.0) for r in results
+        ]
         avg_sci_improvement = np.mean(sci_improvements)
 
         # 手法多様性
@@ -295,7 +305,7 @@ class Week3FinalBenchmark:
         # JSONシリアライズ用にdatetimeとnumpy型を変換
         report_dict = asdict(report)
         report_dict["timestamp"] = report.timestamp.isoformat()
-        
+
         # numpy bool_をPython boolに変換
         def convert_numpy_types(obj):
             if isinstance(obj, np.bool_):
@@ -309,7 +319,7 @@ class Week3FinalBenchmark:
             elif isinstance(obj, list):
                 return [convert_numpy_types(v) for v in obj]
             return obj
-        
+
         report_dict = convert_numpy_types(report_dict)
 
         with open(output_file, "w", encoding="utf-8") as f:
@@ -341,7 +351,9 @@ class Week3FinalBenchmark:
         print(f"\n🔧 アンサンブル効果:")
         print(f"  平均信頼度向上: {report.ensemble_effectiveness['avg_ensemble_improvement']:.3f}")
         print(f"  SCI改善効果: {report.ensemble_effectiveness['avg_sci_improvement']:.3f}")
-        print(f"  目標達成画像: {report.ensemble_effectiveness['total_target_achieving_images']}/{report.total_images}枚")
+        print(
+            f"  目標達成画像: {report.ensemble_effectiveness['total_target_achieving_images']}/{report.total_images}枚"
+        )
 
         # 総合評価
         all_targets_achieved = all(report.target_achievement.values())

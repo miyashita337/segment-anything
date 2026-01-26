@@ -4,21 +4,22 @@ QI-006: トラッカーダッシュボード画像統合更新
 http://100.123.241.106:8088/tracker/QI-006 に抽出画像を表示
 """
 
-import sys
 import json
 import shutil
+import sys
 from pathlib import Path
+
 
 def copy_images_to_tracker_workspace():
     """抽出画像をトラッカーワークスペースにコピー"""
-    
+
     # ソース: workspace内の画像
     source_dir = Path("workspace/QI-006/dashboard/images")
-    
+
     # ターゲット: tracker-workspace（統合ダッシュボードサーバーがアクセス可能）
     target_dir = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/QI-006/dashboard/images")
     target_dir.mkdir(parents=True, exist_ok=True)
-    
+
     copied_files = []
     if source_dir.exists():
         for image_file in source_dir.glob("*.jpg"):
@@ -26,35 +27,39 @@ def copy_images_to_tracker_workspace():
             shutil.copy2(image_file, target_file)
             copied_files.append(image_file.name)
             print(f"📁 トラッカー用コピー: {image_file.name}")
-    
+
     print(f"✅ トラッカー画像コピー完了: {len(copied_files)}枚")
     return copied_files
 
 
 def generate_tracker_dashboard_with_images(image_files):
     """抽出画像付きトラッカーダッシュボード生成"""
-    
+
     # GPT-5評価結果読み込み
-    gpt5_file = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/QI-006/quality/gpt5_lora_quality_evaluation.json")
+    gpt5_file = Path(
+        "/mnt/c/AItools/lora/train/yado/tracker-workspace/QI-006/quality/gpt5_lora_quality_evaluation.json"
+    )
     gpt5_data = {}
-    
+
     if gpt5_file.exists():
-        with open(gpt5_file, 'r', encoding='utf-8') as f:
+        with open(gpt5_file, "r", encoding="utf-8") as f:
             gpt5_data = json.load(f)
-    
+
     # 複数キャラクター検出結果読み込み
-    detection_file = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/QI-006/quality/qi006_detection_results.json")
+    detection_file = Path(
+        "/mnt/c/AItools/lora/train/yado/tracker-workspace/QI-006/quality/qi006_detection_results.json"
+    )
     detection_data = {}
-    
+
     if detection_file.exists():
-        with open(detection_file, 'r', encoding='utf-8') as f:
+        with open(detection_file, "r", encoding="utf-8") as f:
             detection_data = json.load(f)
-    
+
     # 評価データ
-    detailed_results = gpt5_data.get('detailed_results', [])
-    grade_distribution = gpt5_data.get('grade_distribution', {}).get('grade_distribution', {})
-    detection_stats = detection_data.get('statistics', {})
-    
+    detailed_results = gpt5_data.get("detailed_results", [])
+    grade_distribution = gpt5_data.get("grade_distribution", {}).get("grade_distribution", {})
+    detection_stats = detection_data.get("statistics", {})
+
     html = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -125,26 +130,26 @@ def generate_tracker_dashboard_with_images(image_files):
         <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
             <h2 class="text-xl font-bold text-gray-800 mb-4">🖼️ 抽出結果画像 ({len(image_files)}枚)</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">"""
-    
+
     # 評価結果を辞書化
     evaluation_dict = {}
     for result in detailed_results:
-        if result.get('status') == 'success':
-            evaluation_dict[result.get('image_name', '')] = result
-    
+        if result.get("status") == "success":
+            evaluation_dict[result.get("image_name", "")] = result
+
     # 画像カード生成
     sorted_images = sorted(image_files)
     for image_name in sorted_images:
         evaluation = evaluation_dict.get(image_name, {})
-        grade = evaluation.get('grade', 'N/A')
-        lora_suitability = evaluation.get('lora_suitability', '不明')
-        reason = evaluation.get('detailed_reason', '評価なし')
-        person_count = evaluation.get('person_count', '不明')
-        extraction_quality = evaluation.get('extraction_quality', '不明')
-        
+        grade = evaluation.get("grade", "N/A")
+        lora_suitability = evaluation.get("lora_suitability", "不明")
+        reason = evaluation.get("detailed_reason", "評価なし")
+        person_count = evaluation.get("person_count", "不明")
+        extraction_quality = evaluation.get("extraction_quality", "不明")
+
         # 短縮版理由
         short_reason = reason[:40] + "..." if len(reason) > 40 else reason
-        
+
         html += f"""
                 <div class="image-card border rounded-lg p-3 bg-gray-50 hover:shadow-md transition-shadow">
                     <div class="mb-2">
@@ -165,7 +170,7 @@ def generate_tracker_dashboard_with_images(image_files):
                         </div>
                     </div>
                 </div>"""
-    
+
     html += f"""
             </div>
         </div>
@@ -174,16 +179,16 @@ def generate_tracker_dashboard_with_images(image_files):
         <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
             <h2 class="text-xl font-bold text-gray-800 mb-4">🏆 GPT-5品質評価分布</h2>
             <div class="grid grid-cols-5 gap-4">"""
-    
+
     grade_descriptions = {
-        'A': ('🏆', 'LoRA学習に最適'),
-        'B': ('✅', '適している'),
-        'C': ('⚠️', '注意が必要'),
-        'D': ('❌', '問題あり'),
-        'F': ('🚫', '使用不可')
+        "A": ("🏆", "LoRA学習に最適"),
+        "B": ("✅", "適している"),
+        "C": ("⚠️", "注意が必要"),
+        "D": ("❌", "問題あり"),
+        "F": ("🚫", "使用不可"),
     }
-    
-    for grade in ['A', 'B', 'C', 'D', 'F']:
+
+    for grade in ["A", "B", "C", "D", "F"]:
         count = grade_distribution.get(grade, 0)
         emoji, desc = grade_descriptions[grade]
         html += f"""
@@ -193,13 +198,13 @@ def generate_tracker_dashboard_with_images(image_files):
                     <div class="text-xl font-bold text-gray-800">{count}枚</div>
                     <div class="text-xs text-gray-600">{desc}</div>
                 </div>"""
-    
+
     html += f"""
             </div>
         </div>
 
         <!-- 複数キャラクター検出統計 -->"""
-    
+
     if detection_stats:
         html += f"""
         <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
@@ -219,7 +224,7 @@ def generate_tracker_dashboard_with_images(image_files):
                 </div>
             </div>
         </div>"""
-    
+
     html += f"""
         <!-- 改善効果サマリー -->
         <div class="bg-white rounded-lg shadow-lg p-6">
@@ -262,7 +267,7 @@ def generate_tracker_dashboard_with_images(image_files):
     </div>
 </body>
 </html>"""
-    
+
     return html
 
 
@@ -270,34 +275,36 @@ def main():
     """メイン実行関数"""
     print("📊 QI-006: トラッカーダッシュボード画像統合更新開始")
     print("=" * 60)
-    
+
     # 1. 画像をトラッカーワークスペースにコピー
     print("1. トラッカー用画像コピー中...")
     image_files = copy_images_to_tracker_workspace()
-    
+
     if not image_files:
         print("❌ コピーする画像が見つかりませんでした")
         return False
-    
+
     # 2. トラッカーダッシュボードHTML生成
     print("2. トラッカーダッシュボードHTML生成中...")
     html_content = generate_tracker_dashboard_with_images(image_files)
-    
+
     # 3. トラッカーダッシュボード保存
-    dashboard_file = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/QI-006/dashboard/dashboard.html")
+    dashboard_file = Path(
+        "/mnt/c/AItools/lora/train/yado/tracker-workspace/QI-006/dashboard/dashboard.html"
+    )
     dashboard_file.parent.mkdir(parents=True, exist_ok=True)
-    
-    with open(dashboard_file, 'w', encoding='utf-8') as f:
+
+    with open(dashboard_file, "w", encoding="utf-8") as f:
         f.write(html_content)
-    
+
     file_size = dashboard_file.stat().st_size
-    
+
     print(f"✅ トラッカーダッシュボード更新完了")
     print(f"   ファイル: {dashboard_file}")
     print(f"   サイズ: {file_size / 1024:.1f}KB")
     print(f"   画像数: {len(image_files)}枚")
     print(f"🌐 アクセスURL: http://100.123.241.106:8088/tracker/QI-006")
-    
+
     return True
 
 

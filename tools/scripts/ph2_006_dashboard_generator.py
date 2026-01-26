@@ -12,39 +12,43 @@ from pathlib import Path
 
 class PH2006DashboardGenerator:
     """PH2-006専用ダッシュボード生成器"""
-    
+
     def __init__(self):
         self.timestamp = datetime.now()
         self.output_dir = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-006/dashboard")
         self.output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     def generate_dashboard(self) -> str:
         """HTMLダッシュボード生成"""
-        
+
         # テスト結果読み込み
-        test_results_path = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-006/tests/ph2_006_basic_test_results.json")
+        test_results_path = Path(
+            "/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-006/tests/ph2_006_basic_test_results.json"
+        )
         test_results = {}
-        
+
         if test_results_path.exists():
-            with open(test_results_path, 'r', encoding='utf-8') as f:
+            with open(test_results_path, "r", encoding="utf-8") as f:
                 test_results = json.load(f)
-        
+
         # 抽出結果確認
         extraction_dir = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-006/extraction")
         extracted_files = list(extraction_dir.glob("*.jpg")) if extraction_dir.exists() else []
-        
+
         # 監視レポート読み込み
-        report_path = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-006/reports/test_monitoring_report.json")
+        report_path = Path(
+            "/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-006/reports/test_monitoring_report.json"
+        )
         monitoring_report = {}
-        
+
         if report_path.exists():
-            with open(report_path, 'r', encoding='utf-8') as f:
+            with open(report_path, "r", encoding="utf-8") as f:
                 monitoring_report = json.load(f)
-        
+
         # メトリクス情報取得
         latest_metrics = test_results.get("monitoring_status", {}).get("latest_system_metrics", {})
         system_stats = monitoring_report.get("system_statistics", {})
-        
+
         html_content = f"""
 <!DOCTYPE html>
 <html lang="ja">
@@ -506,13 +510,13 @@ class PH2006DashboardGenerator:
                 <div class="result-item">
                     ✅ {filename}
                 </div>"""
-        
+
         if len(extracted_files) > 12:
             html_content += f"""
                 <div class="result-item">
                     + {len(extracted_files) - 12} more files...
                 </div>"""
-        
+
         html_content += f"""
             </div>
         </div>
@@ -527,32 +531,34 @@ class PH2006DashboardGenerator:
 </body>
 </html>
 """
-        
+
         dashboard_path = self.output_dir / "dashboard.html"
-        with open(dashboard_path, 'w', encoding='utf-8') as f:
+        with open(dashboard_path, "w", encoding="utf-8") as f:
             f.write(html_content)
-        
+
         return str(dashboard_path)
-    
+
     def generate_quality_report(self) -> str:
         """品質レポート生成"""
-        
+
         # テスト結果読み込み
-        test_results_path = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-006/tests/ph2_006_basic_test_results.json")
-        
+        test_results_path = Path(
+            "/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-006/tests/ph2_006_basic_test_results.json"
+        )
+
         test_summary = {}
         monitoring_status = {}
-        
+
         if test_results_path.exists():
-            with open(test_results_path, 'r', encoding='utf-8') as f:
+            with open(test_results_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 test_summary = data
                 monitoring_status = data.get("monitoring_status", {})
-        
+
         # 抽出結果確認
         extraction_dir = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-006/extraction")
         extracted_count = len(list(extraction_dir.glob("*.jpg"))) if extraction_dir.exists() else 0
-        
+
         report = {
             "ph2_006_quality_report": {
                 "timestamp": self.timestamp.isoformat(),
@@ -568,111 +574,107 @@ class PH2006DashboardGenerator:
                             "CPU・メモリ・GPU・ネットワーク監視",
                             "1秒間隔リアルタイム収集",
                             "最大1000件履歴保持",
-                            "自動異常検出"
-                        ]
+                            "自動異常検出",
+                        ],
                     },
                     "alert_management_system": {
                         "status": "完了",
                         "active_alerts": monitoring_status.get("active_alerts_count", 0),
                         "success_rate": "100%",
-                        "features": [
-                            "4段階重要度レベル",
-                            "閾値ベース自動アラート",
-                            "最大500件履歴管理",
-                            "リアルタイム通知"
-                        ]
+                        "features": ["4段階重要度レベル", "閾値ベース自動アラート", "最大500件履歴管理", "リアルタイム通知"],
                     },
                     "web_dashboard": {
                         "status": "完了",
                         "port": 5001,
                         "api_endpoints": 4,
                         "success_rate": "100%",
-                        "features": [
-                            "リアルタイムチャート表示",
-                            "レスポンシブデザイン",
-                            "RESTful API",
-                            "Chart.js統合"
-                        ]
+                        "features": ["リアルタイムチャート表示", "レスポンシブデザイン", "RESTful API", "Chart.js統合"],
                     },
                     "report_generation": {
                         "status": "完了",
                         "format": "JSON",
                         "success_rate": "100%",
-                        "features": [
-                            "システム統計レポート",
-                            "処理メトリクスレポート", 
-                            "アラート統計レポート",
-                            "自動保存機能"
-                        ]
-                    }
+                        "features": ["システム統計レポート", "処理メトリクスレポート", "アラート統計レポート", "自動保存機能"],
+                    },
                 },
                 "test_results": {
                     "basic_monitoring_test": test_summary.get("success", False),
                     "metrics_collection_rate": "0.8件/秒",
                     "monitoring_uptime": f"{monitoring_status.get('uptime_seconds', 0):.1f}秒",
                     "system_performance": "healthy",
-                    "overall_success_rate": "100%"
+                    "overall_success_rate": "100%",
                 },
                 "system_requirements": {
                     "cpu_cores": 12,
-                    "memory_gb": monitoring_status.get("latest_system_metrics", {}).get("memory_total_gb", 19.5),
-                    "gpu_available": monitoring_status.get("latest_system_metrics", {}).get("gpu_available", True),
+                    "memory_gb": monitoring_status.get("latest_system_metrics", {}).get(
+                        "memory_total_gb", 19.5
+                    ),
+                    "gpu_available": monitoring_status.get("latest_system_metrics", {}).get(
+                        "gpu_available", True
+                    ),
                     "gpu_model": "NVIDIA GeForce RTX 4070 Ti SUPER",
-                    "gpu_vram_gb": monitoring_status.get("latest_system_metrics", {}).get("gpu_memory_total_mb", 16375.5) / 1024,
-                    "disk_space": "十分な空き容量"
+                    "gpu_vram_gb": monitoring_status.get("latest_system_metrics", {}).get(
+                        "gpu_memory_total_mb", 16375.5
+                    )
+                    / 1024,
+                    "disk_space": "十分な空き容量",
                 },
                 "monitoring_metrics": {
-                    "current_cpu_percent": monitoring_status.get("latest_system_metrics", {}).get("cpu_percent", 0),
-                    "current_memory_percent": monitoring_status.get("latest_system_metrics", {}).get("memory_percent", 0),
-                    "current_gpu_utilization": monitoring_status.get("latest_system_metrics", {}).get("gpu_utilization", 0),
+                    "current_cpu_percent": monitoring_status.get("latest_system_metrics", {}).get(
+                        "cpu_percent", 0
+                    ),
+                    "current_memory_percent": monitoring_status.get(
+                        "latest_system_metrics", {}
+                    ).get("memory_percent", 0),
+                    "current_gpu_utilization": monitoring_status.get(
+                        "latest_system_metrics", {}
+                    ).get("gpu_utilization", 0),
                     "network_activity": "正常",
-                    "process_count": monitoring_status.get("latest_system_metrics", {}).get("process_count", 0)
+                    "process_count": monitoring_status.get("latest_system_metrics", {}).get(
+                        "process_count", 0
+                    ),
                 },
                 "extraction_pipeline": {
                     "status": "完了",
                     "extracted_images": extracted_count,
-                    "workspace_output": "/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-006/"
+                    "workspace_output": "/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-006/",
                 },
                 "file_locations": {
                     "monitoring_system": "features/evaluation/realtime_dashboard/monitoring_system.py",
                     "web_dashboard": "features/evaluation/realtime_dashboard/web_dashboard.py",
                     "test_script": "tools/scripts/ph2_006_monitoring_simple_test.py",
-                    "dashboard_generator": "tools/scripts/ph2_006_dashboard_generator.py"
-                }
+                    "dashboard_generator": "tools/scripts/ph2_006_dashboard_generator.py",
+                },
             }
         }
-        
+
         report_path = self.output_dir.parent / "quality" / "ph2_006_quality_report.json"
         report_path.parent.mkdir(parents=True, exist_ok=True)
-        
-        with open(report_path, 'w', encoding='utf-8') as f:
+
+        with open(report_path, "w", encoding="utf-8") as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
-        
+
         return str(report_path)
 
 
 def main():
     """メイン実行"""
     generator = PH2006DashboardGenerator()
-    
+
     print("🎯 PH2-006 ダッシュボード生成開始")
     print("=" * 60)
-    
+
     # HTMLダッシュボード生成
     dashboard_path = generator.generate_dashboard()
     print(f"📊 HTMLダッシュボード生成: {dashboard_path}")
-    
+
     # 品質レポート生成
     report_path = generator.generate_quality_report()
     print(f"📋 品質レポート生成: {report_path}")
-    
+
     print("\\n✅ PH2-006 ダッシュボード生成完了")
-    
-    return {
-        "dashboard_path": dashboard_path,
-        "report_path": report_path,
-        "status": "完了"
-    }
+
+    return {"dashboard_path": dashboard_path, "report_path": report_path, "status": "完了"}
 
 
 if __name__ == "__main__":

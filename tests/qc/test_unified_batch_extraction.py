@@ -4,27 +4,29 @@ Tests for QC品質調査用バッチキャラクター抽出システム
 Environment-dependent tests that require GPU and model files.
 """
 
-import pytest
-import tempfile
-import shutil
-import os
-import json
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
 import torch
+
+import json
+import os
+import pytest
+import shutil
+import tempfile
+from pathlib import Path
+from unittest.mock import MagicMock, Mock, patch
 
 # 環境依存テスト: GPU・モデルファイル不在時は全てSkip
 pytestmark = pytest.mark.skipif(
-    not torch.cuda.is_available() or
-    not Path("sam_vit_h_4b8939.pth").exists() or
-    not Path("yolov8x.pt").exists(),
-    reason="Environment dependent: GPU and model files required"
+    not torch.cuda.is_available()
+    or not Path("sam_vit_h_4b8939.pth").exists()
+    or not Path("yolov8x.pt").exists(),
+    reason="Environment dependent: GPU and model files required",
 )
 
 # Skip import if not available
 try:
     import sys
     from pathlib import Path
+
     # Add tests/qc to path for imports
     sys.path.insert(0, str(Path(__file__).parent))
     from unified_batch_extraction import QCBatchExtractor
@@ -51,21 +53,21 @@ class TestQCBatchExtractor:
         self.temp_path = Path(self.temp_dir)
 
         # CI環境変数設定
-        os.environ['CI_ENVIRONMENT'] = 'true'
+        os.environ["CI_ENVIRONMENT"] = "true"
 
     def teardown_method(self):
         """テスト後クリーンアップ"""
-        if hasattr(self, 'temp_dir') and Path(self.temp_dir).exists():
+        if hasattr(self, "temp_dir") and Path(self.temp_dir).exists():
             shutil.rmtree(self.temp_dir)
 
         # CI環境変数クリア
-        if 'CI_ENVIRONMENT' in os.environ:
-            del os.environ['CI_ENVIRONMENT']
+        if "CI_ENVIRONMENT" in os.environ:
+            del os.environ["CI_ENVIRONMENT"]
 
     def test_extractor_initialization_ci_mode(self):
         """抽出器初期化テスト（CI環境）"""
         # CI環境フラグ設定
-        os.environ['CI_ENVIRONMENT'] = 'true'
+        os.environ["CI_ENVIRONMENT"] = "true"
 
         extractor = QCBatchExtractor()
 
@@ -76,12 +78,12 @@ class TestQCBatchExtractor:
         assert extractor.yolo_model is None
 
         # 統計情報初期化確認
-        assert extractor.stats['total_processed'] == 0
-        assert extractor.stats['total_success'] == 0
-        assert extractor.stats['total_failed'] == 0
-        assert isinstance(extractor.stats['folder_stats'], dict)
+        assert extractor.stats["total_processed"] == 0
+        assert extractor.stats["total_success"] == 0
+        assert extractor.stats["total_failed"] == 0
+        assert isinstance(extractor.stats["folder_stats"], dict)
 
-    @patch.dict(os.environ, {'CI_ENVIRONMENT': ''})
+    @patch.dict(os.environ, {"CI_ENVIRONMENT": ""})
     def test_extractor_initialization_local_mode(self):
         """抽出器初期化テスト（ローカル環境）"""
         # 実際のモデルファイルパスでの初期化テスト
@@ -106,7 +108,7 @@ class TestQCBatchExtractor:
 
     def test_pushover_config_loading_ci(self):
         """Pushover設定読み込みテスト（CI環境）"""
-        os.environ['CI_ENVIRONMENT'] = 'true'
+        os.environ["CI_ENVIRONMENT"] = "true"
 
         extractor = QCBatchExtractor()
         config = extractor.load_pushover_config()
@@ -115,16 +117,13 @@ class TestQCBatchExtractor:
         assert isinstance(config, dict)
         assert len(config) == 0
 
-    @patch('builtins.open', create=True)
-    @patch('json.load')
-    @patch.dict(os.environ, {'CI_ENVIRONMENT': ''})
+    @patch("builtins.open", create=True)
+    @patch("json.load")
+    @patch.dict(os.environ, {"CI_ENVIRONMENT": ""})
     def test_pushover_config_loading_local(self, mock_json_load, mock_open):
         """Pushover設定読み込みテスト（ローカル環境・モック）"""
         # モック設定
-        mock_config = {
-            'user_key': 'test_user_key',
-            'api_token': 'test_api_token'
-        }
+        mock_config = {"user_key": "test_user_key", "api_token": "test_api_token"}
         mock_json_load.return_value = mock_config
         mock_open.return_value.__enter__.return_value = Mock()
 
@@ -133,10 +132,10 @@ class TestQCBatchExtractor:
         # 設定読み込み確認
         assert extractor.pushover_config == mock_config
 
-    @patch('requests.post')
+    @patch("requests.post")
     def test_pushover_notification(self, mock_post):
         """Pushover通知テスト"""
-        os.environ['CI_ENVIRONMENT'] = 'true'
+        os.environ["CI_ENVIRONMENT"] = "true"
 
         # モックレスポンス設定
         mock_response = Mock()
@@ -144,10 +143,7 @@ class TestQCBatchExtractor:
         mock_post.return_value = mock_response
 
         extractor = QCBatchExtractor()
-        extractor.pushover_config = {
-            'user_key': 'test_user',
-            'api_token': 'test_token'
-        }
+        extractor.pushover_config = {"user_key": "test_user", "api_token": "test_token"}
 
         # 通知送信テスト
         extractor.send_pushover_notification("テストメッセージ", "テストタイトル")
@@ -157,7 +153,7 @@ class TestQCBatchExtractor:
 
     def test_extract_character_ci_mode(self):
         """キャラクター抽出テスト（CI環境）"""
-        os.environ['CI_ENVIRONMENT'] = 'true'
+        os.environ["CI_ENVIRONMENT"] = "true"
 
         extractor = QCBatchExtractor()
 
@@ -174,7 +170,7 @@ class TestQCBatchExtractor:
 
     def test_process_folder_ci_mode(self):
         """フォルダ処理テスト（CI環境）"""
-        os.environ['CI_ENVIRONMENT'] = 'true'
+        os.environ["CI_ENVIRONMENT"] = "true"
 
         extractor = QCBatchExtractor()
 
@@ -193,17 +189,17 @@ class TestQCBatchExtractor:
 
         # 統計結果確認
         assert isinstance(stats, dict)
-        assert 'total' in stats
-        assert 'success' in stats
-        assert 'failed' in stats
-        assert stats['total'] == 3
+        assert "total" in stats
+        assert "success" in stats
+        assert "failed" in stats
+        assert stats["total"] == 3
         # CI環境では抽出が失敗するため、failed が 3
-        assert stats['failed'] == 3
-        assert stats['success'] == 0
+        assert stats["failed"] == 3
+        assert stats["success"] == 0
 
     def test_run_qc_extraction_ci_mode(self):
         """QC抽出メイン処理テスト（CI環境）"""
-        os.environ['CI_ENVIRONMENT'] = 'true'
+        os.environ["CI_ENVIRONMENT"] = "true"
 
         extractor = QCBatchExtractor()
 
@@ -211,20 +207,20 @@ class TestQCBatchExtractor:
         extractor.run_qc_extraction()
 
         # 統計情報の確認
-        assert extractor.stats['total_processed'] > 0
-        assert 'KANA08' in extractor.stats['folder_stats']
-        assert 'KANA05' in extractor.stats['folder_stats']
-        assert 'KANA07' in extractor.stats['folder_stats']
+        assert extractor.stats["total_processed"] > 0
+        assert "KANA08" in extractor.stats["folder_stats"]
+        assert "KANA05" in extractor.stats["folder_stats"]
+        assert "KANA07" in extractor.stats["folder_stats"]
 
         # 各フォルダの統計確認
-        for folder_name in ['KANA08', 'KANA05', 'KANA07']:
-            folder_stats = extractor.stats['folder_stats'][folder_name]
-            assert 'total' in folder_stats
-            assert 'success' in folder_stats
-            assert 'failed' in folder_stats
-            assert 'success_rate' in folder_stats
+        for folder_name in ["KANA08", "KANA05", "KANA07"]:
+            folder_stats = extractor.stats["folder_stats"][folder_name]
+            assert "total" in folder_stats
+            assert "success" in folder_stats
+            assert "failed" in folder_stats
+            assert "success_rate" in folder_stats
 
-    @patch('unified_batch_extraction.QCBatchExtractor')
+    @patch("unified_batch_extraction.QCBatchExtractor")
     def test_main_function(self, mock_extractor_class):
         """メイン関数テスト"""
         from unified_batch_extraction import main
@@ -247,30 +243,32 @@ class TestEnvironmentDetection:
     def test_ci_environment_detection(self):
         """CI環境検出テスト"""
         # CI環境変数設定
-        os.environ['CI_ENVIRONMENT'] = 'true'
+        os.environ["CI_ENVIRONMENT"] = "true"
 
         # モジュールを再インポートして環境検出をテスト
         import importlib
         import unified_batch_extraction
+
         importlib.reload(unified_batch_extraction)
 
         # IS_CI フラグの確認
         assert unified_batch_extraction.IS_CI == True
 
         # 環境変数クリア
-        del os.environ['CI_ENVIRONMENT']
+        del os.environ["CI_ENVIRONMENT"]
 
     def test_local_environment_detection(self):
         """ローカル環境検出テスト"""
         # CI環境変数が未設定の場合
-        if 'CI_ENVIRONMENT' in os.environ:
-            del os.environ['CI_ENVIRONMENT']
+        if "CI_ENVIRONMENT" in os.environ:
+            del os.environ["CI_ENVIRONMENT"]
 
         # モジュールを再インポートして環境検出をテスト
         import importlib
         import unified_batch_extraction
+
         importlib.reload(unified_batch_extraction)
 
         # パスの存在により判定が変わる
-        expected_ci = not os.path.exists('/mnt/c')
+        expected_ci = not os.path.exists("/mnt/c")
         assert unified_batch_extraction.IS_CI == expected_ci

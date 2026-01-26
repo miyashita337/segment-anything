@@ -22,36 +22,36 @@ from features.common.input_validation import (
 def create_extraction_report_from_images(image_dir, output_path):
     """
     画像ディレクトリから実際の品質解析を行いextraction_report.jsonを生成
-    
+
     Args:
         image_dir (str): 抽出画像ディレクトリパス
         output_path (str): 出力JSONパス
-        
+
     Returns:
         bool: 成功時True、失敗時False
-        
+
     Raises:
         InputValidationError: 入力検証エラー時
     """
     try:
         # 入力ディレクトリ検証
         validated_image_dir = validate_input_directory(image_dir, "抽出画像ディレクトリ")
-        
+
         # 出力ディレクトリ検証・作成
         output_path_obj = Path(output_path)
         output_dir = validate_output_directory(output_path_obj.parent, "レポート出力ディレクトリ")
-        
+
         # 検証結果ログ
         log_validation_summary([validated_image_dir], [output_dir], "実際の品質解析による抽出レポート生成")
-        
+
     except InputValidationError as e:
         print(f"\n{e}")
         return False
-    
+
     # 画像ファイル検索
     image_dir = validated_image_dir
     extracted_images = list(image_dir.glob("*.jpg")) + list(image_dir.glob("*_extracted.jpg"))
-    
+
     if not extracted_images:
         error_msg = f"""❌ エラー: 抽出画像が見つかりません
    パス: {image_dir}
@@ -64,24 +64,25 @@ def create_extraction_report_from_images(image_dir, output_path):
 ⚠️ 注意: 空のディレクトリでのレポート生成は不可能です"""
         print(error_msg)
         return False
-    
+
     print("🔄 実際の品質解析による extraction_result.json 生成開始")
     print("📊 UnifiedQualityChecker統合システムを使用")
-    
+
     # UnifiedQualityCheckerのコア機能を使用して実際の品質解析を実行
     sys.path.append(str(Path(__file__).parent))
     try:
         from tools.core.unified_quality_checker import UnifiedQualityChecker
+
         quality_checker = UnifiedQualityChecker()
     except ImportError as e:
         print(f"❌ UnifiedQualityChecker のインポートに失敗: {e}")
         return False
-    
+
     # トラッカーIDを出力パスから抽出
     tracker_id = None
     output_path_parts = Path(output_path).parts
     for part in output_path_parts:
-        if part.startswith(('TRACKER-', 'QUAL-', 'INTG-', 'INCI-', 'KIRO-')):
+        if part.startswith(("TRACKER-", "QUAL-", "INTG-", "INCI-", "KIRO-")):
             tracker_id = part
             break
 
@@ -100,10 +101,7 @@ def create_extraction_report_from_images(image_dir, output_path):
             "failure_count": 0,
             "success_rate": 1.0,
             "avg_processing_time": 0.0,  # 実測値で更新
-            "quality_distribution": {
-                "A": 0, "B": 0, "C": 0, "D": 0, "E": 0, "F": 0
-            },
-
+            "quality_distribution": {"A": 0, "B": 0, "C": 0, "D": 0, "E": 0, "F": 0},
             # メタデータ（詳細情報）
             "metadata": {
                 "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -113,11 +111,10 @@ def create_extraction_report_from_images(image_dir, output_path):
                     "actual_analysis": True,
                     "unified_quality_system": True,
                     "opencv_analysis": True,
-                    "fixed_values_removed": True
-                }
-            }
+                    "fixed_values_removed": True,
+                },
+            },
         },
-        
         "results": [],
         "summary": {
             "average_quality_score": 0.0,  # 実測値で更新
@@ -125,61 +122,61 @@ def create_extraction_report_from_images(image_dir, output_path):
                 "total_processing_time": 0.0,
                 "average_time_per_image": 0.0,
                 "memory_usage": "Normal",
-                "gpu_utilization": "Normal"
-            }
-        }
+                "gpu_utilization": "Normal",
+            },
+        },
     }
-    
+
     # 各画像の実際の品質解析を実行
     total_quality_score = 0.0
     total_processing_time = 0.0
-    
+
     print(f"📊 {len(extracted_images)}枚の画像を実際に解析中...")
-    
+
     for i, img_path in enumerate(sorted(extracted_images)):
         image_name = img_path.stem.replace("_extracted", "")
-        
+
         try:
             # 実際の画像解析を実行（OpenCV使用）
             import numpy as np
             import cv2
 
             from datetime import datetime as dt
-            
+
             start_time = dt.now()
-            
+
             # 画像読み込み
             image = cv2.imread(str(img_path))
             if image is None:
                 print(f"⚠️  画像読み込み失敗: {img_path}")
                 continue
-                
+
             # 実際の品質メトリクス計算
             height, width = image.shape[:2]
-            
+
             # エッジ検出による品質評価
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             edges = cv2.Canny(gray, 100, 200)
             edge_density = np.sum(edges > 0) / (width * height)
-            
+
             # コントラスト評価
             contrast = np.std(gray) / 255.0
-            
+
             # 明度評価
             brightness = np.mean(gray) / 255.0
-            
+
             # 総合品質スコア計算（実測値）
             quality_score = (
-                edge_density * 0.4 +       # エッジ密度40%
-                contrast * 0.35 +          # コントラスト35%
-                (1.0 - abs(brightness - 0.5) * 2) * 0.25  # 明度バランス25%
+                edge_density * 0.4
+                + contrast * 0.35  # エッジ密度40%
+                + (1.0 - abs(brightness - 0.5) * 2) * 0.25  # コントラスト35%  # 明度バランス25%
             )
-            
+
             # 処理時間測定
             processing_time = (dt.now() - start_time).total_seconds()
             total_processing_time += processing_time
             total_quality_score += quality_score
-            
+
             # 品質に基づく評価（実測値による判定）
             if quality_score > 0.8:
                 grade = "A"
@@ -191,9 +188,9 @@ def create_extraction_report_from_images(image_dir, output_path):
                 grade = "D"
             else:
                 grade = "E"
-            
+
             extraction_data["extraction_results"]["quality_distribution"][grade] += 1
-            
+
             result_entry = {
                 "image_path": f"extraction/{image_name}.jpg",
                 "output_path": str(img_path),
@@ -206,32 +203,34 @@ def create_extraction_report_from_images(image_dir, output_path):
                     "background_removal": max(0.8, quality_score),
                     "edge_quality": edge_density,
                     "contrast": contrast,
-                    "brightness": brightness
+                    "brightness": brightness,
                 },
                 "technical_details": {
                     "image_dimensions": f"{width}x{height}",
                     "edge_density": edge_density,
                     "contrast_score": contrast,
                     "brightness_score": brightness,
-                    "analysis_method": "OpenCV実測値解析"
+                    "analysis_method": "OpenCV実測値解析",
                 },
                 "evaluation": {
                     "grade": grade,
                     "evaluator": "UnifiedQualityChecker Integration",
                     "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    "notes": f"実際のOpenCV解析による品質スコア: {quality_score:.3f} - 固定値ではなく実測値"
-                }
+                    "notes": f"実際のOpenCV解析による品質スコア: {quality_score:.3f} - 固定値ではなく実測値",
+                },
             }
-            
+
             extraction_data["results"].append(result_entry)
-            
+
             if (i + 1) % 5 == 0:
-                print(f"  進捗: {i+1}/{len(extracted_images)} 枚完了 (平均品質: {total_quality_score/(i+1):.3f})")
-                
+                print(
+                    f"  進捗: {i+1}/{len(extracted_images)} 枚完了 (平均品質: {total_quality_score/(i+1):.3f})"
+                )
+
         except Exception as e:
             print(f"⚠️  画像解析エラー {img_path}: {e}")
             continue
-    
+
     # サマリー情報を実測値で更新
     if extraction_data["results"]:
         avg_quality = total_quality_score / len(extraction_data["results"])
@@ -239,7 +238,9 @@ def create_extraction_report_from_images(image_dir, output_path):
 
         # チェックリスト仕様対応: 必須キーを正しい場所に設定
         extraction_data["summary"]["average_quality_score"] = avg_quality
-        extraction_data["summary"]["processing_statistics"]["total_processing_time"] = total_processing_time
+        extraction_data["summary"]["processing_statistics"][
+            "total_processing_time"
+        ] = total_processing_time
         extraction_data["summary"]["processing_statistics"]["average_time_per_image"] = avg_time
         extraction_data["extraction_results"]["avg_processing_time"] = avg_time
 
@@ -249,13 +250,17 @@ def create_extraction_report_from_images(image_dir, output_path):
         extraction_data["failure_count"] = extraction_data["extraction_results"]["failure_count"]
         extraction_data["success_rate"] = extraction_data["extraction_results"]["success_rate"]
         extraction_data["avg_processing_time"] = avg_time
-        extraction_data["quality_distribution"] = extraction_data["extraction_results"]["quality_distribution"]
+        extraction_data["quality_distribution"] = extraction_data["extraction_results"][
+            "quality_distribution"
+        ]
         extraction_data["metadata"] = extraction_data["extraction_results"]["metadata"]
 
         # チェックリスト仕様対応: 必須キーを追加（トップレベルとextraction_results両方）
         extraction_data["successful_extractions"] = len(extraction_data["results"])
         extraction_data["average_quality_score"] = avg_quality
-        extraction_data["extraction_results"]["successful_extractions"] = len(extraction_data["results"])
+        extraction_data["extraction_results"]["successful_extractions"] = len(
+            extraction_data["results"]
+        )
         extraction_data["extraction_results"]["average_quality_score"] = avg_quality
 
         # 統計分析データを実際の値で設定（N/A問題解決）
@@ -266,9 +271,14 @@ def create_extraction_report_from_images(image_dir, output_path):
         improvement_rate = ((avg_quality - baseline_score) / baseline_score) * 100
 
         # Cohen's d効果サイズ計算（簡易版）
-        scores = [r.get('quality_metrics', {}).get('overall_score', 0.0) for r in extraction_data["results"] if r.get('success')]
+        scores = [
+            r.get("quality_metrics", {}).get("overall_score", 0.0)
+            for r in extraction_data["results"]
+            if r.get("success")
+        ]
         if len(scores) > 1:
             import statistics
+
             std_dev = statistics.stdev(scores) if len(scores) > 1 else 0.1
             effect_size = abs(avg_quality - baseline_score) / std_dev
         else:
@@ -288,6 +298,7 @@ def create_extraction_report_from_images(image_dir, output_path):
         # 信頼区間計算（95%信頼区間の簡易計算）
         if len(scores) > 1:
             import statistics
+
             std_error = std_dev / (len(scores) ** 0.5)
             margin = 1.96 * std_error  # 95%信頼区間
             ci_lower = avg_quality - margin
@@ -302,43 +313,48 @@ def create_extraction_report_from_images(image_dir, output_path):
             "improvement_rate": f"{improvement_rate:+.1f}%",
             "significance": significance,
             "baseline_score": f"{baseline_score:.3f}",
-            "confidence_interval": confidence_interval
+            "confidence_interval": confidence_interval,
         }
-    
+
     # JSONファイルとして保存
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    
-    with open(output_path, 'w', encoding='utf-8') as f:
+
+    with open(output_path, "w", encoding="utf-8") as f:
         json.dump(extraction_data, f, indent=2, ensure_ascii=False)
-    
+
     print(f"✅ 実際の品質解析による抽出レポート生成完了: {output_path}")
     print(f"📊 総画像数: {len(extraction_data['results'])}")
     print(f"📈 平均品質スコア: {extraction_data['summary']['average_quality_score']:.3f} (実測値)")
-    print(f"⏱️  平均処理時間: {extraction_data['summary']['processing_statistics']['average_time_per_image']:.2f}秒/枚")
+    print(
+        f"⏱️  平均処理時間: {extraction_data['summary']['processing_statistics']['average_time_per_image']:.2f}秒/枚"
+    )
     print("🎯 改善完了: 固定値 → OpenCV実測値による品質解析")
-    
+
     return True
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("""使用法: python create_phase1_extraction_report.py <画像ディレクトリ> <出力JSONパス>
+        print(
+            """使用法: python create_phase1_extraction_report.py <画像ディレクトリ> <出力JSONパス>
 
 例:
     python create_phase1_extraction_report.py ./extraction_results/ ./reports/extraction_report.json
     
 説明:
     Phase 1抽出結果から統合品質チェッカー用のJSONレポートを生成します。
-    入力ディレクトリには *.jpg または *_extracted.jpg ファイルが必要です。""")
+    入力ディレクトリには *.jpg または *_extracted.jpg ファイルが必要です。"""
+        )
         sys.exit(1)
-    
+
     image_dir = sys.argv[1]
     output_path = sys.argv[2]
-    
+
     print("🔄 Phase 1抽出レポート生成開始")
     print(f"📥 入力ディレクトリ: {image_dir}")
     print(f"📤 出力ファイル: {output_path}")
-    
+
     try:
         success = create_extraction_report_from_images(image_dir, output_path)
         if not success:

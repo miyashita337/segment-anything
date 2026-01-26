@@ -6,14 +6,15 @@ P1-A004: ドキュメント整備システム - ダッシュボード生成ス�
 PROGRESS_TRACKER.md準拠のワークフロー実装
 """
 
+import numpy as np
+import matplotlib.pyplot as plt
+
 import json
 import logging
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, List, Optional
-import matplotlib.pyplot as plt
-import numpy as np
+from typing import Any, Dict, List, Optional
 
 # プロジェクトルート設定
 project_root = Path(__file__).parent.parent.parent
@@ -25,213 +26,234 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # 日本語フォント設定
-plt.rcParams['font.family'] = 'DejaVu Sans'
+plt.rcParams["font.family"] = "DejaVu Sans"
 
 
 class P1A004DashboardGenerator:
     """P1-A004 ダッシュボード生成システム"""
-    
+
     def __init__(self):
         """初期化"""
         self.project_root = project_root
-        
+
         # PROGRESS_TRACKER.md準拠のワークスペース
         self.workspace_root = Path("/mnt/c/AItools/lora/train/yado/clipped_boundingbox/workspace")
         self.workspace_dir = self.workspace_root / "P1-A004"
         self.dashboard_dir = self.workspace_dir / "dashboard"
         self.dashboard_dir.mkdir(parents=True, exist_ok=True)
-        
+
         print(f"🎯 P1-A004: ダッシュボード生成システム初期化完了")
         print(f"ダッシュボード出力: {self.dashboard_dir}")
-    
+
     def load_sync_report(self) -> Optional[Dict[str, Any]]:
         """同期レポート読み込み"""
         logger.info("同期レポート読み込み開始")
-        
+
         # 最新の同期レポートファイル検索
         sync_files = list((self.workspace_dir / "documentation").glob("sync_report*.json"))
         if not sync_files:
             logger.error("同期レポートファイルが見つかりません")
             return None
-        
+
         latest_sync = max(sync_files, key=lambda f: f.stat().st_mtime)
         logger.info(f"最新同期レポート: {latest_sync}")
-        
+
         try:
-            with open(latest_sync, 'r', encoding='utf-8') as f:
+            with open(latest_sync, "r", encoding="utf-8") as f:
                 sync_data = json.load(f)
-            
+
             logger.info("✅ 同期レポート読み込み完了")
             return sync_data
-            
+
         except Exception as e:
             logger.error(f"同期レポート読み込みエラー: {e}")
             return None
-    
+
     def load_quality_assessment(self) -> Optional[Dict[str, Any]]:
         """品質評価結果読み込み"""
         logger.info("品質評価結果読み込み開始")
-        
+
         quality_files = list((self.workspace_dir / "quality").glob("documentation_quality_*.json"))
         if not quality_files:
             logger.warning("品質評価ファイルが見つかりません")
             return None
-        
+
         latest_quality = max(quality_files, key=lambda f: f.stat().st_mtime)
         logger.info(f"最新品質評価: {latest_quality}")
-        
+
         try:
-            with open(latest_quality, 'r', encoding='utf-8') as f:
+            with open(latest_quality, "r", encoding="utf-8") as f:
                 quality_data = json.load(f)
-            
+
             logger.info("✅ 品質評価結果読み込み完了")
             return quality_data
-            
+
         except Exception as e:
             logger.error(f"品質評価読み込みエラー: {e}")
             return None
-    
+
     def generate_sync_status_pie_chart(self, sync_data: Dict[str, Any]) -> Path:
         """同期状況円グラフ生成"""
         logger.info("同期状況円グラフ生成開始")
-        
+
         # データ準備
         synced = sync_data["synced_items"]
         outdated = sync_data["outdated_items"]
         missing = sync_data["missing_docs"]
         total = sync_data["total_docs"] + sync_data["total_implementations"]
         other = total - (synced + outdated + missing)
-        
-        labels = ['Synced', 'Outdated', 'Missing Docs', 'Other']
+
+        labels = ["Synced", "Outdated", "Missing Docs", "Other"]
         sizes = [synced, outdated, missing, max(0, other)]
-        colors = ['#2E8B57', '#FF8C00', '#DC143C', '#808080']
+        colors = ["#2E8B57", "#FF8C00", "#DC143C", "#808080"]
         explode = (0.1, 0, 0, 0)  # Syncedを強調
-        
+
         # 円グラフ作成
         fig, ax = plt.subplots(figsize=(10, 8))
-        
-        wedges, texts, autotexts = ax.pie(sizes, labels=labels, colors=colors, 
-                                         autopct='%1.1f%%', startangle=90,
-                                         explode=explode)
-        
+
+        wedges, texts, autotexts = ax.pie(
+            sizes, labels=labels, colors=colors, autopct="%1.1f%%", startangle=90, explode=explode
+        )
+
         # テキスト装飾
         for autotext in autotexts:
-            autotext.set_color('white')
-            autotext.set_fontweight('bold')
+            autotext.set_color("white")
+            autotext.set_fontweight("bold")
             autotext.set_fontsize(12)
-        
+
         for text in texts:
             text.set_fontsize(12)
-            text.set_fontweight('bold')
-        
-        ax.set_title("P1-A004: Documentation Sync Status Distribution", 
-                    fontsize=16, fontweight='bold', pad=20)
-        
+            text.set_fontweight("bold")
+
+        ax.set_title(
+            "P1-A004: Documentation Sync Status Distribution",
+            fontsize=16,
+            fontweight="bold",
+            pad=20,
+        )
+
         # 統計情報追加
         total_items = sync_data["total_docs"] + sync_data["total_implementations"]
         sync_rate = sync_data["sync_rate"]
-        
+
         info_text = f"Total Items: {total_items}\nSync Rate: {sync_rate:.1%}"
-        ax.text(1.2, 0.5, info_text, transform=ax.transAxes, fontsize=12,
-               bbox=dict(boxstyle="round,pad=0.3", facecolor="lightblue", alpha=0.8))
-        
+        ax.text(
+            1.2,
+            0.5,
+            info_text,
+            transform=ax.transAxes,
+            fontsize=12,
+            bbox=dict(boxstyle="round,pad=0.3", facecolor="lightblue", alpha=0.8),
+        )
+
         plt.tight_layout()
-        
+
         # 保存
         pie_file = self.dashboard_dir / f"sync_status_pie_{datetime.now():%Y%m%d_%H%M%S}.png"
-        plt.savefig(pie_file, dpi=300, bbox_inches='tight')
+        plt.savefig(pie_file, dpi=300, bbox_inches="tight")
         plt.close()
-        
+
         logger.info(f"同期状況円グラフ保存: {pie_file}")
         return pie_file
-    
+
     def generate_doc_types_bar_chart(self, sync_data: Dict[str, Any]) -> Path:
         """ドキュメントタイプ分布棒グラフ生成"""
         logger.info("ドキュメントタイプ分布棒グラフ生成開始")
-        
+
         # データ準備
         doc_types = sync_data["detailed_analysis"]["doc_types_distribution"]
         types = list(doc_types.keys())
         counts = list(doc_types.values())
-        
+
         # 棒グラフ作成
         fig, ax = plt.subplots(figsize=(12, 8))
-        
+
         colors = plt.cm.Set3(np.linspace(0, 1, len(types)))
-        bars = ax.bar(types, counts, color=colors, alpha=0.8, edgecolor='black', linewidth=1)
-        
+        bars = ax.bar(types, counts, color=colors, alpha=0.8, edgecolor="black", linewidth=1)
+
         # チャート装飾
-        ax.set_title("P1-A004: Documentation Types Distribution", 
-                    fontsize=16, fontweight='bold', pad=20)
-        ax.set_xlabel("Document Type", fontsize=12, fontweight='bold')
-        ax.set_ylabel("Count", fontsize=12, fontweight='bold')
-        
+        ax.set_title(
+            "P1-A004: Documentation Types Distribution", fontsize=16, fontweight="bold", pad=20
+        )
+        ax.set_xlabel("Document Type", fontsize=12, fontweight="bold")
+        ax.set_ylabel("Count", fontsize=12, fontweight="bold")
+
         # 値をバーの上に表示
         for bar, count in zip(bars, counts):
             height = bar.get_height()
-            ax.text(bar.get_x() + bar.get_width()/2., height + 1,
-                   f'{count}', ha='center', va='bottom', fontweight='bold')
-        
+            ax.text(
+                bar.get_x() + bar.get_width() / 2.0,
+                height + 1,
+                f"{count}",
+                ha="center",
+                va="bottom",
+                fontweight="bold",
+            )
+
         # グリッド追加
-        ax.grid(True, alpha=0.3, axis='y')
-        
-        plt.xticks(rotation=45, ha='right')
+        ax.grid(True, alpha=0.3, axis="y")
+
+        plt.xticks(rotation=45, ha="right")
         plt.tight_layout()
-        
+
         # 保存
         bar_file = self.dashboard_dir / f"doc_types_bar_{datetime.now():%Y%m%d_%H%M%S}.png"
-        plt.savefig(bar_file, dpi=300, bbox_inches='tight')
+        plt.savefig(bar_file, dpi=300, bbox_inches="tight")
         plt.close()
-        
+
         logger.info(f"ドキュメントタイプ分布棒グラフ保存: {bar_file}")
         return bar_file
-    
+
     def generate_implementation_coverage_chart(self, sync_data: Dict[str, Any]) -> Path:
         """実装カバレッジチャート生成"""
         logger.info("実装カバレッジチャート生成開始")
-        
+
         # データ準備
         impl_types = sync_data["detailed_analysis"]["impl_types_distribution"]
         test_coverage_rate = sync_data["detailed_analysis"]["test_coverage_rate"]
-        
+
         # サブプロット作成
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
-        
+
         # 実装タイプ分布（左）
         types = list(impl_types.keys())
         counts = list(impl_types.values())
-        colors = ['#4169E1', '#FF6347']
-        
-        ax1.pie(counts, labels=types, colors=colors, autopct='%1.1f%%', startangle=90)
-        ax1.set_title("Implementation Types", fontsize=14, fontweight='bold')
-        
+        colors = ["#4169E1", "#FF6347"]
+
+        ax1.pie(counts, labels=types, colors=colors, autopct="%1.1f%%", startangle=90)
+        ax1.set_title("Implementation Types", fontsize=14, fontweight="bold")
+
         # テストカバレッジ（右）
-        coverage_data = ['Tested', 'Not Tested']
-        coverage_counts = [
-            test_coverage_rate * sum(counts),
-            (1 - test_coverage_rate) * sum(counts)
-        ]
-        coverage_colors = ['#2E8B57', '#DC143C']
-        
-        ax2.pie(coverage_counts, labels=coverage_data, colors=coverage_colors, 
-               autopct='%1.1f%%', startangle=90)
-        ax2.set_title(f"Test Coverage ({test_coverage_rate:.1%})", fontsize=14, fontweight='bold')
-        
-        fig.suptitle("P1-A004: Implementation Analysis", fontsize=16, fontweight='bold')
+        coverage_data = ["Tested", "Not Tested"]
+        coverage_counts = [test_coverage_rate * sum(counts), (1 - test_coverage_rate) * sum(counts)]
+        coverage_colors = ["#2E8B57", "#DC143C"]
+
+        ax2.pie(
+            coverage_counts,
+            labels=coverage_data,
+            colors=coverage_colors,
+            autopct="%1.1f%%",
+            startangle=90,
+        )
+        ax2.set_title(f"Test Coverage ({test_coverage_rate:.1%})", fontsize=14, fontweight="bold")
+
+        fig.suptitle("P1-A004: Implementation Analysis", fontsize=16, fontweight="bold")
         plt.tight_layout()
-        
+
         # 保存
-        impl_file = self.dashboard_dir / f"implementation_coverage_{datetime.now():%Y%m%d_%H%M%S}.png"
-        plt.savefig(impl_file, dpi=300, bbox_inches='tight')
+        impl_file = (
+            self.dashboard_dir / f"implementation_coverage_{datetime.now():%Y%m%d_%H%M%S}.png"
+        )
+        plt.savefig(impl_file, dpi=300, bbox_inches="tight")
         plt.close()
-        
+
         logger.info(f"実装カバレッジチャート保存: {impl_file}")
         return impl_file
-    
+
     def generate_quality_metrics_radar(self, quality_data: Optional[Dict[str, Any]]) -> Path:
         """品質メトリクスレーダーチャート生成"""
         logger.info("品質メトリクスレーダーチャート生成開始")
-        
+
         # デフォルトまたは実データ
         if quality_data and "quality_metrics" in quality_data:
             metrics = quality_data["quality_metrics"]
@@ -241,120 +263,153 @@ class P1A004DashboardGenerator:
                 "sync_coverage": 0.003,
                 "documentation_coverage": 0.14,
                 "consistency_score": 0.7,
-                "completeness_score": 0.6
+                "completeness_score": 0.6,
             }
-        
+
         # データ準備
-        categories = ['Sync Coverage', 'Doc Coverage', 'Consistency', 'Completeness']
+        categories = ["Sync Coverage", "Doc Coverage", "Consistency", "Completeness"]
         values = [
             metrics.get("sync_coverage", 0),
             metrics.get("documentation_coverage", 0),
             metrics.get("consistency_score", 0),
-            metrics.get("completeness_score", 0)
+            metrics.get("completeness_score", 0),
         ]
-        
+
         # 円を閉じるためにデータ複製
         values += values[:1]
         angles = np.linspace(0, 2 * np.pi, len(categories), endpoint=False).tolist()
         angles += angles[:1]
-        
+
         # レーダーチャート作成
-        fig, ax = plt.subplots(figsize=(10, 10), subplot_kw=dict(projection='polar'))
-        
-        ax.plot(angles, values, 'o-', linewidth=2, label='Current State', color='#FF6347')
-        ax.fill(angles, values, alpha=0.25, color='#FF6347')
-        
+        fig, ax = plt.subplots(figsize=(10, 10), subplot_kw=dict(projection="polar"))
+
+        ax.plot(angles, values, "o-", linewidth=2, label="Current State", color="#FF6347")
+        ax.fill(angles, values, alpha=0.25, color="#FF6347")
+
         # 目標値（参考）
         target_values = [0.8, 0.6, 0.9, 0.8] + [0.8]
-        ax.plot(angles, target_values, 'o-', linewidth=2, label='Target', color='#2E8B57', linestyle='--')
-        
+        ax.plot(
+            angles,
+            target_values,
+            "o-",
+            linewidth=2,
+            label="Target",
+            color="#2E8B57",
+            linestyle="--",
+        )
+
         # チャート装飾
         ax.set_xticks(angles[:-1])
         ax.set_xticklabels(categories, fontsize=11)
         ax.set_ylim(0, 1)
-        ax.set_title("P1-A004: Documentation Quality Metrics", 
-                    fontsize=14, fontweight='bold', pad=30)
-        
+        ax.set_title(
+            "P1-A004: Documentation Quality Metrics", fontsize=14, fontweight="bold", pad=30
+        )
+
         # グリッド線
         ax.grid(True, alpha=0.3)
-        
+
         # 凡例
-        ax.legend(loc='upper right', bbox_to_anchor=(1.3, 1.0))
-        
+        ax.legend(loc="upper right", bbox_to_anchor=(1.3, 1.0))
+
         plt.tight_layout()
-        
+
         # 保存
-        radar_file = self.dashboard_dir / f"quality_metrics_radar_{datetime.now():%Y%m%d_%H%M%S}.png"
-        plt.savefig(radar_file, dpi=300, bbox_inches='tight')
+        radar_file = (
+            self.dashboard_dir / f"quality_metrics_radar_{datetime.now():%Y%m%d_%H%M%S}.png"
+        )
+        plt.savefig(radar_file, dpi=300, bbox_inches="tight")
         plt.close()
-        
+
         logger.info(f"品質メトリクスレーダーチャート保存: {radar_file}")
         return radar_file
-    
+
     def generate_improvement_timeline_chart(self, sync_data: Dict[str, Any]) -> Path:
         """改善タイムラインチャート生成"""
         logger.info("改善タイムラインチャート生成開始")
-        
+
         # サンプル改善タイムライン（実際のプロジェクトでは履歴データ使用）
         timeline_data = {
             "Phase 1": {"sync_rate": 0.003, "target": 0.2, "duration": "2週間"},
             "Phase 2": {"sync_rate": 0.2, "target": 0.5, "duration": "4週間"},
-            "Phase 3": {"sync_rate": 0.5, "target": 0.8, "duration": "8週間"}
+            "Phase 3": {"sync_rate": 0.5, "target": 0.8, "duration": "8週間"},
         }
-        
+
         phases = list(timeline_data.keys())
         current_rates = [timeline_data[phase]["sync_rate"] for phase in phases]
         target_rates = [timeline_data[phase]["target"] for phase in phases]
-        
+
         # 棒グラフ作成
         fig, ax = plt.subplots(figsize=(12, 8))
-        
+
         x = np.arange(len(phases))
         width = 0.35
-        
-        bars1 = ax.bar(x - width/2, current_rates, width, label='Current', color='#FF6347', alpha=0.8)
-        bars2 = ax.bar(x + width/2, target_rates, width, label='Target', color='#2E8B57', alpha=0.8)
-        
+
+        bars1 = ax.bar(
+            x - width / 2, current_rates, width, label="Current", color="#FF6347", alpha=0.8
+        )
+        bars2 = ax.bar(
+            x + width / 2, target_rates, width, label="Target", color="#2E8B57", alpha=0.8
+        )
+
         # チャート装飾
-        ax.set_title("P1-A004: Documentation Improvement Timeline", 
-                    fontsize=16, fontweight='bold', pad=20)
-        ax.set_xlabel("Improvement Phase", fontsize=12, fontweight='bold')
-        ax.set_ylabel("Sync Rate", fontsize=12, fontweight='bold')
+        ax.set_title(
+            "P1-A004: Documentation Improvement Timeline", fontsize=16, fontweight="bold", pad=20
+        )
+        ax.set_xlabel("Improvement Phase", fontsize=12, fontweight="bold")
+        ax.set_ylabel("Sync Rate", fontsize=12, fontweight="bold")
         ax.set_xticks(x)
         ax.set_xticklabels(phases)
         ax.set_ylim(0, 1.0)
-        
+
         # 値表示
         for bar in bars1:
             height = bar.get_height()
-            ax.text(bar.get_x() + bar.get_width()/2., height + 0.01,
-                   f'{height:.1%}', ha='center', va='bottom', fontweight='bold')
-        
+            ax.text(
+                bar.get_x() + bar.get_width() / 2.0,
+                height + 0.01,
+                f"{height:.1%}",
+                ha="center",
+                va="bottom",
+                fontweight="bold",
+            )
+
         for bar in bars2:
             height = bar.get_height()
-            ax.text(bar.get_x() + bar.get_width()/2., height + 0.01,
-                   f'{height:.1%}', ha='center', va='bottom', fontweight='bold')
-        
+            ax.text(
+                bar.get_x() + bar.get_width() / 2.0,
+                height + 0.01,
+                f"{height:.1%}",
+                ha="center",
+                va="bottom",
+                fontweight="bold",
+            )
+
         # 凡例とグリッド
         ax.legend()
-        ax.grid(True, alpha=0.3, axis='y')
-        
+        ax.grid(True, alpha=0.3, axis="y")
+
         plt.tight_layout()
-        
+
         # 保存
-        timeline_file = self.dashboard_dir / f"improvement_timeline_{datetime.now():%Y%m%d_%H%M%S}.png"
-        plt.savefig(timeline_file, dpi=300, bbox_inches='tight')
+        timeline_file = (
+            self.dashboard_dir / f"improvement_timeline_{datetime.now():%Y%m%d_%H%M%S}.png"
+        )
+        plt.savefig(timeline_file, dpi=300, bbox_inches="tight")
         plt.close()
-        
+
         logger.info(f"改善タイムラインチャート保存: {timeline_file}")
         return timeline_file
-    
-    def generate_dashboard_html(self, sync_data: Dict[str, Any], 
-                              quality_data: Optional[Dict[str, Any]],
-                              chart_files: Dict[str, Path]) -> Path:
+
+    def generate_dashboard_html(
+        self,
+        sync_data: Dict[str, Any],
+        quality_data: Optional[Dict[str, Any]],
+        chart_files: Dict[str, Path],
+    ) -> Path:
         """HTMLダッシュボード生成"""
         logger.info("HTMLダッシュボード生成開始")
-        
+
         # 品質スコア計算
         if quality_data and "overall_quality_score" in quality_data:
             quality_score = quality_data["overall_quality_score"]
@@ -362,7 +417,7 @@ class P1A004DashboardGenerator:
         else:
             quality_score = 0.25
             quality_grade = "POOR"
-        
+
         # HTML生成
         html_content = f"""
 <!DOCTYPE html>
@@ -536,10 +591,10 @@ class P1A004DashboardGenerator:
         <div class="recommendations">
             <ul>
 """
-        
+
         for rec in sync_data["recommendations"]:
             html_content += f"                <li>{rec}</li>\n"
-        
+
         html_content += f"""
             </ul>
         </div>
@@ -573,43 +628,43 @@ class P1A004DashboardGenerator:
 </body>
 </html>
 """
-        
+
         # HTML保存
         html_file = self.dashboard_dir / f"P1A004_dashboard_{datetime.now():%Y%m%d_%H%M%S}.html"
-        with open(html_file, 'w', encoding='utf-8') as f:
+        with open(html_file, "w", encoding="utf-8") as f:
             f.write(html_content)
-        
+
         logger.info(f"HTMLダッシュボード保存: {html_file}")
         return html_file
-    
+
     def generate_full_dashboard(self) -> Dict[str, Any]:
         """フルダッシュボード生成"""
         logger.info("🎨 P1-A004 フルダッシュボード生成開始")
         start_time = datetime.now()
-        
+
         try:
             # 1. データ読み込み
             sync_data = self.load_sync_report()
             if sync_data is None:
                 return {"success": False, "error": "同期レポートが見つかりません"}
-            
+
             quality_data = self.load_quality_assessment()
-            
+
             # 2. チャート生成
             chart_files = {
                 "sync_pie": self.generate_sync_status_pie_chart(sync_data),
                 "doc_types": self.generate_doc_types_bar_chart(sync_data),
                 "impl_coverage": self.generate_implementation_coverage_chart(sync_data),
                 "quality_radar": self.generate_quality_metrics_radar(quality_data),
-                "timeline": self.generate_improvement_timeline_chart(sync_data)
+                "timeline": self.generate_improvement_timeline_chart(sync_data),
             }
-            
+
             # 3. HTMLダッシュボード生成
             html_file = self.generate_dashboard_html(sync_data, quality_data, chart_files)
-            
+
             end_time = datetime.now()
             processing_time = (end_time - start_time).total_seconds()
-            
+
             result = {
                 "success": True,
                 "processing_time": processing_time,
@@ -617,37 +672,37 @@ class P1A004DashboardGenerator:
                 "chart_files": {k: str(v) for k, v in chart_files.items()},
                 "sync_rate": sync_data["sync_rate"],
                 "total_docs": sync_data["total_docs"],
-                "total_implementations": sync_data["total_implementations"]
+                "total_implementations": sync_data["total_implementations"],
             }
-            
+
             logger.info(f"✅ P1-A004 フルダッシュボード生成完了 (処理時間: {processing_time:.2f}秒)")
             return result
-            
+
         except Exception as e:
             logger.error(f"ダッシュボード生成エラー: {e}")
             return {
                 "success": False,
                 "error": str(e),
-                "processing_time": (datetime.now() - start_time).total_seconds()
+                "processing_time": (datetime.now() - start_time).total_seconds(),
             }
 
 
 def main():
     """メイン実行"""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="P1-A004: ダッシュボード生成")
     parser.add_argument("--full", action="store_true", help="フルダッシュボード生成")
     parser.add_argument("--charts-only", action="store_true", help="チャートのみ生成")
-    
+
     args = parser.parse_args()
-    
+
     generator = P1A004DashboardGenerator()
-    
+
     if args.full:
         # フルダッシュボード生成
         result = generator.generate_full_dashboard()
-        
+
         if result["success"]:
             print(f"🎨 P1-A004ダッシュボード生成完了")
             print(f"   同期率: {result['sync_rate']:.1%}")
@@ -660,30 +715,30 @@ def main():
         else:
             print(f"❌ ダッシュボード生成失敗: {result['error']}")
             return 1
-    
+
     elif args.charts_only:
         # チャートのみ生成
         sync_data = generator.load_sync_report()
         quality_data = generator.load_quality_assessment()
-        
+
         if not sync_data:
             print("❌ 同期レポートが見つかりません")
             return 1
-        
+
         chart_files = {
             "sync_pie": generator.generate_sync_status_pie_chart(sync_data),
             "doc_types": generator.generate_doc_types_bar_chart(sync_data),
             "impl_coverage": generator.generate_implementation_coverage_chart(sync_data),
             "quality_radar": generator.generate_quality_metrics_radar(quality_data),
-            "timeline": generator.generate_improvement_timeline_chart(sync_data)
+            "timeline": generator.generate_improvement_timeline_chart(sync_data),
         }
-        
+
         print(f"✅ チャート生成完了: {len(chart_files)}件")
         for name, path in chart_files.items():
             print(f"   {name}: {path}")
-        
+
         return 0
-    
+
     else:
         print("🎨 P1-A004: ドキュメント整備システム - ダッシュボード生成")
         print("使用例:")
@@ -694,4 +749,5 @@ def main():
 
 if __name__ == "__main__":
     import sys
+
     sys.exit(main())

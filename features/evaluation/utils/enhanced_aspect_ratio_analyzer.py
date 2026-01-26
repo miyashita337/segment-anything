@@ -662,4 +662,3 @@ if __name__ == "__main__":
     print(f"Reasoning: {analysis.reasoning}")
     print(f"Quality indicators: {analysis.quality_indicators}")
     print("✅ Basic test completed")
-

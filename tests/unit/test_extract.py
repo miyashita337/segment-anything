@@ -5,94 +5,95 @@ Comprehensive tests for the refactored character extraction system
 """
 
 import os
-import sys
-import unittest
-import tempfile
 import shutil
+import sys
+import tempfile
+import unittest
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import cv2
 import numpy as np
+import cv2
+
+from features.common.performance.performance import PerformanceMonitor
+from features.evaluation.utils.text_detection import TextDetector
+from features.extraction.commands.extract_character import extract_character_from_image
 
 # Import modules to test
 from features.extraction.models.sam_wrapper import SAMModelWrapper
 from features.extraction.models.yolo_wrapper import YOLOModelWrapper
-from features.processing.preprocessing.preprocessing import (
-    load_and_validate_image,
-    resize_image_if_needed,
-    is_color_image,
-    preprocess_image_pipeline
-)
 from features.processing.postprocessing.postprocessing import (
+    calculate_mask_quality_metrics,
     enhance_character_mask,
     extract_character_from_image,
-    calculate_mask_quality_metrics
 )
-from features.evaluation.utils.text_detection import TextDetector
-from features.common.performance.performance import PerformanceMonitor
-from features.extraction.commands.extract_character import extract_character_from_image
+from features.processing.preprocessing.preprocessing import (
+    is_color_image,
+    load_and_validate_image,
+    preprocess_image_pipeline,
+    resize_image_if_needed,
+)
 
 
 class TestImagePreprocessing(unittest.TestCase):
     """Test image preprocessing utilities"""
-    
+
     def setUp(self):
         """Set up test fixtures"""
         self.temp_dir = tempfile.mkdtemp()
         self.test_image_path = os.path.join(self.temp_dir, "test_image.jpg")
-        
+
         # Create a test image
         test_image = np.random.randint(0, 255, (400, 600, 3), dtype=np.uint8)
         cv2.imwrite(self.test_image_path, test_image)
-    
+
     def tearDown(self):
         """Clean up test fixtures"""
         shutil.rmtree(self.temp_dir)
-    
+
     def test_load_and_validate_image_success(self):
         """Test successful image loading"""
         image = load_and_validate_image(self.test_image_path)
         self.assertIsNotNone(image)
         self.assertEqual(len(image.shape), 3)  # Should be BGR
-    
+
     def test_load_and_validate_image_nonexistent(self):
         """Test loading non-existent image"""
         image = load_and_validate_image("nonexistent.jpg")
         self.assertIsNone(image)
-    
+
     def test_resize_image_if_needed(self):
         """Test image resizing functionality"""
         # Create a large test image
         large_image = np.random.randint(0, 255, (2000, 3000, 3), dtype=np.uint8)
-        
+
         resized, scale = resize_image_if_needed(large_image, max_size=1024)
-        
+
         self.assertLess(scale, 1.0)  # Should be scaled down
         self.assertLessEqual(max(resized.shape[:2]), 1024)
-    
+
     def test_is_color_image(self):
         """Test color detection"""
         # Create color image with high variance between channels
         color_image = np.random.randint(0, 255, (100, 100, 3), dtype=np.uint8)
         # Make significant differences between channels
-        color_image[:50, :, 0] = 255   # Red top half
-        color_image[50:, :, 1] = 255   # Green bottom half
-        color_image[:, :50, 2] = 255   # Blue left half
-        
+        color_image[:50, :, 0] = 255  # Red top half
+        color_image[50:, :, 1] = 255  # Green bottom half
+        color_image[:, :50, 2] = 255  # Blue left half
+
         # Create grayscale image (all channels same)
         gray_image = np.ones((100, 100, 3), dtype=np.uint8) * 128
-        
+
         self.assertTrue(is_color_image(color_image))
         self.assertFalse(is_color_image(gray_image))
-    
+
     def test_preprocess_image_pipeline(self):
         """Test complete preprocessing pipeline"""
         bgr_img, rgb_img, scale = preprocess_image_pipeline(self.test_image_path)
-        
+
         self.assertIsNotNone(bgr_img)
         self.assertIsNotNone(rgb_img)
         self.assertGreater(scale, 0)
@@ -101,47 +102,50 @@ class TestImagePreprocessing(unittest.TestCase):
 
 class TestPostprocessing(unittest.TestCase):
     """Test post-processing utilities"""
-    
+
     def setUp(self):
         """Set up test fixtures"""
         # Create test mask
         self.test_mask = np.zeros((200, 200), dtype=np.uint8)
         cv2.circle(self.test_mask, (100, 100), 80, 255, -1)
-        
+
         # Create test image
         self.test_image = np.random.randint(0, 255, (200, 200, 3), dtype=np.uint8)
-    
+
     def test_enhance_character_mask(self):
         """Test mask enhancement"""
         # Add noise to mask
         noisy_mask = self.test_mask.copy()
         noise = np.random.randint(0, 2, noisy_mask.shape, dtype=np.uint8) * 50
         noisy_mask = np.clip(noisy_mask + noise, 0, 255).astype(np.uint8)
-        
+
         enhanced = enhance_character_mask(noisy_mask)
-        
+
         self.assertEqual(enhanced.shape, self.test_mask.shape)
         self.assertGreaterEqual(np.sum(enhanced > 0), 0)  # Should have some content
-    
+
     def test_extract_character_from_image(self):
         """Test character extraction"""
         extracted = extract_character_from_image(
-            self.test_image, 
-            self.test_mask,
-            background_color=(0, 0, 0)
+            self.test_image, self.test_mask, background_color=(0, 0, 0)
         )
-        
+
         self.assertEqual(extracted.shape, self.test_image.shape)
-    
+
     def test_calculate_mask_quality_metrics(self):
         """Test mask quality calculation"""
         metrics = calculate_mask_quality_metrics(self.test_mask)
-        
+
         required_keys = [
-            'coverage_ratio', 'compactness', 'fill_ratio', 
-            'aspect_ratio', 'contour_area', 'mask_pixels', 'total_pixels'
+            "coverage_ratio",
+            "compactness",
+            "fill_ratio",
+            "aspect_ratio",
+            "contour_area",
+            "mask_pixels",
+            "total_pixels",
         ]
-        
+
         for key in required_keys:
             self.assertIn(key, metrics)
             self.assertIsInstance(metrics[key], (int, float, np.integer, np.floating))
@@ -149,41 +153,41 @@ class TestPostprocessing(unittest.TestCase):
 
 class TestTextDetection(unittest.TestCase):
     """Test text detection utilities"""
-    
+
     def setUp(self):
         """Set up test fixtures"""
         self.text_detector = TextDetector(use_easyocr=False)  # Use OpenCV for tests
-        
+
         # Create test image with text-like patterns
         self.test_image = np.ones((200, 300, 3), dtype=np.uint8) * 255
-        
+
         # Add horizontal lines (text-like)
         for i in range(50, 150, 20):
             cv2.rectangle(self.test_image, (50, i), (250, i + 5), (0, 0, 0), -1)
-    
+
     def test_detect_text_regions(self):
         """Test text region detection"""
         text_regions = self.text_detector.detect_text_regions(self.test_image)
-        
+
         self.assertIsInstance(text_regions, list)
         # Should detect some text-like patterns
-        
+
         if text_regions:
             region = text_regions[0]
-            required_keys = ['bbox', 'mask', 'text', 'confidence']
+            required_keys = ["bbox", "mask", "text", "confidence"]
             for key in required_keys:
                 self.assertIn(key, region)
-    
+
     def test_has_significant_text(self):
         """Test significant text detection"""
         has_text = self.text_detector.has_significant_text(self.test_image)
         self.assertIsInstance(has_text, bool)
-    
+
     def test_calculate_text_density_score(self):
         """Test text density calculation"""
         bbox = (40, 40, 220, 120)
         density = self.text_detector.calculate_text_density_score(self.test_image, bbox)
-        
+
         self.assertIsInstance(density, float)
         self.assertGreaterEqual(density, 0.0)
         self.assertLessEqual(density, 1.0)
@@ -191,21 +195,22 @@ class TestTextDetection(unittest.TestCase):
 
 class TestPerformanceMonitor(unittest.TestCase):
     """Test performance monitoring"""
-    
+
     def test_performance_monitor_basic(self):
         """Test basic performance monitoring functionality"""
         monitor = PerformanceMonitor()
         monitor.start_monitoring()
-        
+
         monitor.start_stage("Test Stage")
         # Simulate some work
         import time
+
         time.sleep(0.1)
         monitor.end_stage()
-        
+
         total_time = monitor.get_total_time()
         self.assertGreater(total_time, 0)
-        
+
         summary = monitor.get_stage_summary()
         self.assertIn("Test Stage", summary)
         self.assertGreater(summary["Test Stage"], 0)
@@ -213,128 +218,123 @@ class TestPerformanceMonitor(unittest.TestCase):
 
 class TestModelWrappers(unittest.TestCase):
     """Test model wrapper classes"""
-    
+
     def test_sam_wrapper_initialization(self):
         """Test SAM wrapper initialization"""
         wrapper = SAMModelWrapper(
             model_type="vit_h",
-            checkpoint_path="nonexistent.pth"  # Will fail but should handle gracefully
+            checkpoint_path="nonexistent.pth",  # Will fail but should handle gracefully
         )
-        
+
         # CI環境とローカル環境でデフォルト値が異なる可能性があるため、設定値が反映されていることを確認
         self.assertIn(wrapper.model_type, ["vit_h", "vit_b", "vit_l"])
         self.assertFalse(wrapper.is_loaded)
-        
+
         # Test model info
         info = wrapper.get_model_info()
-        self.assertIn('model_type', info)
-        self.assertIn('is_loaded', info)
-    
+        self.assertIn("model_type", info)
+        self.assertIn("is_loaded", info)
+
     def test_yolo_wrapper_initialization(self):
         """Test YOLO wrapper initialization"""
-        wrapper = YOLOModelWrapper(
-            model_path="yolov8n.pt",
-            confidence_threshold=0.5
-        )
-        
+        wrapper = YOLOModelWrapper(model_path="yolov8n.pt", confidence_threshold=0.5)
+
         self.assertEqual(wrapper.confidence_threshold, 0.5)
         self.assertFalse(wrapper.is_loaded)
-        
+
         # Test model info
         info = wrapper.get_model_info()
-        self.assertIn('model_path', info)
-        self.assertIn('confidence_threshold', info)
-    
+        self.assertIn("model_path", info)
+        self.assertIn("confidence_threshold", info)
+
     def test_yolo_overlap_calculation(self):
         """Test YOLO overlap calculation"""
         wrapper = YOLOModelWrapper()
-        
+
         bbox1 = [10, 10, 50, 50]  # [x, y, w, h]
         bbox2 = [30, 30, 50, 50]  # Overlapping
         bbox3 = [100, 100, 50, 50]  # Non-overlapping
-        
+
         overlap1 = wrapper.calculate_overlap_score(bbox1, bbox2)
         overlap2 = wrapper.calculate_overlap_score(bbox1, bbox3)
-        
+
         self.assertGreater(overlap1, 0)  # Should have overlap
         self.assertEqual(overlap2, 0)  # Should have no overlap
 
 
 class TestCharacterExtraction(unittest.TestCase):
     """Test complete character extraction pipeline"""
-    
+
     def setUp(self):
         """Set up test fixtures"""
         self.temp_dir = tempfile.mkdtemp()
         self.test_image_path = os.path.join(self.temp_dir, "test_character.jpg")
-        
+
         # Create a test manga-like image
         test_image = np.ones((400, 600, 3), dtype=np.uint8) * 255
-        
+
         # Add a character-like shape (dark figure)
         cv2.rectangle(test_image, (200, 100), (300, 350), (50, 50, 50), -1)
         cv2.circle(test_image, (250, 120), 20, (100, 100, 100), -1)  # Head
-        
+
         cv2.imwrite(self.test_image_path, test_image)
-    
+
     def tearDown(self):
         """Clean up test fixtures"""
         shutil.rmtree(self.temp_dir)
-    
-    @patch('features.extraction.commands.extract_character.generate_character_mask_qc_style')
-    @patch('features.common.hooks.start.get_sam_model')
-    @patch('features.common.hooks.start.get_yolo_model')
-    @patch('features.common.hooks.start.get_performance_monitor')
-    @patch('features.common.hooks.start.initialize_models')
-    def test_extract_character_pipeline_mocked(self, mock_init, mock_perf, mock_yolo, mock_sam, mock_qc_gen):
+
+    @patch("features.extraction.commands.extract_character.generate_character_mask_qc_style")
+    @patch("features.common.hooks.start.get_sam_model")
+    @patch("features.common.hooks.start.get_yolo_model")
+    @patch("features.common.hooks.start.get_performance_monitor")
+    @patch("features.common.hooks.start.initialize_models")
+    def test_extract_character_pipeline_mocked(
+        self, mock_init, mock_perf, mock_yolo, mock_sam, mock_qc_gen
+    ):
         """Test extraction pipeline with mocked models - CI環境最適化対応版"""
         import os
-        
+
         # CI環境検出
-        is_ci = os.getenv('CI_ENVIRONMENT') == 'true' or os.getenv('CI') == 'true'
-        
+        is_ci = os.getenv("CI_ENVIRONMENT") == "true" or os.getenv("CI") == "true"
+
         # Mock初期化処理
         mock_init.return_value = None  # initialize_models()は何も返さない
-        
+
         # Mock performance monitor
         mock_monitor = MagicMock()
         mock_perf.return_value = mock_monitor
-        
+
         # Mock QC generation function
         mock_qc_gen.return_value = (
             np.ones((64, 64), dtype=np.uint8) * 255,  # マスク
-            {'quality_score': 0.8, 'evaluation': 'A'}  # メタデータ
+            {"quality_score": 0.8, "evaluation": "A"},  # メタデータ
         )
-        
+
         if is_ci:
             # CI環境: 軽量高速モック
             mock_sam_instance = MagicMock()
             mock_sam_instance.generate_masks.return_value = [
                 {
-                    'segmentation': np.ones((64, 64), dtype=bool),  # 軽量サイズ
-                    'area': 2000,
-                    'bbox': [10, 10, 40, 40],
-                    'stability_score': 0.9,
-                    'predicted_iou': 0.85
+                    "segmentation": np.ones((64, 64), dtype=bool),  # 軽量サイズ
+                    "area": 2000,
+                    "bbox": [10, 10, 40, 40],
+                    "stability_score": 0.9,
+                    "predicted_iou": 0.85,
                 }
             ]
             mock_sam_instance.mask_to_binary.return_value = np.ones((64, 64), dtype=np.uint8) * 255
-            
+
             # 最初のチェックではNone、その後実際のインスタンスを返す
             mock_sam.side_effect = [None, mock_sam_instance]
-            
+
             mock_yolo_instance = MagicMock()
             mock_yolo_instance.detect_persons.return_value = [
-                {
-                    'bbox_xyxy': [10, 10, 50, 50],
-                    'area': 1600,
-                    'confidence': 0.8
-                }
+                {"bbox_xyxy": [10, 10, 50, 50], "area": 1600, "confidence": 0.8}
             ]
-            
+
             # 最初のチェックではNone、その後実際のインスタンスを返す
             mock_yolo.side_effect = [None, mock_yolo_instance]
-            
+
             # CI環境: 軽量テスト画像作成
             test_image = np.random.randint(0, 255, (64, 64, 3), dtype=np.uint8)
             cv2.imwrite(self.test_image_path, test_image)
@@ -343,73 +343,72 @@ class TestCharacterExtraction(unittest.TestCase):
             mock_sam_instance = MagicMock()
             mock_sam_instance.generate_masks.return_value = [
                 {
-                    'segmentation': np.ones((400, 600), dtype=bool),
-                    'area': 50000,
-                    'bbox': [200, 100, 100, 250],
-                    'stability_score': 0.9,
-                    'predicted_iou': 0.85
+                    "segmentation": np.ones((400, 600), dtype=bool),
+                    "area": 50000,
+                    "bbox": [200, 100, 100, 250],
+                    "stability_score": 0.9,
+                    "predicted_iou": 0.85,
                 }
             ]
-            mock_sam_instance.mask_to_binary.return_value = np.ones((400, 600), dtype=np.uint8) * 255
-            
+            mock_sam_instance.mask_to_binary.return_value = (
+                np.ones((400, 600), dtype=np.uint8) * 255
+            )
+
             # 最初のチェックではNone、その後実際のインスタンスを返す
             mock_sam.side_effect = [None, mock_sam_instance]
-            
+
             mock_yolo_instance = MagicMock()
             mock_yolo_instance.detect_persons.return_value = [
-                {
-                    'bbox_xyxy': [200, 100, 300, 350],
-                    'area': 15000,
-                    'confidence': 0.8
-                }
+                {"bbox_xyxy": [200, 100, 300, 350], "area": 15000, "confidence": 0.8}
             ]
-            
+
             # 最初のチェックではNone、その後実際のインスタンスを返す
             mock_yolo.side_effect = [None, mock_yolo_instance]
-        
+
         # 統合パイプラインテスト（機能削除なし）
-        from features.extraction.commands.extract_character import extract_character
         from click.testing import CliRunner
-        
+        from features.extraction.commands.extract_character import extract_character
+
         output_path = os.path.join(self.temp_dir, "output.jpg")
-        
+
         # CLI関数実行（タイムアウト対策付き）
         runner = CliRunner()
-        
+
         import signal
+
         def timeout_handler(signum, frame):
             raise TimeoutError("Test execution timeout")
-        
+
         try:
             if is_ci:
                 # CI環境: 短時間タイムアウト
                 signal.signal(signal.SIGALRM, timeout_handler)
                 signal.alarm(15)  # 15秒タイムアウト
-            
+
             # CLI引数を条件付きで構成
-            cli_args = [self.test_image_path, '-o', output_path]
+            cli_args = [self.test_image_path, "-o", output_path]
             if not is_ci:  # ローカル環境でのみverbose追加
-                cli_args.append('--verbose')
-            
+                cli_args.append("--verbose")
+
             result = runner.invoke(extract_character, cli_args)
-            
+
             if is_ci:
                 signal.alarm(0)  # タイムアウト解除
-                
+
         except TimeoutError:
             if is_ci:
                 # CI環境でタイムアウトした場合は軽量テストにフォールバック
                 self.skipTest("CI environment timeout - falling back to basic import test")
             else:
                 raise
-        
+
         # 重要な検証（削除しない）
         self.assertEqual(result.exit_code, 0, f"CLI failed with output: {result.output}")
-        
+
         # ファイル出力確認（削除しない）
         if not is_ci:  # CI環境ではファイル確認をスキップ（高速化）
             self.assertTrue(os.path.exists(output_path), "Output file should be created")
-        
+
         # モック呼び出し確認（削除しない）
         # CLI実行ではモック関数が実際に呼ばれない場合があるため、
         # 代わりにCLIの終了コードで成功を判定
@@ -421,35 +420,37 @@ class TestCharacterExtraction(unittest.TestCase):
                 mock_yolo_instance.detect_persons.assert_called()
             except AssertionError:
                 # モック関数が呼ばれていない場合は、正常終了を確認
-                self.assertEqual(result.exit_code, 0, "CLI should exit successfully even without mock calls")
+                self.assertEqual(
+                    result.exit_code, 0, "CLI should exit successfully even without mock calls"
+                )
 
 
 class TestIntegrationWithSampleImage(unittest.TestCase):
     """Integration tests with sample images"""
-    
+
     def test_sample_image_exists(self):
         """Test that sample images exist"""
         sample_paths = [
             "assets/masks1.png",
             "test_small/img001.jpg",
             "test_small/img002.jpg",
-            "test_small/img003.jpg"
+            "test_small/img003.jpg",
         ]
-        
+
         existing_samples = []
         for path in sample_paths:
             if os.path.exists(path):
                 existing_samples.append(path)
-        
+
         self.assertGreater(len(existing_samples), 0, "At least one sample image should exist")
-    
+
     def test_preprocessing_with_sample_image(self):
         """Test preprocessing with real sample image if available"""
         sample_path = "assets/masks1.png"
-        
+
         if os.path.exists(sample_path):
             bgr_img, rgb_img, scale = preprocess_image_pipeline(sample_path)
-            
+
             self.assertIsNotNone(bgr_img)
             self.assertIsNotNone(rgb_img)
             self.assertGreater(scale, 0)
@@ -465,28 +466,28 @@ def run_tests():
         TestPerformanceMonitor,
         TestModelWrappers,
         TestCharacterExtraction,
-        TestIntegrationWithSampleImage
+        TestIntegrationWithSampleImage,
     ]
-    
+
     suite = unittest.TestSuite()
-    
+
     for test_class in test_classes:
         tests = unittest.TestLoader().loadTestsFromTestCase(test_class)
         suite.addTests(tests)
-    
+
     # Run tests
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)
-    
+
     return result.wasSuccessful()
 
 
 if __name__ == "__main__":
     print("🧪 Character Extraction Test Suite")
     print("=" * 50)
-    
+
     success = run_tests()
-    
+
     print("\n" + "=" * 50)
     if success:
         print("✅ All tests passed!")

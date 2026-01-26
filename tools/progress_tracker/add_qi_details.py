@@ -10,26 +10,26 @@ from datetime import date
 # パス追加
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
-from tools.progress_tracker.google_sheets_client import GoogleSheetsProgressTracker
 from tools.progress_tracker.config import PROGRESS_TRACKER_CONFIG
+from tools.progress_tracker.google_sheets_client import GoogleSheetsProgressTracker
 
 
 def update_qi_details():
     """QI-003, QI-004, QI-005の詳細情報を追加"""
-    
+
     # Google Sheetsクライアント初期化
     tracker = GoogleSheetsProgressTracker()
-    
-    today = date.today().strftime('%Y-%m-%d')
-    
+
+    today = date.today().strftime("%Y-%m-%d")
+
     # QI-003の詳細情報
     qi003_details = {
-        'tracker_id': 'QI-003',
-        'priority': '中',
-        'registration_date': today,
-        'update_date': today,
-        'summary': '統合品質評価システム実装・黒画面検出機能追加',
-        'details': '''【概要】統合品質評価システム実装・黒画面検出機能追加
+        "tracker_id": "QI-003",
+        "priority": "中",
+        "registration_date": today,
+        "update_date": today,
+        "summary": "統合品質評価システム実装・黒画面検出機能追加",
+        "details": """【概要】統合品質評価システム実装・黒画面検出機能追加
 
 【詳細実装内容】
 - 既存のPushover通知システムの統一化（17ファイルから共通モジュール化）
@@ -49,17 +49,17 @@ def update_qi_details():
 - 黒画面検出精度: 100%（明度6.6の黒画面を正確検出）
 - 明度改善効果: +1820.8%（6.6→126.2）
 - ダッシュボード生成: 2.9MB Base64画像埋め込み成功
-- Pushover画像送信: QI-002（24枚）、QI-003（20枚）全画像送信完了'''
+- Pushover画像送信: QI-002（24枚）、QI-003（20枚）全画像送信完了""",
     }
-    
+
     # QI-004の詳細情報
     qi004_details = {
-        'tracker_id': 'QI-004',
-        'priority': '中',
-        'registration_date': today,
-        'update_date': today,
-        'summary': 'ダッシュボード標準化・Base64画像表示システム構築',
-        'details': '''【概要】ダッシュボード標準化・Base64画像表示システム構築
+        "tracker_id": "QI-004",
+        "priority": "中",
+        "registration_date": today,
+        "update_date": today,
+        "summary": "ダッシュボード標準化・Base64画像表示システム構築",
+        "details": """【概要】ダッシュボード標準化・Base64画像表示システム構築
 
 【詳細実装内容】
 - DashboardGeneratorクラス実装
@@ -82,17 +82,17 @@ def update_qi_details():
 【品質指標】
 - ダッシュボードサイズ: 2.7-2.9MB（Base64画像フル埋め込み）
 - 画像表示成功率: 100%（ブラウザ確認済み）
-- URL統一性: 100%（全トラッカー統一形式）'''
+- URL統一性: 100%（全トラッカー統一形式）""",
     }
-    
+
     # QI-005の詳細情報
     qi005_details = {
-        'tracker_id': 'QI-005',
-        'priority': '中',
-        'registration_date': today,
-        'update_date': today,
-        'summary': 'Pushover通知システム統一化・画像添付機能実装',
-        'details': '''【概要】Pushover通知システム統一化・画像添付機能実装
+        "tracker_id": "QI-005",
+        "priority": "中",
+        "registration_date": today,
+        "update_date": today,
+        "summary": "Pushover通知システム統一化・画像添付機能実装",
+        "details": """【概要】Pushover通知システム統一化・画像添付機能実装
 
 【詳細実装内容】
 - 17ファイルの分散Pushover実装を統一（unification_script実行）
@@ -120,20 +120,20 @@ def update_qi_details():
 【品質指標】
 - 統一化率: 64.5%（20/31ファイル）
 - 画像送信成功率: 100%
-- 通知配信成功率: 100%'''
+- 通知配信成功率: 100%""",
     }
-    
+
     # 各QIの詳細を更新
     details_list = [qi003_details, qi004_details, qi005_details]
-    
+
     for detail in details_list:
         try:
             print(f"🔄 {detail['tracker_id']} 詳細情報更新中...")
-            
+
             # シートでトラッカーIDを検索してデータ更新
             # 注意: 実際のGoogle Sheets APIを使用した実装が必要
             # ここでは構造のみ示す
-            
+
             print(f"✅ {detail['tracker_id']} 更新完了")
             print(f"   優先度: {detail['priority']}")
             print(f"   登録日付: {detail['registration_date']}")
@@ -141,10 +141,10 @@ def update_qi_details():
             print(f"   概要: {detail['summary']}")
             print(f"   詳細文字数: {len(detail['details'])}文字")
             print()
-            
+
         except Exception as e:
             print(f"❌ {detail['tracker_id']} 更新失敗: {e}")
-    
+
     print("🎉 QI-003, QI-004, QI-005の詳細情報追加完了")
 
 

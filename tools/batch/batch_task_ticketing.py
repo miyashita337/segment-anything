@@ -4,16 +4,16 @@
 PROGRESS_TRACKER.mdから抽出した67個のタスクをGoogle Sheetsに登録
 """
 
-import sys
 import logging
+import sys
 from datetime import datetime
 from pathlib import Path
-from typing import List, Dict
+from typing import Dict, List
 
 # progress_tracker統合
 sys.path.append(str(Path(__file__).parent))
-from progress_tracker.data_models import TaskRecord, TaskStatus, PriorityLevel
 from google_sheets_updater import GoogleSheetsUpdater
+from progress_tracker.data_models import PriorityLevel, TaskRecord, TaskStatus
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -34,18 +34,15 @@ REMAINING_TASKS = [
     {"id": "P1-014", "priority": "HIGH", "title": "マルチGPU対応", "desc": "複数GPU並列処理"},
     {"id": "P1-015", "priority": "HIGH", "title": "メモリ使用最適化", "desc": "大規模データセット対応"},
     {"id": "P1-016", "priority": "HIGH", "title": "処理速度改善", "desc": "ボトルネック特定・最適化"},
-    
     # Phase 1-A 緊急改善タスク
     {"id": "P1-A001", "priority": "HIGHEST", "title": "改善コード復旧", "desc": "deprecatedから本番環境への復帰"},
     {"id": "P1-A002", "priority": "HIGHEST", "title": "品質基準統一", "desc": "データセット横断的な評価基準"},
     {"id": "P1-A003", "priority": "HIGHEST", "title": "自動テスト強化", "desc": "品質劣化の事前検出"},
     {"id": "P1-A004", "priority": "HIGHEST", "title": "ドキュメント整備", "desc": "実装と仕様の同期"},
-    
     # Phase 1-B 品質監視自動化
     {"id": "P1-B001", "priority": "HIGH", "title": "継続的品質監視", "desc": "24時間365日の自動監視"},
     {"id": "P1-B002", "priority": "HIGH", "title": "品質ダッシュボード", "desc": "リアルタイム可視化"},
     {"id": "P1-B003", "priority": "HIGH", "title": "自動改善提案", "desc": "AIによる改善策生成"},
-    
     # Phase 2 システム安定化
     {"id": "PH2-003", "priority": "MEDIUM", "title": "エラーハンドリング強化", "desc": "6種類カスタムエラークラス実装"},
     {"id": "PH2-004", "priority": "MEDIUM", "title": "リソース管理最適化", "desc": "CPU/メモリ/GPU使用率改善"},
@@ -53,7 +50,6 @@ REMAINING_TASKS = [
     {"id": "PH2-006", "priority": "MEDIUM", "title": "監視システム構築", "desc": "性能メトリクス収集・分析"},
     {"id": "PH2-007", "priority": "MEDIUM", "title": "バックアップ機能", "desc": "処理結果の自動バックアップ"},
     {"id": "PH2-008", "priority": "MEDIUM", "title": "復旧機能強化", "desc": "障害時の自動復旧"},
-    
     # Phase 3 設定ベース管理
     {"id": "PH3-001", "priority": "MEDIUM", "title": "設定ファイル統一", "desc": "YAML/TOML形式の統一設定"},
     {"id": "PH3-002", "priority": "MEDIUM", "title": "環境別設定", "desc": "開発/本番環境の切り替え"},
@@ -63,7 +59,6 @@ REMAINING_TASKS = [
     {"id": "PH3-006", "priority": "LOW", "title": "設定テンプレート", "desc": "用途別設定プリセット"},
     {"id": "PH3-007", "priority": "LOW", "title": "設定マイグレーション", "desc": "バージョン間の設定移行"},
     {"id": "PH3-008", "priority": "LOW", "title": "設定ドキュメント", "desc": "全設定項目の詳細説明"},
-    
     # Phase 4 自律的開発ループ
     {"id": "PH4-001", "priority": "LOW", "title": "自動実験管理", "desc": "パラメータ探索・結果記録"},
     {"id": "PH4-002", "priority": "LOW", "title": "A/Bテスト自動化", "desc": "複数手法の比較評価"},
@@ -81,7 +76,6 @@ REMAINING_TASKS = [
     {"id": "PH4-014", "priority": "LOW", "title": "テスト自動生成", "desc": "カバレッジ向上のためのテスト"},
     {"id": "PH4-015", "priority": "LOW", "title": "ドキュメント自動更新", "desc": "コード変更に追従する文書"},
     {"id": "PH4-016", "priority": "LOW", "title": "完全自律化", "desc": "人間介入最小化の実現"},
-    
     # 継続的改善タスク
     {"id": "T-001", "priority": "MEDIUM", "title": "日次進捗追跡", "desc": "毎日の進捗自動レポート"},
     {"id": "T-002", "priority": "MEDIUM", "title": "週次サマリー", "desc": "週間成果のまとめ"},
@@ -93,7 +87,6 @@ REMAINING_TASKS = [
     {"id": "T-008", "priority": "LOW", "title": "ベンチマーク更新", "desc": "最新手法との比較"},
     {"id": "T-009", "priority": "LOW", "title": "技術調査", "desc": "新技術の評価・導入検討"},
     {"id": "T-010", "priority": "LOW", "title": "コミュニティ連携", "desc": "オープンソース貢献"},
-    
     # 追加の運用タスク
     {"id": "T-011", "priority": "MEDIUM", "title": "バックアップ自動化", "desc": "定期バックアップの実行"},
     {"id": "T-012", "priority": "MEDIUM", "title": "ログ分析", "desc": "エラーパターンの特定"},
@@ -112,7 +105,7 @@ def convert_priority(priority_str: str) -> PriorityLevel:
         "HIGHEST": PriorityLevel.HIGHEST,
         "HIGH": PriorityLevel.HIGH,
         "MEDIUM": PriorityLevel.MEDIUM,
-        "LOW": PriorityLevel.LOW
+        "LOW": PriorityLevel.LOW,
     }
     return mapping.get(priority_str, PriorityLevel.MEDIUM)
 
@@ -121,66 +114,66 @@ def create_tasks_from_list() -> List[TaskRecord]:
     """タスクリストからTaskRecordを作成"""
     tasks = []
     today = datetime.now()
-    
+
     for task_def in REMAINING_TASKS:
         task = TaskRecord(
             tracker_id=task_def["id"],
             priority=convert_priority(task_def["priority"]),
             status=TaskStatus.NOT_STARTED,
             created_date=today,
-            description=f"{task_def['title']}: {task_def['desc']}"
+            description=f"{task_def['title']}: {task_def['desc']}",
         )
         tasks.append(task)
-    
+
     return tasks
 
 
 def batch_register_tasks():
     """タスクを一括でGoogle Sheetsに登録"""
-    
+
     print("残存タスク一括起票")
     print("=" * 60)
-    
+
     try:
         # Google Sheets接続
         updater = GoogleSheetsUpdater()
         if not updater.service:
             print("❌ Google Sheets API未認証")
             return False
-        
+
         # タスクリスト作成
         tasks = create_tasks_from_list()
         print(f"\n起票対象タスク数: {len(tasks)}")
-        
+
         # 優先度別集計
         priority_counts = {}
         for task in tasks:
             priority = task.priority.value
             priority_counts[priority] = priority_counts.get(priority, 0) + 1
-        
+
         print("\n優先度別内訳:")
         for priority, count in sorted(priority_counts.items()):
             print(f"  {priority}: {count}件")
-        
+
         # 既存レコードチェック
         print("\n既存レコードチェック中...")
         existing_count = 0
         new_count = 0
-        
+
         sheet_name = "シート1"
-        
+
         for i, task in enumerate(tasks, 1):
             # 進捗表示
             if i % 10 == 0:
                 print(f"  処理中... {i}/{len(tasks)}")
-            
+
             # 既存チェック
             existing_row = updater.find_existing_record(task.tracker_id)
-            
+
             # シート更新
             values = [task.to_sheets_row()]
-            body = {'values': values}
-            
+            body = {"values": values}
+
             try:
                 if existing_row:
                     # 既存レコードはスキップ（上書きしない）
@@ -189,18 +182,23 @@ def batch_register_tasks():
                 else:
                     # 新規レコード追加
                     range_name = f"{sheet_name}!A:V"
-                    result = updater.service.spreadsheets().values().append(
-                        spreadsheetId=updater.spreadsheet_id,
-                        range=range_name,
-                        valueInputOption='RAW',
-                        body=body
-                    ).execute()
+                    result = (
+                        updater.service.spreadsheets()
+                        .values()
+                        .append(
+                            spreadsheetId=updater.spreadsheet_id,
+                            range=range_name,
+                            valueInputOption="RAW",
+                            body=body,
+                        )
+                        .execute()
+                    )
                     new_count += 1
-                    
+
             except Exception as e:
                 logger.error(f"タスク {task.tracker_id} の登録エラー: {e}")
                 continue
-        
+
         # 結果サマリー
         print("\n" + "=" * 60)
         print("起票結果サマリー")
@@ -208,12 +206,12 @@ def batch_register_tasks():
         print(f"✅ 新規登録: {new_count}件")
         print(f"⏭️ スキップ（既存）: {existing_count}件")
         print(f"📊 合計処理: {len(tasks)}件")
-        
+
         print("\n📊 Google Sheetsで確認:")
         print(f"https://docs.google.com/spreadsheets/d/{updater.spreadsheet_id}/edit")
-        
+
         return True
-        
+
     except Exception as e:
         print(f"❌ エラー: {e}")
         return False
@@ -222,24 +220,25 @@ def batch_register_tasks():
 def main():
     """メイン処理"""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="残存タスク一括起票")
     parser.add_argument("--dry-run", action="store_true", help="実行せずにタスクリストを表示")
-    parser.add_argument("--filter-priority", choices=["HIGHEST", "HIGH", "MEDIUM", "LOW"], 
-                       help="特定優先度のタスクのみ起票")
-    
+    parser.add_argument(
+        "--filter-priority", choices=["HIGHEST", "HIGH", "MEDIUM", "LOW"], help="特定優先度のタスクのみ起票"
+    )
+
     args = parser.parse_args()
-    
+
     if args.dry_run:
         # ドライラン
         tasks = create_tasks_from_list()
         print(f"起票予定タスク数: {len(tasks)}\n")
-        
+
         for task in tasks:
             print(f"{task.tracker_id} [{task.priority.value}] {task.description}")
-        
+
         return
-    
+
     # 実行
     success = batch_register_tasks()
     sys.exit(0 if success else 1)

@@ -6,12 +6,13 @@ Google Sheets連携用のデータ構造とバリデーション
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Dict, List, Optional, Any
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 
 class TaskStatus(Enum):
     """タスクステータス定義"""
+
     NOT_STARTED = "着手前"
     IN_PROGRESS = "着手中"
     IMPLEMENTATION_DONE = "実装完了"
@@ -25,6 +26,7 @@ class TaskStatus(Enum):
 
 class ComponentStatus(Enum):
     """コンポーネントステータス定義"""
+
     EMPTY = ""
     COMPLETED = "完了"
     FAILED = "失敗"
@@ -34,6 +36,7 @@ class ComponentStatus(Enum):
 
 class PriorityLevel(Enum):
     """優先度レベル定義"""
+
     HIGHEST = "優先度最高"
     HIGH = "優先度高"
     MEDIUM = "優先度中"  # デフォルト
@@ -42,43 +45,43 @@ class PriorityLevel(Enum):
 
 class ProgressColumns:
     """Google Sheets列定義（拡張可能設計）"""
-    
+
     # 固定列（変更不可）
     FIXED_COLUMNS = {
-        'A': 'tracker_id',          # トラッカーID
-        'B': 'priority',            # 優先度
-        'C': 'status',              # ステータス
-        'D': 'created_date',        # 登録日付
-        'E': 'updated_date',        # 更新日付
-        'F': 'description',         # 概要
-        'G': 'details'              # 詳細
+        "A": "tracker_id",  # トラッカーID
+        "B": "priority",  # 優先度
+        "C": "status",  # ステータス
+        "D": "created_date",  # 登録日付
+        "E": "updated_date",  # 更新日付
+        "F": "description",  # 概要
+        "G": "details",  # 詳細
     }
-    
+
     # 動的列（追加・削除可能）
     DYNAMIC_COLUMNS = {
-        'H': 'operation_check',     # 動作確認
-        'I': 'unit_test',          # テストUNIT
-        'J': 'quality_evaluation', # 品質評価
-        'K': 'integration_script', # 統合実行スクリプト
-        'L': 'dashboard_generation', # ダッシュボード生成
-        'M': 'extraction_pipeline' # 抽出パイプライン
+        "H": "operation_check",  # 動作確認
+        "I": "unit_test",  # テストUNIT
+        "J": "quality_evaluation",  # 品質評価
+        "K": "integration_script",  # 統合実行スクリプト
+        "L": "dashboard_generation",  # ダッシュボード生成
+        "M": "extraction_pipeline",  # 抽出パイプライン
     }
-    
+
     # 統計分析列（X-AC列）
     STATISTICAL_COLUMNS = {
-        'X': 'current_score',           # Current品質スコア
-        'Y': 'baseline_score',          # BaseLine品質スコア
-        'Z': 'p_value',                 # p値（統計的有意性）
-        'AA': 'effect_size',            # 効果サイズ（Cohen's d）
-        'AB': 'improvement_rate',       # 改善率（%）
-        'AC': 'statistical_significance' # 統計的有意性
+        "X": "current_score",  # Current品質スコア
+        "Y": "baseline_score",  # BaseLine品質スコア
+        "Z": "p_value",  # p値（統計的有意性）
+        "AA": "effect_size",  # 効果サイズ（Cohen's d）
+        "AB": "improvement_rate",  # 改善率（%）
+        "AC": "statistical_significance",  # 統計的有意性
     }
-    
+
     @classmethod
     def get_all_columns(cls) -> Dict[str, str]:
         """全列定義を取得"""
         return {**cls.FIXED_COLUMNS, **cls.DYNAMIC_COLUMNS, **cls.STATISTICAL_COLUMNS}
-    
+
     @classmethod
     def get_column_letter(cls, field_name: str) -> Optional[str]:
         """フィールド名から列文字を取得"""
@@ -87,7 +90,7 @@ class ProgressColumns:
             if name == field_name:
                 return letter
         return None
-    
+
     @classmethod
     def get_field_name(cls, column_letter: str) -> Optional[str]:
         """列文字からフィールド名を取得"""
@@ -95,16 +98,17 @@ class ProgressColumns:
         return all_columns.get(column_letter.upper())
 
 
-@dataclass 
+@dataclass
 class StatisticalRecord:
     """統計分析レコード（X-AC列）"""
-    current_score: Optional[float] = None           # Current品質スコア
-    baseline_score: Optional[float] = None          # BaseLine品質スコア
-    p_value: Optional[float] = None                 # p値（統計的有意性）
-    effect_size: Optional[float] = None             # 効果サイズ（Cohen's d）
-    improvement_rate: Optional[float] = None        # 改善率（%）
+
+    current_score: Optional[float] = None  # Current品質スコア
+    baseline_score: Optional[float] = None  # BaseLine品質スコア
+    p_value: Optional[float] = None  # p値（統計的有意性）
+    effect_size: Optional[float] = None  # 効果サイズ（Cohen's d）
+    improvement_rate: Optional[float] = None  # 改善率（%）
     statistical_significance: Optional[str] = None  # 統計的有意性
-    
+
     def to_sheets_row(self) -> List[str]:
         """統計分析データをGoogle Sheets行データに変換"""
         return [
@@ -113,38 +117,39 @@ class StatisticalRecord:
             f"{self.p_value:.4f}" if self.p_value is not None else "",
             f"{self.effect_size:.3f}" if self.effect_size is not None else "",
             f"{self.improvement_rate:.1f}%" if self.improvement_rate is not None else "",
-            self.statistical_significance if self.statistical_significance else ""
+            self.statistical_significance if self.statistical_significance else "",
         ]
-    
+
     @classmethod
-    def from_sheets_row(cls, row: List[str], start_col: int = 23) -> 'StatisticalRecord':
+    def from_sheets_row(cls, row: List[str], start_col: int = 23) -> "StatisticalRecord":
         """Google Sheets行データから統計分析データ作成（X-AC列、23-28インデックス）"""
-        stats_row = row[start_col:start_col+6] if len(row) > start_col else []
+        stats_row = row[start_col : start_col + 6] if len(row) > start_col else []
         defaults = [""] * 6
-        stats_row = stats_row + defaults[len(stats_row):]
-        
+        stats_row = stats_row + defaults[len(stats_row) :]
+
         def safe_float(value: str) -> Optional[float]:
             """安全なfloat変換"""
             try:
                 # %記号を除去して変換
-                clean_value = value.replace('%', '') if value else ''
+                clean_value = value.replace("%", "") if value else ""
                 return float(clean_value) if clean_value else None
             except ValueError:
                 return None
-        
+
         return cls(
             current_score=safe_float(stats_row[0]),
             baseline_score=safe_float(stats_row[1]),
             p_value=safe_float(stats_row[2]),
             effect_size=safe_float(stats_row[3]),
             improvement_rate=safe_float(stats_row[4]),
-            statistical_significance=stats_row[5] if stats_row[5] else None
+            statistical_significance=stats_row[5] if stats_row[5] else None,
         )
 
 
 @dataclass
 class TaskRecord:
     """タスクレコード（進捗+10指標統合）"""
+
     tracker_id: str
     priority: PriorityLevel = PriorityLevel.MEDIUM  # デフォルト優先度中
     status: TaskStatus = TaskStatus.NOT_STARTED
@@ -152,7 +157,7 @@ class TaskRecord:
     updated_date: Optional[datetime] = None
     description: str = ""
     details: str = ""  # 詳細フィールド追加
-    
+
     # コンポーネント別ステータス
     operation_check: ComponentStatus = ComponentStatus.EMPTY
     unit_test: ComponentStatus = ComponentStatus.EMPTY
@@ -160,25 +165,25 @@ class TaskRecord:
     integration_script: ComponentStatus = ComponentStatus.EMPTY
     dashboard_generation: ComponentStatus = ComponentStatus.EMPTY
     extraction_pipeline: ComponentStatus = ComponentStatus.EMPTY
-    
+
     # 統計分析統合
     statistics: Optional[StatisticalRecord] = None
-    
+
     def __post_init__(self):
         """初期化後処理"""
         # 登録日付が未設定の場合、作成時刻を自動設定
         if self.created_date is None:
             self.created_date = datetime.now()
-        
+
         # 統計分析データの初期化
         if self.statistics is None:
             self.statistics = StatisticalRecord()
-    
+
     def update_status(self, new_status: TaskStatus) -> None:
         """ステータス更新"""
         self.status = new_status
         self.updated_date = datetime.now()  # 更新時のみ自動設定
-    
+
     def update_component(self, component: str, status: ComponentStatus) -> None:
         """コンポーネントステータス更新"""
         if hasattr(self, component):
@@ -186,71 +191,71 @@ class TaskRecord:
             self.updated_date = datetime.now()  # 更新時のみ自動設定
         else:
             raise ValueError(f"Unknown component: {component}")
-    
+
     def to_sheets_row(self) -> List[str]:
         """Google Sheets行データに変換（20列：A-T、実際の構造に合わせて）"""
         # 実際のシート構造: A=ID, B=優先度, C=ステータス, D=登録日, E=更新日, F=概要, G=詳細, H=動作確認, ...
         row = [
-            self.tracker_id,                                                       # A
-            self.priority.value,                                                   # B  
-            self.status.value,                                                     # C  
-            self.created_date.strftime('%Y-%m-%d %H:%M:%S') if self.created_date else "",  # D
-            self.updated_date.strftime('%Y-%m-%d %H:%M:%S') if self.updated_date else "",  # E
-            self.description,                                                      # F
-            self.details,                                                          # G - 詳細（修正）
-            self.operation_check.value,                                           # H - 動作確認（1つずらす）
-            self.unit_test.value,                                                 # I - テストUNIT
-            self.quality_evaluation.value,                                        # J - 品質評価
-            self.integration_script.value,                                        # K - 統合実行スクリプト
-            self.dashboard_generation.value,                                      # L - ダッシュボード生成
-            self.extraction_pipeline.value,                                       # M - 抽出パイプライン
+            self.tracker_id,  # A
+            self.priority.value,  # B
+            self.status.value,  # C
+            self.created_date.strftime("%Y-%m-%d %H:%M:%S") if self.created_date else "",  # D
+            self.updated_date.strftime("%Y-%m-%d %H:%M:%S") if self.updated_date else "",  # E
+            self.description,  # F
+            self.details,  # G - 詳細（修正）
+            self.operation_check.value,  # H - 動作確認（1つずらす）
+            self.unit_test.value,  # I - テストUNIT
+            self.quality_evaluation.value,  # J - 品質評価
+            self.integration_script.value,  # K - 統合実行スクリプト
+            self.dashboard_generation.value,  # L - ダッシュボード生成
+            self.extraction_pipeline.value,  # M - 抽出パイプライン
             "",  # N - Current
             "",  # O - BaseLine
             "",  # P - p値
             "",  # Q - 効果サイズ、Cohen's d
             "",  # R - 改善率
             "",  # S - 統計的有意性
-            ""   # T - 20250825実装済みか？
+            "",  # T - 20250825実装済みか？
         ]
-        
+
         return row
-    
+
     @staticmethod
     def _parse_date_flexible(date_str: str) -> Optional[datetime]:
         """柔軟な日付解析（既存データ対応）"""
         if not date_str:
             return None
-        
+
         # 新フォーマット（yyyy-mm-dd hh:mm:ss）を優先
         try:
-            return datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
+            return datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
         except ValueError:
             pass
-        
+
         # 旧フォーマット（yyyy-mm-dd）への後方互換
         try:
-            return datetime.strptime(date_str, '%Y-%m-%d')
+            return datetime.strptime(date_str, "%Y-%m-%d")
         except ValueError:
             pass
-        
+
         # ISO形式への対応
         try:
-            return datetime.fromisoformat(date_str.replace('T', ' '))
+            return datetime.fromisoformat(date_str.replace("T", " "))
         except ValueError:
             pass
-        
+
         return None
 
     @classmethod
-    def from_sheets_row(cls, row: List[str]) -> 'TaskRecord':
+    def from_sheets_row(cls, row: List[str]) -> "TaskRecord":
         """Google Sheets行データから作成（20列：A-T）"""
         # デフォルト値設定（20列分：A-T）
         defaults = [""] * 20
-        row = row + defaults[len(row):]
-        
+        row = row + defaults[len(row) :]
+
         # 統計データは現在無効化（列構造に合わない）
         statistics = None  # StatisticalRecord.from_sheets_row(row, start_col=23)
-        
+
         # 安全な変換関数群
         def safe_priority(value: str) -> PriorityLevel:
             """優先度の安全な変換"""
@@ -260,7 +265,7 @@ class TaskRecord:
                 if priority.value == value:
                     return priority
             return PriorityLevel.MEDIUM  # デフォルト
-        
+
         def safe_component_status(value: str) -> ComponentStatus:
             """コンポーネントステータスの安全な変換"""
             if not value or not value.strip():
@@ -270,32 +275,45 @@ class TaskRecord:
             except ValueError:
                 # 無効な値の場合はEMPTYを返す
                 return ComponentStatus.EMPTY
-        
+
         return cls(
-            tracker_id=row[0],                                                    # A
-            priority=safe_priority(row[1]),                                      # B
-            status=TaskStatus(row[2]) if row[2] else TaskStatus.NOT_STARTED,     # C 
-            created_date=cls._parse_date_flexible(row[3]) if row[3] else None,   # D
-            updated_date=cls._parse_date_flexible(row[4]) if row[4] else None,   # E
-            description=row[5],                                                   # F
-            details=row[6] if len(row) > 6 else "",                              # G - 詳細（修正）
-            operation_check=safe_component_status(row[7]) if len(row) > 7 else ComponentStatus.EMPTY,      # H - 動作確認
-            unit_test=safe_component_status(row[8]) if len(row) > 8 else ComponentStatus.EMPTY,           # I - テストUNIT
-            quality_evaluation=safe_component_status(row[9]) if len(row) > 9 else ComponentStatus.EMPTY,  # J - 品質評価
-            integration_script=safe_component_status(row[10]) if len(row) > 10 else ComponentStatus.EMPTY, # K - 統合実行スクリプト
-            dashboard_generation=safe_component_status(row[11]) if len(row) > 11 else ComponentStatus.EMPTY, # L - ダッシュボード生成
-            extraction_pipeline=safe_component_status(row[12]) if len(row) > 12 else ComponentStatus.EMPTY, # M - 抽出パイプライン
-            statistics=statistics
+            tracker_id=row[0],  # A
+            priority=safe_priority(row[1]),  # B
+            status=TaskStatus(row[2]) if row[2] else TaskStatus.NOT_STARTED,  # C
+            created_date=cls._parse_date_flexible(row[3]) if row[3] else None,  # D
+            updated_date=cls._parse_date_flexible(row[4]) if row[4] else None,  # E
+            description=row[5],  # F
+            details=row[6] if len(row) > 6 else "",  # G - 詳細（修正）
+            operation_check=safe_component_status(row[7])
+            if len(row) > 7
+            else ComponentStatus.EMPTY,  # H - 動作確認
+            unit_test=safe_component_status(row[8])
+            if len(row) > 8
+            else ComponentStatus.EMPTY,  # I - テストUNIT
+            quality_evaluation=safe_component_status(row[9])
+            if len(row) > 9
+            else ComponentStatus.EMPTY,  # J - 品質評価
+            integration_script=safe_component_status(row[10])
+            if len(row) > 10
+            else ComponentStatus.EMPTY,  # K - 統合実行スクリプト
+            dashboard_generation=safe_component_status(row[11])
+            if len(row) > 11
+            else ComponentStatus.EMPTY,  # L - ダッシュボード生成
+            extraction_pipeline=safe_component_status(row[12])
+            if len(row) > 12
+            else ComponentStatus.EMPTY,  # M - 抽出パイプライン
+            statistics=statistics,
         )
 
 
 @dataclass
 class ProgressTrackerConfig:
     """進捗管理設定"""
+
     spreadsheet_id: str
     sheet_name: str = "Progress Tracker"
     auth_file_path: str = "config/google_sheets_auth.json"
-    
+
     # ドロップダウン値定義
     priority_values: List[str] = field(default_factory=lambda: [p.value for p in PriorityLevel])
     status_values: List[str] = field(default_factory=lambda: [s.value for s in TaskStatus])
@@ -304,14 +322,17 @@ class ProgressTrackerConfig:
 
 class ProgressTrackerError(Exception):
     """進捗管理専用例外"""
+
     pass
 
 
 class SheetsAPIError(ProgressTrackerError):
     """Google Sheets API例外"""
+
     pass
 
 
 class ValidationError(ProgressTrackerError):
     """バリデーション例外"""
+
     pass

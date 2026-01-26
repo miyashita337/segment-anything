@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 class TaskPriority(Enum):
     """タスク優先度"""
+
     LOW = 3
     NORMAL = 2
     HIGH = 1
@@ -29,6 +30,7 @@ class TaskPriority(Enum):
 
 class TaskStatus(Enum):
     """タスクステータス"""
+
     PENDING = "pending"
     PROCESSING = "processing"
     COMPLETED = "completed"
@@ -38,6 +40,7 @@ class TaskStatus(Enum):
 
 class ProcessingMode(Enum):
     """処理モード"""
+
     SEQUENTIAL = "sequential"
     PARALLEL = "parallel"
     ADAPTIVE = "adaptive"
@@ -46,6 +49,7 @@ class ProcessingMode(Enum):
 @dataclass
 class QueueTask:
     """キュータスク"""
+
     task_id: str
     image_path: str
     priority: TaskPriority
@@ -66,6 +70,7 @@ class QueueTask:
 @dataclass
 class QueueConfig:
     """キュー設定"""
+
     max_queue_size: int = 1000
     max_workers: int = 4
     processing_mode: ProcessingMode = ProcessingMode.ADAPTIVE
@@ -86,12 +91,12 @@ class ProcessingQueue:
         self.processing_tasks: Dict[str, QueueTask] = {}
         self.completed_tasks: Dict[str, QueueTask] = {}
         self.failed_tasks: Dict[str, QueueTask] = {}
-        
+
         # ワーカー管理
         self.workers: List[threading.Thread] = []
         self.worker_stop_event = threading.Event()
         self.worker_lock = threading.Lock()
-        
+
         # 統計情報
         self.statistics = {
             "total_tasks": 0,
@@ -100,31 +105,31 @@ class ProcessingQueue:
             "processing_time_total": 0.0,
             "queue_start_time": datetime.now(),
         }
-        
+
         logger.info("ProcessingQueue initialized")
 
     def add_task(
         self,
         image_path: str,
         priority: TaskPriority = TaskPriority.NORMAL,
-        estimated_size_mb: Optional[float] = None
+        estimated_size_mb: Optional[float] = None,
     ) -> str:
         """タスク追加"""
         task_id = str(uuid.uuid4())[:8]
-        
+
         # ファイルサイズベースの優先度自動調整
         if self.config.auto_priority and estimated_size_mb is None:
             estimated_size_mb = self._estimate_file_size(image_path)
             priority = self._calculate_auto_priority(estimated_size_mb)
-        
+
         task = QueueTask(
             task_id=task_id,
             image_path=image_path,
             priority=priority,
             created_at=datetime.now(),
-            estimated_size_mb=estimated_size_mb or 0.0
+            estimated_size_mb=estimated_size_mb or 0.0,
         )
-        
+
         try:
             self.task_queue.put(task, timeout=1.0)
             self.statistics["total_tasks"] += 1
@@ -137,17 +142,17 @@ class ProcessingQueue:
     def add_batch_tasks(self, image_paths: List[str]) -> List[str]:
         """バッチタスク追加"""
         task_ids = []
-        
+
         # サイズでソート（小さいファイルから処理）
         sorted_paths = self._sort_by_size(image_paths)
-        
+
         for path in sorted_paths:
             try:
                 task_id = self.add_task(path)
                 task_ids.append(task_id)
             except Exception as e:
                 logger.error(f"Failed to add batch task {path}: {e}")
-                
+
         logger.info(f"Batch tasks added: {len(task_ids)}/{len(image_paths)}")
         return task_ids
 
@@ -156,33 +161,31 @@ class ProcessingQueue:
         if self.workers:
             logger.warning("Workers already started")
             return
-            
+
         worker_count = num_workers or self.config.max_workers
         self.worker_stop_event.clear()
-        
+
         for i in range(worker_count):
             worker = threading.Thread(
-                target=self._worker_loop,
-                name=f"QueueWorker-{i}",
-                daemon=True
+                target=self._worker_loop, name=f"QueueWorker-{i}", daemon=True
             )
             worker.start()
             self.workers.append(worker)
-            
+
         logger.info(f"Started {worker_count} queue workers")
 
     def stop_workers(self, timeout: float = 10.0):
         """ワーカー停止"""
         if not self.workers:
             return
-            
+
         logger.info("Stopping queue workers...")
         self.worker_stop_event.set()
-        
+
         # 全ワーカーの終了を待機
         for worker in self.workers:
             worker.join(timeout=timeout / len(self.workers))
-            
+
         self.workers.clear()
         logger.info("Queue workers stopped")
 
@@ -191,15 +194,15 @@ class ProcessingQueue:
         # 処理中タスクから検索
         if task_id in self.processing_tasks:
             return self.processing_tasks[task_id]
-            
+
         # 完了タスクから検索
         if task_id in self.completed_tasks:
             return self.completed_tasks[task_id]
-            
+
         # 失敗タスクから検索
         if task_id in self.failed_tasks:
             return self.failed_tasks[task_id]
-            
+
         return None
 
     def get_queue_status(self) -> Dict[str, Any]:
@@ -211,7 +214,7 @@ class ProcessingQueue:
             "failed_count": len(self.failed_tasks),
             "workers_active": len(self.workers),
             "statistics": self.statistics.copy(),
-            "config": asdict(self.config)
+            "config": asdict(self.config),
         }
 
     def cancel_task(self, task_id: str) -> bool:
@@ -233,60 +236,64 @@ class ProcessingQueue:
         """ワーカーループ"""
         worker_name = threading.current_thread().name
         logger.info(f"{worker_name} started")
-        
+
         while not self.worker_stop_event.is_set():
             try:
                 # タスク取得（タイムアウト付き）
                 task = self.task_queue.get(timeout=1.0)
-                
+
                 if task.status == TaskStatus.CANCELLED:
                     continue
-                
+
                 # メモリチェック
                 if not self._check_memory_availability():
                     logger.warning(f"{worker_name}: Memory threshold exceeded, skipping task")
                     self.task_queue.put(task)  # キューに戻す
                     time.sleep(5.0)
                     continue
-                
+
                 # タスク処理開始
                 with self.worker_lock:
                     self.processing_tasks[task.task_id] = task
                     task.status = TaskStatus.PROCESSING
-                
+
                 logger.info(f"{worker_name}: Processing task {task.task_id}")
-                
+
                 try:
                     # 実際の処理実行
                     start_time = time.time()
                     result = self._process_task(task)
                     processing_time = time.time() - start_time
-                    
+
                     # 処理成功
                     task.status = TaskStatus.COMPLETED
                     task.processing_time = processing_time
                     task.result = result
-                    
+
                     with self.worker_lock:
                         del self.processing_tasks[task.task_id]
                         self.completed_tasks[task.task_id] = task
                         self.statistics["completed_tasks"] += 1
                         self.statistics["processing_time_total"] += processing_time
-                    
-                    logger.info(f"{worker_name}: Task completed {task.task_id} in {processing_time:.2f}s")
-                    
+
+                    logger.info(
+                        f"{worker_name}: Task completed {task.task_id} in {processing_time:.2f}s"
+                    )
+
                 except Exception as e:
                     # 処理失敗
                     logger.error(f"{worker_name}: Task failed {task.task_id}: {e}")
-                    
+
                     task.error_message = str(e)
                     task.retry_count += 1
-                    
+
                     if self.config.enable_retry and task.retry_count <= task.max_retries:
                         # リトライ
                         task.status = TaskStatus.PENDING
                         self.task_queue.put(task)
-                        logger.info(f"{worker_name}: Task queued for retry {task.task_id} ({task.retry_count}/{task.max_retries})")
+                        logger.info(
+                            f"{worker_name}: Task queued for retry {task.task_id} ({task.retry_count}/{task.max_retries})"
+                        )
                     else:
                         # 最終失敗
                         task.status = TaskStatus.FAILED
@@ -294,14 +301,14 @@ class ProcessingQueue:
                             del self.processing_tasks[task.task_id]
                             self.failed_tasks[task.task_id] = task
                             self.statistics["failed_tasks"] += 1
-                        
+
                         logger.error(f"{worker_name}: Task final failure {task.task_id}")
-                
+
             except Empty:
                 continue
             except Exception as e:
                 logger.error(f"{worker_name}: Worker error: {e}")
-                
+
         logger.info(f"{worker_name} stopped")
 
     def _process_task(self, task: QueueTask) -> Any:
@@ -310,7 +317,7 @@ class ProcessingQueue:
         image_path = Path(task.image_path)
         if not image_path.exists():
             raise FileNotFoundError(f"Image file not found: {task.image_path}")
-        
+
         # 実際の処理はサブクラスでオーバーライド
         return {"status": "processed", "path": task.image_path}
 
@@ -333,18 +340,20 @@ class ProcessingQueue:
 
     def _sort_by_size(self, image_paths: List[str]) -> List[str]:
         """サイズでソート"""
+
         def get_size(path):
             try:
                 return os.path.getsize(path)
             except Exception:
                 return 0
-        
+
         return sorted(image_paths, key=get_size)
 
     def _check_memory_availability(self) -> bool:
         """メモリ利用可能性チェック"""
         try:
             import psutil
+
             memory = psutil.virtual_memory()
             available_mb = memory.available / (1024 * 1024)
             return available_mb > self.config.memory_threshold_mb
@@ -356,30 +365,30 @@ class ProcessingQueue:
 
 class ImageProcessingQueue(ProcessingQueue):
     """画像処理特化キュー"""
-    
+
     def __init__(self, config: Optional[QueueConfig] = None):
         super().__init__(config)
         logger.info("ImageProcessingQueue initialized")
-    
+
     def _process_task(self, task: QueueTask) -> Any:
         """画像処理タスク実行"""
         image_path = Path(task.image_path)
-        
+
         if not image_path.exists():
             raise FileNotFoundError(f"Image file not found: {task.image_path}")
-        
+
         # 基本的な画像処理（実際の抽出処理はここに実装）
         result = {
             "status": "processed",
             "path": str(image_path),
             "size_mb": task.estimated_size_mb,
             "processing_mode": self.config.processing_mode.value,
-            "task_id": task.task_id
+            "task_id": task.task_id,
         }
-        
+
         # 処理時間をシミュレート（実際は画像処理）
         time.sleep(0.1)
-        
+
         return result
 
 

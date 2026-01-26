@@ -17,28 +17,29 @@ def generate_dashboard_with_server_compatible_images():
     tracker_id = "KIRO-001-002"
     workspace_path = f"/mnt/c/AItools/lora/train/yado/tracker-workspace/{tracker_id}"
     extraction_dir = os.path.join(workspace_path, "extraction")
-    
+
     # 統計分析データ読み込み
     stats_file = os.path.join(workspace_path, "statistical_analysis_final.json")
-    with open(stats_file, 'r') as f:
+    with open(stats_file, "r") as f:
         stats = json.load(f)
-    
+
     # 抽出ファイルリスト取得
-    extracted_files = sorted([f for f in os.listdir(extraction_dir) 
-                            if f.endswith('.jpg') and f.startswith('extracted_')])
-    
+    extracted_files = sorted(
+        [f for f in os.listdir(extraction_dir) if f.endswith(".jpg") and f.startswith("extracted_")]
+    )
+
     print(f"🖼️ KIRO-001-002 サーバー互換画像パス修正開始...")
     print(f"  総画像数: {len(extracted_files)}枚")
-    
+
     # 画像カード生成（サーバー互換パス）
     image_cards_html = []
-    
+
     for i, filename in enumerate(extracted_files[:20]):  # 最初の20枚を表示
         # ファイル情報取得
         file_path = os.path.join(extraction_dir, filename)
         file_size = os.path.getsize(file_path)
         file_size_kb = file_size // 1024
-        
+
         # 品質判定（ファイルサイズベース）
         if file_size_kb > 100:
             quality_class = "high"
@@ -52,11 +53,11 @@ def generate_dashboard_with_server_compatible_images():
             quality_class = "low"
             quality_label = "低品質"
             badge_color = "bg-red-500"
-        
+
         # サーバー互換画像URL（絶対パス）
         image_url = f"/workspace/{tracker_id}/extraction/{filename}"
-        
-        card_html = f'''                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+
+        card_html = f"""                <div class="bg-white rounded-lg shadow-md overflow-hidden">
                     <div class="relative">
                         <img src="{image_url}" alt="{filename}" 
                              class="w-full h-48 object-contain bg-gray-100" 
@@ -79,12 +80,12 @@ def generate_dashboard_with_server_compatible_images():
                             <span>{quality_label}</span>
                         </div>
                     </div>
-                </div>'''
-        
+                </div>"""
+
         image_cards_html.append(card_html)
-    
+
     # HTML生成
-    html_content = f'''<!DOCTYPE html>
+    html_content = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -222,22 +223,23 @@ def generate_dashboard_with_server_compatible_images():
         }});
     </script>
 </body>
-</html>'''
+</html>"""
 
     # HTMLファイル保存
     dashboard_dir = os.path.join(workspace_path, "dashboard")
     dashboard_path = os.path.join(dashboard_dir, "dashboard.html")
-    
-    with open(dashboard_path, 'w', encoding='utf-8') as f:
+
+    with open(dashboard_path, "w", encoding="utf-8") as f:
         f.write(html_content)
-    
+
     print(f"\n✅ サーバー互換ダッシュボード修正完了!")
     print(f"📁 ファイル: {dashboard_path}")
     print(f"🖼️ 画像パス形式: /workspace/{tracker_id}/extraction/[filename]")
     print(f"📊 総抽出ファイル数: {len(extracted_files)}枚")
     print(f"🌐 アクセスURL: http://100.123.241.106:8088/tracker/{tracker_id}")
-    
+
     return dashboard_path
+
 
 if __name__ == "__main__":
     generate_dashboard_with_server_compatible_images()

@@ -4,11 +4,11 @@ KIRO-006 Phase 2 - Pytest Configuration and Fixtures
 ワークフロー計画・起票システムのテスト共通設定
 """
 
-import pytest
-import sys
 import os
-import tempfile
+import pytest
 import shutil
+import sys
+import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
 
@@ -28,30 +28,24 @@ def project_root_path():
 def temp_workspace():
     """テスト用の一時ワークスペースを作成"""
     temp_dir = tempfile.mkdtemp(prefix="kiro006_test_")
-    
+
     # 必要なディレクトリ構造を作成
-    workspace_dirs = [
-        "config",
-        ".workflow_state", 
-        ".workflow_approvals",
-        "logs",
-        "workspace"
-    ]
-    
+    workspace_dirs = ["config", ".workflow_state", ".workflow_approvals", "logs", "workspace"]
+
     for dir_name in workspace_dirs:
         os.makedirs(os.path.join(temp_dir, dir_name), exist_ok=True)
-    
+
     # 元のディレクトリを保存
     original_cwd = os.getcwd()
-    
+
     # テスト用ディレクトリに移動
     os.chdir(temp_dir)
-    
+
     yield temp_dir
-    
+
     # 元のディレクトリに戻る
     os.chdir(original_cwd)
-    
+
     # 一時ディレクトリを削除
     shutil.rmtree(temp_dir, ignore_errors=True)
 
@@ -60,16 +54,16 @@ def temp_workspace():
 def mock_progress_manager():
     """ProgressManagerのモックを提供"""
     mock_manager = Mock()
-    
+
     # 基本的なメソッドのモック設定
     mock_manager.get_task.return_value = None
     mock_manager.create_task.return_value = Mock()
-    
+
     # 設定のモック
     mock_config = Mock()
     mock_config.sheet_url = "https://docs.google.com/spreadsheets/d/test/edit"
     mock_manager.config = mock_config
-    
+
     return mock_manager
 
 
@@ -77,17 +71,17 @@ def mock_progress_manager():
 def mock_workflow_controller():
     """WorkflowControllerのモックを提供"""
     mock_controller = Mock()
-    
+
     # 基本的なメソッドのモック設定
     mock_controller.create_tracker_workflow.return_value = True
     mock_controller.get_workflow_status.return_value = {
         "current_phase": "Phase 0.5",
-        "current_step": "branch_verification", 
+        "current_step": "branch_verification",
         "can_proceed": True,
         "completed_steps": [],
-        "pending_approvals": []
+        "pending_approvals": [],
     }
-    
+
     return mock_controller
 
 
@@ -98,7 +92,7 @@ def sample_tracker_data():
         "tracker_id": "TEST-001",
         "summary": "テスト用概要",
         "details": "テスト用詳細説明です。" * 10,  # 適度な長さ
-        "priority": "medium"
+        "priority": "medium",
     }
 
 
@@ -106,15 +100,15 @@ def sample_tracker_data():
 def long_details_data():
     """文字数制限テスト用の長い詳細データを提供"""
     from tools.workflow.plan_command_handler import PlanCommandHandler
-    
+
     # 制限を超える長さのデータ
     long_text = "a" * (PlanCommandHandler.MAX_DETAILS_LENGTH + 100)
-    
+
     return {
         "tracker_id": "LONG-001",
         "summary": "文字数制限テスト",
         "details": long_text,
-        "priority": "high"
+        "priority": "high",
     }
 
 
@@ -122,16 +116,16 @@ def long_details_data():
 def invalid_tracker_ids():
     """無効なトラッカーIDのリストを提供"""
     return [
-        "",                 # 空文字
-        "   ",             # 空白のみ
-        "invalid",         # ハイフンなし
-        "tracker-001",     # 小文字
-        "TRACKER_001",     # アンダースコア
-        "TRACKER-",        # 番号なし
-        "-001",            # プレフィックスなし
-        "TRACKER-ABC",     # 番号が文字
-        "123-TRACKER",     # 数字から開始
-        "TRACKER@001",     # 特殊文字
+        "",  # 空文字
+        "   ",  # 空白のみ
+        "invalid",  # ハイフンなし
+        "tracker-001",  # 小文字
+        "TRACKER_001",  # アンダースコア
+        "TRACKER-",  # 番号なし
+        "-001",  # プレフィックスなし
+        "TRACKER-ABC",  # 番号が文字
+        "123-TRACKER",  # 数字から開始
+        "TRACKER@001",  # 特殊文字
     ]
 
 
@@ -141,12 +135,12 @@ def valid_tracker_ids():
     return [
         "TRACKER-001",
         "KIRO-006",
-        "QUAL-044", 
+        "QUAL-044",
         "A-1",
         "TEST123-999",
         "FEATURE-001",
         "BUG-123",
-        "URGENT-001"
+        "URGENT-001",
     ]
 
 
@@ -154,14 +148,14 @@ def valid_tracker_ids():
 def setup_logging():
     """テスト用ログ設定"""
     import logging
-    
+
     # テスト中はログレベルをWARNING以上に設定
     logging.getLogger().setLevel(logging.WARNING)
-    
+
     # 特定のモジュールのログを抑制
-    logging.getLogger('httplib2').setLevel(logging.ERROR)
-    logging.getLogger('googleapiclient').setLevel(logging.ERROR)
-    logging.getLogger('google').setLevel(logging.ERROR)
+    logging.getLogger("httplib2").setLevel(logging.ERROR)
+    logging.getLogger("googleapiclient").setLevel(logging.ERROR)
+    logging.getLogger("google").setLevel(logging.ERROR)
 
 
 @pytest.fixture(scope="function")
@@ -175,53 +169,35 @@ def mock_google_sheets_config():
         "client_email": "test@test-project.iam.gserviceaccount.com",
         "client_id": "test-client-id",
         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-        "token_uri": "https://token.googleapis.com/token"
+        "token_uri": "https://token.googleapis.com/token",
     }
-    
+
     return config_data
 
 
-@pytest.fixture(scope="function") 
+@pytest.fixture(scope="function")
 def mock_sqlite_database(temp_workspace):
     """テスト用SQLiteデータベースのモックを提供"""
     db_path = os.path.join(temp_workspace, ".workflow_state", "workflow.db")
-    
+
     # データベースディレクトリを作成
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
-    
+
     return db_path
 
 
 # マーカー定義
 def pytest_configure(config):
     """Pytestマーカーの設定"""
-    config.addinivalue_line(
-        "markers", "unit: Unit tests for individual components"
-    )
-    config.addinivalue_line(
-        "markers", "integration: Integration tests for component interaction"
-    )
-    config.addinivalue_line(
-        "markers", "cli: CLI interface tests"
-    )
-    config.addinivalue_line(
-        "markers", "performance: Performance and benchmark tests"
-    )
-    config.addinivalue_line(
-        "markers", "security: Security-related tests"
-    )
-    config.addinivalue_line(
-        "markers", "slow: Tests that take a long time to run"
-    )
-    config.addinivalue_line(
-        "markers", "workflow: Workflow system tests (KIRO-006)"
-    )
-    config.addinivalue_line(
-        "markers", "plan_command: PlanCommandHandler tests"
-    )
-    config.addinivalue_line(
-        "markers", "create_command: CreateCommandHandler tests"
-    )
+    config.addinivalue_line("markers", "unit: Unit tests for individual components")
+    config.addinivalue_line("markers", "integration: Integration tests for component interaction")
+    config.addinivalue_line("markers", "cli: CLI interface tests")
+    config.addinivalue_line("markers", "performance: Performance and benchmark tests")
+    config.addinivalue_line("markers", "security: Security-related tests")
+    config.addinivalue_line("markers", "slow: Tests that take a long time to run")
+    config.addinivalue_line("markers", "workflow: Workflow system tests (KIRO-006)")
+    config.addinivalue_line("markers", "plan_command: PlanCommandHandler tests")
+    config.addinivalue_line("markers", "create_command: CreateCommandHandler tests")
     config.addinivalue_line(
         "markers", "backward_compatibility: Tests ensuring existing functionality works"
     )

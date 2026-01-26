@@ -18,72 +18,71 @@ def setup_logging():
     log_file = Path("dashboard_server.log")
     logging.basicConfig(
         level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s',
-        handlers=[
-            logging.FileHandler(log_file, encoding='utf-8'),
-            logging.StreamHandler()
-        ]
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        handlers=[logging.FileHandler(log_file, encoding="utf-8"), logging.StreamHandler()],
     )
     return logging.getLogger(__name__)
 
 
 class DashboardHandler(SimpleHTTPRequestHandler):
     """カスタムHTTPハンドラー"""
-    
+
     def __init__(self, *args, **kwargs):
         self.workspace_base = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace")
         super().__init__(*args, **kwargs)
-    
+
     def do_GET(self):
         """GETリクエスト処理"""
-        path = self.path.strip('/')
-        
+        path = self.path.strip("/")
+
         # ルートアクセス時はインデックス画面表示
-        if path == '' or path == 'index.html':
+        if path == "" or path == "index.html":
             self.serve_index()
             return
-        
+
         # トラッカー別ダッシュボード
-        if path.startswith('INTEGRATE-3-6-'):
+        if path.startswith("INTEGRATE-3-6-"):
             tracker_id = path
             dashboard_file = self.workspace_base / tracker_id / "dashboard" / "dashboard.html"
-            
+
             if dashboard_file.exists():
                 self.serve_dashboard(dashboard_file)
             else:
                 self.send_error(404, f"Dashboard not found: {tracker_id}")
             return
-        
+
         # 静的ファイル
         super().do_GET()
-    
+
     def serve_index(self):
         """インデックス画面表示"""
         # 各トラッカーの状態確認
         trackers = ["INTEGRATE-3-6-01", "INTEGRATE-3-6-02", "INTEGRATE-3-6-03", "INTEGRATE-3-6-04"]
         tracker_status = []
-        
+
         for tracker_id in trackers:
             dashboard_file = self.workspace_base / tracker_id / "dashboard" / "dashboard.html"
             extraction_dir = self.workspace_base / tracker_id / "extraction"
-            
+
             # 画像数カウント
-            image_count = len(list(extraction_dir.glob("kana08_*.jpg"))) if extraction_dir.exists() else 0
-            
+            image_count = (
+                len(list(extraction_dir.glob("kana08_*.jpg"))) if extraction_dir.exists() else 0
+            )
+
             status = {
-                'id': tracker_id,
-                'name': {
-                    'INTEGRATE-3-6-01': 'Phase 3-6統合初期版',
-                    'INTEGRATE-3-6-02': 'Phase 3-6改良版',
-                    'INTEGRATE-3-6-03': 'YOLO汎用版検証',
-                    'INTEGRATE-3-6-04': 'アニメ特化版検証'
+                "id": tracker_id,
+                "name": {
+                    "INTEGRATE-3-6-01": "Phase 3-6統合初期版",
+                    "INTEGRATE-3-6-02": "Phase 3-6改良版",
+                    "INTEGRATE-3-6-03": "YOLO汎用版検証",
+                    "INTEGRATE-3-6-04": "アニメ特化版検証",
                 }.get(tracker_id, tracker_id),
-                'available': dashboard_file.exists(),
-                'image_count': image_count,
-                'file_size': dashboard_file.stat().st_size / 1024 if dashboard_file.exists() else 0
+                "available": dashboard_file.exists(),
+                "image_count": image_count,
+                "file_size": dashboard_file.stat().st_size / 1024 if dashboard_file.exists() else 0,
             }
             tracker_status.append(status)
-        
+
         html_content = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -130,12 +129,12 @@ class DashboardHandler(SimpleHTTPRequestHandler):
                 <p><strong>生成時刻:</strong> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
             </div>
             <div class="tracker-grid">"""
-        
+
         for tracker in tracker_status:
-            status_class = "available" if tracker['available'] else "unavailable"
-            link_class = "" if tracker['available'] else "unavailable"
-            link_text = "ダッシュボードを開く" if tracker['available'] else "未生成"
-            
+            status_class = "available" if tracker["available"] else "unavailable"
+            link_class = "" if tracker["available"] else "unavailable"
+            link_text = "ダッシュボードを開く" if tracker["available"] else "未生成"
+
             html_content += f"""
                 <div class="tracker-card {status_class}">
                     <div class="tracker-title">{tracker['name']}</div>
@@ -156,7 +155,7 @@ class DashboardHandler(SimpleHTTPRequestHandler):
                     </div>
                     {"<a href='/" + tracker['id'] + "' class='tracker-link " + link_class + "'>" + link_text + "</a>" if tracker['available'] else "<span class='tracker-link unavailable'>" + link_text + "</span>"}
                 </div>"""
-        
+
         html_content += f"""
             </div>
         </div>
@@ -166,23 +165,23 @@ class DashboardHandler(SimpleHTTPRequestHandler):
     </div>
 </body>
 </html>"""
-        
+
         self.send_response(200)
-        self.send_header('Content-type', 'text/html; charset=utf-8')
+        self.send_header("Content-type", "text/html; charset=utf-8")
         self.end_headers()
-        self.wfile.write(html_content.encode('utf-8'))
-    
+        self.wfile.write(html_content.encode("utf-8"))
+
     def serve_dashboard(self, dashboard_file):
         """個別ダッシュボード提供"""
         try:
-            with open(dashboard_file, 'r', encoding='utf-8') as f:
+            with open(dashboard_file, "r", encoding="utf-8") as f:
                 content = f.read()
-            
+
             self.send_response(200)
-            self.send_header('Content-type', 'text/html; charset=utf-8')
+            self.send_header("Content-type", "text/html; charset=utf-8")
             self.end_headers()
-            self.wfile.write(content.encode('utf-8'))
-        
+            self.wfile.write(content.encode("utf-8"))
+
         except Exception as e:
             self.send_error(500, f"Error serving dashboard: {str(e)}")
 
@@ -190,35 +189,40 @@ class DashboardHandler(SimpleHTTPRequestHandler):
 def start_dashboard_server(port=8088):
     """ダッシュボードサーバー起動"""
     logger = setup_logging()
-    
+
     logger.info(f"🚀 INTEGRATE-3-6 ダッシュボードサーバー起動開始")
     logger.info(f"📡 ポート: {port}")
-    
+
     # サーバー設定
-    server_address = ('', port)
-    
+    server_address = ("", port)
+
     try:
         with HTTPServer(server_address, DashboardHandler) as httpd:
             logger.info(f"✅ サーバー起動完了")
             logger.info(f"🌐 アクセスURL: http://localhost:{port}")
             logger.info(f"📊 利用可能なダッシュボード:")
-            
+
             workspace_base = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace")
-            for tracker_id in ["INTEGRATE-3-6-01", "INTEGRATE-3-6-02", "INTEGRATE-3-6-03", "INTEGRATE-3-6-04"]:
+            for tracker_id in [
+                "INTEGRATE-3-6-01",
+                "INTEGRATE-3-6-02",
+                "INTEGRATE-3-6-03",
+                "INTEGRATE-3-6-04",
+            ]:
                 dashboard_file = workspace_base / tracker_id / "dashboard" / "dashboard.html"
                 if dashboard_file.exists():
                     logger.info(f"  ✅ http://localhost:{port}/{tracker_id}")
                 else:
                     logger.info(f"  ❌ {tracker_id} (未生成)")
-            
+
             logger.info("🔄 サーバー実行中... (Ctrl+C で停止)")
-            
+
             # PIDファイル作成
-            with open("dashboard_server.pid", 'w') as f:
+            with open("dashboard_server.pid", "w") as f:
                 f.write(str(os.getpid()))
-            
+
             httpd.serve_forever()
-            
+
     except KeyboardInterrupt:
         logger.info("⏹️ サーバー停止")
     except Exception as e:

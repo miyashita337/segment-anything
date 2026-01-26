@@ -8,7 +8,7 @@ sys.path.append(str(Path(__file__).parent.parent.parent))
 from tools.core.google_sheets_updater import GoogleSheetsUpdater
 
 updater = GoogleSheetsUpdater()
-if updater.update_task_status('TDR-003', '/release'):
+if updater.update_task_status("TDR-003", "/release"):
     print("✅ TDR-003: 着手中 → /release")
     print("\n=== TDR-003 Phase 3: ガバナンス確立 リリース完了 ===")
     print("\n実装成果:")
@@ -20,7 +20,7 @@ if updater.update_task_status('TDR-003', '/release'):
     print("\n2. ガバナンス支援機能追加 (manager.py拡張)")
     print("   - validate-placement: ファイル配置妥当性チェック")
     print("   - validate-naming: 命名規則チェック")
-    print("   - check-dependencies: 依存関係チェック") 
+    print("   - check-dependencies: 依存関係チェック")
     print("   - report: ガバナンス総合レポート")
     print("\n3. 自動メンテナンスシステム (auto_maintenance.py)")
     print("   - 日次メンテナンス（統計・ガバナンス・クリーンアップ）")

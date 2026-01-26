@@ -4,8 +4,8 @@ QI-006: GPT-5評価結果のダッシュボード統合
 GPT-5によるLoRA品質評価結果をQI-006ダッシュボードに追加表示
 """
 
-import sys
 import json
+import sys
 import time
 from pathlib import Path
 
@@ -13,66 +13,67 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
+
 def main():
     """GPT-5評価結果のダッシュボード統合"""
     print("🔗 QI-006: GPT-5評価結果ダッシュボード統合開始")
     print("=" * 60)
-    
+
     # パス設定
     workspace_base = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace")
     qi006_workspace = workspace_base / "QI-006"
-    
+
     quality_dir = qi006_workspace / "quality"
     dashboard_dir = qi006_workspace / "dashboard"
-    
+
     # GPT-5評価結果読み込み
     gpt5_results_file = quality_dir / "gpt5_lora_quality_evaluation.json"
     if not gpt5_results_file.exists():
         print(f"❌ GPT-5評価結果が見つかりません: {gpt5_results_file}")
         return False
-    
-    with open(gpt5_results_file, 'r', encoding='utf-8') as f:
+
+    with open(gpt5_results_file, "r", encoding="utf-8") as f:
         gpt5_data = json.load(f)
-    
+
     print(f"📊 GPT-5評価データ読み込み完了")
-    
+
     # 既存の複数キャラクター検出結果も読み込み
     detection_results_file = quality_dir / "qi006_detection_results.json"
     detection_data = None
-    
+
     if detection_results_file.exists():
-        with open(detection_results_file, 'r', encoding='utf-8') as f:
+        with open(detection_results_file, "r", encoding="utf-8") as f:
             detection_data = json.load(f)
         print(f"📊 複数キャラクター検出データ読み込み完了")
-    
+
     # 統合ダッシュボードHTML生成
     html_content = generate_integrated_dashboard(gpt5_data, detection_data)
-    
+
     # ダッシュボード保存
     dashboard_file = dashboard_dir / "dashboard.html"
-    with open(dashboard_file, 'w', encoding='utf-8') as f:
+    with open(dashboard_file, "w", encoding="utf-8") as f:
         f.write(html_content)
-    
+
     print(f"✅ 統合ダッシュボード生成完了: {dashboard_file}")
     print(f"📏 ファイルサイズ: {dashboard_file.stat().st_size / 1024 / 1024:.1f}MB")
     print(f"🌐 アクセスURL: http://100.123.241.106:8088/tracker/QI-006")
-    
+
     return True
 
 
 def generate_integrated_dashboard(gpt5_data, detection_data=None):
     """統合ダッシュボードHTML生成"""
-    
+
     # GPT-5評価統計
-    gpt5_summary = gpt5_data['evaluation_summary']
-    gpt5_grades = gpt5_data['grade_distribution']['grade_distribution']
-    gpt5_results = gpt5_data['detailed_results']
-    
+    gpt5_summary = gpt5_data["evaluation_summary"]
+    gpt5_grades = gpt5_data["grade_distribution"]["grade_distribution"]
+    gpt5_results = gpt5_data["detailed_results"]
+
     # 複数キャラクター検出統計（利用可能な場合）
     detection_stats = None
     if detection_data:
-        detection_stats = detection_data['statistics']
-    
+        detection_stats = detection_data["statistics"]
+
     html = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -119,17 +120,17 @@ def generate_integrated_dashboard(gpt5_data, detection_data=None):
         <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
             <h2 class="text-xl font-bold text-gray-800 mb-4">🏆 GPT-5品質グレード分布</h2>
             <div class="grid grid-cols-5 gap-4 text-center">"""
-    
+
     # グレード分布表示
     grade_descriptions = {
-        'A': 'LoRA学習に最適',
-        'B': 'LoRA学習に適している', 
-        'C': '注意が必要',
-        'D': '問題あり',
-        'F': '使用不可'
+        "A": "LoRA学習に最適",
+        "B": "LoRA学習に適している",
+        "C": "注意が必要",
+        "D": "問題あり",
+        "F": "使用不可",
     }
-    
-    for grade in ['A', 'B', 'C', 'D', 'F']:
+
+    for grade in ["A", "B", "C", "D", "F"]:
         count = gpt5_grades.get(grade, 0)
         html += f"""
                 <div class="p-4 border rounded-lg">
@@ -137,7 +138,7 @@ def generate_integrated_dashboard(gpt5_data, detection_data=None):
                     <div class="text-xl font-bold text-gray-800">{count}枚</div>
                     <div class="text-xs text-gray-600 mt-1">{grade_descriptions[grade]}</div>
                 </div>"""
-    
+
     html += """
             </div>
         </div>
@@ -165,7 +166,7 @@ def generate_integrated_dashboard(gpt5_data, detection_data=None):
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">"""
-    
+
     # 複数キャラクター検出結果（利用可能な場合）
     if detection_stats:
         html += f"""
@@ -187,7 +188,7 @@ def generate_integrated_dashboard(gpt5_data, detection_data=None):
                 </div>
             </div>
         </div>"""
-    
+
     # 改善推奨事項
     html += f"""
         <!-- 改善推奨事項 -->
@@ -222,7 +223,7 @@ def generate_integrated_dashboard(gpt5_data, detection_data=None):
     </div>
 </body>
 </html>"""
-    
+
     return html
 
 

@@ -16,6 +16,7 @@ from typing import Optional, Set
 try:
     import aiohttp_cors
     from aiohttp import web
+
     AIOHTTP_AVAILABLE = True
 except ImportError:
     AIOHTTP_AVAILABLE = False
@@ -28,19 +29,23 @@ logger = logging.getLogger(__name__)
 
 class DashboardServer:
     """リアルタイムダッシュボードサーバー"""
-    
-    def __init__(self, metrics_collector: MetricsCollector, host: str = "0.0.0.0", port: int = 8080):
+
+    def __init__(
+        self, metrics_collector: MetricsCollector, host: str = "0.0.0.0", port: int = 8080
+    ):
         """
         初期化
-        
+
         Args:
             metrics_collector: メトリクス収集インスタンス
             host: ホスト名
             port: ポート番号
         """
         if not AIOHTTP_AVAILABLE:
-            raise ImportError("aiohttp is required for dashboard server. Install with: pip install aiohttp aiohttp-cors")
-            
+            raise ImportError(
+                "aiohttp is required for dashboard server. Install with: pip install aiohttp aiohttp-cors"
+            )
+
         self.metrics_collector = metrics_collector
         self.host = host
         self.port = port
@@ -51,64 +56,67 @@ class DashboardServer:
         self._runner = None
         self._site = None
         self._update_task = None
-        
+
     def _setup_routes(self):
         """ルート設定"""
-        self.app.router.add_get('/', self.handle_index)
-        self.app.router.add_get('/ws', self.handle_websocket)
-        self.app.router.add_get('/api/metrics', self.handle_metrics_api)
-        self.app.router.add_get('/api/history', self.handle_history_api)
-        
+        self.app.router.add_get("/", self.handle_index)
+        self.app.router.add_get("/ws", self.handle_websocket)
+        self.app.router.add_get("/api/metrics", self.handle_metrics_api)
+        self.app.router.add_get("/api/history", self.handle_history_api)
+
     def _setup_cors(self):
         """CORS設定"""
-        cors = aiohttp_cors.setup(self.app, defaults={
-            "*": aiohttp_cors.ResourceOptions(
-                allow_credentials=True,
-                expose_headers="*",
-                allow_headers="*",
-            )
-        })
-        
+        cors = aiohttp_cors.setup(
+            self.app,
+            defaults={
+                "*": aiohttp_cors.ResourceOptions(
+                    allow_credentials=True,
+                    expose_headers="*",
+                    allow_headers="*",
+                )
+            },
+        )
+
         for route in list(self.app.router.routes()):
             cors.add(route)
-    
+
     async def handle_index(self, request):
         """インデックスページハンドラ"""
         html_content = self._generate_dashboard_html()
-        return web.Response(text=html_content, content_type='text/html')
-    
+        return web.Response(text=html_content, content_type="text/html")
+
     async def handle_websocket(self, request):
         """WebSocketハンドラ"""
         ws = web.WebSocketResponse()
         await ws.prepare(request)
         self.websockets.add(ws)
-        
+
         try:
             # 初期データ送信
             await self._send_metrics_to_client(ws)
-            
+
             async for msg in ws:
                 if msg.type == web.WSMsgType.TEXT:
                     # クライアントからのメッセージ処理（必要に応じて）
                     pass
                 elif msg.type == web.WSMsgType.ERROR:
-                    logger.error(f'WebSocket error: {ws.exception()}')
+                    logger.error(f"WebSocket error: {ws.exception()}")
         finally:
             self.websockets.remove(ws)
-            
+
         return ws
-    
+
     async def handle_metrics_api(self, request):
         """メトリクスAPI"""
         metrics = self.metrics_collector.get_aggregated_metrics()
         return web.json_response(metrics.to_dict())
-    
+
     async def handle_history_api(self, request):
         """履歴API"""
-        count = int(request.query.get('count', 50))
+        count = int(request.query.get("count", 50))
         history = self.metrics_collector.get_recent_history(count)
         return web.json_response(history)
-    
+
     async def _send_metrics_to_client(self, ws: web.WebSocketResponse):
         """クライアントにメトリクスを送信"""
         try:
@@ -116,20 +124,20 @@ class DashboardServer:
                 "type": "metrics_update",
                 "aggregated": self.metrics_collector.get_aggregated_metrics().to_dict(),
                 "current_status": self.metrics_collector.get_current_status(),
-                "recent_history": self.metrics_collector.get_recent_history(10)
+                "recent_history": self.metrics_collector.get_recent_history(10),
             }
             await ws.send_str(json.dumps(data))
         except Exception as e:
             logger.error(f"Error sending metrics: {e}")
-    
+
     async def _broadcast_metrics(self):
         """全クライアントにメトリクスをブロードキャスト"""
         if self.websockets:
             await asyncio.gather(
                 *[self._send_metrics_to_client(ws) for ws in self.websockets],
-                return_exceptions=True
+                return_exceptions=True,
             )
-    
+
     async def _update_loop(self):
         """定期的な更新ループ"""
         while True:
@@ -139,10 +147,10 @@ class DashboardServer:
             except Exception as e:
                 logger.error(f"Update loop error: {e}")
                 await asyncio.sleep(5)
-    
+
     def _generate_dashboard_html(self) -> str:
         """ダッシュボードHTMLを生成"""
-        return '''<!DOCTYPE html>
+        return """<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -344,20 +352,20 @@ class DashboardServer:
         };
     </script>
 </body>
-</html>'''
-    
+</html>"""
+
     async def start(self):
         """サーバー開始"""
         self._runner = web.AppRunner(self.app)
         await self._runner.setup()
         self._site = web.TCPSite(self._runner, self.host, self.port)
         await self._site.start()
-        
+
         # 更新ループ開始
         self._update_task = asyncio.create_task(self._update_loop())
-        
+
         logger.info(f"Dashboard server started at http://{self.host}:{self.port}")
-        
+
     async def stop(self):
         """サーバー停止"""
         if self._update_task:
@@ -366,14 +374,15 @@ class DashboardServer:
                 await self._update_task
             except asyncio.CancelledError:
                 pass
-                
+
         if self._runner:
             await self._runner.cleanup()
-            
+
         logger.info("Dashboard server stopped")
-    
+
     def run_in_thread(self):
         """別スレッドでサーバーを実行"""
+
         def run():
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
@@ -385,7 +394,7 @@ class DashboardServer:
             finally:
                 loop.run_until_complete(self.stop())
                 loop.close()
-        
+
         thread = threading.Thread(target=run, daemon=True)
         thread.start()
         return thread

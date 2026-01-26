@@ -4,16 +4,16 @@ SubAgent状態監視システム - KIRO-011 SubAgent-ワークフロー連携統
 KIRO-010解決策: SubAgentの不完全実行検出・自動対応システム
 """
 
+import logging
 import os
 import psutil
 import sqlite3
-import time
 import threading
-import logging
+import time
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple, Any
-from pathlib import Path
 from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 class SubAgentStatus(Enum):
     """SubAgentプロセス状態定義"""
+
     NOT_STARTED = "not_started"
     RUNNING = "running"
     COMPLETED = "completed"
@@ -32,8 +33,15 @@ class SubAgentStatus(Enum):
 
 class SubAgentProcess:
     """SubAgentプロセス情報"""
-    def __init__(self, tracker_id: str, process_type: str, command: str,
-                 workspace_path: str, expected_duration: int = 1800):
+
+    def __init__(
+        self,
+        tracker_id: str,
+        process_type: str,
+        command: str,
+        workspace_path: str,
+        expected_duration: int = 1800,
+    ):
         self.tracker_id = tracker_id
         self.process_type = process_type  # 'extraction', 'validation', etc.
         self.command = command
@@ -79,7 +87,8 @@ class SubAgentMonitor:
     def _init_database(self):
         """SQLiteデータベース初期化"""
         with sqlite3.connect(self.db_path) as conn:
-            conn.execute("""
+            conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS subagent_executions (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     tracker_id TEXT NOT NULL,
@@ -99,7 +108,8 @@ class SubAgentMonitor:
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     UNIQUE(tracker_id, process_type)
                 )
-            """)
+            """
+            )
             conn.commit()
             logger.info("SubAgent監視データベース初期化完了")
 
@@ -107,15 +117,28 @@ class SubAgentMonitor:
         """データベースから既存のアクティブプロセスを読み込み"""
         try:
             with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.execute("""
+                cursor = conn.execute(
+                    """
                     SELECT tracker_id, process_type, command, workspace_path,
                            start_time, end_time, status, pid, retry_count, expected_duration
                     FROM subagent_executions
                     WHERE status IN ('running', 'failed', 'not_started')
-                """)
+                """
+                )
 
                 for row in cursor.fetchall():
-                    tracker_id, process_type, command, workspace_path, start_time, end_time, status, pid, retry_count, expected_duration = row
+                    (
+                        tracker_id,
+                        process_type,
+                        command,
+                        workspace_path,
+                        start_time,
+                        end_time,
+                        status,
+                        pid,
+                        retry_count,
+                        expected_duration,
+                    ) = row
 
                     # SubAgentProcessオブジェクトを復元
                     process = SubAgentProcess(
@@ -123,7 +146,7 @@ class SubAgentMonitor:
                         process_type=process_type,
                         command=command,
                         workspace_path=workspace_path,
-                        expected_duration=expected_duration or 1800
+                        expected_duration=expected_duration or 1800,
                     )
 
                     # 状態を復元
@@ -145,9 +168,14 @@ class SubAgentMonitor:
         except Exception as e:
             logger.error(f"アクティブプロセス読み込みエラー: {e}")
 
-    def register_subagent(self, tracker_id: str, process_type: str,
-                         command: str, workspace_path: str,
-                         expected_duration: int = 1800) -> bool:
+    def register_subagent(
+        self,
+        tracker_id: str,
+        process_type: str,
+        command: str,
+        workspace_path: str,
+        expected_duration: int = 1800,
+    ) -> bool:
         """SubAgentプロセスを監視対象として登録"""
         try:
             # ワークスペースの存在確認・作成
@@ -161,19 +189,28 @@ class SubAgentMonitor:
                 process_type=process_type,
                 command=command,
                 workspace_path=workspace_path,
-                expected_duration=expected_duration
+                expected_duration=expected_duration,
             )
 
             # データベースに登録
             with self.lock:
                 with sqlite3.connect(self.db_path) as conn:
-                    conn.execute("""
+                    conn.execute(
+                        """
                         INSERT OR REPLACE INTO subagent_executions
                         (tracker_id, process_type, command, workspace_path,
                          status, expected_duration, updated_at)
                         VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-                    """, (tracker_id, process_type, command, workspace_path,
-                          SubAgentStatus.NOT_STARTED.value, expected_duration))
+                    """,
+                        (
+                            tracker_id,
+                            process_type,
+                            command,
+                            workspace_path,
+                            SubAgentStatus.NOT_STARTED.value,
+                            expected_duration,
+                        ),
+                    )
                     conn.commit()
 
                 # メモリ上でも管理
@@ -210,11 +247,12 @@ class SubAgentMonitor:
                     logger.info(f"古いロックファイル削除: {process.lock_file_path}")
 
             # ロックファイル作成
-            with open(process.lock_file_path, 'w') as f:
+            with open(process.lock_file_path, "w") as f:
                 f.write(f"pid=PENDING\nstart_time={datetime.now().isoformat()}\n")
 
             # プロセス開始
             import subprocess
+
             # KIRO-011修正: 相対パス解決のためプロジェクトルートで実行
             project_root = self._find_project_root()
 
@@ -232,7 +270,7 @@ class SubAgentMonitor:
             process.status = SubAgentStatus.RUNNING
 
             # ロックファイル更新
-            with open(process.lock_file_path, 'w') as f:
+            with open(process.lock_file_path, "w") as f:
                 f.write(f"pid={proc.pid}\nstart_time={process.start_time.isoformat()}\n")
 
             # KIRO-011修正: プロセス出力をログファイルに保存開始
@@ -241,12 +279,20 @@ class SubAgentMonitor:
             # データベース更新
             with self.lock:
                 with sqlite3.connect(self.db_path) as conn:
-                    conn.execute("""
+                    conn.execute(
+                        """
                         UPDATE subagent_executions
                         SET status = ?, pid = ?, start_time = ?, updated_at = CURRENT_TIMESTAMP
                         WHERE tracker_id = ? AND process_type = ?
-                    """, (SubAgentStatus.RUNNING.value, proc.pid,
-                          process.start_time.isoformat(), tracker_id, process_type))
+                    """,
+                        (
+                            SubAgentStatus.RUNNING.value,
+                            proc.pid,
+                            process.start_time.isoformat(),
+                            tracker_id,
+                            process_type,
+                        ),
+                    )
                     conn.commit()
 
             logger.info(f"SubAgent開始: {process_key} (PID: {proc.pid})")
@@ -269,7 +315,7 @@ class SubAgentMonitor:
             log_file = Path(process.log_file_path)
             log_file.parent.mkdir(parents=True, exist_ok=True)
 
-            with open(process.log_file_path, 'w') as f:
+            with open(process.log_file_path, "w") as f:
                 f.write(f"SubAgent実行ログ - {datetime.now().isoformat()}\n")
                 f.write(f"コマンド: {process.command}\n")
                 f.write(f"PID: {proc.pid}\n")
@@ -334,17 +380,22 @@ class SubAgentMonitor:
         with self.lock:
             for process_key, process in self.active_processes.items():
                 status = self.check_subagent_status(process.tracker_id, process.process_type)
-                processes.append({
-                    'tracker_id': process.tracker_id,
-                    'process_type': process.process_type,
-                    'status': status.value,
-                    'pid': process.pid,
-                    'start_time': process.start_time.isoformat() if process.start_time else None,
-                    'elapsed_seconds': (datetime.now() - process.start_time).total_seconds()
-                                     if process.start_time else 0,
-                    'expected_duration': process.expected_duration,
-                    'retry_count': process.retry_count
-                })
+                processes.append(
+                    {
+                        "tracker_id": process.tracker_id,
+                        "process_type": process.process_type,
+                        "status": status.value,
+                        "pid": process.pid,
+                        "start_time": process.start_time.isoformat()
+                        if process.start_time
+                        else None,
+                        "elapsed_seconds": (datetime.now() - process.start_time).total_seconds()
+                        if process.start_time
+                        else 0,
+                        "expected_duration": process.expected_duration,
+                        "retry_count": process.retry_count,
+                    }
+                )
 
         return processes
 
@@ -466,14 +517,14 @@ class SubAgentMonitor:
             if not os.path.exists(process.lock_file_path):
                 return False
 
-            with open(process.lock_file_path, 'r') as f:
+            with open(process.lock_file_path, "r") as f:
                 content = f.read()
 
             # PID抽出
-            for line in content.split('\n'):
-                if line.startswith('pid='):
-                    pid_str = line.split('=')[1]
-                    if pid_str == 'PENDING':
+            for line in content.split("\n"):
+                if line.startswith("pid="):
+                    pid_str = line.split("=")[1]
+                    if pid_str == "PENDING":
                         return True  # 起動中として扱う
                     try:
                         pid = int(pid_str)
@@ -512,9 +563,11 @@ class SubAgentMonitor:
         try:
             # 基本的な成功条件
             success_indicators = [
-                os.path.exists(os.path.join(process.workspace_path, "extraction", "dashboard.html")),
+                os.path.exists(
+                    os.path.join(process.workspace_path, "extraction", "dashboard.html")
+                ),
                 os.path.exists(os.path.join(process.workspace_path, "extraction", "index.html")),
-                os.path.exists(os.path.join(process.workspace_path, "extraction", "progress.json"))
+                os.path.exists(os.path.join(process.workspace_path, "extraction", "progress.json")),
             ]
 
             return any(success_indicators)
@@ -532,15 +585,22 @@ class SubAgentMonitor:
                     if process.start_time and process.end_time:
                         duration = int((process.end_time - process.start_time).total_seconds())
 
-                    conn.execute("""
+                    conn.execute(
+                        """
                         UPDATE subagent_executions
                         SET status = ?, end_time = ?, actual_duration = ?,
                             retry_count = ?, updated_at = CURRENT_TIMESTAMP
                         WHERE tracker_id = ? AND process_type = ?
-                    """, (process.status.value,
-                          process.end_time.isoformat() if process.end_time else None,
-                          duration, process.retry_count,
-                          process.tracker_id, process.process_type))
+                    """,
+                        (
+                            process.status.value,
+                            process.end_time.isoformat() if process.end_time else None,
+                            duration,
+                            process.retry_count,
+                            process.tracker_id,
+                            process.process_type,
+                        ),
+                    )
                     conn.commit()
 
         except Exception as e:
@@ -570,12 +630,18 @@ class SubAgentMonitor:
 
             # リトライ回数上限確認
             if process.retry_count >= process.max_retries:
-                logger.info(f"リトライ回数上限: {process_key} ({process.retry_count}/{process.max_retries})")
+                logger.info(
+                    f"リトライ回数上限: {process_key} ({process.retry_count}/{process.max_retries})"
+                )
                 return False
 
             # 現在の状態確認
             current_status = self.check_subagent_status(tracker_id, process_type)
-            if current_status not in [SubAgentStatus.FAILED, SubAgentStatus.TIMEOUT, SubAgentStatus.STALLED]:
+            if current_status not in [
+                SubAgentStatus.FAILED,
+                SubAgentStatus.TIMEOUT,
+                SubAgentStatus.STALLED,
+            ]:
                 logger.info(f"自動再実行対象外の状態: {process_key} - {current_status.value}")
                 return False
 
@@ -585,7 +651,9 @@ class SubAgentMonitor:
 
             if extraction_dir.exists():
                 # 抽出ファイル数確認
-                extracted_files = list(extraction_dir.glob("extracted_*.jpg")) + list(extraction_dir.glob("*.png"))
+                extracted_files = list(extraction_dir.glob("extracted_*.jpg")) + list(
+                    extraction_dir.glob("*.png")
+                )
                 if len(extracted_files) > 0:
                     logger.info(f"部分成功のため再実行しない: {process_key} - {len(extracted_files)}ファイル")
                     return False
@@ -621,7 +689,9 @@ class SubAgentMonitor:
             process_key = f"{tracker_id}_{process_type}"
             process = self.active_processes[process_key]
 
-            logger.info(f"SubAgent自動再実行開始: {process_key} (リトライ {process.retry_count + 1}/{process.max_retries})")
+            logger.info(
+                f"SubAgent自動再実行開始: {process_key} (リトライ {process.retry_count + 1}/{process.max_retries})"
+            )
 
             # 現在のプロセス終了
             if process.pid and self._is_process_alive(process.pid):
@@ -693,11 +763,14 @@ class SubAgentMonitor:
         """データベースから状態取得"""
         try:
             with sqlite3.connect(self.db_path) as conn:
-                cursor = conn.execute("""
+                cursor = conn.execute(
+                    """
                     SELECT status FROM subagent_executions
                     WHERE tracker_id = ? AND process_type = ?
                     ORDER BY updated_at DESC LIMIT 1
-                """, (tracker_id, process_type))
+                """,
+                    (tracker_id, process_type),
+                )
                 row = cursor.fetchone()
 
                 if row:
@@ -735,7 +808,7 @@ if __name__ == "__main__":
         process_type="extraction",
         command=test_command,
         workspace_path=test_workspace,
-        expected_duration=300
+        expected_duration=300,
     )
 
     print(f"登録結果: {success}")

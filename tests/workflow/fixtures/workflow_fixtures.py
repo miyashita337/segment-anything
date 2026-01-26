@@ -3,14 +3,16 @@
 テストで共通使用するモック設定とヘルパー関数を提供
 """
 
-import unittest
-from unittest.mock import Mock, MagicMock, patch
-from typing import Dict, Any, Optional
-import sys
 import os
+import sys
+import unittest
+from typing import Any, Dict, Optional
+from unittest.mock import MagicMock, Mock, patch
 
 # プロジェクトルートをパスに追加
-current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+current_dir = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+)
 if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
@@ -40,14 +42,13 @@ class WorkflowTestBase(unittest.TestCase):
     def setup_common_mocks(self):
         """共通で使用するモックの設定"""
         # 仮想環境チェックをスキップ
-        self.add_mock('tools.workflow.workflow_cli.check_virtual_environment',
-                     return_value=True)
+        self.add_mock("tools.workflow.workflow_cli.check_virtual_environment", return_value=True)
 
         # ログ出力を無効化
-        self.add_mock('logging.getLogger')
+        self.add_mock("logging.getLogger")
 
         # os.environ.get をモック（CI環境として扱う）
-        self.add_mock('os.environ.get', side_effect=self._mock_environ_get)
+        self.add_mock("os.environ.get", side_effect=self._mock_environ_get)
 
     def add_mock(self, target: str, **kwargs) -> Mock:
         """モックを追加し、パッチリストに登録"""
@@ -56,7 +57,7 @@ class WorkflowTestBase(unittest.TestCase):
         self.patches.append(patcher)
 
         # target名から最後の部分を取得してmocksに保存
-        mock_name = target.split('.')[-1]
+        mock_name = target.split(".")[-1]
         self.mocks[mock_name] = mock_obj
 
         return mock_obj
@@ -64,8 +65,8 @@ class WorkflowTestBase(unittest.TestCase):
     def _mock_environ_get(self, key: str, default: Any = None) -> Any:
         """環境変数のモック関数"""
         # CI環境として扱う（仮想環境チェックをスキップ）
-        if key == 'GITHUB_ACTIONS':
-            return 'true'
+        if key == "GITHUB_ACTIONS":
+            return "true"
         return default
 
     def create_mock_progress_manager(self) -> Mock:
@@ -78,19 +79,20 @@ class WorkflowTestBase(unittest.TestCase):
             if task_data:
                 return task_data
             # 作成後確認のために、新しいタスクを作成して返す
-            if not hasattr(mock_get_task, 'call_count'):
+            if not hasattr(mock_get_task, "call_count"):
                 mock_get_task.call_count = 0
             mock_get_task.call_count += 1
 
             # 2回目以降の呼び出し（作成後確認）では作成されたタスクを返す
             if mock_get_task.call_count > 1:
                 from .mock_data import MockTask
+
                 return MockTask(
                     tracker_id=tracker_id,
                     description="テスト用タスク",
                     status="planning",
                     created_date="2025-09-27 12:00:00",
-                    updated_date="2025-09-27 12:00:00"
+                    updated_date="2025-09-27 12:00:00",
                 )
             return None
 
@@ -99,12 +101,13 @@ class WorkflowTestBase(unittest.TestCase):
         # create_task メソッドのモック
         def mock_create_task(tracker_id: str, description: str):
             from .mock_data import MockTask
+
             return MockTask(
                 tracker_id=tracker_id,
                 description=description,
                 status="planning",
                 created_date="2025-09-27 12:00:00",
-                updated_date="2025-09-27 12:00:00"
+                updated_date="2025-09-27 12:00:00",
             )
 
         mock_manager.create_task.side_effect = mock_create_task
@@ -143,7 +146,9 @@ class WorkflowTestBase(unittest.TestCase):
                 return instructions
             return None
 
-        mock_controller.get_current_step_instructions.side_effect = mock_get_current_step_instructions
+        mock_controller.get_current_step_instructions.side_effect = (
+            mock_get_current_step_instructions
+        )
 
         # attempt_step_completion メソッドのモック
         def mock_attempt_step_completion(tracker_id: str):
@@ -175,7 +180,7 @@ class WorkflowTestBase(unittest.TestCase):
                 "priority": "high",
                 "requested_at": "2025-09-27 10:00:00",
                 "time_remaining_hours": 23.5,
-                "approval_criteria": ["設計レビュー完了", "技術仕様確認"]
+                "approval_criteria": ["設計レビュー完了", "技術仕様確認"],
             }
         ]
         mock_controller.approval_controller = mock_approval_controller
@@ -187,7 +192,7 @@ class WorkflowTestBase(unittest.TestCase):
             "step": "extraction",
             "started_at": "2025-09-27 10:30:00",
             "pid": 12345,
-            "log_file": "/tmp/test.log"
+            "log_file": "/tmp/test.log",
         }
         mock_controller.executor = mock_executor
 
@@ -237,9 +242,7 @@ class WorkflowTestBase(unittest.TestCase):
     def setup_plan_command_mocks(self):
         """planコマンド用のモック設定"""
         # PlanCommandHandlerクラスのモック
-        mock_handler_class = self.add_mock(
-            'tools.workflow.workflow_cli.PlanCommandHandler'
-        )
+        mock_handler_class = self.add_mock("tools.workflow.workflow_cli.PlanCommandHandler")
 
         mock_handler = Mock()
         mock_handler.execute_plan_command.return_value = (True, "✅ 起票成功")
@@ -250,9 +253,7 @@ class WorkflowTestBase(unittest.TestCase):
     def setup_create_command_mocks(self):
         """createコマンド用のモック設定"""
         # CreateCommandHandlerクラスのモック
-        mock_handler_class = self.add_mock(
-            'tools.workflow.workflow_cli.CreateCommandHandler'
-        )
+        mock_handler_class = self.add_mock("tools.workflow.workflow_cli.CreateCommandHandler")
 
         mock_handler = Mock()
         mock_handler.execute_create_command.return_value = (True, "✅ 作成成功")
@@ -263,13 +264,12 @@ class WorkflowTestBase(unittest.TestCase):
     def setup_workspace_validation_mocks(self, is_configured: bool = True):
         """ワークスペース検証用のモック設定"""
         mock_validation = {
-            'is_configured': is_configured,
-            'errors': [] if is_configured else ["❌ ワークスペース設定エラー"]
+            "is_configured": is_configured,
+            "errors": [] if is_configured else ["❌ ワークスペース設定エラー"],
         }
 
         self.add_mock(
-            'config.workspace_config.validate_tracker_setup',
-            return_value=mock_validation
+            "config.workspace_config.validate_tracker_setup", return_value=mock_validation
         )
 
         return mock_validation
@@ -283,7 +283,7 @@ class CLITestHelper:
         """関数の出力をキャプチャ"""
         import io
         import sys
-        from contextlib import redirect_stdout, redirect_stderr
+        from contextlib import redirect_stderr, redirect_stdout
 
         stdout_capture = io.StringIO()
         stderr_capture = io.StringIO()
@@ -293,16 +293,16 @@ class CLITestHelper:
                 result = func(*args, **kwargs)
 
             return {
-                'result': result,
-                'stdout': stdout_capture.getvalue(),
-                'stderr': stderr_capture.getvalue()
+                "result": result,
+                "stdout": stdout_capture.getvalue(),
+                "stderr": stderr_capture.getvalue(),
             }
         except Exception as e:
             return {
-                'result': None,
-                'stdout': stdout_capture.getvalue(),
-                'stderr': stderr_capture.getvalue(),
-                'exception': e
+                "result": None,
+                "stdout": stdout_capture.getvalue(),
+                "stderr": stderr_capture.getvalue(),
+                "exception": e,
             }
 
     @staticmethod
@@ -315,31 +315,31 @@ class CLITestHelper:
         mock_args.command = command
 
         # コマンドに応じて引数を設定
-        if command == 'plan':
+        if command == "plan":
             mock_args.tracker_id = args[0] if len(args) > 0 else "TEST-001"
             mock_args.summary = args[1] if len(args) > 1 else "テスト概要"
             mock_args.details = args[2] if len(args) > 2 else "テスト詳細"
             mock_args.author_name = args[3] if len(args) > 3 else "yado"
             mock_args.priority = args[4] if len(args) > 4 else "medium"
-        elif command in ['create', 'status', 'instructions', 'step', 'process', 'sheets']:
+        elif command in ["create", "status", "instructions", "step", "process", "sheets"]:
             mock_args.tracker_id = args[0] if len(args) > 0 else "TEST-001"
-        elif command == 'template':
+        elif command == "template":
             mock_args.tracker_id = args[0] if len(args) > 0 else "TEST-001"
             mock_args.output = args[1] if len(args) > 1 else None
-        elif command.startswith('subagent-'):
+        elif command.startswith("subagent-"):
             mock_args.tracker_id = args[0] if len(args) > 0 else "TEST-001"
 
             # subagent-extraction 固有の引数
-            if command == 'subagent-extraction':
+            if command == "subagent-extraction":
                 mock_args.input_path = args[1] if len(args) > 1 else None
                 mock_args.max_files = args[2] if len(args) > 2 else None
 
             # subagent-wait 固有の引数
-            elif command == 'subagent-wait':
+            elif command == "subagent-wait":
                 mock_args.timeout = args[1] if len(args) > 1 else 60
 
             # subagent-terminate 固有の引数
-            elif command == 'subagent-terminate':
+            elif command == "subagent-terminate":
                 mock_args.force = args[1] if len(args) > 1 else False
 
         return mock_args

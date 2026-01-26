@@ -21,25 +21,27 @@ def generate_fixed_html_dashboard():
     """
     修正された統計値でHTMLダッシュボードを生成
     """
-    
+
     tracker_id = "QUAL-006-EXTENDED"
     workspace_path = fget_path("output", "{tracker_id}")
-    
+
     # 修正統計データ読み込み
     stats_file = os.path.join(workspace_path, "quality", "fixed_unified_statistics.json")
-    with open(stats_file, 'r') as f:
+    with open(stats_file, "r") as f:
         unified_stats = json.load(f)
-    
+
     # 抽出ファイルリスト取得
     extraction_dir = os.path.join(workspace_path, "extraction")
-    extracted_files = [f for f in os.listdir(extraction_dir) if f.endswith('.jpg')]
-    
+    extracted_files = [f for f in os.listdir(extraction_dir) if f.endswith(".jpg")]
+
     print(f"📊 修正統計値:")
     print(f"  入力画像数: {unified_stats['total_input_images']}枚")
-    print(f"  成功数: {unified_stats['success_count']}枚") 
+    print(f"  成功数: {unified_stats['success_count']}枚")
     print(f"  成功率: {unified_stats['success_rate']:.1%}")
-    print(f"  Wilson信頼区間: [{unified_stats['wilson_confidence_interval']['lower']:.3f}, {unified_stats['wilson_confidence_interval']['upper']:.3f}]")
-    
+    print(
+        f"  Wilson信頼区間: [{unified_stats['wilson_confidence_interval']['lower']:.3f}, {unified_stats['wilson_confidence_interval']['upper']:.3f}]"
+    )
+
     # HTML生成
     html_content = f"""<!DOCTYPE html>
 <html lang="ja">
@@ -170,14 +172,15 @@ def generate_fixed_html_dashboard():
     dashboard_dir = os.path.join(workspace_path, "dashboard")
     os.makedirs(dashboard_dir, exist_ok=True)
     dashboard_path = os.path.join(dashboard_dir, "dashboard.html")
-    
-    with open(dashboard_path, 'w', encoding='utf-8') as f:
+
+    with open(dashboard_path, "w", encoding="utf-8") as f:
         f.write(html_content)
-    
+
     print(f"✅ 修正ダッシュボード生成完了: {dashboard_path}")
     print(f"🌐 アクセスURL: http://100.123.241.106:8088/tracker/{tracker_id}")
-    
+
     return dashboard_path
+
 
 if __name__ == "__main__":
     generate_fixed_html_dashboard()

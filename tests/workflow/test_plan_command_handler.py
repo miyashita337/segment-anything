@@ -3,18 +3,25 @@ PlanCommandHandler ユニットテスト
 Google Sheets起票コマンドのテスト
 """
 
-import unittest
-from unittest.mock import Mock, patch, MagicMock
-import sys
 import os
+import sys
+import unittest
+from unittest.mock import MagicMock, Mock, patch
 
 # プロジェクトルートをパスに追加
 current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
-from tests.workflow.fixtures.workflow_fixtures import WorkflowTestBase, CLITestHelper
-from tests.workflow.fixtures.mock_data import MockData, SAMPLE_TRACKER_ID, SAMPLE_SUMMARY, SAMPLE_DETAILS, SAMPLE_LONG_DETAILS, SAMPLE_AUTHOR_NAME
+from tests.workflow.fixtures.mock_data import (
+    SAMPLE_AUTHOR_NAME,
+    SAMPLE_DETAILS,
+    SAMPLE_LONG_DETAILS,
+    SAMPLE_SUMMARY,
+    SAMPLE_TRACKER_ID,
+    MockData,
+)
+from tests.workflow.fixtures.workflow_fixtures import CLITestHelper, WorkflowTestBase
 
 
 class TestPlanCommandHandler(WorkflowTestBase):
@@ -45,12 +52,13 @@ class TestPlanCommandHandler(WorkflowTestBase):
         mock_client = Mock()
         self.mock_progress_manager.client = mock_client
 
-        self.add_mock('tools.workflow.plan_command_handler.ProgressManager',
-                     return_value=self.mock_progress_manager)
+        self.add_mock(
+            "tools.workflow.plan_command_handler.ProgressManager",
+            return_value=self.mock_progress_manager,
+        )
 
         # get_default_configのモック設定（ローカルインポート用）
-        self.add_mock('tools.progress_tracker.config.get_default_config',
-                     return_value=Mock())
+        self.add_mock("tools.progress_tracker.config.get_default_config", return_value=Mock())
 
     def test_plan_command_success(self):
         """planコマンド正常実行テスト"""
@@ -93,9 +101,7 @@ class TestPlanCommandHandler(WorkflowTestBase):
 
         handler = PlanCommandHandler()
 
-        success, message = handler.execute_plan_command(
-            SAMPLE_TRACKER_ID, "", SAMPLE_DETAILS
-        )
+        success, message = handler.execute_plan_command(SAMPLE_TRACKER_ID, "", SAMPLE_DETAILS)
 
         self.assertFalse(success)
         self.assertIn("❌", message)
@@ -107,9 +113,7 @@ class TestPlanCommandHandler(WorkflowTestBase):
 
         handler = PlanCommandHandler()
 
-        success, message = handler.execute_plan_command(
-            SAMPLE_TRACKER_ID, SAMPLE_SUMMARY, ""
-        )
+        success, message = handler.execute_plan_command(SAMPLE_TRACKER_ID, SAMPLE_SUMMARY, "")
 
         self.assertFalse(success)
         self.assertIn("❌", message)
@@ -158,9 +162,7 @@ class TestPlanCommandHandler(WorkflowTestBase):
         # Google Sheetsエラーを発生させる
         self.mock_progress_manager.create_task.side_effect = Exception("Google Sheets API Error")
 
-        success, message = handler.execute_plan_command(
-            "NEW-001", SAMPLE_SUMMARY, SAMPLE_DETAILS
-        )
+        success, message = handler.execute_plan_command("NEW-001", SAMPLE_SUMMARY, SAMPLE_DETAILS)
 
         self.assertFalse(success)
         self.assertIn("❌", message)
@@ -201,7 +203,7 @@ class TestPlanCommandHandler(WorkflowTestBase):
             (SAMPLE_TRACKER_ID, "", SAMPLE_DETAILS, "概要が指定されていません"),
             (SAMPLE_TRACKER_ID, SAMPLE_SUMMARY, "", "詳細が指定されていません"),
             ("invalid-id", SAMPLE_SUMMARY, SAMPLE_DETAILS, "トラッカーID形式が無効です"),
-            (SAMPLE_TRACKER_ID, SAMPLE_SUMMARY, SAMPLE_LONG_DETAILS, "詳細が文字数制限を超えています")
+            (SAMPLE_TRACKER_ID, SAMPLE_SUMMARY, SAMPLE_LONG_DETAILS, "詳細が文字数制限を超えています"),
         ]
 
         for tracker_id, summary, details, expected_error in test_cases:
@@ -223,7 +225,15 @@ class TestPlanCommandHandler(WorkflowTestBase):
                 self.assertTrue(handler._validate_tracker_id_format(valid_id))
 
         # 無効な形式
-        invalid_ids = ["", "tracker-001", "TRACKER_001", "123-TRACKER", "TRACKER", "TRACKER-", "-001"]
+        invalid_ids = [
+            "",
+            "tracker-001",
+            "TRACKER_001",
+            "123-TRACKER",
+            "TRACKER",
+            "TRACKER-",
+            "-001",
+        ]
         for invalid_id in invalid_ids:
             with self.subTest(invalid_id=invalid_id):
                 self.assertFalse(handler._validate_tracker_id_format(invalid_id))
@@ -252,7 +262,7 @@ class TestPlanCommandHandler(WorkflowTestBase):
 
     def test_progress_manager_initialization_failure(self):
         """ProgressManager初期化失敗のテスト"""
-        with patch('tools.workflow.plan_command_handler.ProgressManager') as mock_pm_class:
+        with patch("tools.workflow.plan_command_handler.ProgressManager") as mock_pm_class:
             mock_pm_class.side_effect = Exception("Initialization failed")
 
             from tools.workflow.plan_command_handler import PlanCommandHandler
@@ -267,7 +277,6 @@ class TestPlanCommandHandler(WorkflowTestBase):
             self.assertIn("❌", message)
             self.assertIn("Google Sheets連携が利用できません", message)
 
-
     def test_get_usage_help_method(self):
         """get_usage_helpメソッドのテスト"""
         from tools.workflow.plan_command_handler import PlanCommandHandler
@@ -280,5 +289,5 @@ class TestPlanCommandHandler(WorkflowTestBase):
         self.assertIn("20,000", help_text)  # 文字数制限の記載確認
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

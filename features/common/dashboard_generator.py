@@ -16,10 +16,13 @@ from typing import Any, Dict, Optional, Union
 class DashboardGenerator:
     """統一ダッシュボード生成クラス - DashboardGenerator主実装版"""
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None,
-                 workspace_dir: Optional[Union[str, Path]] = None,
-                 logger: Optional[logging.Logger] = None,
-                 tracker_id: str = ""):
+    def __init__(
+        self,
+        config: Optional[Dict[str, Any]] = None,
+        workspace_dir: Optional[Union[str, Path]] = None,
+        logger: Optional[logging.Logger] = None,
+        tracker_id: str = "",
+    ):
         """
         初期化
 
@@ -43,7 +46,7 @@ class DashboardGenerator:
         logger = logging.getLogger("DashboardGenerator")
         if not logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             logger.addHandler(handler)
             logger.setLevel(logging.INFO)
@@ -51,8 +54,9 @@ class DashboardGenerator:
 
     # ===== StandardDashboardGenerator互換API =====
 
-    def create_dashboard(self, tracker_id: str, workspace_dir: str,
-                        extraction_result_path: Optional[str] = None) -> str:
+    def create_dashboard(
+        self, tracker_id: str, workspace_dir: str, extraction_result_path: Optional[str] = None
+    ) -> str:
         """
         標準ダッシュボード作成（StandardDashboardGenerator互換）
 
@@ -76,7 +80,7 @@ class DashboardGenerator:
         dashboard_file = dashboard_dir / "dashboard.html"
 
         # データ読み込み
-        with open(extraction_result_path, 'r', encoding='utf-8') as f:
+        with open(extraction_result_path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
         # HTML生成（標準版）
@@ -86,11 +90,12 @@ class DashboardGenerator:
         dashboard_extraction_result = dashboard_dir / "extraction_result.json"
         if not dashboard_extraction_result.exists():
             import shutil
+
             shutil.copy2(extraction_result_path, dashboard_extraction_result)
             self.logger.info(f"📋 dashboard/extraction_result.json作成: {dashboard_extraction_result}")
 
         # ファイル出力
-        with open(dashboard_file, 'w', encoding='utf-8') as f:
+        with open(dashboard_file, "w", encoding="utf-8") as f:
             f.write(html_content)
 
         self.logger.info(f"🎨 標準ダッシュボード生成完了: {dashboard_file}")
@@ -116,16 +121,19 @@ class DashboardGenerator:
         # HTML生成（統合版）
         html_content = self._generate_integrated_html(quality_data)
 
-        with open(dashboard_file, 'w', encoding='utf-8') as f:
+        with open(dashboard_file, "w", encoding="utf-8") as f:
             f.write(html_content)
 
         self.logger.info(f"🎨 統合ダッシュボード生成完了: {dashboard_file}")
         return str(dashboard_file)
 
-    def send_extraction_results_to_pushover(self, extraction_dir: Path, max_images: int = 10, demo_mode: bool = False) -> bool:
+    def send_extraction_results_to_pushover(
+        self, extraction_dir: Path, max_images: int = 10, demo_mode: bool = False
+    ) -> bool:
         """抽出結果をPushoverに送信（指定枚数まで）"""
         try:
             from features.common.notification.global_pushover import send_pushover_notification
+
             PUSHOVER_AVAILABLE = True
         except ImportError:
             PUSHOVER_AVAILABLE = False
@@ -136,8 +144,9 @@ class DashboardGenerator:
 
         try:
             # 抽出された画像ファイルを取得
-            extracted_files = list(extraction_dir.glob("extracted_*.png")) + \
-                             list(extraction_dir.glob("extracted_*.jpg"))
+            extracted_files = list(extraction_dir.glob("extracted_*.png")) + list(
+                extraction_dir.glob("extracted_*.jpg")
+            )
 
             if not extracted_files:
                 self.logger.warning("送信可能な抽出結果画像が見つかりません")
@@ -157,13 +166,17 @@ class DashboardGenerator:
                     # ファイルサイズチェック（Pushoverは2.5MB制限）
                     file_size_mb = image_file.stat().st_size / (1024 * 1024)
                     if file_size_mb > 2.0:  # 2MB以上はスキップ
-                        self.logger.warning(f"ファイルサイズが大きすぎます: {image_file.name} ({file_size_mb:.1f}MB)")
+                        self.logger.warning(
+                            f"ファイルサイズが大きすぎます: {image_file.name} ({file_size_mb:.1f}MB)"
+                        )
                         continue
 
                     title = f"統合パイプライン結果 {i}/{len(files_to_send)}"
-                    message = (f"トラッカー: {self.tracker_id}\n"
-                              f"ファイル: {image_file.name}\n"
-                              f"サイズ: {file_size_mb:.2f}MB")
+                    message = (
+                        f"トラッカー: {self.tracker_id}\n"
+                        f"ファイル: {image_file.name}\n"
+                        f"サイズ: {file_size_mb:.2f}MB"
+                    )
 
                     # Pushover画像送信
                     if demo_mode:
@@ -181,6 +194,7 @@ class DashboardGenerator:
 
                     # レート制限対策（0.5秒間隔）
                     import time
+
                     time.sleep(0.5)
 
                 except Exception as e:
@@ -189,9 +203,11 @@ class DashboardGenerator:
 
             # 送信結果サマリー
             summary_title = f"統合パイプライン完了: {self.tracker_id}"
-            summary_message = (f"抽出結果送信完了\n"
-                              f"成功: {success_count}/{len(files_to_send)}枚\n"
-                              f"総抽出数: {len(extracted_files)}枚")
+            summary_message = (
+                f"抽出結果送信完了\n"
+                f"成功: {success_count}/{len(files_to_send)}枚\n"
+                f"総抽出数: {len(extracted_files)}枚"
+            )
 
             if not demo_mode:
                 send_pushover_notification(message=summary_message, title=summary_title, priority=0)
@@ -214,25 +230,25 @@ class DashboardGenerator:
                 self.logger.error(f"Pushover設定ファイルが存在しません: {config_path}")
                 return False
 
-            with open(config_path, 'r', encoding='utf-8') as f:
+            with open(config_path, "r", encoding="utf-8") as f:
                 config = json.load(f)
 
-            if not config.get('api_token') or not config.get('user_key'):
+            if not config.get("api_token") or not config.get("user_key"):
                 self.logger.error("Pushover設定にapi_tokenまたはuser_keyが不足しています")
                 return False
 
             url = "https://api.pushover.net/1/messages.json"
 
             data = {
-                'token': config['api_token'],
-                'user': config['user_key'],
-                'title': title,
-                'message': message,
-                'sound': 'magic'
+                "token": config["api_token"],
+                "user": config["user_key"],
+                "title": title,
+                "message": message,
+                "sound": "magic",
             }
 
-            with open(image_path, 'rb') as f:
-                files = {'attachment': f}
+            with open(image_path, "rb") as f:
+                files = {"attachment": f}
                 response = requests.post(url, data=data, files=files, timeout=30)
 
             if response.status_code == 200:
@@ -245,6 +261,7 @@ class DashboardGenerator:
         except Exception as e:
             self.logger.error(f"個別画像送信失敗: {str(e)}")
             import traceback
+
             self.logger.error(traceback.format_exc())
             return False
 
@@ -252,42 +269,44 @@ class DashboardGenerator:
         """標準ダッシュボードHTML生成（StandardDashboardGenerator準拠）"""
 
         # 基本統計（正しいキー名で取得）
-        total = data.get('total_images', 0)
-        successful = data.get('successful_extractions', 0)
-        avg_quality = data.get('average_quality_score', 0.0)
+        total = data.get("total_images", 0)
+        successful = data.get("successful_extractions", 0)
+        avg_quality = data.get("average_quality_score", 0.0)
 
         # 画像リスト（extraction_resultsとresults両方に対応）
-        results = data.get('results', [])
-        if not results and 'extraction_results' in data:
+        results = data.get("results", [])
+        if not results and "extraction_results" in data:
             # extraction_resultsが辞書の場合は、resultsを探す
-            extraction_data = data['extraction_results']
+            extraction_data = data["extraction_results"]
             if isinstance(extraction_data, dict):
-                results = extraction_data.get('results', [])
+                results = extraction_data.get("results", [])
             else:
                 results = extraction_data
 
         # 品質分布計算（正しいキー名で取得）
-        quality_dist = {'高品質': 0, '中品質': 0, '低品質': 0, '要改善': 0}
+        quality_dist = {"高品質": 0, "中品質": 0, "低品質": 0, "要改善": 0}
         for r in results:
-            if r.get('success'):
-                score = r.get('quality_score', r.get('quality_metrics', {}).get('overall_score', 0.0))
+            if r.get("success"):
+                score = r.get(
+                    "quality_score", r.get("quality_metrics", {}).get("overall_score", 0.0)
+                )
                 if score >= 0.8:
-                    quality_dist['高品質'] += 1
+                    quality_dist["高品質"] += 1
                 elif score >= 0.6:
-                    quality_dist['中品質'] += 1
+                    quality_dist["中品質"] += 1
                 elif score >= 0.4:
-                    quality_dist['低品質'] += 1
+                    quality_dist["低品質"] += 1
                 else:
-                    quality_dist['要改善'] += 1
+                    quality_dist["要改善"] += 1
 
         # 現在時刻（自然な表示）
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         # 統計分析結果セクション追加
         statistical_section = ""
-        if 'statistical_analysis' in data:
-            stats = data['statistical_analysis']
-            statistical_section = f'''
+        if "statistical_analysis" in data:
+            stats = data["statistical_analysis"]
+            statistical_section = f"""
         <div class="bg-white rounded-lg shadow-md p-6 mb-8">
             <h2 class="text-xl font-semibold text-gray-800 mb-4">📊 統計分析結果</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
@@ -320,10 +339,10 @@ class DashboardGenerator:
                     <p class="text-lg font-bold text-teal-600">{stats.get('confidence_interval', 'N/A')}</p>
                 </div>
             </div>
-        </div>'''
+        </div>"""
 
         # HTML生成
-        html = f'''<!DOCTYPE html>
+        html = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -382,24 +401,26 @@ class DashboardGenerator:
 
         <div class="bg-white rounded-lg shadow-md p-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">🖼️ 抽出結果ギャラリー</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">'''
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">"""
 
         # 画像カード生成（修正版）
         for r in results:
-            if r.get('success'):
+            if r.get("success"):
                 # 両形式対応: image_name（チェックリスト仕様）とimage_path（実装形式）
-                filename = r.get('image_name', r.get('image_path', 'unknown.jpg'))
-                
+                filename = r.get("image_name", r.get("image_path", "unknown.jpg"))
+
                 # パス重複防止: extraction/ プレフィックスが既にある場合は除去
-                if filename.startswith('extraction/'):
-                    filename = filename.replace('extraction/', '', 1)
-                
+                if filename.startswith("extraction/"):
+                    filename = filename.replace("extraction/", "", 1)
+
                 # 両形式対応: quality_score（チェックリスト仕様）とquality_metrics.overall_score（実装形式）
-                score = r.get('quality_score', r.get('quality_metrics', {}).get('overall_score', 0.0))
+                score = r.get(
+                    "quality_score", r.get("quality_metrics", {}).get("overall_score", 0.0)
+                )
                 quality_label = self._get_quality_label(score)
                 quality_class = self._get_quality_class(score)
 
-                html += f'''
+                html += f"""
                 <div class="border rounded-lg p-3 bg-gray-50">
                     <img src="/{tracker_id}/extraction/{filename}"
                          alt="{filename}"
@@ -410,23 +431,23 @@ class DashboardGenerator:
                         <p class="text-sm text-gray-600 mt-1">{filename}</p>
                         <p class="text-xs text-gray-500 mt-1">スコア: {score:.3f}</p>
                     </div>
-                </div>'''
+                </div>"""
 
-        html += '''
+        html += """
             </div>
         </div>
     </div>
 </body>
-</html>'''
+</html>"""
 
         return html
 
     def _generate_integrated_html(self, quality_data: Dict[str, Any]) -> str:
         """統合パイプライン用ダッシュボードHTML生成（DashboardGenerator準拠）"""
-        tracker_id = quality_data.get('tracker_id', 'unknown')
-        success_rate = quality_data.get('success_rate', 0)
-        total_images = quality_data.get('total_images', 0)
-        successful_images = quality_data.get('successful_images', 0)
+        tracker_id = quality_data.get("tracker_id", "unknown")
+        success_rate = quality_data.get("success_rate", 0)
+        total_images = quality_data.get("total_images", 0)
+        successful_images = quality_data.get("successful_images", 0)
 
         return f"""<!DOCTYPE html>
 <html lang="ja">
@@ -621,29 +642,30 @@ class DashboardGenerator:
     def _get_quality_label(self, score: float) -> str:
         """品質ラベル取得"""
         if score >= 0.8:
-            return '高品質'
+            return "高品質"
         elif score >= 0.6:
-            return '中品質'
+            return "中品質"
         elif score >= 0.4:
-            return '低品質'
+            return "低品質"
         else:
-            return '要改善'
+            return "要改善"
 
     def _get_quality_class(self, score: float) -> str:
         """品質クラス取得"""
         if score >= 0.8:
-            return 'bg-green-500 text-white px-2 py-1 rounded text-xs font-semibold'
+            return "bg-green-500 text-white px-2 py-1 rounded text-xs font-semibold"
         elif score >= 0.6:
-            return 'bg-yellow-500 text-white px-2 py-1 rounded text-xs font-semibold'
+            return "bg-yellow-500 text-white px-2 py-1 rounded text-xs font-semibold"
         elif score >= 0.4:
-            return 'bg-orange-500 text-white px-2 py-1 rounded text-xs font-semibold'
+            return "bg-orange-500 text-white px-2 py-1 rounded text-xs font-semibold"
         else:
-            return 'bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold'
+            return "bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold"
 
     def _check_cuda(self) -> bool:
         """CUDA利用可能性チェック"""
         try:
             import torch
+
             return torch.cuda.is_available()
         except ImportError:
             return False

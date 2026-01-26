@@ -3,18 +3,18 @@ CreateCommandHandler ユニットテスト
 SQLite専用ワークフロー状態管理コマンドのテスト
 """
 
-import unittest
-from unittest.mock import Mock, patch, MagicMock
-import sys
 import os
+import sys
+import unittest
+from unittest.mock import MagicMock, Mock, patch
 
 # プロジェクトルートをパスに追加
 current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
-from tests.workflow.fixtures.workflow_fixtures import WorkflowTestBase, CLITestHelper
-from tests.workflow.fixtures.mock_data import MockData, SAMPLE_TRACKER_ID
+from tests.workflow.fixtures.mock_data import SAMPLE_TRACKER_ID, MockData
+from tests.workflow.fixtures.workflow_fixtures import CLITestHelper, WorkflowTestBase
 
 
 class TestCreateCommandHandler(WorkflowTestBase):
@@ -26,8 +26,10 @@ class TestCreateCommandHandler(WorkflowTestBase):
 
         # WorkflowControllerのモック設定
         self.mock_workflow_controller = self.create_mock_workflow_controller()
-        self.add_mock('tools.interface.workflow_controller.get_workflow_controller',
-                     return_value=self.mock_workflow_controller)
+        self.add_mock(
+            "tools.interface.workflow_controller.get_workflow_controller",
+            return_value=self.mock_workflow_controller,
+        )
 
         # ワークスペース検証のモック設定
         self.setup_workspace_validation_mocks(is_configured=True)
@@ -39,9 +41,7 @@ class TestCreateCommandHandler(WorkflowTestBase):
         handler = CreateCommandHandler()
 
         # WorkflowControllerが存在しないトラッカーを返すよう設定
-        self.mock_workflow_controller.get_workflow_status.return_value = {
-            'status': 'not_found'
-        }
+        self.mock_workflow_controller.get_workflow_status.return_value = {"status": "not_found"}
 
         # 新規作成成功をシミュレート
         self.mock_workflow_controller.create_tracker_workflow.return_value = True
@@ -104,7 +104,9 @@ class TestCreateCommandHandler(WorkflowTestBase):
 
     def test_create_command_workflow_controller_error(self):
         """WorkflowController初期化エラーのテスト"""
-        with patch('tools.interface.workflow_controller.get_workflow_controller') as mock_get_controller:
+        with patch(
+            "tools.interface.workflow_controller.get_workflow_controller"
+        ) as mock_get_controller:
             mock_get_controller.return_value = None
 
             from tools.workflow.create_command_handler import CreateCommandHandler
@@ -124,9 +126,7 @@ class TestCreateCommandHandler(WorkflowTestBase):
         handler = CreateCommandHandler()
 
         # WorkflowControllerが存在しないトラッカーを返すよう設定
-        self.mock_workflow_controller.get_workflow_status.return_value = {
-            'status': 'not_found'
-        }
+        self.mock_workflow_controller.get_workflow_status.return_value = {"status": "not_found"}
 
         # 作成失敗をシミュレート
         self.mock_workflow_controller.create_tracker_workflow.return_value = False
@@ -155,7 +155,7 @@ class TestCreateCommandHandler(WorkflowTestBase):
             ("invalid", "トラッカーID形式が無効です"),
             ("tracker-001", "トラッカーID形式が無効です"),
             ("TRACKER_001", "トラッカーID形式が無効です"),
-            ("123-TRACKER", "トラッカーID形式が無効です")
+            ("123-TRACKER", "トラッカーID形式が無効です"),
         ]
 
         for tracker_id, expected_error in test_cases:
@@ -181,9 +181,7 @@ class TestCreateCommandHandler(WorkflowTestBase):
         self.assertEqual(info["current_phase"], "phase_0_5")
 
         # 存在しないワークフローの場合
-        self.mock_workflow_controller.get_workflow_status.return_value = {
-            'status': 'not_found'
-        }
+        self.mock_workflow_controller.get_workflow_status.return_value = {"status": "not_found"}
 
         exists, info = handler.check_existing_workflow("NON-EXISTENT-001")
         self.assertFalse(exists)
@@ -191,7 +189,7 @@ class TestCreateCommandHandler(WorkflowTestBase):
 
         # エラーの場合
         self.mock_workflow_controller.get_workflow_status.return_value = {
-            'error': 'Database connection failed'
+            "error": "Database connection failed"
         }
 
         exists, info = handler.check_existing_workflow("ERROR-001")
@@ -224,7 +222,9 @@ class TestCreateCommandHandler(WorkflowTestBase):
         self.assertIn("ワークフロー状態作成に失敗しました", message)
 
         # 例外発生ケース
-        self.mock_workflow_controller.create_tracker_workflow.side_effect = Exception("Unexpected error")
+        self.mock_workflow_controller.create_tracker_workflow.side_effect = Exception(
+            "Unexpected error"
+        )
 
         success, message = handler.create_workflow_state(SAMPLE_TRACKER_ID)
 
@@ -234,7 +234,9 @@ class TestCreateCommandHandler(WorkflowTestBase):
 
     def test_controller_initialization_failure(self):
         """WorkflowController初期化失敗の詳細テスト"""
-        with patch('tools.interface.workflow_controller.get_workflow_controller') as mock_get_controller:
+        with patch(
+            "tools.interface.workflow_controller.get_workflow_controller"
+        ) as mock_get_controller:
             mock_get_controller.side_effect = Exception("Import failed")
 
             from tools.workflow.create_command_handler import CreateCommandHandler
@@ -261,7 +263,7 @@ class TestCreateCommandHandler(WorkflowTestBase):
             "TRACKER-001'; DROP TABLE workflows; --",
             "TRACKER-001 OR 1=1",
             "TRACKER-001<script>alert('xss')</script>",
-            "TRACKER-001`rm -rf /`"
+            "TRACKER-001`rm -rf /`",
         ]
 
         for malicious_id in malicious_ids:
@@ -274,5 +276,5 @@ class TestCreateCommandHandler(WorkflowTestBase):
                 self.assertIn("トラッカーID形式が無効です", message)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

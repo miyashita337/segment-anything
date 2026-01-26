@@ -3,18 +3,18 @@
 status, instructions, step コマンドのテスト
 """
 
-import unittest
-from unittest.mock import Mock, patch, MagicMock
-import sys
 import os
+import sys
+import unittest
+from unittest.mock import MagicMock, Mock, patch
 
 # プロジェクトルートをパスに追加
 current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
-from tests.workflow.fixtures.workflow_fixtures import WorkflowTestBase, CLITestHelper
-from tests.workflow.fixtures.mock_data import MockData, SAMPLE_TRACKER_ID
+from tests.workflow.fixtures.mock_data import SAMPLE_TRACKER_ID, MockData
+from tests.workflow.fixtures.workflow_fixtures import CLITestHelper, WorkflowTestBase
 
 
 class TestBasicWorkflowCommands(WorkflowTestBase):
@@ -26,8 +26,10 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
 
         # WorkflowControllerのモック設定
         self.mock_workflow_controller = self.create_mock_workflow_controller()
-        self.add_mock('tools.interface.workflow_controller.get_workflow_controller',
-                     return_value=self.mock_workflow_controller)
+        self.add_mock(
+            "tools.interface.workflow_controller.get_workflow_controller",
+            return_value=self.mock_workflow_controller,
+        )
 
         # ワークスペース検証のモック設定
         self.setup_workspace_validation_mocks(is_configured=True)
@@ -37,12 +39,14 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
         from tools.workflow.workflow_cli import get_status
 
         # 正常な状態を返すよう設定
-        self.mock_workflow_controller.get_workflow_status.return_value = MockData.MOCK_WORKFLOW_STATUS["TRACKER-001"]
+        self.mock_workflow_controller.get_workflow_status.return_value = (
+            MockData.MOCK_WORKFLOW_STATUS["TRACKER-001"]
+        )
 
         output = CLITestHelper.capture_output(get_status, SAMPLE_TRACKER_ID)
 
-        self.assertTrue(output['result'])
-        stdout = output['stdout']
+        self.assertTrue(output["result"])
+        stdout = output["stdout"]
 
         # 期待される出力を確認
         self.assertIn("📋", stdout)
@@ -59,13 +63,13 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
         # トラッカーが見つからない状態をシミュレート
         self.mock_workflow_controller.get_workflow_status.return_value = {
             "error": "Tracker not found",
-            "status": "not_found"
+            "status": "not_found",
         }
 
         output = CLITestHelper.capture_output(get_status, "NON-EXISTENT-001")
 
-        self.assertFalse(output['result'])
-        stdout = output['stdout']
+        self.assertFalse(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("❌", stdout)
         self.assertIn("エラー", stdout)
@@ -79,8 +83,8 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
 
         output = CLITestHelper.capture_output(get_status, SAMPLE_TRACKER_ID)
 
-        self.assertFalse(output['result'])
-        stdout = output['stdout']
+        self.assertFalse(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("❌", stdout)
         self.assertIn("ワークスペース設定エラー", stdout)
@@ -90,12 +94,13 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
         from tools.workflow.workflow_cli import get_status
 
         # WorkflowControllerが利用できない状態
-        self.add_mock('tools.interface.workflow_controller.get_workflow_controller',
-                     return_value=None)
+        self.add_mock(
+            "tools.interface.workflow_controller.get_workflow_controller", return_value=None
+        )
 
         output = CLITestHelper.capture_output(get_status, SAMPLE_TRACKER_ID)
 
-        self.assertFalse(output['result'])
+        self.assertFalse(output["result"])
 
     def test_get_instructions_success(self):
         """instructionsコマンド正常実行テスト"""
@@ -116,8 +121,8 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
 
         output = CLITestHelper.capture_output(get_instructions, SAMPLE_TRACKER_ID)
 
-        self.assertTrue(output['result'])
-        stdout = output['stdout']
+        self.assertTrue(output["result"])
+        stdout = output["stdout"]
 
         # 期待される出力を確認
         self.assertIn("📝", stdout)
@@ -147,8 +152,8 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
 
         output = CLITestHelper.capture_output(get_instructions, SAMPLE_TRACKER_ID)
 
-        self.assertTrue(output['result'])
-        stdout = output['stdout']
+        self.assertTrue(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("⚠️", stdout)
         self.assertIn("このステップには人間の承認が必要です", stdout)
@@ -164,8 +169,8 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
 
         output = CLITestHelper.capture_output(get_instructions, SAMPLE_TRACKER_ID)
 
-        self.assertFalse(output['result'])
-        stdout = output['stdout']
+        self.assertFalse(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("❌", stdout)
         self.assertIn("トラッカーの指示が見つかりません", stdout)
@@ -185,8 +190,8 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
 
         output = CLITestHelper.capture_output(attempt_step, SAMPLE_TRACKER_ID)
 
-        self.assertTrue(output['result'])
-        stdout = output['stdout']
+        self.assertTrue(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("🔄", stdout)
         self.assertIn("現在のステップ完了を試行中", stdout)
@@ -209,8 +214,8 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
 
         output = CLITestHelper.capture_output(attempt_step, SAMPLE_TRACKER_ID)
 
-        self.assertTrue(output['result'])
-        stdout = output['stdout']
+        self.assertTrue(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("⏳", stdout)
         self.assertIn("ステップには承認が必要です", stdout)
@@ -232,8 +237,8 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
 
         output = CLITestHelper.capture_output(attempt_step, SAMPLE_TRACKER_ID)
 
-        self.assertFalse(output['result'])
-        stdout = output['stdout']
+        self.assertFalse(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("🚫", stdout)
         self.assertIn("ステップがブロックされています", stdout)
@@ -253,8 +258,8 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
 
         output = CLITestHelper.capture_output(attempt_step, SAMPLE_TRACKER_ID)
 
-        self.assertFalse(output['result'])
-        stdout = output['stdout']
+        self.assertFalse(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("❌", stdout)
         self.assertIn("ステップが失敗しました", stdout)
@@ -264,12 +269,13 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
         from tools.workflow.workflow_cli import attempt_step
 
         # WorkflowControllerが利用できない状態
-        self.add_mock('tools.interface.workflow_controller.get_workflow_controller',
-                     return_value=None)
+        self.add_mock(
+            "tools.interface.workflow_controller.get_workflow_controller", return_value=None
+        )
 
         output = CLITestHelper.capture_output(attempt_step, SAMPLE_TRACKER_ID)
 
-        self.assertFalse(output['result'])
+        self.assertFalse(output["result"])
 
     def test_status_with_background_process(self):
         """statusコマンド - バックグラウンドプロセス情報表示テスト"""
@@ -281,15 +287,15 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
             "status": "running",
             "step": "extraction",
             "pid": 12345,
-            "log_file": "/tmp/test.log"
+            "log_file": "/tmp/test.log",
         }
 
         self.mock_workflow_controller.get_workflow_status.return_value = status_with_process
 
         output = CLITestHelper.capture_output(get_status, SAMPLE_TRACKER_ID)
 
-        self.assertTrue(output['result'])
-        stdout = output['stdout']
+        self.assertTrue(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("🔄 バックグラウンドプロセス", stdout)
         self.assertIn("状態: running", stdout)
@@ -306,13 +312,13 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
 
         output = CLITestHelper.capture_output(get_status, "KIRO-006")
 
-        self.assertTrue(output['result'])
-        stdout = output['stdout']
+        self.assertTrue(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("承認待ち", stdout)
         self.assertIn("⏳", stdout)
         self.assertIn("APP-001", stdout)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

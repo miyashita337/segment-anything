@@ -2,28 +2,29 @@
 統計検定結果のレポート生成・可視化システム
 """
 
-import json
 import numpy as np
-import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-from typing import Dict, List, Optional, Union
-from pathlib import Path
-from datetime import datetime
-import seaborn as sns
+import matplotlib.pyplot as plt
 
-from .statistical_validator import TTestResult, StatisticalValidator
+import json
+import seaborn as sns
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional, Union
+
+from .statistical_validator import StatisticalValidator, TTestResult
 
 
 class StatisticalReporter:
     """
     統計検定結果のレポート生成・可視化クラス
-    
+
     主要機能:
     - 検定結果のJSON/HTML出力
     - 可視化（箱ひげ図、信頼区間プロット）
     - 複数比較結果のサマリー生成
     """
-    
+
     def __init__(self, output_dir: Optional[Union[str, Path]] = None):
         """
         Args:
@@ -31,26 +32,23 @@ class StatisticalReporter:
         """
         self.output_dir = Path(output_dir) if output_dir else Path.cwd()
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Matplotlibの設定
-        plt.rcParams['font.size'] = 10
-        plt.rcParams['figure.figsize'] = (10, 6)
+        plt.rcParams["font.size"] = 10
+        plt.rcParams["figure.figsize"] = (10, 6)
         sns.set_style("whitegrid")
-    
+
     def generate_json_report(
-        self, 
-        result: TTestResult,
-        test_name: str = "t-test",
-        metadata: Optional[Dict] = None
+        self, result: TTestResult, test_name: str = "t-test", metadata: Optional[Dict] = None
     ) -> Dict:
         """
         JSON形式のレポートを生成
-        
+
         Args:
             result: t検定結果
             test_name: テスト名
             metadata: 追加メタデータ
-            
+
         Returns:
             Dict: JSONレポート
         """
@@ -65,91 +63,91 @@ class StatisticalReporter:
                     "p_value": float(result.p_value),
                     "degrees_of_freedom": float(result.degrees_of_freedom),
                     "is_significant": bool(result.is_significant),
-                    "alpha": 0.05
+                    "alpha": 0.05,
                 },
                 "descriptive_statistics": {
                     "group_a": {
                         "mean": float(result.mean_a),
                         "std": float(result.std_a),
-                        "sample_size": result.sample_size_a
+                        "sample_size": result.sample_size_a,
                     },
                     "group_b": {
                         "mean": float(result.mean_b),
                         "std": float(result.std_b),
-                        "sample_size": result.sample_size_b
+                        "sample_size": result.sample_size_b,
                     },
-                    "mean_difference": float(result.mean_a - result.mean_b)
+                    "mean_difference": float(result.mean_a - result.mean_b),
                 },
                 "confidence_interval": {
                     "level": 0.95,
                     "lower": float(result.confidence_interval[0]),
-                    "upper": float(result.confidence_interval[1])
+                    "upper": float(result.confidence_interval[1]),
                 },
                 "effect_size": {
                     "cohens_d": float(result.effect_size),
                     "interpretation": StatisticalValidator().interpret_effect_size(
                         result.effect_size
-                    )
+                    ),
                 },
-                "interpretation": result.interpretation
-            }
+                "interpretation": result.interpretation,
+            },
         }
-        
+
         return report
-    
+
     def save_json_report(
-        self, 
+        self,
         result: TTestResult,
         filename: str = "statistical_report.json",
         test_name: str = "t-test",
-        metadata: Optional[Dict] = None
+        metadata: Optional[Dict] = None,
     ) -> Path:
         """
         JSON形式のレポートを保存
-        
+
         Args:
             result: t検定結果
             filename: ファイル名
             test_name: テスト名
             metadata: 追加メタデータ
-            
+
         Returns:
             Path: 保存先パス
         """
         report = self.generate_json_report(result, test_name, metadata)
         filepath = self.output_dir / filename
-        
-        with open(filepath, 'w', encoding='utf-8') as f:
+
+        with open(filepath, "w", encoding="utf-8") as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
-        
+
         return filepath
-    
+
     def generate_html_report(
-        self, 
+        self,
         result: TTestResult,
         test_name: str = "統計的有意性検定",
         group_a_name: str = "グループA",
-        group_b_name: str = "グループB"
+        group_b_name: str = "グループB",
     ) -> str:
         """
         HTML形式のレポートを生成
-        
+
         Args:
             result: t検定結果
             test_name: テスト名
             group_a_name: グループAの名前
             group_b_name: グループBの名前
-            
+
         Returns:
             str: HTMLコンテンツ
         """
         # p値の表示形式
         p_display = f"{result.p_value:.4f}" if result.p_value >= 0.0001 else "< 0.0001"
-        
+
         # 有意性の色分け
         sig_color = "#27ae60" if result.is_significant else "#e74c3c"
         sig_text = "有意差あり" if result.is_significant else "有意差なし"
-        
+
         html = f"""
 <!DOCTYPE html>
 <html lang="ja">
@@ -353,36 +351,36 @@ class StatisticalReporter:
 </html>
 """
         return html
-    
+
     def save_html_report(
-        self, 
+        self,
         result: TTestResult,
         filename: str = "statistical_report.html",
         test_name: str = "統計的有意性検定",
         group_a_name: str = "グループA",
-        group_b_name: str = "グループB"
+        group_b_name: str = "グループB",
     ) -> Path:
         """
         HTML形式のレポートを保存
-        
+
         Args:
             result: t検定結果
             filename: ファイル名
             test_name: テスト名
             group_a_name: グループAの名前
             group_b_name: グループBの名前
-            
+
         Returns:
             Path: 保存先パス
         """
         html = self.generate_html_report(result, test_name, group_a_name, group_b_name)
         filepath = self.output_dir / filename
-        
-        with open(filepath, 'w', encoding='utf-8') as f:
+
+        with open(filepath, "w", encoding="utf-8") as f:
             f.write(html)
-        
+
         return filepath
-    
+
     def plot_comparison(
         self,
         group_a: Union[List[float], np.ndarray],
@@ -390,11 +388,11 @@ class StatisticalReporter:
         result: TTestResult,
         group_a_name: str = "グループA",
         group_b_name: str = "グループB",
-        title: str = "グループ間比較"
+        title: str = "グループ間比較",
     ) -> plt.Figure:
         """
         グループ比較の可視化（箱ひげ図と信頼区間）
-        
+
         Args:
             group_a: グループAのデータ
             group_b: グループBのデータ
@@ -402,70 +400,81 @@ class StatisticalReporter:
             group_a_name: グループAの名前
             group_b_name: グループBの名前
             title: グラフタイトル
-            
+
         Returns:
             plt.Figure: 生成した図
         """
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
-        
+
         # 箱ひげ図
         data = [group_a, group_b]
         positions = [1, 2]
-        bp = ax1.boxplot(data, positions=positions, widths=0.6, 
-                         patch_artist=True, labels=[group_a_name, group_b_name])
-        
+        bp = ax1.boxplot(
+            data,
+            positions=positions,
+            widths=0.6,
+            patch_artist=True,
+            labels=[group_a_name, group_b_name],
+        )
+
         # 色分け
-        colors = ['#3498db', '#e74c3c']
-        for patch, color in zip(bp['boxes'], colors):
+        colors = ["#3498db", "#e74c3c"]
+        for patch, color in zip(bp["boxes"], colors):
             patch.set_facecolor(color)
             patch.set_alpha(0.6)
-        
+
         # 平均値をプロット
-        ax1.scatter([1], [result.mean_a], color='black', s=100, zorder=3, marker='D')
-        ax1.scatter([2], [result.mean_b], color='black', s=100, zorder=3, marker='D')
-        
-        ax1.set_ylabel('値')
-        ax1.set_title('グループ間比較（箱ひげ図）')
+        ax1.scatter([1], [result.mean_a], color="black", s=100, zorder=3, marker="D")
+        ax1.scatter([2], [result.mean_b], color="black", s=100, zorder=3, marker="D")
+
+        ax1.set_ylabel("値")
+        ax1.set_title("グループ間比較（箱ひげ図）")
         ax1.grid(True, alpha=0.3)
-        
+
         # 凡例
-        black_diamond = mpatches.Patch(color='black', label='平均値')
-        ax1.legend(handles=[black_diamond], loc='upper right')
-        
+        black_diamond = mpatches.Patch(color="black", label="平均値")
+        ax1.legend(handles=[black_diamond], loc="upper right")
+
         # 効果サイズと信頼区間の可視化
         mean_diff = result.mean_a - result.mean_b
         ci_lower, ci_upper = result.confidence_interval
-        
+
         # 信頼区間プロット
-        ax2.errorbar([0], [mean_diff], 
-                    yerr=[[mean_diff - ci_lower], [ci_upper - mean_diff]],
-                    fmt='o', markersize=10, capsize=10, capthick=2,
-                    color='#2ecc71' if result.is_significant else '#95a5a6')
-        
+        ax2.errorbar(
+            [0],
+            [mean_diff],
+            yerr=[[mean_diff - ci_lower], [ci_upper - mean_diff]],
+            fmt="o",
+            markersize=10,
+            capsize=10,
+            capthick=2,
+            color="#2ecc71" if result.is_significant else "#95a5a6",
+        )
+
         # ゼロライン
-        ax2.axhline(y=0, color='red', linestyle='--', alpha=0.5, label='差なし')
-        
+        ax2.axhline(y=0, color="red", linestyle="--", alpha=0.5, label="差なし")
+
         # 効果サイズの表示
         effect_interpretation = StatisticalValidator().interpret_effect_size(result.effect_size)
-        
+
         ax2.set_xlim(-0.5, 0.5)
         ax2.set_xticks([0])
-        ax2.set_xticklabels(['平均値の差'])
-        ax2.set_ylabel('差')
-        ax2.set_title(f'95%信頼区間\n効果サイズ (d={result.effect_size:.3f}): {effect_interpretation}')
+        ax2.set_xticklabels(["平均値の差"])
+        ax2.set_ylabel("差")
+        ax2.set_title(f"95%信頼区間\n効果サイズ (d={result.effect_size:.3f}): {effect_interpretation}")
         ax2.grid(True, alpha=0.3)
         ax2.legend()
-        
+
         # p値とサンプルサイズの表示
         fig.suptitle(
-            f'{title}\np値 = {result.p_value:.4f}, '
-            f'n₁ = {result.sample_size_a}, n₂ = {result.sample_size_b}',
-            fontsize=14
+            f"{title}\np値 = {result.p_value:.4f}, "
+            f"n₁ = {result.sample_size_a}, n₂ = {result.sample_size_b}",
+            fontsize=14,
         )
-        
+
         plt.tight_layout()
         return fig
-    
+
     def save_plot(
         self,
         group_a: Union[List[float], np.ndarray],
@@ -474,11 +483,11 @@ class StatisticalReporter:
         filename: str = "comparison_plot.png",
         group_a_name: str = "グループA",
         group_b_name: str = "グループB",
-        title: str = "グループ間比較"
+        title: str = "グループ間比較",
     ) -> Path:
         """
         比較プロットを保存
-        
+
         Args:
             group_a: グループAのデータ
             group_b: グループBのデータ
@@ -487,45 +496,40 @@ class StatisticalReporter:
             group_a_name: グループAの名前
             group_b_name: グループBの名前
             title: グラフタイトル
-            
+
         Returns:
             Path: 保存先パス
         """
-        fig = self.plot_comparison(
-            group_a, group_b, result, 
-            group_a_name, group_b_name, title
-        )
-        
+        fig = self.plot_comparison(group_a, group_b, result, group_a_name, group_b_name, title)
+
         filepath = self.output_dir / filename
-        fig.savefig(filepath, dpi=150, bbox_inches='tight')
+        fig.savefig(filepath, dpi=150, bbox_inches="tight")
         plt.close(fig)
-        
+
         return filepath
-    
+
     def generate_multiple_comparison_report(
-        self,
-        results: Dict[str, TTestResult],
-        correction_method: Optional[str] = 'bonferroni'
+        self, results: Dict[str, TTestResult], correction_method: Optional[str] = "bonferroni"
     ) -> Dict:
         """
         複数比較結果のレポート生成
-        
+
         Args:
             results: 比較名をキーとする検定結果の辞書
             correction_method: 多重比較補正方法
-            
+
         Returns:
             Dict: 複数比較レポート
         """
         report = {
             "n_comparisons": len(results),
             "correction_method": correction_method,
-            "comparisons": {}
+            "comparisons": {},
         }
-        
+
         # p値の抽出
         p_values = [r.p_value for r in results.values()]
-        
+
         # 多重比較補正
         if correction_method and len(p_values) > 1:
             validator = StatisticalValidator()
@@ -534,7 +538,7 @@ class StatisticalReporter:
             )
         else:
             corrected_p = p_values
-        
+
         # 各比較結果を整理
         for (name, result), corrected in zip(results.items(), corrected_p):
             report["comparisons"][name] = {
@@ -546,8 +550,8 @@ class StatisticalReporter:
                 "mean_difference": float(result.mean_a - result.mean_b),
                 "confidence_interval": [
                     float(result.confidence_interval[0]),
-                    float(result.confidence_interval[1])
-                ]
+                    float(result.confidence_interval[1]),
+                ],
             }
-        
+
         return report

@@ -18,11 +18,11 @@ def main():
     print("🚀 完全自動パイプライン開始")
     print("CLAUDE.md準拠のクリーンアーキテクチャ構築完了")
     print("=" * 60)
-    
+
     # パイプライン取得・実行
     pipeline = get_auto_pipeline()
     pipeline.run_full_pipeline()
-    
+
     print("🎉 完全自動パイプライン完了")
 
 

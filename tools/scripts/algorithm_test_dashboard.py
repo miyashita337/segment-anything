@@ -8,20 +8,21 @@ import sys
 import time
 from pathlib import Path
 
+
 def create_algorithm_test_dashboard():
     """アルゴリズムテスト結果のダッシュボードHTML生成"""
-    
+
     result_image_path = Path("test_algo_fix_result.jpg")
-    
+
     # 画像をBase64エンコード
     image_base64 = ""
     if result_image_path.exists():
-        with open(result_image_path, 'rb') as f:
+        with open(result_image_path, "rb") as f:
             image_data = f.read()
-            image_base64 = base64.b64encode(image_data).decode('utf-8')
-    
+            image_base64 = base64.b64encode(image_data).decode("utf-8")
+
     file_size = result_image_path.stat().st_size if result_image_path.exists() else 0
-    
+
     html = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -102,7 +103,7 @@ def create_algorithm_test_dashboard():
         <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
             <h2 class="text-xl font-bold text-gray-800 mb-4">🖼️ 抽出結果</h2>
             <div class="test-result">"""
-    
+
     if image_base64:
         html += f"""
                 <div class="text-center">
@@ -116,7 +117,7 @@ def create_algorithm_test_dashboard():
                 <div class="text-center p-8 border-2 border-dashed border-gray-300 rounded-lg">
                     <p class="text-gray-500">画像の読み込みに失敗しました</p>
                 </div>"""
-    
+
     html += f"""
             </div>
         </div>
@@ -164,30 +165,31 @@ def create_algorithm_test_dashboard():
     </div>
 </body>
 </html>"""
-    
+
     return html
 
 
 def main():
     """ダッシュボードHTML生成・保存"""
     print("📊 アルゴリズムテスト結果ダッシュボード生成開始")
-    
+
     # HTMLコンテンツ生成
     html_content = create_algorithm_test_dashboard()
-    
+
     # ダッシュボード保存
     dashboard_file = Path("algorithm_test_dashboard.html")
-    with open(dashboard_file, 'w', encoding='utf-8') as f:
+    with open(dashboard_file, "w", encoding="utf-8") as f:
         f.write(html_content)
-    
+
     file_size = dashboard_file.stat().st_size
     print(f"✅ ダッシュボード生成完了: {dashboard_file}")
     print(f"📏 ファイルサイズ: {file_size / 1024:.1f}KB")
-    
+
     return True
 
 
 if __name__ == "__main__":
     success = main()
     import sys  # 明示的import確保
+
     sys.exit(0 if success else 1)

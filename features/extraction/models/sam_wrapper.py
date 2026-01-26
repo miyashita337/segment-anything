@@ -18,14 +18,16 @@ class SAMModelWrapper:
     Wrapper class for Segment Anything Model (SAM)
     Provides simplified interface for mask generation and character extraction
     """
-    
-    def __init__(self, 
-                 model_type: str = "vit_h",
-                 checkpoint_path: str = "sam_vit_h_4b8939.pth",
-                 device: Optional[str] = None):
+
+    def __init__(
+        self,
+        model_type: str = "vit_h",
+        checkpoint_path: str = "sam_vit_h_4b8939.pth",
+        device: Optional[str] = None,
+    ):
         """
         Initialize SAM wrapper with CI environment optimization
-        
+
         Args:
             model_type: SAM model type (vit_h, vit_l, vit_b)
             checkpoint_path: Path to SAM checkpoint file
@@ -34,30 +36,33 @@ class SAMModelWrapper:
         # CI環境検出・最適化
         try:
             from features.common.ci_environment import CIEnvironmentDetector
+
             ci_config = CIEnvironmentDetector.detect_ci_environment()
-            
+
             # CI環境での自動軽量化
             if ci_config.is_ci:
                 model_type = "vit_b"  # base版に軽量化
                 checkpoint_path = ci_config.sam_model  # sam_vit_b_01ec64.pth
                 device = "cpu" if ci_config.cpu_only else device
-                print(f"🔧 CI Environment detected - SAM optimized: {model_type} ({checkpoint_path}) (CPU-only: {ci_config.cpu_only})")
+                print(
+                    f"🔧 CI Environment detected - SAM optimized: {model_type} ({checkpoint_path}) (CPU-only: {ci_config.cpu_only})"
+                )
         except ImportError:
             # CI検出モジュール未使用の場合は従来通り
             pass
-        
+
         self.model_type = model_type
         self.checkpoint_path = checkpoint_path
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
-        
+
         self.sam = None
         self.mask_generator = None
         self.is_loaded = False
-    
+
     def load_model(self) -> bool:
         """
         Load SAM model and initialize mask generator
-        
+
         Returns:
             True if successful, False otherwise
         """
@@ -65,11 +70,11 @@ class SAMModelWrapper:
             # Check if checkpoint exists
             if not os.path.exists(self.checkpoint_path):
                 raise FileNotFoundError(f"SAM checkpoint not found: {self.checkpoint_path}")
-            
+
             # Load SAM model
             self.sam = sam_model_registry[self.model_type](checkpoint=self.checkpoint_path)
             self.sam.to(device=self.device)
-            
+
             # Initialize automatic mask generator with optimized parameters for character extraction
             self.mask_generator = SamAutomaticMaskGenerator(
                 model=self.sam,
@@ -80,97 +85,100 @@ class SAMModelWrapper:
                 crop_n_points_downscale_factor=2,
                 min_mask_region_area=100,  # Avoid tiny regions
             )
-            
+
             self.is_loaded = True
             print(f"✅ SAM {self.model_type} loaded on {self.device}")
             return True
-            
+
         except Exception as e:
             print(f"❌ SAM model loading failed: {e}")
             return False
-    
+
     def generate_masks(self, image: np.ndarray) -> List[Dict[str, Any]]:
         """
         Generate all possible masks for the given image (with mask count limitation)
-        
+
         Args:
             image: Input image (RGB format)
-            
+
         Returns:
             List of mask dictionaries with segmentation, area, bbox, etc. (max 100)
         """
         if not self.is_loaded:
             raise RuntimeError("SAM model not loaded. Call load_model() first.")
-        
+
         try:
             # 🔧 根本修正: マスク生成
             masks = self.mask_generator.generate(image)
             original_mask_count = len(masks)
-            
+
             print(f"🎯 SAM生成結果: {original_mask_count}マスク")
-            
+
             # 🚨 マスク数制限実装（最大10個）
             MAX_MASKS = 10
             if len(masks) > MAX_MASKS:
                 # 面積基準で上位マスクを選択
                 print(f"⚠️ マスク数制限: {len(masks)} → {MAX_MASKS}個に削減")
-                
+
                 # 面積を計算してソート
                 for mask in masks:
-                    if 'area' not in mask:
-                        mask['area'] = np.sum(mask['segmentation'])
-                
+                    if "area" not in mask:
+                        mask["area"] = np.sum(mask["segmentation"])
+
                 # 面積順でソート（降順）
-                masks = sorted(masks, key=lambda x: x['area'], reverse=True)
+                masks = sorted(masks, key=lambda x: x["area"], reverse=True)
                 masks = masks[:MAX_MASKS]
-                
+
                 print(f"🔧 面積基準選択完了: 上位{MAX_MASKS}マスクを選択")
-                
+
                 # 削減統計
-                remaining_areas = [mask['area'] for mask in masks]
+                remaining_areas = [mask["area"] for mask in masks]
                 print(f"   選択範囲: 最大{max(remaining_areas):,}px - 最小{min(remaining_areas):,}px")
-            
+
             print(f"✅ 最終マスク数: {len(masks)}個 (制限: {MAX_MASKS})")
-            
+
             # マスクサイズの統計情報を表示
             if masks:
-                mask_areas = [mask.get('area', np.sum(mask['segmentation'])) for mask in masks]
-                print(f"📊 マスク面積統計: 最小={min(mask_areas):,}, 最大={max(mask_areas):,}, 平均={int(np.mean(mask_areas)):,}")
-            
+                mask_areas = [mask.get("area", np.sum(mask["segmentation"])) for mask in masks]
+                print(
+                    f"📊 マスク面積統計: 最小={min(mask_areas):,}, 最大={max(mask_areas):,}, 平均={int(np.mean(mask_areas)):,}"
+                )
+
             return masks
-            
+
         except Exception as e:
             print(f"❌ Mask generation failed: {e}")
             return []
 
-    def generate_masks_with_bbox_prompt(self, image: np.ndarray, bbox: List[int]) -> List[Dict[str, Any]]:
+    def generate_masks_with_bbox_prompt(
+        self, image: np.ndarray, bbox: List[int]
+    ) -> List[Dict[str, Any]]:
         """
         Generate masks using bounding box as prompt (hybrid approach)
-        
+
         Args:
             image: Input image (RGB format)
             bbox: Bounding box [x, y, w, h] from YOLO detection
-            
+
         Returns:
             List of mask dictionaries
         """
         if not self.is_loaded:
             raise RuntimeError("SAM model not loaded. Call load_model() first.")
-        
+
         try:
             # Convert bbox [x, y, w, h] to [x1, y1, x2, y2]
             x, y, w, h = bbox
             box_prompt = np.array([x, y, x + w, y + h])
-            
+
             # Set image for predictor
             self.sam.predictor.set_image(image)
-            
+
             # Generate masks with box prompt
             masks, scores, logits = self.sam.predictor.predict(
-                box=box_prompt,
-                multimask_output=True  # Generate multiple mask options
+                box=box_prompt, multimask_output=True  # Generate multiple mask options
             )
-            
+
             # Format results similar to generate_masks output
             formatted_masks = []
             for i, (mask, score) in enumerate(zip(masks, scores)):
@@ -180,134 +188,137 @@ class SAMModelWrapper:
                 if len(y_indices) > 0 and len(x_indices) > 0:
                     x_min, x_max = x_indices.min(), x_indices.max()
                     y_min, y_max = y_indices.min(), y_indices.max()
-                    bbox_result = [int(x_min), int(y_min), 
-                                  int(x_max - x_min), int(y_max - y_min)]
+                    bbox_result = [int(x_min), int(y_min), int(x_max - x_min), int(y_max - y_min)]
                 else:
                     bbox_result = [0, 0, 0, 0]
-                
-                formatted_masks.append({
-                    'segmentation': mask,
-                    'area': int(area),
-                    'bbox': bbox_result,
-                    'predicted_iou': float(score),
-                    'stability_score': float(score),  # Use IoU as stability proxy
-                    'yolo_confidence': 1.0,  # High confidence since YOLO detected it
-                    'prompt_type': 'bbox'
-                })
-            
+
+                formatted_masks.append(
+                    {
+                        "segmentation": mask,
+                        "area": int(area),
+                        "bbox": bbox_result,
+                        "predicted_iou": float(score),
+                        "stability_score": float(score),  # Use IoU as stability proxy
+                        "yolo_confidence": 1.0,  # High confidence since YOLO detected it
+                        "prompt_type": "bbox",
+                    }
+                )
+
             # Sort by area (largest first)
-            formatted_masks.sort(key=lambda x: x['area'], reverse=True)
-            
+            formatted_masks.sort(key=lambda x: x["area"], reverse=True)
+
             print(f"🎯 Hybrid SAM: BBox prompt生成 - {len(formatted_masks)}マスク")
             return formatted_masks
-            
+
         except Exception as e:
             print(f"❌ BBox prompt mask generation failed: {e}")
             # Fallback to grid-based generation
             return self.generate_masks(image)
-    
-    def filter_character_masks(self, 
-                             masks: List[Dict[str, Any]], 
-                             min_area: int = 1000,
-                             max_area_ratio: float = 0.8,
-                             min_aspect_ratio: float = 0.3,
-                             max_aspect_ratio: float = 3.0) -> List[Dict[str, Any]]:
+
+    def filter_character_masks(
+        self,
+        masks: List[Dict[str, Any]],
+        min_area: int = 1000,
+        max_area_ratio: float = 0.8,
+        min_aspect_ratio: float = 0.3,
+        max_aspect_ratio: float = 3.0,
+    ) -> List[Dict[str, Any]]:
         """
         Filter masks that are likely to be characters
-        
+
         Args:
             masks: List of mask dictionaries
             min_area: Minimum mask area
             max_area_ratio: Maximum area ratio relative to image
             min_aspect_ratio: Minimum aspect ratio (height/width)
             max_aspect_ratio: Maximum aspect ratio (height/width)
-            
+
         Returns:
             Filtered list of character-like masks
         """
         if not masks:
             return []
-        
+
         # Get image dimensions from first mask
-        first_mask = masks[0]['segmentation']
+        first_mask = masks[0]["segmentation"]
         image_area = first_mask.shape[0] * first_mask.shape[1]
         max_area = int(image_area * max_area_ratio)
-        
+
         character_masks = []
-        
+
         for mask in masks:
-            area = mask['area']
-            bbox = mask['bbox']  # [x, y, width, height]
-            
+            area = mask["area"]
+            bbox = mask["bbox"]  # [x, y, width, height]
+
             # Area filter
             if area < min_area or area > max_area:
                 continue
-            
+
             # Aspect ratio filter
             width, height = bbox[2], bbox[3]
             if width <= 0 or height <= 0:
                 continue
-                
+
             aspect_ratio = height / width
             if aspect_ratio < min_aspect_ratio or aspect_ratio > max_aspect_ratio:
                 continue
-            
+
             # Stability and IoU thresholds (already filtered by mask generator)
-            if mask['stability_score'] < 0.85 or mask['predicted_iou'] < 0.8:
+            if mask["stability_score"] < 0.85 or mask["predicted_iou"] < 0.8:
                 continue
-            
+
             character_masks.append(mask)
-        
+
         # Sort by area (largest first) and stability score
-        character_masks.sort(key=lambda x: (x['area'], x['stability_score']), reverse=True)
-        
+        character_masks.sort(key=lambda x: (x["area"], x["stability_score"]), reverse=True)
+
         return character_masks
-    
+
     def get_mask_bbox(self, mask: Dict[str, Any]) -> Tuple[int, int, int, int]:
         """
         Get bounding box from mask
-        
+
         Args:
             mask: Mask dictionary
-            
+
         Returns:
             Tuple of (x, y, width, height)
         """
-        return tuple(mask['bbox'])
-    
+        return tuple(mask["bbox"])
+
     def mask_to_binary(self, mask: Dict[str, Any]) -> np.ndarray:
         """
         Convert mask dictionary to binary numpy array
-        
+
         Args:
             mask: Mask dictionary
-            
+
         Returns:
             Binary mask array (0 or 255)
         """
-        binary_mask = mask['segmentation'].astype(np.uint8) * 255
+        binary_mask = mask["segmentation"].astype(np.uint8) * 255
         return binary_mask
-    
+
     def get_model_info(self) -> Dict[str, Any]:
         """
         Get information about the loaded model
-        
+
         Returns:
             Dictionary with model information
         """
         return {
-            'model_type': self.model_type,
-            'checkpoint_path': self.checkpoint_path,
-            'device': self.device,
-            'is_loaded': self.is_loaded,
-            'parameters': {
-                'points_per_side': 32,
-                'pred_iou_thresh': 0.8,
-                'stability_score_thresh': 0.85,
-                'min_mask_region_area': 100,
-            }
+            "model_type": self.model_type,
+            "checkpoint_path": self.checkpoint_path,
+            "device": self.device,
+            "is_loaded": self.is_loaded,
+            "parameters": {
+                "points_per_side": 32,
+                "pred_iou_thresh": 0.8,
+                "stability_score_thresh": 0.85,
+                "min_mask_region_area": 100,
+            },
         }
-    
+
     def unload_model(self):
         """
         Unload model and free memory
@@ -315,42 +326,42 @@ class SAMModelWrapper:
         if self.sam is not None:
             del self.sam
             self.sam = None
-        
+
         if self.mask_generator is not None:
             del self.mask_generator
             self.mask_generator = None
-        
+
         self.is_loaded = False
-        
+
         # Clear GPU cache
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
-        
+
         print("🗑️ SAM model unloaded")
 
 
 if __name__ == "__main__":
     # Test the wrapper
     import cv2
-    
+
     wrapper = SAMModelWrapper()
-    
+
     if wrapper.load_model():
         print("✅ SAM wrapper test successful")
         print(f"Model info: {wrapper.get_model_info()}")
-        
+
         # Test with a sample image if available
         test_image_path = "../assets/masks1.png"
         if os.path.exists(test_image_path):
             image = cv2.imread(test_image_path)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            
+
             masks = wrapper.generate_masks(image)
             character_masks = wrapper.filter_character_masks(masks)
-            
+
             print(f"Generated {len(masks)} total masks")
             print(f"Filtered to {len(character_masks)} character-like masks")
-        
+
         wrapper.unload_model()
     else:
         print("❌ SAM wrapper test failed")

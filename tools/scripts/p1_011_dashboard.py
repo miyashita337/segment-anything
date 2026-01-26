@@ -19,22 +19,26 @@ def create_p1_011_dashboard(tracker_id: str = "P1-011"):
     workspace_dir = Path(f"/mnt/c/AItools/lora/train/yado/tracker-workspace/{tracker_id}")
     dashboard_dir = workspace_dir / "dashboard"
     dashboard_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # テスト結果の読み込み
     test_extraction_dir = workspace_dir / "test_extraction"
     test_result_file = test_extraction_dir / "test_result.json"
-    
+
     test_data = {}
     if test_result_file.exists():
-        with open(test_result_file, 'r', encoding='utf-8') as f:
+        with open(test_result_file, "r", encoding="utf-8") as f:
             test_data = json.load(f)
-    
+
     # 抽出ディレクトリの確認
     extraction_dir = workspace_dir / "extraction"
     extracted_files = []
     if extraction_dir.exists():
-        extracted_files = list(extraction_dir.glob("*.txt")) + list(extraction_dir.glob("*.png")) + list(extraction_dir.glob("*.jpg"))
-    
+        extracted_files = (
+            list(extraction_dir.glob("*.txt"))
+            + list(extraction_dir.glob("*.png"))
+            + list(extraction_dir.glob("*.jpg"))
+        )
+
     # HTML生成
     html_content = f"""
 <!DOCTYPE html>
@@ -434,12 +438,12 @@ def create_p1_011_dashboard(tracker_id: str = "P1-011"):
 </body>
 </html>
 """
-    
+
     # ダッシュボード保存
     dashboard_file = dashboard_dir / "dashboard.html"
-    with open(dashboard_file, 'w', encoding='utf-8') as f:
+    with open(dashboard_file, "w", encoding="utf-8") as f:
         f.write(html_content)
-    
+
     print(f"✅ P1-011ダッシュボード生成完了: {dashboard_file}")
     return dashboard_file
 
@@ -447,12 +451,12 @@ def create_p1_011_dashboard(tracker_id: str = "P1-011"):
 def main():
     """メイン実行"""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="P1-011ダッシュボード生成")
     parser.add_argument("--tracker_id", type=str, default="P1-011", help="トラッカーID")
-    
+
     args = parser.parse_args()
-    
+
     try:
         dashboard_file = create_p1_011_dashboard(args.tracker_id)
         print(f"🎉 ダッシュボードURL: file://{dashboard_file}")

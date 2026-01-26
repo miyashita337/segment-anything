@@ -10,23 +10,24 @@ P1-B004の実装成果を視覚化するHTMLダッシュボードを生成:
 - 品質評価結果
 """
 
-import sys
 import json
+import sys
 import time
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 # パス追加
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
+
 def generate_p1_b004_dashboard():
     """P1-B004ダッシュボード生成"""
-    
+
     # ワークスペースディレクトリ作成
     workspace_dir = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/P1-B004")
     dashboard_dir = workspace_dir / "dashboard"
     dashboard_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # ダッシュボードHTML生成
     html_content = f"""<!DOCTYPE html>
 <html lang="ja">
@@ -409,13 +410,13 @@ optimized_bbox = cropper.adaptive_crop(image, yolo_bbox)
 
     # HTMLファイル保存
     dashboard_path = dashboard_dir / "dashboard.html"
-    with open(dashboard_path, 'w', encoding='utf-8') as f:
+    with open(dashboard_path, "w", encoding="utf-8") as f:
         f.write(html_content)
-    
+
     print(f"P1-B004ダッシュボード生成完了")
     print(f"   ファイルパス: {dashboard_path}")
     print(f"   ワークスペース: {workspace_dir}")
-    
+
     # JSON形式のメタデータも生成
     metadata = {
         "tracker_id": "P1-B004",
@@ -425,39 +426,40 @@ optimized_bbox = cropper.adaptive_crop(image, yolo_bbox)
         "test_results": {
             "unit_tests": {"passed": 10, "total": 10, "success_rate": 100.0},
             "integration_tests": {"passed": 4, "total": 4, "success_rate": 100.0},
-            "real_image_tests": {"passed": 3, "total": 3, "success_rate": 100.0}
+            "real_image_tests": {"passed": 3, "total": 3, "success_rate": 100.0},
         },
         "performance": {
             "avg_processing_time_ms": 0.33,
             "success_rate": 100.0,
-            "memory_usage": "lightweight"
+            "memory_usage": "lightweight",
         },
         "features": [
             "MediaPipe顔検出統合",
-            "適応的境界ボックス最適化", 
+            "適応的境界ボックス最適化",
             "マルチスケール候補生成",
             "品質評価システム",
-            "extract_character.py統合"
+            "extract_character.py統合",
         ],
         "files": [
             "features/processing/adaptive_cropping.py",
             "tests/unit/test_p1_b004_adaptive_cropping.py",
             "tests/integration/test_p1_b004_integration.py",
-            "tools/scripts/p1_b004_demo.py"
-        ]
+            "tools/scripts/p1_b004_demo.py",
+        ],
     }
-    
-    metadata_path = dashboard_dir / "metadata.json" 
-    with open(metadata_path, 'w', encoding='utf-8') as f:
+
+    metadata_path = dashboard_dir / "metadata.json"
+    with open(metadata_path, "w", encoding="utf-8") as f:
         json.dump(metadata, f, indent=2, ensure_ascii=False)
-    
+
     return dashboard_path
+
 
 def main():
     """メイン実行"""
     print("P1-B004: ダッシュボード生成開始")
     print("=" * 50)
-    
+
     try:
         dashboard_path = generate_p1_b004_dashboard()
         print(f"\nP1-B004ダッシュボード生成成功")
@@ -466,8 +468,10 @@ def main():
     except Exception as e:
         print(f"ダッシュボード生成エラー: {e}")
         import traceback
+
         traceback.print_exc()
         return 1
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     sys.exit(main())

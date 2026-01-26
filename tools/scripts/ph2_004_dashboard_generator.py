@@ -11,23 +11,25 @@ from pathlib import Path
 
 class PH2004DashboardGenerator:
     """PH2-004専用ダッシュボード生成器"""
-    
+
     def __init__(self):
         self.timestamp = datetime.now()
         self.output_dir = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-004/dashboard")
         self.output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     def generate_dashboard(self) -> str:
         """HTMLダッシュボード生成"""
-        
+
         # テスト結果読み込み
-        test_results_path = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-004/tests/ph2_004_test_results.json")
+        test_results_path = Path(
+            "/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-004/tests/ph2_004_test_results.json"
+        )
         test_results = {}
-        
+
         if test_results_path.exists():
-            with open(test_results_path, 'r', encoding='utf-8') as f:
+            with open(test_results_path, "r", encoding="utf-8") as f:
                 test_results = json.load(f)
-        
+
         html_content = f"""
 <!DOCTYPE html>
 <html lang="ja">
@@ -374,13 +376,13 @@ class PH2004DashboardGenerator:
 </body>
 </html>
 """
-        
+
         dashboard_path = self.output_dir / "dashboard.html"
-        with open(dashboard_path, 'w', encoding='utf-8') as f:
+        with open(dashboard_path, "w", encoding="utf-8") as f:
             f.write(html_content)
-        
+
         return str(dashboard_path)
-    
+
     def generate_quality_report(self) -> str:
         """品質レポート生成"""
         report = {
@@ -391,90 +393,71 @@ class PH2004DashboardGenerator:
                 "implementation_status": {
                     "cpu_optimization": {
                         "status": "完了",
-                        "features": [
-                            "マルチコア活用最適化",
-                            "並列処理エンジン統合",
-                            "リアルタイム監視",
-                            "プロセス優先度制御"
-                        ]
+                        "features": ["マルチコア活用最適化", "並列処理エンジン統合", "リアルタイム監視", "プロセス優先度制御"],
                     },
                     "memory_optimization": {
                         "status": "完了",
-                        "features": [
-                            "自動ガベージコレクション",
-                            "メモリリーク検出・防止",
-                            "閾値ベース警告",
-                            "使用量最適化"
-                        ]
+                        "features": ["自動ガベージコレクション", "メモリリーク検出・防止", "閾値ベース警告", "使用量最適化"],
                     },
                     "gpu_optimization": {
                         "status": "完了",
-                        "features": [
-                            "GPU メモリ自動クリーンアップ",
-                            "CUDA キャッシュ管理",
-                            "温度監視",
-                            "動的バッチサイズ調整"
-                        ]
-                    }
+                        "features": ["GPU メモリ自動クリーンアップ", "CUDA キャッシュ管理", "温度監視", "動的バッチサイズ調整"],
+                    },
                 },
                 "test_results": {
                     "optimization_test": "実行済み",
                     "resource_monitoring": "動作確認済み",
                     "performance_benchmark": "完了",
-                    "integration_test": "成功"
+                    "integration_test": "成功",
                 },
                 "system_requirements": {
                     "cpu_cores": 12,
                     "memory_gb": 19.5,
                     "gpu_available": True,
-                    "gpu_model": "NVIDIA GeForce RTX 4070 Ti SUPER"
+                    "gpu_model": "NVIDIA GeForce RTX 4070 Ti SUPER",
                 },
                 "optimization_metrics": {
                     "memory_management": "自動最適化実装済み",
                     "cpu_utilization": "並列処理最適化済み",
                     "gpu_efficiency": "メモリ管理強化済み",
-                    "overall_performance": "A級"
+                    "overall_performance": "A級",
                 },
                 "file_locations": {
                     "optimizer_implementation": "features/common/ph2_004_resource_optimizer.py",
                     "integration_test": "tools/scripts/ph2_004_resource_integration.py",
                     "standalone_test": "tools/scripts/ph2_004_standalone_test.py",
-                    "dashboard_generator": "tools/scripts/ph2_004_dashboard_generator.py"
-                }
+                    "dashboard_generator": "tools/scripts/ph2_004_dashboard_generator.py",
+                },
             }
         }
-        
+
         report_path = self.output_dir.parent / "quality" / "ph2_004_quality_report.json"
         report_path.parent.mkdir(parents=True, exist_ok=True)
-        
-        with open(report_path, 'w', encoding='utf-8') as f:
+
+        with open(report_path, "w", encoding="utf-8") as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
-        
+
         return str(report_path)
 
 
 def main():
     """メイン実行"""
     generator = PH2004DashboardGenerator()
-    
+
     print("🎯 PH2-004 ダッシュボード生成開始")
     print("=" * 60)
-    
+
     # HTMLダッシュボード生成
     dashboard_path = generator.generate_dashboard()
     print(f"📊 HTMLダッシュボード生成: {dashboard_path}")
-    
+
     # 品質レポート生成
     report_path = generator.generate_quality_report()
     print(f"📋 品質レポート生成: {report_path}")
-    
+
     print("\n✅ PH2-004 ダッシュボード生成完了")
-    
-    return {
-        "dashboard_path": dashboard_path,
-        "report_path": report_path,
-        "status": "完了"
-    }
+
+    return {"dashboard_path": dashboard_path, "report_path": report_path, "status": "完了"}
 
 
 if __name__ == "__main__":

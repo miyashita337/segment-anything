@@ -8,7 +8,7 @@ sys.path.append(str(Path(__file__).parent.parent.parent))
 from tools.core.google_sheets_updater import GoogleSheetsUpdater
 
 updater = GoogleSheetsUpdater()
-if updater.update_task_status('TDR-001', '/release'):
+if updater.update_task_status("TDR-001", "/release"):
     print("✅ TDR-001: 実装完了 → /release")
     print("\n=== TDR-001 Phase 1: 分類・整理 リリース完了 ===")
     print("成果:")

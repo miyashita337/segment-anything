@@ -12,27 +12,29 @@ from pathlib import Path
 
 class PH2005DashboardGenerator:
     """PH2-005専用ダッシュボード生成器"""
-    
+
     def __init__(self):
         self.timestamp = datetime.now()
         self.output_dir = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-005/dashboard")
         self.output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     def generate_dashboard(self) -> str:
         """HTMLダッシュボード生成"""
-        
+
         # テスト結果読み込み
-        test_results_path = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-005/tests/ph2_005_scalability_test_results.json")
+        test_results_path = Path(
+            "/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-005/tests/ph2_005_scalability_test_results.json"
+        )
         test_results = {}
-        
+
         if test_results_path.exists():
-            with open(test_results_path, 'r', encoding='utf-8') as f:
+            with open(test_results_path, "r", encoding="utf-8") as f:
                 test_results = json.load(f)
-        
+
         # 抽出結果確認
         extraction_dir = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-005/extraction")
         extracted_files = list(extraction_dir.glob("*.jpg")) if extraction_dir.exists() else []
-        
+
         html_content = f"""
 <!DOCTYPE html>
 <html lang="ja">
@@ -473,13 +475,13 @@ class PH2005DashboardGenerator:
                 <div class="result-item">
                     ✅ {filename}
                 </div>"""
-        
+
         if len(extracted_files) > 12:
             html_content += f"""
                 <div class="result-item">
                     + {len(extracted_files) - 12} more files...
                 </div>"""
-        
+
         html_content += f"""
             </div>
         </div>
@@ -492,29 +494,31 @@ class PH2005DashboardGenerator:
 </body>
 </html>
 """
-        
+
         dashboard_path = self.output_dir / "dashboard.html"
-        with open(dashboard_path, 'w', encoding='utf-8') as f:
+        with open(dashboard_path, "w", encoding="utf-8") as f:
             f.write(html_content)
-        
+
         return str(dashboard_path)
-    
+
     def generate_quality_report(self) -> str:
         """品質レポート生成"""
-        
+
         # テスト結果読み込み
-        test_results_path = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-005/tests/ph2_005_scalability_test_results.json")
-        
+        test_results_path = Path(
+            "/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-005/tests/ph2_005_scalability_test_results.json"
+        )
+
         test_summary = {}
         if test_results_path.exists():
-            with open(test_results_path, 'r', encoding='utf-8') as f:
+            with open(test_results_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 test_summary = data.get("test_summary", {})
-        
+
         # 抽出結果確認
         extraction_dir = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-005/extraction")
         extracted_count = len(list(extraction_dir.glob("*.jpg"))) if extraction_dir.exists() else 0
-        
+
         report = {
             "ph2_005_quality_report": {
                 "timestamp": self.timestamp.isoformat(),
@@ -525,42 +529,26 @@ class PH2005DashboardGenerator:
                         "status": "完了",
                         "performance": "1,138 tasks/sec",
                         "success_rate": "100%",
-                        "features": [
-                            "軽量タスク最適化",
-                            "4ワーカー並列処理",
-                            "高速実行エンジン"
-                        ]
+                        "features": ["軽量タスク最適化", "4ワーカー並列処理", "高速実行エンジン"],
                     },
                     "process_pool_executor": {
                         "status": "完了",
                         "performance": "565 tasks/sec",
                         "success_rate": "100%",
-                        "features": [
-                            "CPU集約的タスク対応",
-                            "2プロセス並列",
-                            "メモリ分離実行"
-                        ]
+                        "features": ["CPU集約的タスク対応", "2プロセス並列", "メモリ分離実行"],
                     },
                     "async_io": {
                         "status": "完了",
                         "performance": "40 tasks/sec",
                         "success_rate": "100%",
-                        "features": [
-                            "I/O集約的タスク最適化",
-                            "10並列実行",
-                            "非同期処理"
-                        ]
+                        "features": ["I/O集約的タスク最適化", "10並列実行", "非同期処理"],
                     },
                     "gpu_parallel": {
                         "status": "完了",
                         "performance": "19 tasks/sec",
                         "success_rate": "100%",
-                        "features": [
-                            "GPU並列処理",
-                            "RTX 4070 Ti SUPER対応",
-                            "バッチサイズ32"
-                        ]
-                    }
+                        "features": ["GPU並列処理", "RTX 4070 Ti SUPER対応", "バッチサイズ32"],
+                    },
                 },
                 "test_results": {
                     "total_tests": test_summary.get("total_tests", 6),
@@ -568,14 +556,14 @@ class PH2005DashboardGenerator:
                     "failed_tests": test_summary.get("failed_tests", 0),
                     "success_rate": test_summary.get("success_rate", 1.0),
                     "auto_selection_test": "4ケース完了",
-                    "benchmark_comparison": "2エンジン比較完了"
+                    "benchmark_comparison": "2エンジン比較完了",
                 },
                 "system_requirements": {
                     "cpu_cores": 12,
                     "memory_gb": 19.5,
                     "gpu_available": True,
                     "gpu_model": "NVIDIA GeForce RTX 4070 Ti SUPER",
-                    "gpu_vram_gb": 16.0
+                    "gpu_vram_gb": 16.0,
                 },
                 "optimization_metrics": {
                     "thread_pool_throughput": "1,138 tasks/sec",
@@ -583,52 +571,48 @@ class PH2005DashboardGenerator:
                     "async_io_throughput": "40 tasks/sec",
                     "gpu_parallel_throughput": "19 tasks/sec",
                     "overall_performance": "A+級",
-                    "scalability_improvement": "4エンジン統合完了"
+                    "scalability_improvement": "4エンジン統合完了",
                 },
                 "extraction_pipeline": {
                     "status": "完了",
                     "extracted_images": extracted_count,
-                    "workspace_output": "/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-005/"
+                    "workspace_output": "/mnt/c/AItools/lora/train/yado/tracker-workspace/PH2-005/",
                 },
                 "file_locations": {
                     "engine_implementation": "features/common/ph2_005_scalability_engine.py",
-                    "test_script": "tools/scripts/ph2_005_scalability_test.py", 
-                    "dashboard_generator": "tools/scripts/ph2_005_dashboard_generator.py"
-                }
+                    "test_script": "tools/scripts/ph2_005_scalability_test.py",
+                    "dashboard_generator": "tools/scripts/ph2_005_dashboard_generator.py",
+                },
             }
         }
-        
+
         report_path = self.output_dir.parent / "quality" / "ph2_005_quality_report.json"
         report_path.parent.mkdir(parents=True, exist_ok=True)
-        
-        with open(report_path, 'w', encoding='utf-8') as f:
+
+        with open(report_path, "w", encoding="utf-8") as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
-        
+
         return str(report_path)
 
 
 def main():
     """メイン実行"""
     generator = PH2005DashboardGenerator()
-    
+
     print("🎯 PH2-005 ダッシュボード生成開始")
     print("=" * 60)
-    
+
     # HTMLダッシュボード生成
     dashboard_path = generator.generate_dashboard()
     print(f"📊 HTMLダッシュボード生成: {dashboard_path}")
-    
+
     # 品質レポート生成
     report_path = generator.generate_quality_report()
     print(f"📋 品質レポート生成: {report_path}")
-    
+
     print("\\n✅ PH2-005 ダッシュボード生成完了")
-    
-    return {
-        "dashboard_path": dashboard_path,
-        "report_path": report_path,
-        "status": "完了"
-    }
+
+    return {"dashboard_path": dashboard_path, "report_path": report_path, "status": "完了"}
 
 
 if __name__ == "__main__":

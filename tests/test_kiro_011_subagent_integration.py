@@ -3,23 +3,24 @@
 KIRO-011 SubAgent-ワークフロー統合システムテスト
 """
 
-import os
-import tempfile
-import time
-import unittest
-from unittest.mock import Mock, patch, MagicMock
-from pathlib import Path
 import json
+import os
 
 # テスト対象のインポート
 import sys
+import tempfile
+import time
+import unittest
+from pathlib import Path
+from unittest.mock import MagicMock, Mock, patch
+
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 
-from tools.workflow.subagent_monitor import SubAgentMonitor, SubAgentStatus, SubAgentProcess
-from tools.workflow.subagent_lock_manager import SubAgentLockManager
-from tools.workflow.subagent_command_handler import SubAgentCommandHandler
 from tools.workflow.state_manager import WorkflowStateManager
+from tools.workflow.subagent_command_handler import SubAgentCommandHandler
+from tools.workflow.subagent_lock_manager import SubAgentLockManager
+from tools.workflow.subagent_monitor import SubAgentMonitor, SubAgentProcess, SubAgentStatus
 
 
 class TestSubAgentMonitor(unittest.TestCase):
@@ -37,6 +38,7 @@ class TestSubAgentMonitor(unittest.TestCase):
         self.monitor.stop_monitoring()
         # 一時ファイル削除
         import shutil
+
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_register_subagent(self):
@@ -51,7 +53,7 @@ class TestSubAgentMonitor(unittest.TestCase):
             tracker_id=tracker_id,
             process_type=process_type,
             command=command,
-            workspace_path=workspace_path
+            workspace_path=workspace_path,
         )
 
         self.assertTrue(success)
@@ -80,15 +82,15 @@ class TestSubAgentMonitor(unittest.TestCase):
             tracker_id=tracker_id,
             process_type=process_type,
             command="echo test",
-            workspace_path=os.path.join(self.temp_dir, "workspace")
+            workspace_path=os.path.join(self.temp_dir, "workspace"),
         )
 
         # 登録後の状態確認
         status = self.monitor.check_subagent_status(tracker_id, process_type)
         self.assertEqual(status, SubAgentStatus.NOT_STARTED)
 
-    @patch('psutil.pid_exists')
-    @patch('psutil.Process')
+    @patch("psutil.pid_exists")
+    @patch("psutil.Process")
     def test_auto_retry_logic(self, mock_process, mock_pid_exists):
         """自動再実行ロジックテスト"""
         tracker_id = "TEST-003"
@@ -104,7 +106,7 @@ class TestSubAgentMonitor(unittest.TestCase):
             tracker_id=tracker_id,
             process_type=process_type,
             command="echo test",
-            workspace_path=workspace_path
+            workspace_path=workspace_path,
         )
 
         process_key = f"{tracker_id}_{process_type}"
@@ -120,7 +122,7 @@ class TestSubAgentMonitor(unittest.TestCase):
 
         # 部分成功テスト（抽出ファイルあり）
         test_file = os.path.join(workspace_path, "extraction", "extracted_001.jpg")
-        with open(test_file, 'w') as f:
+        with open(test_file, "w") as f:
             f.write("test")
 
         should_retry = self.monitor.should_auto_retry(tracker_id, process_type)
@@ -137,7 +139,7 @@ class TestSubAgentMonitor(unittest.TestCase):
             process_type=process_type,
             command="sleep 1",
             workspace_path=os.path.join(self.temp_dir, "workspace"),
-            expected_duration=2  # 2秒でタイムアウト
+            expected_duration=2,  # 2秒でタイムアウト
         )
 
         # タイムアウト前
@@ -156,6 +158,7 @@ class TestSubAgentMonitor(unittest.TestCase):
     def _get_past_time(self, seconds_ago):
         """過去の時刻を取得（テスト用ヘルパー）"""
         from datetime import datetime, timedelta
+
         return datetime.now() - timedelta(seconds=seconds_ago)
 
 
@@ -170,6 +173,7 @@ class TestSubAgentLockManager(unittest.TestCase):
     def tearDown(self):
         """テスト後クリーンアップ"""
         import shutil
+
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_lock_acquisition(self):
@@ -235,19 +239,22 @@ class TestSubAgentCommandHandler(unittest.TestCase):
     def tearDown(self):
         """テスト後クリーンアップ"""
         import shutil
+
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
-    @patch('tools.workflow.subagent_command_handler.get_workspace_config')
-    @patch('tools.workflow.subagent_command_handler.get_subagent_monitor')
-    @patch('tools.workflow.subagent_command_handler.get_lock_manager')
+    @patch("tools.workflow.subagent_command_handler.get_workspace_config")
+    @patch("tools.workflow.subagent_command_handler.get_subagent_monitor")
+    @patch("tools.workflow.subagent_command_handler.get_lock_manager")
     def test_extraction_command(self, mock_lock_manager, mock_monitor, mock_workspace_config):
         """SubAgent抽出コマンドテスト"""
         # モック設定
         mock_workspace_config.return_value.get_workspace_config.return_value = {
-            'workspace_path': os.path.join(self.temp_dir, "workspace"),
-            'author_name': 'test_user'
+            "workspace_path": os.path.join(self.temp_dir, "workspace"),
+            "author_name": "test_user",
         }
-        mock_workspace_config.return_value.get_input_directory.return_value = os.path.join(self.temp_dir, "input")
+        mock_workspace_config.return_value.get_input_directory.return_value = os.path.join(
+            self.temp_dir, "input"
+        )
 
         mock_lock_manager.return_value.is_duplicate_execution_risk.return_value = False
         mock_monitor.return_value.register_subagent.return_value = True
@@ -267,20 +274,20 @@ class TestSubAgentCommandHandler(unittest.TestCase):
         mock_monitor.return_value.register_subagent.assert_called_once()
         mock_monitor.return_value.start_subagent.assert_called_once()
 
-    @patch('tools.workflow.subagent_command_handler.get_subagent_monitor')
+    @patch("tools.workflow.subagent_command_handler.get_subagent_monitor")
     def test_status_command(self, mock_monitor):
         """SubAgent状態確認コマンドテスト"""
         # モック設定
         mock_monitor.return_value.check_subagent_status.return_value = SubAgentStatus.RUNNING
         mock_monitor.return_value.get_all_active_processes.return_value = [
             {
-                'tracker_id': 'TEST-001',
-                'process_type': 'extraction',
-                'status': 'running',
-                'pid': 12345,
-                'elapsed_seconds': 300,
-                'expected_duration': 1800,
-                'retry_count': 0
+                "tracker_id": "TEST-001",
+                "process_type": "extraction",
+                "status": "running",
+                "pid": 12345,
+                "elapsed_seconds": 300,
+                "expected_duration": 1800,
+                "retry_count": 0,
             }
         ]
 
@@ -293,7 +300,9 @@ class TestSubAgentCommandHandler(unittest.TestCase):
         self.assertTrue(success)
 
         # 呼び出し確認
-        mock_monitor.return_value.check_subagent_status.assert_called_once_with("TEST-001", "extraction")
+        mock_monitor.return_value.check_subagent_status.assert_called_once_with(
+            "TEST-001", "extraction"
+        )
 
 
 class TestWorkflowStateIntegration(unittest.TestCase):
@@ -308,6 +317,7 @@ class TestWorkflowStateIntegration(unittest.TestCase):
     def tearDown(self):
         """テスト後クリーンアップ"""
         import shutil
+
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_waiting_for_subagent_state(self):
@@ -329,7 +339,7 @@ class TestWorkflowStateIntegration(unittest.TestCase):
             "sow_creation",
             "implementation",
             "testing",
-            "subagent_extraction"
+            "subagent_extraction",
         ]
 
         for expected_step in steps:
@@ -357,6 +367,7 @@ class TestIntegrationScenario(unittest.TestCase):
     def tearDown(self):
         """テスト後クリーンアップ"""
         import shutil
+
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_full_subagent_workflow(self):
@@ -384,7 +395,7 @@ class TestIntegrationScenario(unittest.TestCase):
             tracker_id=tracker_id,
             process_type="extraction",
             command=command,
-            workspace_path=workspace_path
+            workspace_path=workspace_path,
         )
         self.assertTrue(success)
 
@@ -405,6 +416,6 @@ class TestIntegrationScenario(unittest.TestCase):
         lock_manager.release_lock(tracker_id, "extraction")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # テスト実行
     unittest.main(verbosity=2)

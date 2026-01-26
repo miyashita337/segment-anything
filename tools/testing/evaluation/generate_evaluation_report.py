@@ -20,11 +20,11 @@ from pathlib import Path
 
 class EvaluationReportGenerator:
     """評価結果HTMLレポート生成クラス"""
-    
+
     def __init__(self, json_path: str, output_path: str = "evaluation_report.html"):
         """
         初期化
-        
+
         Args:
             json_path: 評価結果JSONファイルパス
             output_path: 出力HTMLファイルパス
@@ -32,97 +32,101 @@ class EvaluationReportGenerator:
         self.json_path = json_path
         self.output_path = output_path
         self.data = None
-        
+
     def load_evaluation_data(self):
         """評価データの読み込み"""
         print(f"📊 評価データ読み込み: {self.json_path}")
-        
-        with open(self.json_path, 'r', encoding='utf-8') as f:
+
+        with open(self.json_path, "r", encoding="utf-8") as f:
             self.data = json.load(f)
-        
+
         print(f"✅ データ読み込み完了: {self.data['batch_info']['total_images']}枚")
-        
+
     def extract_scores_from_response(self, result):
         """レスポンスからスコアを抽出"""
         # 既にパースされたデータがある場合
-        if not result.get('parse_error', True):
+        if not result.get("parse_error", True):
             return {
-                'completeness': result.get('completeness', 0),
-                'boundary_quality': result.get('boundary_quality', 0),
-                'background_removal': result.get('background_removal', 0),
-                'overall_quality': result.get('overall_quality', 0),
-                'comments': result.get('comments', '')
+                "completeness": result.get("completeness", 0),
+                "boundary_quality": result.get("boundary_quality", 0),
+                "background_removal": result.get("background_removal", 0),
+                "overall_quality": result.get("overall_quality", 0),
+                "comments": result.get("comments", ""),
             }
-        
+
         # raw_responseからJSONを抽出
-        raw_response = result.get('raw_response', '')
+        raw_response = result.get("raw_response", "")
         if not raw_response:
             return None
-            
+
         # JSONコードブロックを抽出
-        json_match = re.search(r'```json\n(.*?)\n```', raw_response, re.DOTALL)
+        json_match = re.search(r"```json\n(.*?)\n```", raw_response, re.DOTALL)
         if json_match:
             try:
                 json_str = json_match.group(1)
                 parsed_data = json.loads(json_str)
                 return {
-                    'completeness': parsed_data.get('completeness', 0),
-                    'boundary_quality': parsed_data.get('boundary_quality', 0),
-                    'background_removal': parsed_data.get('background_removal', 0),
-                    'overall_quality': parsed_data.get('overall_quality', 0),
-                    'comments': parsed_data.get('comments', '')
+                    "completeness": parsed_data.get("completeness", 0),
+                    "boundary_quality": parsed_data.get("boundary_quality", 0),
+                    "background_removal": parsed_data.get("background_removal", 0),
+                    "overall_quality": parsed_data.get("overall_quality", 0),
+                    "comments": parsed_data.get("comments", ""),
                 }
             except json.JSONDecodeError:
                 pass
-        
+
         return None
-    
+
     def image_to_base64(self, image_path):
         """画像をBase64エンコード"""
         try:
-            with open(image_path, 'rb') as f:
+            with open(image_path, "rb") as f:
                 image_data = f.read()
-            return base64.b64encode(image_data).decode('utf-8')
+            return base64.b64encode(image_data).decode("utf-8")
         except Exception as e:
             print(f"⚠️ 画像読み込みエラー: {image_path} - {e}")
             return None
-    
+
     def generate_html_report(self):
         """HTMLレポート生成"""
         print("🎨 HTMLレポート生成開始")
-        
+
         # 統計情報の準備
-        batch_info = self.data['batch_info']
-        results = self.data['results']
-        
+        batch_info = self.data["batch_info"]
+        results = self.data["results"]
+
         # スコア抽出
         parsed_results = []
         for result in results:
             scores = self.extract_scores_from_response(result)
             if scores:
-                parsed_results.append({
-                    'image_path': result['image_path'],
-                    'filename': Path(result['image_path']).name,
-                    'api_used': result.get('api_used', 'unknown'),
-                    'timestamp': result.get('timestamp', ''),
-                    **scores
-                })
-        
+                parsed_results.append(
+                    {
+                        "image_path": result["image_path"],
+                        "filename": Path(result["image_path"]).name,
+                        "api_used": result.get("api_used", "unknown"),
+                        "timestamp": result.get("timestamp", ""),
+                        **scores,
+                    }
+                )
+
         # 統計計算
         if parsed_results:
-            avg_completeness = sum(r['completeness'] for r in parsed_results) / len(parsed_results)
-            avg_boundary = sum(r['boundary_quality'] for r in parsed_results) / len(parsed_results)
-            avg_background = sum(r['background_removal'] for r in parsed_results) / len(parsed_results)
-            avg_overall = sum(r['overall_quality'] for r in parsed_results) / len(parsed_results)
+            avg_completeness = sum(r["completeness"] for r in parsed_results) / len(parsed_results)
+            avg_boundary = sum(r["boundary_quality"] for r in parsed_results) / len(parsed_results)
+            avg_background = sum(r["background_removal"] for r in parsed_results) / len(
+                parsed_results
+            )
+            avg_overall = sum(r["overall_quality"] for r in parsed_results) / len(parsed_results)
         else:
             avg_completeness = avg_boundary = avg_background = avg_overall = 0
-        
+
         # API使用統計
         api_usage = {}
         for result in parsed_results:
-            api = result['api_used']
+            api = result["api_used"]
             api_usage[api] = api_usage.get(api, 0) + 1
-        
+
         # HTMLテンプレート
         html_content = f"""
 <!DOCTYPE html>
@@ -361,12 +365,12 @@ class EvaluationReportGenerator:
         <div class="results-section">
             <h2>📸 個別画像評価結果</h2>
 """
-        
+
         # 個別画像結果の追加
         for i, result in enumerate(parsed_results, 1):
-            image_base64 = self.image_to_base64(result['image_path'])
+            image_base64 = self.image_to_base64(result["image_path"])
             image_src = f"data:image/jpeg;base64,{image_base64}" if image_base64 else ""
-            
+
             html_content += f"""
             <div class="image-result">
                 <div class="image-container">
@@ -404,7 +408,7 @@ class EvaluationReportGenerator:
                 </div>
             </div>
 """
-        
+
         # HTML終了部分
         html_content += f"""
         </div>
@@ -419,38 +423,38 @@ class EvaluationReportGenerator:
 </body>
 </html>
 """
-        
+
         # HTMLファイル保存
-        with open(self.output_path, 'w', encoding='utf-8') as f:
+        with open(self.output_path, "w", encoding="utf-8") as f:
             f.write(html_content)
-        
+
         print(f"✅ HTMLレポート生成完了: {self.output_path}")
         print(f"📋 評価済み画像: {len(parsed_results)}/{batch_info['total_images']}枚")
-        
+
         return self.output_path
 
 
 def main():
     """メイン実行関数"""
     print("🎨 評価結果HTMLレポート生成開始")
-    
+
     # 入力ファイル確認
     json_path = "batch_evaluation_results.json"
     if not os.path.exists(json_path):
         print(f"❌ 評価結果ファイルが見つかりません: {json_path}")
         return
-    
+
     # レポート生成
     generator = EvaluationReportGenerator(json_path)
     generator.load_evaluation_data()
     output_path = generator.generate_html_report()
-    
+
     print(f"\n🎯 レポート生成完了!")
     print(f"📁 ファイル: {output_path}")
     print(f"🌐 ブラウザで開いてください: file://{os.path.abspath(output_path)}")
-    
+
     # 統計サマリー
-    batch_info = generator.data['batch_info']
+    batch_info = generator.data["batch_info"]
     print(f"\n📊 統計サマリー:")
     print(f"  総画像数: {batch_info['total_images']}枚")
     print(f"  成功率: {batch_info['success_rate']:.1f}%")

@@ -13,23 +13,23 @@ from pathlib import Path
 
 def create_dashboard():
     """INTEGRATE-3-6-05用ダッシュボード作成"""
-    
+
     # ディレクトリ設定
     workspace_dir = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/INTEGRATE-3-6-05")
     dashboard_dir = workspace_dir / "dashboard"
     extraction_dir = workspace_dir / "extraction"
-    
+
     # ディレクトリ作成
     dashboard_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # 抽出結果スキャン（処理中の場合は空でも対応）
     image_files = []
     if extraction_dir.exists():
-        for ext in ['*.jpg', '*.jpeg', '*.png']:
+        for ext in ["*.jpg", "*.jpeg", "*.png"]:
             image_files.extend(extraction_dir.glob(ext))
-    
+
     image_files = sorted(image_files)
-    
+
     # 統計計算
     total_files = len(image_files)
     # 処理中の場合は暫定値
@@ -39,9 +39,9 @@ def create_dashboard():
     else:
         # 簡単な品質推定（ファイルサイズベース）
         high_quality = 0
-        medium_quality = 0 
+        medium_quality = 0
         low_quality = 0
-        
+
         for img_file in image_files:
             size_kb = img_file.stat().st_size / 1024
             if size_kb > 50:  # 50KB以上
@@ -50,12 +50,12 @@ def create_dashboard():
                 medium_quality += 1
             else:  # 10KB未満
                 low_quality += 1
-        
+
         success_rate = f"{(total_files / 26 * 100):.1f}%" if total_files > 0 else "0%"
         status_message = f"✅ 抽出完了: {total_files}枚"
-    
+
     # HTMLダッシュボード生成
-    html_content = f'''<!DOCTYPE html>
+    html_content = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -106,26 +106,30 @@ def create_dashboard():
             <div class="stat-card"><div class="stat-value quality-high">{high_quality if 'high_quality' in locals() else "計算中"}</div><div class="stat-label">高品質画像</div></div>
             <div class="stat-card"><div class="stat-value quality-medium">{medium_quality if 'medium_quality' in locals() else "計算中"}</div><div class="stat-label">中品質画像</div></div>
             <div class="stat-card"><div class="stat-value quality-low">{low_quality if 'low_quality' in locals() else "計算中"}</div><div class="stat-label">低品質画像</div></div>
-        </div>'''
-    
+        </div>"""
+
     if total_files > 0:
-        html_content += f'''
+        html_content += f"""
         <div class="gallery">
             <h2>📸 抽出結果ギャラリー</h2>
-            <div class="images-grid">'''
-        
+            <div class="images-grid">"""
+
         # 画像をBase64エンコードして埋め込み
         for img_file in image_files[:20]:  # 最初の20枚まで表示
             try:
-                with open(img_file, 'rb') as f:
+                with open(img_file, "rb") as f:
                     img_data = f.read()
-                    img_base64 = base64.b64encode(img_data).decode('utf-8')
-                    
+                    img_base64 = base64.b64encode(img_data).decode("utf-8")
+
                 file_size_kb = len(img_data) / 1024
-                quality_level = "高品質" if file_size_kb > 50 else "中品質" if file_size_kb > 10 else "低品質"
-                quality_class = "high" if file_size_kb > 50 else "medium" if file_size_kb > 10 else "low"
-                
-                html_content += f'''
+                quality_level = (
+                    "高品質" if file_size_kb > 50 else "中品質" if file_size_kb > 10 else "低品質"
+                )
+                quality_class = (
+                    "high" if file_size_kb > 50 else "medium" if file_size_kb > 10 else "low"
+                )
+
+                html_content += f"""
                 <div class="image-card">
                     <div class="image-container">
                         <img src="data:image/jpeg;base64,{img_base64}" alt="{img_file.name}">
@@ -138,16 +142,16 @@ def create_dashboard():
                             <span>品質: {quality_level}</span>
                         </div>
                     </div>
-                </div>'''
+                </div>"""
             except Exception as e:
                 print(f"画像処理エラー: {img_file.name} - {e}")
                 continue
-        
-        html_content += '''
+
+        html_content += """
             </div>
-        </div>'''
+        </div>"""
     else:
-        html_content += '''
+        html_content += """
         <div class="gallery">
             <div class="no-images">
                 🔄 バックグラウンド抽出処理中...<br>
@@ -159,26 +163,27 @@ def create_dashboard():
                 • プロセス確認: <code>ps aux | grep sam_yolo</code><br>
                 • 結果確認: <code>ls /mnt/c/AItools/lora/train/yado/tracker-workspace/INTEGRATE-3-6-05/extraction/</code>
             </div>
-        </div>'''
-    
-    html_content += f'''
+        </div>"""
+
+    html_content += f"""
         <div class="footer">
             <p>🔬 INTEGRATE-3-6-05 抽出結果ダッシュボード | 生成時刻: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | Generated with Claude Code</p>
         </div>
     </div>
 </body>
-</html>'''
-    
+</html>"""
+
     # ダッシュボードファイル保存
     dashboard_file = dashboard_dir / "dashboard.html"
-    with open(dashboard_file, 'w', encoding='utf-8') as f:
+    with open(dashboard_file, "w", encoding="utf-8") as f:
         f.write(html_content)
-    
+
     print(f"✅ INTEGRATE-3-6-05ダッシュボード生成完了: {dashboard_file}")
     print(f"🌐 アクセスURL: http://100.123.241.106:8088/tracker/INTEGRATE-3-6-05")
     print(f"📊 現在の画像数: {total_files}枚")
-    
+
     return str(dashboard_file)
+
 
 if __name__ == "__main__":
     create_dashboard()

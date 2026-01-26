@@ -17,7 +17,7 @@ from tools.unified_quality_checker import QualityMetric, UnifiedQualityChecker, 
 
 def create_test_report():
     """テスト用品質レポート作成"""
-    
+
     # テスト用メトリクス
     evaluation_metrics = [
         QualityMetric(
@@ -27,16 +27,16 @@ def create_test_report():
             status="failed",
             category="evaluation",
             notes="16/26 成功",
-            improvement_suggestions=["YOLO閾値調整", "SAM後処理改良"]
+            improvement_suggestions=["YOLO閾値調整", "SAM後処理改良"],
         ),
         QualityMetric(
             name="A/B評価率",
             value=0.0625,
             threshold=0.7,
-            status="failed", 
+            status="failed",
             category="evaluation",
             notes="1/16 A/B評価",
-            improvement_suggestions=["品質判定基準見直し"]
+            improvement_suggestions=["品質判定基準見直し"],
         ),
         QualityMetric(
             name="FPS",
@@ -44,10 +44,10 @@ def create_test_report():
             threshold=0.2,
             status="passed",
             category="evaluation",
-            notes="平均処理時間: 0.40秒"
-        )
+            notes="平均処理時間: 0.40秒",
+        ),
     ]
-    
+
     mask_metrics = [
         QualityMetric(
             name="平均カバレッジ率",
@@ -55,10 +55,10 @@ def create_test_report():
             threshold=0.15,
             status="failed",
             category="mask",
-            notes="5枚のサンプル分析"
+            notes="5枚のサンプル分析",
         )
     ]
-    
+
     objective_metrics = [
         QualityMetric(
             name="PLA (Pixel-Level Accuracy)",
@@ -66,13 +66,13 @@ def create_test_report():
             threshold=0.75,
             status="passed",
             category="objective",
-            notes="SAMスコア推定"
+            notes="SAMスコア推定",
         )
     ]
-    
+
     # テストレポート作成
     test_report = UnifiedQualityReport(
-        timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         dataset_name="kana08_test",
         total_images=26,
         evaluation_metrics=evaluation_metrics,
@@ -82,46 +82,39 @@ def create_test_report():
         passed_metrics=2,
         total_metrics=5,
         status="FAIL",
-        priority_improvements=[
-            "YOLO閾値調整",
-            "SAM後処理改良", 
-            "品質判定基準見直し",
-            "検出範囲拡張"
-        ],
-        technical_recommendations=[
-            "アニメキャラクター特化YOLO閾値最適化",
-            "SAMマスク後処理パイプライン改良"
-        ]
+        priority_improvements=["YOLO閾値調整", "SAM後処理改良", "品質判定基準見直し", "検出範囲拡張"],
+        technical_recommendations=["アニメキャラクター特化YOLO閾値最適化", "SAMマスク後処理パイプライン改良"],
     )
-    
+
     return test_report
+
 
 def test_notification():
     """通知機能テスト"""
     print("🧪 Pushover通知機能テスト開始")
-    
+
     # テストレポート作成
     test_report = create_test_report()
-    
+
     # 統合品質チェッカー初期化
     checker = UnifiedQualityChecker()
-    
+
     # 通知送信テスト
     print("📱 通知送信テスト実行中...")
-    
+
     try:
         success = checker.send_completion_notification(test_report, "test_results.json")
-        
+
         if success:
             print("✅ 通知送信成功！")
             print("📱 スマートフォンで通知を確認してください")
         else:
             print("⚠️ 通知送信失敗または設定未完了")
             print("💡 config/pushover.json を設定してください")
-            
+
     except Exception as e:
         print(f"❌ 通知エラー: {e}")
-        
+
     print("\n🔍 期待される通知内容:")
     print("=" * 50)
     print("タイトル: 品質チェック完了: kana08_test")
@@ -144,6 +137,7 @@ def test_notification():
     print("• アニメキャラクター特化YOLO閾値最適化")
     print("• SAMマスク後処理パイプライン改良")
     print("=" * 50)
+
 
 if __name__ == "__main__":
     test_notification()

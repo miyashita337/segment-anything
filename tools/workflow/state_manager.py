@@ -4,14 +4,14 @@
 INCI-006 解決策: AIがバイパスできない機械的ワークフロー状態追跡
 """
 
-import sqlite3
-import os
-import subprocess
-from datetime import datetime
-from typing import List, Dict, Optional, Tuple, Any
-from enum import Enum
-import threading
 import logging
+import os
+import sqlite3
+import subprocess
+import threading
+from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional, Tuple
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -91,9 +91,7 @@ class WorkflowStateManager:
             conn.commit()
             logger.info("Database tables initialized successfully")
 
-    def create_tracker_workflow(
-        self, tracker_id: str, initial_phase: str = "phase_0_5"
-    ) -> bool:
+    def create_tracker_workflow(self, tracker_id: str, initial_phase: str = "phase_0_5") -> bool:
         """Create a new workflow state for a tracker."""
         with self.lock:
             try:
@@ -128,9 +126,7 @@ class WorkflowStateManager:
             result = cursor.fetchone()
             return result[0] if result else None
 
-    def can_proceed_to_step(
-        self, tracker_id: str, step_id: str
-    ) -> Tuple[bool, List[str]]:
+    def can_proceed_to_step(self, tracker_id: str, step_id: str) -> Tuple[bool, List[str]]:
         """Mechanical check if tracker can proceed to specified step."""
         blocking_reasons = []
 
@@ -144,9 +140,7 @@ class WorkflowStateManager:
         if can_proceed:
             logger.info(f"Tracker {tracker_id} can proceed to step {step_id}")
         else:
-            logger.warning(
-                f"Tracker {tracker_id} blocked from step {step_id}: {blocking_reasons}"
-            )
+            logger.warning(f"Tracker {tracker_id} blocked from step {step_id}: {blocking_reasons}")
 
         return can_proceed, blocking_reasons
 
@@ -192,9 +186,7 @@ class WorkflowStateManager:
                 logger.info(f"Advanced {tracker_id} from {current_step} to {next_step}")
                 return True
 
-    def validate_step_completion(
-        self, tracker_id: str, step_id: str
-    ) -> ValidationResult:
+    def validate_step_completion(self, tracker_id: str, step_id: str) -> ValidationResult:
         """Validate step completion through external evidence."""
         logger.info(f"Validating step completion: {tracker_id}/{step_id}")
 
@@ -212,46 +204,36 @@ class WorkflowStateManager:
                 capture_output=True,
                 text=True,
                 cwd=self._find_project_root(),
-                timeout=5
+                timeout=5,
             )
 
             if result.returncode != 0:
                 return ValidationResult(
                     False,
                     [f"Failed to get current git branch: {result.stderr}"],
-                    "git_branch_check_failed"
+                    "git_branch_check_failed",
                 )
 
             current_branch = result.stdout.strip()
             expected_pattern = f"feature/{tracker_id}"
 
             if current_branch == expected_pattern:
-                return ValidationResult(
-                    True,
-                    [],
-                    f"Branch verification passed: {current_branch}"
-                )
+                return ValidationResult(True, [], f"Branch verification passed: {current_branch}")
             else:
                 return ValidationResult(
                     False,
                     [
                         f"Current branch '{current_branch}' does not match expected pattern '{expected_pattern}'",
-                        f"Please create and switch to branch: git checkout -b {expected_pattern}"
+                        f"Please create and switch to branch: git checkout -b {expected_pattern}",
                     ],
-                    f"branch_mismatch: {current_branch} != {expected_pattern}"
+                    f"branch_mismatch: {current_branch} != {expected_pattern}",
                 )
 
         except subprocess.TimeoutExpired:
-            return ValidationResult(
-                False,
-                ["Git command timed out"],
-                "git_timeout"
-            )
+            return ValidationResult(False, ["Git command timed out"], "git_timeout")
         except Exception as e:
             return ValidationResult(
-                False,
-                [f"Error checking git branch: {str(e)}"],
-                f"git_error: {str(e)}"
+                False, [f"Error checking git branch: {str(e)}"], f"git_error: {str(e)}"
             )
 
     def _mark_step_completed(self, tracker_id: str, step_id: str, evidence: str = ""):
@@ -297,7 +279,7 @@ class WorkflowStateManager:
                         WHERE tracker_id = ? AND step_id = ?
                         ORDER BY completed_at DESC LIMIT 1
                         """,
-                        (tracker_id, step_id)
+                        (tracker_id, step_id),
                     )
                     row = cursor.fetchone()
                     if row:
@@ -307,9 +289,7 @@ class WorkflowStateManager:
             logger.error(f"Error getting step status for {tracker_id}/{step_id}: {e}")
             return None
 
-    def require_approval(
-        self, tracker_id: str, step_id: str, approval_criteria: List[str]
-    ) -> str:
+    def require_approval(self, tracker_id: str, step_id: str, approval_criteria: List[str]) -> str:
         """Create an approval request for a step."""
         import time
 
@@ -333,9 +313,7 @@ class WorkflowStateManager:
                 )
                 conn.commit()
 
-        logger.info(
-            f"Created approval request {approval_id} for {tracker_id}/{step_id}"
-        )
+        logger.info(f"Created approval request {approval_id} for {tracker_id}/{step_id}")
         return approval_id
 
     def get_workflow_status(self, tracker_id: str) -> Dict[str, Any]:

@@ -17,28 +17,29 @@ def generate_final_dashboard():
     tracker_id = "KIRO-001-002"
     workspace_path = f"/mnt/c/AItools/lora/train/yado/tracker-workspace/{tracker_id}"
     extraction_dir = os.path.join(workspace_path, "extraction")
-    
+
     # 統計分析データ読み込み
     stats_file = os.path.join(workspace_path, "statistical_analysis_final.json")
-    with open(stats_file, 'r') as f:
+    with open(stats_file, "r") as f:
         stats = json.load(f)
-    
+
     # 抽出ファイルリスト取得
-    extracted_files = sorted([f for f in os.listdir(extraction_dir) 
-                            if f.endswith('.jpg') and f.startswith('extracted_')])
-    
+    extracted_files = sorted(
+        [f for f in os.listdir(extraction_dir) if f.endswith(".jpg") and f.startswith("extracted_")]
+    )
+
     print(f"🖼️ KIRO-001-002 最終ダッシュボード生成開始...")
     print(f"  総画像数: {len(extracted_files)}枚")
-    
+
     # 画像ファイル情報取得（表示なしでもデータは提供）
     image_info_cards = []
     high_count = medium_count = low_count = 0
-    
+
     for filename in extracted_files:
         file_path = os.path.join(extraction_dir, filename)
         file_size = os.path.getsize(file_path)
         file_size_kb = file_size // 1024
-        
+
         # 品質判定
         if file_size_kb > 100:
             quality_class = "high"
@@ -46,24 +47,27 @@ def generate_final_dashboard():
             high_count += 1
         elif file_size_kb > 50:
             quality_class = "medium"
-            quality_label = "中品質"  
+            quality_label = "中品質"
             medium_count += 1
         else:
             quality_class = "low"
             quality_label = "低品質"
             low_count += 1
-        
-        image_info_cards.append({
-            'filename': filename,
-            'size_kb': file_size_kb,
-            'quality': quality_label,
-            'class': quality_class
-        })
-    
+
+        image_info_cards.append(
+            {
+                "filename": filename,
+                "size_kb": file_size_kb,
+                "quality": quality_label,
+                "class": quality_class,
+            }
+        )
+
     # 最初の20枚の詳細表示用リスト生成
     detailed_list = []
     for i, img in enumerate(image_info_cards[:20]):
-        detailed_list.append(f'''    <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-{
+        detailed_list.append(
+            f"""    <div class="bg-white rounded-lg shadow-md p-4 border-l-4 border-{
             'green' if img['class'] == 'high' else 'yellow' if img['class'] == 'medium' else 'red'
         }-500">
         <div class="flex justify-between items-start mb-2">
@@ -77,10 +81,11 @@ def generate_final_dashboard():
             <div>品質レベル: {img['quality']}</div>
             <div class="mt-1 text-blue-600">パス: /workspace/{tracker_id}/extraction/{img['filename']}</div>
         </div>
-    </div>''')
+    </div>"""
+        )
 
     # HTML生成
-    html_content = f'''<!DOCTYPE html>
+    html_content = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -222,23 +227,24 @@ def generate_final_dashboard():
         </div>
     </div>
 </body>
-</html>'''
+</html>"""
 
     # HTMLファイル保存
     dashboard_dir = os.path.join(workspace_path, "dashboard")
     dashboard_path = os.path.join(dashboard_dir, "dashboard.html")
-    
-    with open(dashboard_path, 'w', encoding='utf-8') as f:
+
+    with open(dashboard_path, "w", encoding="utf-8") as f:
         f.write(html_content)
-    
+
     print(f"\n✅ 最終ダッシュボード生成完了!")
     print(f"📁 ファイル: {dashboard_path}")
     print(f"🖼️ 画像情報: {len(extracted_files)}枚の詳細データ表示")
     print(f"📊 品質分布: 高品質{high_count}枚・中品質{medium_count}枚・低品質{low_count}枚")
     print(f"✅ チェックリスト: 全5項目対応完了")
     print(f"🌐 アクセスURL: http://100.123.241.106:8088/tracker/{tracker_id}")
-    
+
     return dashboard_path
+
 
 if __name__ == "__main__":
     generate_final_dashboard()

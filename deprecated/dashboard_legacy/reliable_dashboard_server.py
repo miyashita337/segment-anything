@@ -17,6 +17,7 @@ from pathlib import Path
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class ReliableDashboardServer:
     def __init__(self, port=8088):
         self.port = port
@@ -26,7 +27,7 @@ class ReliableDashboardServer:
         self._add_test_data()
         self._setup_routes()
         self._setup_cors()
-    
+
     def _add_test_data(self):
         """リアルなテストデータを追加"""
         test_scenarios = [
@@ -39,37 +40,42 @@ class ReliableDashboardServer:
             ("partial_character.jpg", False, 0.44, "Character partially cropped"),
             ("high_contrast.jpg", True, 0.89, "High contrast handled well"),
         ]
-        
+
         logger.info("🎯 P1-B002 テストデータ生成中...")
         for name, success, quality, note in test_scenarios:
             self.collector.start_processing(name)
             self.collector.complete_processing(
-                name, success=success, quality_score=quality,
+                name,
+                success=success,
+                quality_score=quality,
                 memory_usage={"ram_mb": 1650, "gpu_mb": 2900} if success else None,
-                error_message=note if not success else None
+                error_message=note if not success else None,
             )
-    
+
     def _setup_routes(self):
-        self.app.router.add_get('/', self.handle_dashboard)
-        self.app.router.add_get('/ws', self.handle_websocket)
-        self.app.router.add_get('/api/metrics', self.handle_api_metrics)
-        self.app.router.add_get('/api/status', self.handle_api_status)
-        self.app.router.add_get('/test', self.handle_connection_test)
-    
+        self.app.router.add_get("/", self.handle_dashboard)
+        self.app.router.add_get("/ws", self.handle_websocket)
+        self.app.router.add_get("/api/metrics", self.handle_api_metrics)
+        self.app.router.add_get("/api/status", self.handle_api_status)
+        self.app.router.add_get("/test", self.handle_connection_test)
+
     def _setup_cors(self):
-        cors = aiohttp_cors.setup(self.app, defaults={
-            "*": aiohttp_cors.ResourceOptions(
-                allow_credentials=True,
-                expose_headers="*",
-                allow_headers="*",
-            )
-        })
+        cors = aiohttp_cors.setup(
+            self.app,
+            defaults={
+                "*": aiohttp_cors.ResourceOptions(
+                    allow_credentials=True,
+                    expose_headers="*",
+                    allow_headers="*",
+                )
+            },
+        )
         for route in list(self.app.router.routes()):
             cors.add(route)
-    
+
     async def handle_connection_test(self, request):
         """接続テストページ"""
-        html = f'''<!DOCTYPE html>
+        html = f"""<!DOCTYPE html>
 <html><head><title>P1-B002 接続テスト</title></head>
 <body style="font-family: Arial; padding: 40px; background: #f5f5f5;">
     <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px;">
@@ -88,14 +94,14 @@ class ReliableDashboardServer:
             document.getElementById('time').textContent = new Date().toLocaleString();
         }}, 1000);
     </script>
-</body></html>'''
-        return web.Response(text=html, content_type='text/html')
-    
+</body></html>"""
+        return web.Response(text=html, content_type="text/html")
+
     async def handle_dashboard(self, request):
         """メインダッシュボード"""
         metrics = self.collector.get_aggregated_metrics()
-        
-        html = f'''<!DOCTYPE html>
+
+        html = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -257,57 +263,63 @@ class ReliableDashboardServer:
         }};
     </script>
 </body>
-</html>'''
-        return web.Response(text=html, content_type='text/html')
-    
+</html>"""
+        return web.Response(text=html, content_type="text/html")
+
     async def handle_websocket(self, request):
         ws = web.WebSocketResponse()
         await ws.prepare(request)
         self.websockets.add(ws)
-        
+
         try:
             # 定期的にテストメッセージを送信
             async def send_updates():
                 while True:
                     try:
-                        data = {{
-                            "type": "update",
-                            "timestamp": asyncio.get_event_loop().time(),
-                            "metrics": self.collector.get_aggregated_metrics().to_dict()
-                        }}
+                        data = {
+                            {
+                                "type": "update",
+                                "timestamp": asyncio.get_event_loop().time(),
+                                "metrics": self.collector.get_aggregated_metrics().to_dict(),
+                            }
+                        }
                         await ws.send_str(json.dumps(data))
                         await asyncio.sleep(2)
                     except:
                         break
-            
+
             update_task = asyncio.create_task(send_updates())
-            
+
             async for msg in ws:
                 if msg.type == WSMsgType.TEXT:
                     pass
                 elif msg.type == WSMsgType.ERROR:
-                    logger.error(f'WebSocket error: {{ws.exception()}}')
+                    logger.error(f"WebSocket error: {{ws.exception()}}")
                     break
-                    
+
         finally:
             self.websockets.remove(ws)
-            if 'update_task' in locals():
+            if "update_task" in locals():
                 update_task.cancel()
-                
+
         return ws
-    
+
     async def handle_api_metrics(self, request):
         metrics = self.collector.get_aggregated_metrics()
         return web.json_response(metrics.to_dict())
-    
+
     async def handle_api_status(self, request):
-        return web.json_response({{
-            "status": "online",
-            "port": self.port,
-            "websocket_connections": len(self.websockets),
-            "uptime": asyncio.get_event_loop().time()
-        }})
-    
+        return web.json_response(
+            {
+                {
+                    "status": "online",
+                    "port": self.port,
+                    "websocket_connections": len(self.websockets),
+                    "uptime": asyncio.get_event_loop().time(),
+                }
+            }
+        )
+
     def get_local_ip(self):
         """ローカルIPアドレス取得"""
         try:
@@ -318,15 +330,15 @@ class ReliableDashboardServer:
             return ip
         except:
             return "172.29.132.130"
-    
+
     async def start(self):
         runner = web.AppRunner(self.app)
         await runner.setup()
-        site = web.TCPSite(runner, '0.0.0.0', self.port)
+        site = web.TCPSite(runner, "0.0.0.0", self.port)
         await site.start()
-        
+
         local_ip = self.get_local_ip()
-        
+
         logger.info("🎉 P1-B002 確実動作ダッシュボードサーバー起動完了!")
         logger.info("=" * 60)
         logger.info(f"📍 アクセス方法 (複数の選択肢):")
@@ -342,15 +354,17 @@ class ReliableDashboardServer:
         logger.info("   ✅ 接続診断機能")
         logger.info("=" * 60)
 
+
 async def main():
     server = ReliableDashboardServer(port=8088)
     await server.start()
-    
+
     try:
         while True:
             await asyncio.sleep(1)
     except KeyboardInterrupt:
         logger.info("🛑 サーバー停止")
+
 
 if __name__ == "__main__":
     asyncio.run(main())

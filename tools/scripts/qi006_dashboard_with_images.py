@@ -4,25 +4,26 @@ QI-006: 抽出画像付きダッシュボード生成
 既存のQI-006抽出画像を統合ダッシュボードでWeb表示可能にする
 """
 
-import sys
-import json
 import glob
+import json
 import shutil
+import sys
 from pathlib import Path
+
 
 def copy_extraction_images_to_workspace():
     """既存の抽出画像をワークスペース内にコピー"""
-    
+
     # ソースディレクトリ（既存のQI-006抽出結果）
     source_dir = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/QI-006/extraction")
-    
+
     # ターゲットディレクトリ（ダッシュボードアクセス用）
     target_dir = Path("workspace/QI-006/dashboard/images")
     target_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # kana08_*.jpg ファイルを探してコピー
     copied_files = []
-    
+
     if source_dir.exists():
         for image_file in source_dir.glob("kana08_*.jpg"):
             if "_multi_char_detection" not in image_file.name:  # 検出結果画像は除外
@@ -30,26 +31,28 @@ def copy_extraction_images_to_workspace():
                 shutil.copy2(image_file, target_file)
                 copied_files.append(image_file.name)
                 print(f"📁 コピー完了: {image_file.name}")
-    
+
     print(f"✅ 画像コピー完了: {len(copied_files)}枚")
     return copied_files
 
 
 def generate_qi006_dashboard_with_images(image_files):
     """抽出画像付きQI-006ダッシュボード生成"""
-    
+
     # GPT-5評価結果読み込み
-    gpt5_file = Path("/mnt/c/AItools/lora/train/yado/tracker-workspace/QI-006/quality/gpt5_lora_quality_evaluation.json")
+    gpt5_file = Path(
+        "/mnt/c/AItools/lora/train/yado/tracker-workspace/QI-006/quality/gpt5_lora_quality_evaluation.json"
+    )
     gpt5_data = {}
-    
+
     if gpt5_file.exists():
-        with open(gpt5_file, 'r', encoding='utf-8') as f:
+        with open(gpt5_file, "r", encoding="utf-8") as f:
             gpt5_data = json.load(f)
-    
+
     # 評価データから画像別結果を取得
-    detailed_results = gpt5_data.get('detailed_results', [])
-    grade_distribution = gpt5_data.get('grade_distribution', {}).get('grade_distribution', {})
-    
+    detailed_results = gpt5_data.get("detailed_results", [])
+    grade_distribution = gpt5_data.get("grade_distribution", {}).get("grade_distribution", {})
+
     html = f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -97,26 +100,26 @@ def generate_qi006_dashboard_with_images(image_files):
         <div class="bg-white rounded-lg shadow-lg p-6">
             <h2 class="text-xl font-bold text-gray-800 mb-4">🖼️ 抽出結果画像一覧</h2>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">"""
-    
+
     # 画像ファイルソート
     sorted_images = sorted(image_files)
-    
+
     # 評価結果を辞書化
     evaluation_dict = {}
     for result in detailed_results:
-        if result.get('status') == 'success':
-            evaluation_dict[result.get('image_name', '')] = result
-    
+        if result.get("status") == "success":
+            evaluation_dict[result.get("image_name", "")] = result
+
     # 各画像のカードを生成
     for image_name in sorted_images:
         evaluation = evaluation_dict.get(image_name, {})
-        grade = evaluation.get('grade', 'N/A')
-        lora_suitability = evaluation.get('lora_suitability', '不明')
-        reason = evaluation.get('detailed_reason', '評価なし')
-        
+        grade = evaluation.get("grade", "N/A")
+        lora_suitability = evaluation.get("lora_suitability", "不明")
+        reason = evaluation.get("detailed_reason", "評価なし")
+
         # 短縮版理由
         short_reason = reason[:50] + "..." if len(reason) > 50 else reason
-        
+
         html += f"""
                 <div class="border rounded-lg p-3 bg-gray-50">
                     <h4 class="text-sm font-medium mb-2 truncate">{image_name}</h4>
@@ -133,7 +136,7 @@ def generate_qi006_dashboard_with_images(image_files):
                         <p class="text-xs text-gray-600" title="{reason}">{short_reason}</p>
                     </div>
                 </div>"""
-    
+
     html += """
             </div>
         </div>
@@ -165,7 +168,7 @@ def generate_qi006_dashboard_with_images(image_files):
     </div>
 </body>
 </html>"""
-    
+
     return html
 
 
@@ -173,34 +176,34 @@ def main():
     """メイン実行関数"""
     print("📊 QI-006: 抽出画像付きダッシュボード生成開始")
     print("=" * 60)
-    
+
     # 1. 抽出画像をワークスペースにコピー
     print("1. 抽出画像コピー中...")
     image_files = copy_extraction_images_to_workspace()
-    
+
     if not image_files:
         print("❌ コピーする画像が見つかりませんでした")
         return False
-    
+
     # 2. ダッシュボードHTML生成
     print("2. ダッシュボードHTML生成中...")
     html_content = generate_qi006_dashboard_with_images(image_files)
-    
+
     # 3. ダッシュボード保存
     dashboard_file = Path("workspace/QI-006/dashboard/dashboard.html")
     dashboard_file.parent.mkdir(parents=True, exist_ok=True)
-    
-    with open(dashboard_file, 'w', encoding='utf-8') as f:
+
+    with open(dashboard_file, "w", encoding="utf-8") as f:
         f.write(html_content)
-    
+
     file_size = dashboard_file.stat().st_size
-    
+
     print(f"✅ ダッシュボード生成完了")
     print(f"   ファイル: {dashboard_file}")
     print(f"   サイズ: {file_size / 1024:.1f}KB")
     print(f"   画像数: {len(image_files)}枚")
     print(f"🌐 アクセスURL: http://100.123.241.106:8088/workspace/QI-006/dashboard/dashboard.html")
-    
+
     return True
 
 

@@ -18,14 +18,14 @@ from tools.progress_tracker.progress_manager import ProgressManager
 
 def update_tracker_details():
     """トラッカー詳細情報を更新"""
-    
+
     # 設定と管理クラス初期化
     config = get_default_config()
     manager = ProgressManager(config)
-    
+
     # 現在日時設定
     current_date = datetime.now()
-    
+
     # 更新対象トラッカーの詳細情報
     tracker_updates = {
         "P1-B004": {
@@ -39,9 +39,8 @@ def update_tracker_details():
 • extract_character.pyへのオプション追加: --adaptive-cropping
 
 【期待効果】他キャラ混入30% → 5-10%削減(67-83%改善)""",
-            "description": "複数キャラ混入を防ぐ適応的クロッピング実装"
+            "description": "複数キャラ混入を防ぐ適応的クロッピング実装",
         },
-        
         "P1-B005": {
             "details": """【実装仕様】
 • features/processing/text_removal.py新規作成
@@ -53,9 +52,8 @@ def update_tracker_details():
 • extract_character.pyへのオプション追加: --remove-text --text-confidence-threshold
 
 【期待効果】テキスト混入40% → 10-15%削減(62-75%改善)""",
-            "description": "EasyOCR活用によるリアルタイムテキスト検出・除去"
+            "description": "EasyOCR活用によるリアルタイムテキスト検出・除去",
         },
-        
         "P1-B006": {
             "details": """【実装仕様】
 • features/processing/smart_cropping.py新規作成
@@ -67,9 +65,8 @@ def update_tracker_details():
 • extract_character.pyへのオプション追加: --smart-crop --min-character-area
 
 【技術的根拠】インペイント代替案: GPU負荷7-10GB→3GB、処理時間25-50秒→5秒維持""",
-            "description": "GPU負荷大なインペイント代替の軽量ソリューション"
+            "description": "GPU負荷大なインペイント代替の軽量ソリューション",
         },
-        
         "P1-B007": {
             "details": """【実装仕様】
 • features/evaluation/pose_integrity_checker.py新規作成
@@ -81,45 +78,46 @@ def update_tracker_details():
 • extract_character.pyへのオプション追加: --pose-validation --integrity-threshold
 
 【期待効果】手足切断防止、キャラクター完整性保証による品質向上""",
-            "description": "手足切断防止とキャラクター完整性保証"
-        }
+            "description": "手足切断防止とキャラクター完整性保証",
+        },
     }
-    
+
     print("トラッカー詳細情報更新開始...")
-    
+
     for tracker_id, update_data in tracker_updates.items():
         try:
             # 既存タスクを取得
             existing_task = manager.get_task(tracker_id)
-            
+
             if existing_task:
                 # 詳細情報を更新
                 existing_task.details = update_data["details"]
                 existing_task.description = update_data["description"]
                 existing_task.priority = PriorityLevel.HIGH  # 優先度最高に設定
-                
+
                 # 作成日時が未設定の場合は現在日時を設定
                 if not existing_task.created_date:
                     existing_task.created_date = current_date
-                
+
                 # 更新日時を現在日時に設定
                 existing_task.updated_date = current_date
-                
+
                 # Google Sheetsに更新反映
                 manager.client.update_task(existing_task)
-                
+
                 print(f"SUCCESS {tracker_id}: 詳細情報更新完了")
                 print(f"   作成日時: {existing_task.created_date}")
                 print(f"   更新日時: {existing_task.updated_date}")
                 print(f"   詳細長: {len(update_data['details'])}文字")
-                
+
             else:
                 print(f"ERROR {tracker_id}: タスクが見つかりません")
-                
+
         except Exception as e:
             print(f"ERROR {tracker_id}: 更新エラー - {e}")
-    
+
     print("\n詳細情報更新処理完了")
+
 
 if __name__ == "__main__":
     update_tracker_details()

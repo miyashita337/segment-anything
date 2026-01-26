@@ -3,19 +3,19 @@
 approvals, process, sheets, template, guide コマンドのテスト
 """
 
-import unittest
-from unittest.mock import Mock, patch, MagicMock, mock_open
-import sys
 import os
+import sys
+import unittest
 from datetime import datetime
+from unittest.mock import MagicMock, Mock, mock_open, patch
 
 # プロジェクトルートをパスに追加
 current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
-from tests.workflow.fixtures.workflow_fixtures import WorkflowTestBase, CLITestHelper
-from tests.workflow.fixtures.mock_data import MockData, SAMPLE_TRACKER_ID
+from tests.workflow.fixtures.mock_data import SAMPLE_TRACKER_ID, MockData
+from tests.workflow.fixtures.workflow_fixtures import CLITestHelper, WorkflowTestBase
 
 
 class TestManagementCommands(WorkflowTestBase):
@@ -27,8 +27,10 @@ class TestManagementCommands(WorkflowTestBase):
 
         # WorkflowControllerのモック設定
         self.mock_workflow_controller = self.create_mock_workflow_controller()
-        self.add_mock('tools.interface.workflow_controller.get_workflow_controller',
-                     return_value=self.mock_workflow_controller)
+        self.add_mock(
+            "tools.interface.workflow_controller.get_workflow_controller",
+            return_value=self.mock_workflow_controller,
+        )
 
     def test_list_approvals_success(self):
         """approvalsコマンド正常実行テスト"""
@@ -43,7 +45,7 @@ class TestManagementCommands(WorkflowTestBase):
                 "priority": "high",
                 "requested_at": "2025-09-27 10:00:00",
                 "time_remaining_hours": 23.5,
-                "approval_criteria": ["設計レビュー完了", "技術仕様確認"]
+                "approval_criteria": ["設計レビュー完了", "技術仕様確認"],
             },
             {
                 "approval_id": "APP-002",
@@ -52,16 +54,18 @@ class TestManagementCommands(WorkflowTestBase):
                 "priority": "medium",
                 "requested_at": "2025-09-27 11:00:00",
                 "time_remaining_hours": 22.0,
-                "approval_criteria": ["品質確認", "テスト結果レビュー"]
-            }
+                "approval_criteria": ["品質確認", "テスト結果レビュー"],
+            },
         ]
 
-        self.mock_workflow_controller.approval_controller.list_pending_approvals.return_value = pending_approvals
+        self.mock_workflow_controller.approval_controller.list_pending_approvals.return_value = (
+            pending_approvals
+        )
 
         output = CLITestHelper.capture_output(list_approvals)
 
-        self.assertTrue(output['result'])
-        stdout = output['stdout']
+        self.assertTrue(output["result"])
+        stdout = output["stdout"]
 
         # 期待される出力を確認
         self.assertIn("⏳ 承認待ち", stdout)
@@ -81,8 +85,8 @@ class TestManagementCommands(WorkflowTestBase):
 
         output = CLITestHelper.capture_output(list_approvals)
 
-        self.assertTrue(output['result'])
-        stdout = output['stdout']
+        self.assertTrue(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("✅ 承認待ちはありません", stdout)
 
@@ -95,8 +99,8 @@ class TestManagementCommands(WorkflowTestBase):
 
         output = CLITestHelper.capture_output(list_approvals)
 
-        self.assertFalse(output['result'])
-        stdout = output['stdout']
+        self.assertFalse(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("❌", stdout)
         self.assertIn("承認コントローラーが利用できません", stdout)
@@ -111,15 +115,15 @@ class TestManagementCommands(WorkflowTestBase):
             "step": "extraction",
             "started_at": "2025-09-27 10:30:00",
             "pid": 12345,
-            "log_file": "/tmp/test.log"
+            "log_file": "/tmp/test.log",
         }
 
         self.mock_workflow_controller.executor.check_process_status.return_value = process_status
 
         output = CLITestHelper.capture_output(check_process, SAMPLE_TRACKER_ID)
 
-        self.assertTrue(output['result'])
-        stdout = output['stdout']
+        self.assertTrue(output["result"])
+        stdout = output["stdout"]
 
         # 期待される出力を確認
         self.assertIn("🔄", stdout)
@@ -140,15 +144,15 @@ class TestManagementCommands(WorkflowTestBase):
             "started_at": "2025-09-27 10:30:00",
             "completed_at": "2025-09-27 11:00:00",
             "return_code": 0,
-            "validation": "success"
+            "validation": "success",
         }
 
         self.mock_workflow_controller.executor.check_process_status.return_value = process_status
 
         output = CLITestHelper.capture_output(check_process, SAMPLE_TRACKER_ID)
 
-        self.assertTrue(output['result'])
-        stdout = output['stdout']
+        self.assertTrue(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("状態: completed", stdout)
         self.assertIn("完了時刻", stdout)
@@ -164,8 +168,8 @@ class TestManagementCommands(WorkflowTestBase):
 
         output = CLITestHelper.capture_output(check_process, SAMPLE_TRACKER_ID)
 
-        self.assertTrue(output['result'])
-        stdout = output['stdout']
+        self.assertTrue(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("ℹ️", stdout)
         self.assertIn("バックグラウンドプロセスは実行されていません", stdout)
@@ -179,8 +183,8 @@ class TestManagementCommands(WorkflowTestBase):
 
         output = CLITestHelper.capture_output(check_process, SAMPLE_TRACKER_ID)
 
-        self.assertFalse(output['result'])
-        stdout = output['stdout']
+        self.assertFalse(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("❌", stdout)
         self.assertIn("エグゼキューターが利用できません", stdout)
@@ -194,11 +198,13 @@ class TestManagementCommands(WorkflowTestBase):
         mock_task = MockData.MOCK_TASKS[SAMPLE_TRACKER_ID]
         mock_progress_manager.get_task.return_value = mock_task
 
-        with patch('tools.workflow.workflow_cli.ProgressManager', return_value=mock_progress_manager):
+        with patch(
+            "tools.workflow.workflow_cli.ProgressManager", return_value=mock_progress_manager
+        ):
             output = CLITestHelper.capture_output(check_sheets_status, SAMPLE_TRACKER_ID)
 
-        self.assertTrue(output['result'])
-        stdout = output['stdout']
+        self.assertTrue(output["result"])
+        stdout = output["stdout"]
 
         # 期待される出力を確認
         self.assertIn("📊 Google Sheets状態", stdout)
@@ -214,11 +220,13 @@ class TestManagementCommands(WorkflowTestBase):
         mock_progress_manager = Mock()
         mock_progress_manager.get_task.return_value = None
 
-        with patch('tools.workflow.workflow_cli.ProgressManager', return_value=mock_progress_manager):
+        with patch(
+            "tools.workflow.workflow_cli.ProgressManager", return_value=mock_progress_manager
+        ):
             output = CLITestHelper.capture_output(check_sheets_status, "NON-EXISTENT-001")
 
-        self.assertFalse(output['result'])
-        stdout = output['stdout']
+        self.assertFalse(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("❌", stdout)
         self.assertIn("Google Sheetsにトラッカーが見つかりません", stdout)
@@ -228,19 +236,19 @@ class TestManagementCommands(WorkflowTestBase):
         from tools.workflow.workflow_cli import check_sheets_status
 
         # ProgressManagerでエラーが発生
-        with patch('tools.workflow.workflow_cli.ProgressManager') as mock_pm_class:
+        with patch("tools.workflow.workflow_cli.ProgressManager") as mock_pm_class:
             mock_pm_class.side_effect = Exception("Google Sheets connection failed")
 
             output = CLITestHelper.capture_output(check_sheets_status, SAMPLE_TRACKER_ID)
 
-        self.assertFalse(output['result'])
-        stdout = output['stdout']
+        self.assertFalse(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("❌", stdout)
         self.assertIn("Google Sheets確認でエラーが発生", stdout)
 
-    @patch('builtins.open', new_callable=mock_open)
-    @patch('os.makedirs')
+    @patch("builtins.open", new_callable=mock_open)
+    @patch("os.makedirs")
     def test_generate_template_success(self, mock_makedirs, mock_file):
         """templateコマンド正常実行テスト"""
         from tools.workflow.workflow_cli import generate_template
@@ -260,8 +268,8 @@ class TestManagementCommands(WorkflowTestBase):
 
         output = CLITestHelper.capture_output(generate_template, SAMPLE_TRACKER_ID)
 
-        self.assertTrue(output['result'])
-        stdout = output['stdout']
+        self.assertTrue(output["result"])
+        stdout = output["stdout"]
 
         # 期待される出力を確認
         self.assertIn("✅", stdout)
@@ -272,8 +280,8 @@ class TestManagementCommands(WorkflowTestBase):
         mock_file.assert_called_once()
         mock_makedirs.assert_called_once()
 
-    @patch('builtins.open', new_callable=mock_open)
-    @patch('os.makedirs')
+    @patch("builtins.open", new_callable=mock_open)
+    @patch("os.makedirs")
     def test_generate_template_custom_output(self, mock_makedirs, mock_file):
         """templateコマンド - カスタム出力パステスト"""
         from tools.workflow.workflow_cli import generate_template
@@ -282,13 +290,13 @@ class TestManagementCommands(WorkflowTestBase):
 
         output = CLITestHelper.capture_output(generate_template, SAMPLE_TRACKER_ID, custom_path)
 
-        self.assertTrue(output['result'])
-        stdout = output['stdout']
+        self.assertTrue(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("✅", stdout)
         self.assertIn(custom_path, stdout)
 
-    @patch('builtins.open')
+    @patch("builtins.open")
     def test_generate_template_write_error(self, mock_open_func):
         """templateコマンド - ファイル書き込みエラーテスト"""
         from tools.workflow.workflow_cli import generate_template
@@ -298,8 +306,8 @@ class TestManagementCommands(WorkflowTestBase):
 
         output = CLITestHelper.capture_output(generate_template, SAMPLE_TRACKER_ID)
 
-        self.assertFalse(output['result'])
-        stdout = output['stdout']
+        self.assertFalse(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("❌", stdout)
         self.assertIn("テンプレート生成に失敗", stdout)
@@ -309,13 +317,14 @@ class TestManagementCommands(WorkflowTestBase):
         from tools.workflow.workflow_cli import generate_template
 
         # WorkflowControllerが利用できない状態
-        self.add_mock('tools.interface.workflow_controller.get_workflow_controller',
-                     return_value=None)
+        self.add_mock(
+            "tools.interface.workflow_controller.get_workflow_controller", return_value=None
+        )
 
         output = CLITestHelper.capture_output(generate_template, SAMPLE_TRACKER_ID)
 
-        self.assertFalse(output['result'])
-        stdout = output['stdout']
+        self.assertFalse(output["result"])
+        stdout = output["stdout"]
 
         self.assertIn("❌", stdout)
         self.assertIn("ワークフローコントローラーが利用できません", stdout)
@@ -326,8 +335,8 @@ class TestManagementCommands(WorkflowTestBase):
 
         output = CLITestHelper.capture_output(show_guide)
 
-        self.assertTrue(output['result'])
-        stdout = output['stdout']
+        self.assertTrue(output["result"])
+        stdout = output["stdout"]
 
         # 期待される出力を確認
         self.assertIn("🚀", stdout)
@@ -350,20 +359,10 @@ class TestManagementCommands(WorkflowTestBase):
             "can_proceed": False,
             "completed_steps": [
                 {"step_id": "planning", "completed_at": "2025-09-27 10:00:00"},
-                {"step_id": "design", "completed_at": "2025-09-27 11:00:00"}
+                {"step_id": "design", "completed_at": "2025-09-27 11:00:00"},
             ],
-            "pending_approvals": [
-                {
-                    "approval_id": "APP-001",
-                    "title": "実装承認"
-                }
-            ],
-            "blocked_actions": [
-                {
-                    "action": "step_completion",
-                    "reason": "承認待ちのため進行できません"
-                }
-            ]
+            "pending_approvals": [{"approval_id": "APP-001", "title": "実装承認"}],
+            "blocked_actions": [{"action": "step_completion", "reason": "承認待ちのため進行できません"}],
         }
 
         complex_instructions = Mock()
@@ -376,17 +375,17 @@ class TestManagementCommands(WorkflowTestBase):
         complex_instructions.blocking_reasons = ["承認待ち", "前提条件未達成"]
 
         self.mock_workflow_controller.get_workflow_status.return_value = complex_status
-        self.mock_workflow_controller.get_current_step_instructions.return_value = complex_instructions
+        self.mock_workflow_controller.get_current_step_instructions.return_value = (
+            complex_instructions
+        )
 
-        with patch('builtins.open', mock_open()) as mock_file, \
-             patch('os.makedirs'):
-
+        with patch("builtins.open", mock_open()) as mock_file, patch("os.makedirs"):
             output = CLITestHelper.capture_output(generate_template, SAMPLE_TRACKER_ID)
 
-            self.assertTrue(output['result'])
+            self.assertTrue(output["result"])
 
             # ファイルに書き込まれた内容を確認
-            written_content = ''.join(call.args[0] for call in mock_file().write.call_args_list)
+            written_content = "".join(call.args[0] for call in mock_file().write.call_args_list)
 
             # テンプレート内容の確認
             self.assertIn(SAMPLE_TRACKER_ID, written_content)
@@ -397,5 +396,5 @@ class TestManagementCommands(WorkflowTestBase):
             self.assertIn("ブロック理由", written_content)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

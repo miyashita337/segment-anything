@@ -8,20 +8,22 @@ INCI-006 解決策: すべての強制実行コンポーネントを統合する
 強制実行する統合インターフェースを提供します。
 """
 
-import os
 import json
-from datetime import datetime
-from typing import Dict, List, Optional, Any, Tuple
-from dataclasses import dataclass
 import logging
+import os
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Tuple
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class WorkflowStep:
     """ワークフローステップの定義"""
+
     step_id: str
     phase: str
     title: str
@@ -32,9 +34,11 @@ class WorkflowStep:
     auto_executable: bool
     approval_criteria: List[str] = None
 
+
 @dataclass
 class StepInstructions:
     """AI用の現在のステップ指示"""
+
     step_id: str
     title: str
     description: str
@@ -44,28 +48,38 @@ class StepInstructions:
     can_proceed: bool
     blocking_reasons: List[str] = None
 
+
 class StepResult:
     """ステップ実行試行の結果"""
-    def __init__(self, status: str, message: str, next_step: str = None, 
-                 approval_id: str = None, evidence: str = ""):
+
+    def __init__(
+        self,
+        status: str,
+        message: str,
+        next_step: str = None,
+        approval_id: str = None,
+        evidence: str = "",
+    ):
         self.status = status  # completed, failed, pending_approval, blocked
         self.message = message
         self.next_step = next_step
         self.approval_id = approval_id
         self.evidence = evidence
-    
+
     @classmethod
     def COMPLETED(cls, next_step: str = None):
         return cls("completed", "Step completed successfully", next_step)
-    
+
     @classmethod
     def FAILED(cls, errors: List[str]):
         return cls("failed", f"Step failed: {'; '.join(errors)}")
-    
+
     @classmethod
     def PENDING_APPROVAL(cls, approval_id: str):
-        return cls("pending_approval", f"Waiting for approval: {approval_id}", approval_id=approval_id)
-    
+        return cls(
+            "pending_approval", f"Waiting for approval: {approval_id}", approval_id=approval_id
+        )
+
     @classmethod
     def BLOCKED(cls, reasons: List[str]):
         return cls("blocked", f"Step blocked: {'; '.join(reasons)}")
@@ -74,66 +88,74 @@ class StepResult:
     def WAITING(cls, reasons: List[str]):
         return cls("waiting", f"Step waiting: {'; '.join(reasons)}")
 
+
 class WorkflowController:
     """
     Unified workflow controller that enforces compliance through
     mechanical state management, validation, and approval systems.
     """
-    
+
     def __init__(self):
         # Initialize all enforcement components
         self.state_manager = self._init_state_manager()
         self.validator = self._init_validator()
         self.approval_controller = self._init_approval_controller()
         self.executor = self._init_executor()
-        
+
         # Load workflow configuration
         self.workflow_config = self._load_workflow_config()
-        
+
         logger.info("WorkflowController initialized with all enforcement components")
-    
+
     def _init_state_manager(self):
         """Initialize state manager"""
         try:
             # Add current directory to Python path
             import sys
-            current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+            current_dir = os.path.dirname(
+                os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            )
             if current_dir not in sys.path:
                 sys.path.insert(0, current_dir)
-            
+
             from tools.workflow.state_manager import get_state_manager
+
             return get_state_manager()
         except ImportError as e:
             logger.error(f"Failed to initialize state manager: {e}")
             return None
-    
+
     def _init_validator(self):
         """Initialize file system validator"""
         try:
             from tools.validation.file_system_validator import FileSystemValidator
+
             return FileSystemValidator()
         except ImportError as e:
             logger.error(f"Failed to initialize validator: {e}")
             return None
-    
+
     def _init_approval_controller(self):
         """Initialize approval controller"""
         try:
             from tools.approval.approval_gate_controller import ApprovalGateController
+
             return ApprovalGateController(state_manager=self.state_manager)
         except ImportError as e:
             logger.error(f"Failed to initialize approval controller: {e}")
             return None
-    
+
     def _init_executor(self):
         """Initialize automatic executor"""
         try:
             from tools.execution.automatic_executor import get_automatic_executor
+
             return get_automatic_executor(self.state_manager, self.validator)
         except ImportError as e:
             logger.error(f"Failed to initialize executor: {e}")
             return None
-    
+
     def _load_workflow_config(self) -> Dict[str, WorkflowStep]:
         """Load workflow step configuration"""
         # Define the standard 13-step workflow
@@ -146,32 +168,32 @@ class WorkflowController:
                 prerequisites=[],
                 validation_required=True,
                 approval_required=False,
-                auto_executable=False
+                auto_executable=False,
             ),
             "sam_env_check": WorkflowStep(
-                step_id="sam_env_check", 
+                step_id="sam_env_check",
                 phase="phase_1",
                 title="Virtual Environment Check",
                 description="Verify sam-env virtual environment is active",
                 prerequisites=["branch_verification"],
                 validation_required=True,
                 approval_required=False,
-                auto_executable=False
+                auto_executable=False,
             ),
             "google_sheets_sync": WorkflowStep(
                 step_id="google_sheets_sync",
-                phase="phase_1", 
+                phase="phase_1",
                 title="Google Sheets Synchronization",
                 description="Sync tracker status with Google Sheets",
                 prerequisites=["sam_env_check"],
                 validation_required=True,
                 approval_required=False,
-                auto_executable=False
+                auto_executable=False,
             ),
             "sow_creation": WorkflowStep(
                 step_id="sow_creation",
                 phase="phase_1",
-                title="Statement of Work Creation", 
+                title="Statement of Work Creation",
                 description="Create comprehensive SOW document",
                 prerequisites=["google_sheets_sync"],
                 validation_required=True,
@@ -181,8 +203,8 @@ class WorkflowController:
                     "Work scope is clearly defined and realistic",
                     "Deliverables are specific and measurable",
                     "Timeline and milestones are appropriate",
-                    "Responsibility boundaries are clear"
-                ]
+                    "Responsibility boundaries are clear",
+                ],
             ),
             "implementation": WorkflowStep(
                 step_id="implementation",
@@ -196,8 +218,8 @@ class WorkflowController:
                 approval_criteria=[
                     "Implementation follows SOW requirements",
                     "Code quality meets project standards",
-                    "No breaking changes introduced"
-                ]
+                    "No breaking changes introduced",
+                ],
             ),
             "testing": WorkflowStep(
                 step_id="testing",
@@ -207,7 +229,7 @@ class WorkflowController:
                 prerequisites=["implementation"],
                 validation_required=True,
                 approval_required=False,
-                auto_executable=False
+                auto_executable=False,
             ),
             "subagent_extraction": WorkflowStep(
                 step_id="subagent_extraction",
@@ -217,7 +239,7 @@ class WorkflowController:
                 prerequisites=["testing"],
                 validation_required=True,
                 approval_required=False,
-                auto_executable=True
+                auto_executable=True,
             ),
             "waiting_for_subagent": WorkflowStep(
                 step_id="waiting_for_subagent",
@@ -227,7 +249,7 @@ class WorkflowController:
                 prerequisites=["subagent_extraction"],
                 validation_required=True,
                 approval_required=False,
-                auto_executable=False
+                auto_executable=False,
             ),
             "subagent_validation": WorkflowStep(
                 step_id="subagent_validation",
@@ -237,7 +259,7 @@ class WorkflowController:
                 prerequisites=["waiting_for_subagent"],
                 validation_required=True,
                 approval_required=False,
-                auto_executable=True
+                auto_executable=True,
             ),
             "extraction": WorkflowStep(
                 step_id="extraction",
@@ -247,7 +269,7 @@ class WorkflowController:
                 prerequisites=["subagent_validation"],
                 validation_required=True,
                 approval_required=False,
-                auto_executable=True
+                auto_executable=True,
             ),
             "quality_workflow": WorkflowStep(
                 step_id="quality_workflow",
@@ -257,7 +279,7 @@ class WorkflowController:
                 prerequisites=["extraction"],
                 validation_required=True,
                 approval_required=False,
-                auto_executable=True
+                auto_executable=True,
             ),
             "dashboard_generation": WorkflowStep(
                 step_id="dashboard_generation",
@@ -267,7 +289,7 @@ class WorkflowController:
                 prerequisites=["quality_workflow"],
                 validation_required=True,
                 approval_required=False,
-                auto_executable=True
+                auto_executable=True,
             ),
             "final_approval": WorkflowStep(
                 step_id="final_approval",
@@ -282,8 +304,8 @@ class WorkflowController:
                     "All deliverables completed successfully",
                     "Quality metrics meet requirements",
                     "Dashboard is accessible and complete",
-                    "Ready for production deployment"
-                ]
+                    "Ready for production deployment",
+                ],
             ),
             "completed": WorkflowStep(
                 step_id="completed",
@@ -293,37 +315,37 @@ class WorkflowController:
                 prerequisites=["final_approval"],
                 validation_required=False,
                 approval_required=False,
-                auto_executable=False
-            )
+                auto_executable=False,
+            ),
         }
-        
+
         return steps
-    
+
     def create_tracker_workflow(self, tracker_id: str) -> bool:
         """
         Create a new tracker workflow with mechanical state management.
         This is the entry point for new trackers.
         """
         logger.info(f"Creating workflow for tracker: {tracker_id}")
-        
+
         if not self.state_manager:
             logger.error("State manager not available")
             return False
-        
+
         # Create workflow state
         success = self.state_manager.create_tracker_workflow(tracker_id)
-        
+
         if success:
             # Ensure workspace exists
             if self.validator:
                 self.validator.ensure_workspace_exists(tracker_id)
-            
+
             logger.info(f"Workflow created successfully for {tracker_id}")
         else:
             logger.error(f"Failed to create workflow for {tracker_id}")
-        
+
         return success
-    
+
     def get_current_step_instructions(self, tracker_id: str) -> Optional[StepInstructions]:
         """
         Get simplified, current-step-only instructions for AI.
@@ -331,24 +353,24 @@ class WorkflowController:
         """
         if not self.state_manager:
             return None
-        
+
         current_step_id = self.state_manager.get_current_step(tracker_id)
         if not current_step_id:
             return None
-        
+
         step_config = self.workflow_config.get(current_step_id)
         if not step_config:
             return None
-        
+
         # Check if step can proceed
         can_proceed, blocking_reasons = self.state_manager.can_proceed_to_step(
             tracker_id, current_step_id
         )
-        
+
         # Generate step-specific instructions
         required_actions = self._generate_step_actions(step_config, tracker_id)
         validation_criteria = self._generate_validation_criteria(step_config)
-        
+
         return StepInstructions(
             step_id=current_step_id,
             title=step_config.title,
@@ -357,79 +379,80 @@ class WorkflowController:
             validation_criteria=validation_criteria,
             approval_required=step_config.approval_required,
             can_proceed=can_proceed,
-            blocking_reasons=blocking_reasons if not can_proceed else None
+            blocking_reasons=blocking_reasons if not can_proceed else None,
         )
-    
+
     def _generate_step_actions(self, step_config: WorkflowStep, tracker_id: str) -> List[str]:
         """Generate specific actions for a step"""
         actions = []
-        
+
         if step_config.step_id == "branch_verification":
             actions = [
                 "Verify current Git branch with: git branch --show-current",
                 f"Ensure branch follows pattern: feature/{tracker_id}",
-                f"Create feature branch if needed: git checkout -b feature/{tracker_id}"
+                f"Create feature branch if needed: git checkout -b feature/{tracker_id}",
             ]
         elif step_config.step_id == "sam_env_check":
             actions = [
                 "Check virtual environment: echo $VIRTUAL_ENV",
                 "Activate sam-env if needed: source sam-env/bin/activate",
-                "Verify Python path: which python3"
+                "Verify Python path: which python3",
             ]
         elif step_config.step_id == "google_sheets_sync":
             actions = [
                 f"Update tracker status: python tools/progress_tracker/cli.py update {tracker_id} '着手中'",
-                f"Verify sync: python tools/progress_tracker/cli.py status {tracker_id}"
+                f"Verify sync: python tools/progress_tracker/cli.py status {tracker_id}",
             ]
         elif step_config.step_id == "sow_creation":
             actions = [
                 "Create SOW document with required sections:",
                 "- Work scope definition",
-                "- Deliverables specification", 
+                "- Deliverables specification",
                 "- Responsibility boundaries",
                 "- Approval conditions",
-                f"Save as: workspace/{tracker_id}/sow_document.md"
+                f"Save as: workspace/{tracker_id}/sow_document.md",
             ]
         elif step_config.step_id == "implementation":
             actions = [
                 "Implement functionality according to SOW",
                 "Follow project coding standards",
                 "Create appropriate tests",
-                "Commit changes with proper messages"
+                "Commit changes with proper messages",
             ]
         elif step_config.step_id == "testing":
             actions = [
                 "Execute unit tests: pytest tests/unit/",
                 "Execute integration tests: pytest tests/integration/",
-                "Verify all tests pass"
+                "Verify all tests pass",
             ]
         elif step_config.step_id == "subagent_extraction":
             actions = [
                 "SubAgent extraction will be executed automatically",
                 "Monitor SubAgent process status",
-                f"Check logs: workspace/{tracker_id}/logs/extraction.log"
+                f"Check logs: workspace/{tracker_id}/logs/extraction.log",
             ]
         elif step_config.step_id == "waiting_for_subagent":
             actions = [
                 "Monitor SubAgent execution status",
                 "Wait for SubAgent process completion",
-                "Check for extraction results"
+                "Check for extraction results",
             ]
         elif step_config.step_id == "subagent_validation":
             actions = [
                 "Validate SubAgent extraction results",
                 "Check for zero-file output detection",
-                "Trigger retry if needed (max 3 retries)"
+                "Trigger retry if needed (max 3 retries)",
             ]
         elif step_config.step_id == "extraction":
             actions = [
                 "Extraction will be executed automatically",
                 "Monitor progress in extraction.log",
-                f"Verify results in workspace/{tracker_id}/extraction/"
+                f"Verify results in workspace/{tracker_id}/extraction/",
             ]
         elif step_config.step_id == "quality_workflow":
             # 動的パス生成（作者名を動的検出）
             from config.workspace_config import WorkspaceConfig
+
             workspace_base = WorkspaceConfig.get_workspace_base()
 
             actions = [
@@ -437,29 +460,29 @@ class WorkflowController:
                 f"tail -f {workspace_base}/{tracker_id}/quality_workflow.log",
                 f"ls -la {workspace_base}/{tracker_id}/dashboard/dashboard.html",
                 f"curl -u $(cat config/auth.conf) http://100.123.241.106:8088/tracker/{tracker_id}",
-                f"python tools/workflow/workflow_cli.py step {tracker_id}  # 完了後の次ステップ実行"
+                f"python tools/workflow/workflow_cli.py step {tracker_id}  # 完了後の次ステップ実行",
             ]
         elif step_config.step_id == "dashboard_generation":
             actions = [
                 "統一ダッシュボードシステム v2.0 で自動実行されます",
-                "features/evaluation/dashboard_generator.py が使用されます", 
+                "features/evaluation/dashboard_generator.py が使用されます",
                 "index.html が自動生成され、統合サーバーと連携されます",
-                "Test server accessibility"
+                "Test server accessibility",
             ]
         elif step_config.step_id == "final_approval":
             actions = [
                 "Review all completed work",
                 "Verify quality metrics",
                 "Confirm dashboard accessibility",
-                "Wait for approval before proceeding"
+                "Wait for approval before proceeding",
             ]
-        
+
         return actions
-    
+
     def _generate_validation_criteria(self, step_config: WorkflowStep) -> List[str]:
         """Generate validation criteria for a step"""
         criteria = []
-        
+
         if step_config.validation_required:
             if step_config.step_id == "branch_verification":
                 criteria = ["Current branch matches feature/{tracker_id} pattern"]
@@ -471,48 +494,45 @@ class WorkflowController:
                 criteria = [
                     "SOW file exists in workspace",
                     "Contains all required sections",
-                    "Minimum 500 characters content"
+                    "Minimum 500 characters content",
                 ]
             elif step_config.step_id == "implementation":
                 criteria = [
                     "Git commits exist for tracker",
-                    "Files modified compared to main branch"
+                    "Files modified compared to main branch",
                 ]
             elif step_config.step_id == "testing":
-                criteria = [
-                    "Test execution evidence found",
-                    "No test failures recorded"
-                ]
+                criteria = ["Test execution evidence found", "No test failures recorded"]
             elif step_config.step_id == "subagent_extraction":
                 criteria = [
                     "SubAgent process started successfully",
                     "Lock file created",
-                    "Process PID recorded"
+                    "Process PID recorded",
                 ]
             elif step_config.step_id == "waiting_for_subagent":
                 criteria = [
                     "SubAgent process completed",
                     "Exit code available",
-                    "Lock file cleaned up"
+                    "Lock file cleaned up",
                 ]
             elif step_config.step_id == "subagent_validation":
                 criteria = [
                     "Extraction results validated",
                     "Output files count > 0 OR retry triggered",
-                    "Final status determined"
+                    "Final status determined",
                 ]
             elif step_config.step_id == "extraction":
                 criteria = [
                     "Extraction directory exists",
                     "Extracted image files present",
                     "extraction_result.json valid",
-                    "Successful extractions > 0"
+                    "Successful extractions > 0",
                 ]
             elif step_config.step_id == "quality_workflow":
                 criteria = [
                     "Dashboard HTML file exists",
                     "Contains required sections",
-                    "Quality report JSON valid"
+                    "Quality report JSON valid",
                 ]
             elif step_config.step_id == "dashboard_generation":
                 criteria = [
@@ -520,11 +540,11 @@ class WorkflowController:
                     "dashboard/dashboard.html exists (統一システム生成)",
                     "Contains tracker-specific content",
                     "Valid HTML structure",
-                    "統一ダッシュボードシステム v2.0 ヘッダー含有"
+                    "統一ダッシュボードシステム v2.0 ヘッダー含有",
                 ]
-        
+
         return criteria
-    
+
     def attempt_step_completion(self, tracker_id: str) -> StepResult:
         """
         Attempt to complete the current step with full enforcement.
@@ -532,31 +552,33 @@ class WorkflowController:
         """
         if not self.state_manager:
             return StepResult.FAILED(["State manager not available"])
-        
+
         current_step_id = self.state_manager.get_current_step(tracker_id)
         if not current_step_id:
             return StepResult.FAILED([f"No current step found for tracker {tracker_id}"])
-        
+
         step_config = self.workflow_config.get(current_step_id)
         if not step_config:
             return StepResult.FAILED([f"Unknown step configuration: {current_step_id}"])
-        
+
         logger.info(f"Attempting step completion: {tracker_id}/{current_step_id}")
 
         # Check if current step is in waiting state
         current_status = self.state_manager.get_step_status(tracker_id, current_step_id)
         if current_status == "waiting":
             logger.info(f"Step {current_step_id} is in waiting state for {tracker_id}")
-            return StepResult.WAITING([f"Step {current_step_id} is waiting for background task completion"])
+            return StepResult.WAITING(
+                [f"Step {current_step_id} is waiting for background task completion"]
+            )
 
         # Check if step can proceed (mechanical enforcement)
         can_proceed, blocking_reasons = self.state_manager.can_proceed_to_step(
             tracker_id, current_step_id
         )
-        
+
         if not can_proceed:
             return StepResult.BLOCKED(blocking_reasons)
-        
+
         # Special handling for dashboard_generation → final_approval transition
         if current_step_id == "dashboard_generation":
             next_step = self._get_next_step(current_step_id)
@@ -564,19 +586,19 @@ class WorkflowController:
                 # Check approval conditions before allowing transition
                 approval_check_result = self._check_final_approval_conditions(tracker_id)
                 if not approval_check_result.success:
-                    return StepResult.FAILED([
-                        "Dashboard to final_approval transition requires approval conditions:",
-                        *approval_check_result.errors
-                    ])
-        
+                    return StepResult.FAILED(
+                        [
+                            "Dashboard to final_approval transition requires approval conditions:",
+                            *approval_check_result.errors,
+                        ]
+                    )
+
         # Handle auto-executable steps
         if step_config.auto_executable and self.executor:
             logger.info(f"Executing step automatically: {current_step_id}")
-            
-            execution_result = self.executor.execute_step_automatically(
-                tracker_id, current_step_id
-            )
-            
+
+            execution_result = self.executor.execute_step_automatically(tracker_id, current_step_id)
+
             if execution_result.success:
                 # Advance to next step
                 next_step = self._get_next_step(current_step_id)
@@ -587,24 +609,26 @@ class WorkflowController:
                     return StepResult.COMPLETED("workflow_complete")
             else:
                 return StepResult.FAILED([execution_result.message])
-        
+
         # Handle manual steps with validation
         if step_config.validation_required and self.validator:
             logger.info(f"Validating step completion: {current_step_id}")
-            
+
             validation_result = self.state_manager.validate_step_completion(
                 tracker_id, current_step_id
             )
-            
+
             if not validation_result.passed:
                 return StepResult.FAILED(validation_result.errors)
-        
+
         # Handle approval requirements
         if step_config.approval_required and self.approval_controller:
             logger.info(f"Checking approval for step: {current_step_id}")
 
             # First check if already approved
-            existing_approval = self.approval_controller.check_existing_approval(tracker_id, current_step_id)
+            existing_approval = self.approval_controller.check_existing_approval(
+                tracker_id, current_step_id
+            )
             if existing_approval:
                 logger.info(f"Step {current_step_id} is already approved, proceeding...")
                 # Continue to step completion below
@@ -617,7 +641,9 @@ class WorkflowController:
                     description=step_config.description,
                     artifacts=self._get_step_artifacts(tracker_id, current_step_id),
                     approval_criteria=step_config.approval_criteria or [],
-                    priority="high" if current_step_id in ["sow_creation", "final_approval"] else "normal"
+                    priority="high"
+                    if current_step_id in ["sow_creation", "final_approval"]
+                    else "normal",
                 )
 
                 approval_id = self.approval_controller.request_approval(
@@ -630,7 +656,7 @@ class WorkflowController:
                     # Continue to step completion below
                 else:
                     return StepResult.PENDING_APPROVAL(approval_id)
-        
+
         # Step completed - advance to next
         next_step = self._get_next_step(current_step_id)
         if next_step:
@@ -638,12 +664,12 @@ class WorkflowController:
             return StepResult.COMPLETED(next_step)
         else:
             return StepResult.COMPLETED("workflow_complete")
-    
+
     def _get_step_artifacts(self, tracker_id: str, step_id: str) -> List[str]:
         """Get artifacts for approval review"""
         artifacts = []
         workspace = f"/mnt/c/AItools/lora/train/yado/tracker-workspace/{tracker_id}"
-        
+
         if step_id == "sow_creation":
             artifacts = [f"{workspace}/sow_document.md"]
         elif step_id == "implementation":
@@ -652,36 +678,46 @@ class WorkflowController:
             artifacts = [
                 f"{workspace}/extraction_result.json",
                 f"{workspace}/dashboard/dashboard.html",
-                f"{workspace}/index.html"
+                f"{workspace}/index.html",
             ]
-        
+
         return artifacts
-    
+
     def _get_next_step(self, current_step_id: str) -> Optional[str]:
         """Get the next step in the workflow"""
         step_order = [
-            "branch_verification", "sam_env_check", "google_sheets_sync",
-            "sow_creation", "implementation", "testing", "subagent_extraction",
-            "waiting_for_subagent", "subagent_validation", "extraction",
-            "quality_workflow", "dashboard_generation", "final_approval", "completed"
+            "branch_verification",
+            "sam_env_check",
+            "google_sheets_sync",
+            "sow_creation",
+            "implementation",
+            "testing",
+            "subagent_extraction",
+            "waiting_for_subagent",
+            "subagent_validation",
+            "extraction",
+            "quality_workflow",
+            "dashboard_generation",
+            "final_approval",
+            "completed",
         ]
-        
+
         try:
             current_index = step_order.index(current_step_id)
             if current_index < len(step_order) - 1:
                 return step_order[current_index + 1]
         except ValueError:
             pass
-        
+
         return None
-    
+
     def get_workflow_status(self, tracker_id: str) -> Dict[str, Any]:
         """Get comprehensive workflow status"""
         if not self.state_manager:
             return {"error": "State manager not available"}
-        
+
         status = self.state_manager.get_workflow_status(tracker_id)
-        
+
         # Add current step instructions
         instructions = self.get_current_step_instructions(tracker_id)
         if instructions:
@@ -692,158 +728,173 @@ class WorkflowController:
                 "validation_criteria": instructions.validation_criteria,
                 "approval_required": instructions.approval_required,
                 "can_proceed": instructions.can_proceed,
-                "blocking_reasons": instructions.blocking_reasons
+                "blocking_reasons": instructions.blocking_reasons,
             }
-        
+
         # Add process status if available
         if self.executor:
             process_status = self.executor.check_process_status(tracker_id)
             if process_status:
                 status["background_process"] = process_status
-        
+
         return status
-    
+
     def wait_for_approval(self, approval_id: str, timeout_minutes: int = 60) -> StepResult:
         """Wait for approval with timeout"""
         if not self.approval_controller:
             return StepResult.FAILED(["Approval controller not available"])
-        
-        approval_result = self.approval_controller.wait_for_approval(
-            approval_id, timeout_minutes
-        )
-        
+
+        approval_result = self.approval_controller.wait_for_approval(approval_id, timeout_minutes)
+
         if approval_result.success:
             return StepResult.COMPLETED("approval_granted")
         else:
             return StepResult.FAILED([approval_result.error_message])
-    
-    def _check_final_approval_conditions(self, tracker_id: str) -> 'ApprovalResult':
+
+    def _check_final_approval_conditions(self, tracker_id: str) -> "ApprovalResult":
         """
         Check conditions required for dashboard_generation → final_approval transition
-        
+
         Returns:
             ApprovalResult with success=True if all conditions met, False otherwise
         """
-        from dataclasses import dataclass
-        from typing import List
-        import os
         import json
+        import os
         import requests
         from config.workspace_config import WorkspaceConfig
-        
+        from dataclasses import dataclass
+        from typing import List
+
         @dataclass
         class ApprovalResult:
             success: bool
             errors: List[str]
-        
+
         errors = []
         workspace_base = WorkspaceConfig.get_workspace_base()
         tracker_workspace = os.path.join(workspace_base, tracker_id)
-        
+
         # 1. Check dashboard accessibility
         try:
             dashboard_url = f"http://100.123.241.106:8088/tracker/{tracker_id}"
-            response = requests.get(dashboard_url, timeout=10, auth=('admin', 'secure_track_2025_q3_8f9a'))
+            response = requests.get(
+                dashboard_url, timeout=10, auth=("admin", "secure_track_2025_q3_8f9a")
+            )
             if response.status_code != 200:
-                errors.append(f"Dashboard not accessible: {dashboard_url} returned {response.status_code}")
+                errors.append(
+                    f"Dashboard not accessible: {dashboard_url} returned {response.status_code}"
+                )
         except Exception as e:
             errors.append(f"Dashboard accessibility check failed: {str(e)}")
-        
+
         # 2. Check statistical analysis results
         stats_file = os.path.join(tracker_workspace, "statistical_analysis_result.txt")
         if not os.path.exists(stats_file):
             errors.append("Statistical analysis result file not found")
         else:
             try:
-                with open(stats_file, 'r', encoding='utf-8') as f:
+                with open(stats_file, "r", encoding="utf-8") as f:
                     stats_content = f.read()
-                
+
                 # Check for required statistical values (not N/A or 0)
                 required_stats = {
                     "Current": ["平均=", "Current"],
-                    "BaseLine": ["BaseLine"],  
+                    "BaseLine": ["BaseLine"],
                     "p値": ["p値:", "p値"],
                     "効果サイズ": ["Cohen's d:", "効果サイズ"],
                     "改善率": ["改善率:", "%"],
                     "統計的有意性": ["統計的有意性:", "有意"],
-                    "信頼区間": ["信頼区間:", "[", "]"]
+                    "信頼区間": ["信頼区間:", "[", "]"],
                 }
-                
+
                 for stat_name, patterns in required_stats.items():
                     found = False
                     for pattern in patterns:
                         if pattern in stats_content:
                             # Extract value and check it's not N/A or 0
-                            lines = [line for line in stats_content.split('\n') if pattern in line]
+                            lines = [line for line in stats_content.split("\n") if pattern in line]
                             if lines:
                                 line = lines[0]
-                                if "N/A" not in line and not any(x in line for x in ["0.0000", "0.000", ": 0"]):
+                                if "N/A" not in line and not any(
+                                    x in line for x in ["0.0000", "0.000", ": 0"]
+                                ):
                                     found = True
                                     break
-                    
+
                     if not found:
                         errors.append(f"統計分析結果で{stat_name}が有効な値ではありません")
-                        
+
             except Exception as e:
                 errors.append(f"Statistical analysis file read error: {str(e)}")
-        
+
         # 3. Check extraction gallery (images displayed from paths, not Base64)
         extraction_dir = os.path.join(tracker_workspace, "extraction")
         extraction_full_dir = os.path.join(tracker_workspace, "extraction_full")
-        
+
         # Use extraction_full if it exists, otherwise extraction
-        active_extraction_dir = extraction_full_dir if os.path.exists(extraction_full_dir) else extraction_dir
-        
+        active_extraction_dir = (
+            extraction_full_dir if os.path.exists(extraction_full_dir) else extraction_dir
+        )
+
         if not os.path.exists(active_extraction_dir):
             errors.append("Extraction directory not found")
         else:
             # Check for actual image files
-            image_files = [f for f in os.listdir(active_extraction_dir) 
-                          if f.lower().endswith(('.jpg', '.jpeg', '.png', '.gif'))]
+            image_files = [
+                f
+                for f in os.listdir(active_extraction_dir)
+                if f.lower().endswith((".jpg", ".jpeg", ".png", ".gif"))
+            ]
             if len(image_files) == 0:
                 errors.append("No image files found in extraction directory")
-            
+
             # Check dashboard HTML contains image references (not Base64)
             dashboard_html = os.path.join(tracker_workspace, "dashboard", "dashboard.html")
             if os.path.exists(dashboard_html):
                 try:
-                    with open(dashboard_html, 'r', encoding='utf-8') as f:
+                    with open(dashboard_html, "r", encoding="utf-8") as f:
                         html_content = f.read()
-                    
+
                     # Check that images are referenced by path, not Base64
                     if "data:image" in html_content:
-                        errors.append("Dashboard contains Base64 encoded images (should use file paths)")
-                    
+                        errors.append(
+                            "Dashboard contains Base64 encoded images (should use file paths)"
+                        )
+
                     # Check that extraction images are referenced
-                    image_references = sum(1 for img_file in image_files if img_file in html_content)
+                    image_references = sum(
+                        1 for img_file in image_files if img_file in html_content
+                    )
                     if image_references == 0:
                         errors.append("Dashboard does not reference extraction images")
-                        
+
                 except Exception as e:
                     errors.append(f"Dashboard HTML check error: {str(e)}")
-        
+
         # 4. Check quality report exists and is valid
         quality_report = os.path.join(tracker_workspace, "quality", "unified_quality_report.json")
         if not os.path.exists(quality_report):
             errors.append("Quality report not found")
         else:
             try:
-                with open(quality_report, 'r', encoding='utf-8') as f:
+                with open(quality_report, "r", encoding="utf-8") as f:
                     quality_data = json.load(f)
-                
+
                 # Check essential quality metrics exist
                 if "evaluation_metrics" not in quality_data:
                     errors.append("Quality report missing evaluation_metrics")
                 elif len(quality_data["evaluation_metrics"]) == 0:
                     errors.append("Quality report has no evaluation metrics")
-                    
+
             except Exception as e:
                 errors.append(f"Quality report validation error: {str(e)}")
-        
+
         return ApprovalResult(success=len(errors) == 0, errors=errors)
+
 
 # Global instance for easy access
 _workflow_controller = None
+
 
 def get_workflow_controller() -> WorkflowController:
     """Get the global workflow controller instance"""

@@ -207,7 +207,7 @@ class SCICalculationEngine:
             # 1. 顔検出スコア
             face_score = self._calculate_face_score(extracted_image)
 
-            # 2. 人体姿勢スコア  
+            # 2. 人体姿勢スコア
             pose_score, detected_landmarks = self._calculate_pose_score(extracted_image)
 
             # 3. 輪郭品質スコア
@@ -216,17 +216,19 @@ class SCICalculationEngine:
             # Week 4: SCI重み最適化（輪郭問題対応）
             if anime_optimized:
                 # Week 4最適化重み（輪郭不安定性対応）
-                face_weight = 0.6    # 50% → 60% (顔検出大幅改善により更に重視)
-                pose_weight = 0.25   # 30% → 25% (ポーズは補助的役割)
-                contour_weight = 0.15 # 20% → 15% (輪郭計算の不安定性を重み削減で補償)
+                face_weight = 0.6  # 50% → 60% (顔検出大幅改善により更に重視)
+                pose_weight = 0.25  # 30% → 25% (ポーズは補助的役割)
+                contour_weight = 0.15  # 20% → 15% (輪郭計算の不安定性を重み削減で補償)
             else:
                 # 従来重み（バランス型）
                 face_weight = 0.3
-                pose_weight = 0.4 
+                pose_weight = 0.4
                 contour_weight = 0.3
 
             # 重み付き総合スコア
-            sci_total = face_score * face_weight + pose_score * pose_weight + contour_score * contour_weight
+            sci_total = (
+                face_score * face_weight + pose_score * pose_weight + contour_score * contour_weight
+            )
 
             # 完全性レベルの判定
             completeness_level, quality_code = self._classify_sci_quality(sci_total)
@@ -259,14 +261,14 @@ class SCICalculationEngine:
 
         try:
             gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-            
+
             # Week 4改善: アニメ特化検出パラメータ
             faces = self.face_detector.detectMultiScale(
-                gray, 
+                gray,
                 scaleFactor=1.05,  # より細かいスケール（アニメ顔対応）
-                minNeighbors=3,    # より寛容（アニメ顔は多様）
+                minNeighbors=3,  # より寛容（アニメ顔は多様）
                 minSize=(15, 15),  # より小さい顔も検出
-                maxSize=(400, 400) # より大きい顔も検出
+                maxSize=(400, 400),  # より大きい顔も検出
             )
 
             if len(faces) == 0:
@@ -274,19 +276,19 @@ class SCICalculationEngine:
                 faces = self.face_detector.detectMultiScale(
                     gray, scaleFactor=1.03, minNeighbors=1, minSize=(10, 10)
                 )
-                
+
                 if len(faces) == 0:
                     return 0.2  # 完全0回避（アニメでは部分検出も価値）
 
             # Week 4改善: 複数顔対応とより精密な評価
             face_scores = []
             image_area = image.shape[0] * image.shape[1]
-            
+
             for face in faces:
                 x, y, w, h = face
                 face_area = w * h
                 face_ratio = face_area / image_area
-                
+
                 # アニメ特化サイズ評価
                 if 0.005 <= face_ratio <= 0.4:  # より広範囲許容
                     if 0.02 <= face_ratio <= 0.15:  # 理想範囲
@@ -297,38 +299,38 @@ class SCICalculationEngine:
                         size_score = 1.0 - min((face_ratio - 0.15) / 0.25, 0.3)
                 else:
                     size_score = 0.3  # 最低保証
-                
+
                 # Week 4追加: 位置評価（中央寄りが高評価）
-                center_x = x + w/2
-                center_y = y + h/2
+                center_x = x + w / 2
+                center_y = y + h / 2
                 img_center_x = gray.shape[1] / 2
                 img_center_y = gray.shape[0] / 2
-                
+
                 center_dist = np.sqrt(
-                    ((center_x - img_center_x) / img_center_x) ** 2 + 
-                    ((center_y - img_center_y) / img_center_y) ** 2
+                    ((center_x - img_center_x) / img_center_x) ** 2
+                    + ((center_y - img_center_y) / img_center_y) ** 2
                 )
                 position_score = max(0.5, 1.0 - center_dist * 0.3)
-                
+
                 # Week 4追加: アスペクト比評価（顔らしい比率）
                 aspect_ratio = w / h if h > 0 else 1.0
                 if 0.7 <= aspect_ratio <= 1.4:  # 顔らしい比率
                     aspect_score = 1.0
                 else:
                     aspect_score = max(0.6, 1.0 - abs(aspect_ratio - 1.0) * 0.4)
-                
+
                 # 統合スコア計算
-                face_score = (size_score * 0.5 + position_score * 0.3 + aspect_score * 0.2)
+                face_score = size_score * 0.5 + position_score * 0.3 + aspect_score * 0.2
                 face_scores.append(face_score)
-            
+
             # 最高スコアの顔を採用（複数顔の場合）
             final_score = max(face_scores)
-            
+
             # Week 4改善: 複数顔ボーナス（アニメでは複数キャラも価値）
             if len(faces) > 1:
                 multi_face_bonus = min(0.1, len(faces) * 0.03)
                 final_score += multi_face_bonus
-            
+
             return min(final_score, 1.0)
 
         except Exception as e:
@@ -400,14 +402,14 @@ class SCICalculationEngine:
 
             # Week 4改善: 有効な輪郭のみフィルタリング
             valid_contours = [c for c in contours if cv2.contourArea(c) > 100]  # 最小面積フィルタ
-            
+
             if len(valid_contours) == 0:
                 return 0.1  # 完全0回避（アニメ特化）
 
             # 最大輪郭を取得
             largest_contour = max(valid_contours, key=cv2.contourArea)
             contour_area = cv2.contourArea(largest_contour)
-            
+
             # Week 4改善: 輪郭面積による基本スコア
             image_area = gray.shape[0] * gray.shape[1]
             area_ratio = contour_area / image_area
@@ -430,9 +432,13 @@ class SCICalculationEngine:
             continuity_score = self._detect_contour_continuity(largest_contour)
 
             # Week 4改善: 重み付き統合（基本スコア重視）
-            final_score = (base_score * 0.4 + smoothness_score * 0.3 + 
-                          closure_score * 0.2 + continuity_score * 0.1)
-            
+            final_score = (
+                base_score * 0.4
+                + smoothness_score * 0.3
+                + closure_score * 0.2
+                + continuity_score * 0.1
+            )
+
             return min(final_score, 1.0)
 
         except Exception as e:
@@ -459,18 +465,18 @@ class SCICalculationEngine:
             # Week 4改善: 距離の変動係数で評価（アニメに適した指標）
             mean_dist = np.mean(distances)
             std_dev = np.std(distances)
-            
+
             if mean_dist == 0:
                 return 0.5
-                
+
             # 変動係数 (CV) = 標準偏差 / 平均
             cv = std_dev / mean_dist
-            
+
             # アニメ特化: 変動係数が1.0以下なら高評価
             continuity = max(0.2, 1.0 - cv)  # 最低0.2保証
-            
+
             return min(continuity, 1.0)
-            
+
         except Exception as e:
             # エラー時もアニメ特化の最低保証スコア
             return 0.3
@@ -754,14 +760,16 @@ class ObjectiveEvaluationSystem:
             self.logger.error(f"バッチ評価エラー: {e}")
             raise
 
-    def evaluate_single_extraction(self, extracted_image: np.ndarray, anime_optimized: bool = True) -> SCIResult:
+    def evaluate_single_extraction(
+        self, extracted_image: np.ndarray, anime_optimized: bool = True
+    ) -> SCIResult:
         """
         単一抽出画像のSCI評価
-        
+
         Args:
             extracted_image: 抽出された画像（RGB形式）
             anime_optimized: アニメ特化重み付けを使用するか
-            
+
         Returns:
             SCIResult: SCI評価結果
         """

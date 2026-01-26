@@ -4,16 +4,16 @@ SubAgent二重起動防止システム - KIRO-011 Phase 2実装
 ロックファイル管理によるSubAgent重複実行防止
 """
 
-import os
 import json
+import logging
+import os
 import psutil
 import socket
 import threading
-import logging
+import time
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, Optional, Any
-import time
+from typing import Any, Dict, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -50,7 +50,9 @@ class SubAgentLockManager:
                 if specific_lock_file.exists():
                     if self._is_lock_valid(specific_lock_file):
                         existing_lock = self._read_lock_file(specific_lock_file)
-                        logger.warning(f"アクティブロック検出: {tracker_id}/{process_type} (PID: {existing_lock.get('pid')})")
+                        logger.warning(
+                            f"アクティブロック検出: {tracker_id}/{process_type} (PID: {existing_lock.get('pid')})"
+                        )
                         return False
                     else:
                         # 無効なロック削除
@@ -69,22 +71,22 @@ class SubAgentLockManager:
 
                 # ロック作成
                 lock_data = {
-                    'tracker_id': tracker_id,
-                    'process_type': process_type,
-                    'pid': os.getpid(),
-                    'created_at': datetime.now().isoformat(),
-                    'hostname': socket.gethostname(),
-                    'status': 'active',
-                    'command': f"extract_character.py {tracker_id}",
-                    'workspace_path': f"/mnt/c/AItools/lora/train/*/tracker-workspace/{tracker_id}"
+                    "tracker_id": tracker_id,
+                    "process_type": process_type,
+                    "pid": os.getpid(),
+                    "created_at": datetime.now().isoformat(),
+                    "hostname": socket.gethostname(),
+                    "status": "active",
+                    "command": f"extract_character.py {tracker_id}",
+                    "workspace_path": f"/mnt/c/AItools/lora/train/*/tracker-workspace/{tracker_id}",
                 }
 
                 # 個別ロックファイル作成
-                with open(specific_lock_file, 'w') as f:
+                with open(specific_lock_file, "w") as f:
                     json.dump(lock_data, f, indent=2)
 
                 # グローバルロックファイル作成
-                with open(self.lock_file, 'w') as f:
+                with open(self.lock_file, "w") as f:
                     json.dump(lock_data, f, indent=2)
 
                 logger.info(f"ロック取得成功: {tracker_id}/{process_type} (PID: {os.getpid()})")
@@ -104,7 +106,7 @@ class SubAgentLockManager:
                 # 個別ロックファイル削除
                 if specific_lock_file.exists():
                     lock_data = self._read_lock_file(specific_lock_file)
-                    if lock_data and lock_data.get('pid') == os.getpid():
+                    if lock_data and lock_data.get("pid") == os.getpid():
                         specific_lock_file.unlink()
                         logger.info(f"個別ロック解放: {specific_lock_file}")
                     else:
@@ -114,10 +116,12 @@ class SubAgentLockManager:
                 # グローバルロック確認・削除
                 if self.lock_file.exists():
                     global_lock = self._read_lock_file(self.lock_file)
-                    if (global_lock and
-                        global_lock.get('tracker_id') == tracker_id and
-                        global_lock.get('process_type') == process_type and
-                        global_lock.get('pid') == os.getpid()):
+                    if (
+                        global_lock
+                        and global_lock.get("tracker_id") == tracker_id
+                        and global_lock.get("process_type") == process_type
+                        and global_lock.get("pid") == os.getpid()
+                    ):
                         self.lock_file.unlink()
                         logger.info(f"グローバルロック解放: {self.lock_file}")
 
@@ -130,10 +134,10 @@ class SubAgentLockManager:
     def check_existing_locks(self) -> Dict[str, Any]:
         """既存ロック状況確認"""
         locks_info = {
-            'global_lock': None,
-            'specific_locks': [],
-            'stale_locks': [],
-            'active_count': 0
+            "global_lock": None,
+            "specific_locks": [],
+            "stale_locks": [],
+            "active_count": 0,
         }
 
         try:
@@ -141,11 +145,11 @@ class SubAgentLockManager:
             if self.lock_file.exists():
                 global_lock = self._read_lock_file(self.lock_file)
                 if global_lock:
-                    global_lock['file_path'] = str(self.lock_file)
-                    global_lock['is_valid'] = self._is_lock_valid(self.lock_file)
-                    locks_info['global_lock'] = global_lock
-                    if global_lock['is_valid']:
-                        locks_info['active_count'] += 1
+                    global_lock["file_path"] = str(self.lock_file)
+                    global_lock["is_valid"] = self._is_lock_valid(self.lock_file)
+                    locks_info["global_lock"] = global_lock
+                    if global_lock["is_valid"]:
+                        locks_info["active_count"] += 1
 
             # 個別ロック確認
             for lock_file in self.lock_dir.glob("subagent_*.lock"):
@@ -154,14 +158,14 @@ class SubAgentLockManager:
 
                 lock_data = self._read_lock_file(lock_file)
                 if lock_data:
-                    lock_data['file_path'] = str(lock_file)
-                    lock_data['is_valid'] = self._is_lock_valid(lock_file)
+                    lock_data["file_path"] = str(lock_file)
+                    lock_data["is_valid"] = self._is_lock_valid(lock_file)
 
-                    if lock_data['is_valid']:
-                        locks_info['specific_locks'].append(lock_data)
-                        locks_info['active_count'] += 1
+                    if lock_data["is_valid"]:
+                        locks_info["specific_locks"].append(lock_data)
+                        locks_info["active_count"] += 1
                     else:
-                        locks_info['stale_locks'].append(lock_data)
+                        locks_info["stale_locks"].append(lock_data)
 
         except Exception as e:
             logger.error(f"ロック確認エラー: {e}")
@@ -185,7 +189,7 @@ class SubAgentLockManager:
                     # グローバルロック確認
                     if self.lock_file.exists():
                         global_lock = self._read_lock_file(self.lock_file)
-                        if global_lock and global_lock.get('tracker_id') == tracker_id:
+                        if global_lock and global_lock.get("tracker_id") == tracker_id:
                             self.lock_file.unlink()
                             cleaned_count += 1
                             logger.info(f"グローバルロック強制削除: {self.lock_file}")
@@ -202,7 +206,9 @@ class SubAgentLockManager:
         logger.info(f"強制クリーンアップ完了: {cleaned_count}ファイル削除")
         return cleaned_count
 
-    def is_duplicate_execution_risk(self, tracker_id: str, process_type: str = "extraction") -> bool:
+    def is_duplicate_execution_risk(
+        self, tracker_id: str, process_type: str = "extraction"
+    ) -> bool:
         """二重実行リスク判定"""
         try:
             # アクティブロック確認
@@ -213,9 +219,11 @@ class SubAgentLockManager:
             # グローバルロック確認
             if self.lock_file.exists() and self._is_lock_valid(self.lock_file):
                 global_lock = self._read_lock_file(self.lock_file)
-                if (global_lock and
-                    global_lock.get('tracker_id') == tracker_id and
-                    global_lock.get('process_type') == process_type):
+                if (
+                    global_lock
+                    and global_lock.get("tracker_id") == tracker_id
+                    and global_lock.get("process_type") == process_type
+                ):
                     return True
 
             # プロセス確認（追加の安全チェック）
@@ -225,7 +233,9 @@ class SubAgentLockManager:
             logger.error(f"二重実行リスク判定エラー: {e}")
             return True  # エラー時は安全側に倒す
 
-    def get_lock_owner_info(self, tracker_id: str, process_type: str = "extraction") -> Optional[Dict[str, Any]]:
+    def get_lock_owner_info(
+        self, tracker_id: str, process_type: str = "extraction"
+    ) -> Optional[Dict[str, Any]]:
         """ロック所有者情報取得"""
         try:
             specific_lock_file = self.lock_dir / f"subagent_{process_type}_{tracker_id}.lock"
@@ -252,7 +262,7 @@ class SubAgentLockManager:
                 return False
 
             # PID確認
-            pid = lock_data.get('pid')
+            pid = lock_data.get("pid")
             if not pid:
                 return False
 
@@ -261,7 +271,7 @@ class SubAgentLockManager:
                 return False
 
             # 作成時刻確認（24時間以上古い場合は無効）
-            created_at = lock_data.get('created_at')
+            created_at = lock_data.get("created_at")
             if created_at:
                 try:
                     created_time = datetime.fromisoformat(created_at)
@@ -288,7 +298,7 @@ class SubAgentLockManager:
     def _read_lock_file(self, lock_file: Path) -> Optional[Dict[str, Any]]:
         """ロックファイル読み込み"""
         try:
-            with open(lock_file, 'r') as f:
+            with open(lock_file, "r") as f:
                 return json.load(f)
         except Exception as e:
             logger.error(f"ロックファイル読み込みエラー: {lock_file} - {e}")
@@ -313,16 +323,18 @@ class SubAgentLockManager:
     def _check_running_subagent_process(self, tracker_id: str) -> bool:
         """実行中SubAgentプロセス確認"""
         try:
-            for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+            for proc in psutil.process_iter(["pid", "name", "cmdline"]):
                 try:
-                    cmdline = proc.info.get('cmdline', [])
+                    cmdline = proc.info.get("cmdline", [])
                     if not cmdline:
                         continue
 
                     # extract_character.pyプロセス確認
-                    if any('extract_character.py' in cmd for cmd in cmdline):
-                        if tracker_id in ' '.join(cmdline):
-                            logger.warning(f"実行中SubAgent検出: PID {proc.info['pid']}, CMD: {' '.join(cmdline[:3])}")
+                    if any("extract_character.py" in cmd for cmd in cmdline):
+                        if tracker_id in " ".join(cmdline):
+                            logger.warning(
+                                f"実行中SubAgent検出: PID {proc.info['pid']}, CMD: {' '.join(cmdline[:3])}"
+                            )
                             return True
 
                 except (psutil.NoSuchProcess, psutil.AccessDenied):
@@ -349,6 +361,7 @@ def get_lock_manager() -> SubAgentLockManager:
 
 def create_execution_context(tracker_id: str, process_type: str = "extraction"):
     """実行コンテキスト作成（with文での使用）"""
+
     class ExecutionContext:
         def __init__(self, tracker_id: str, process_type: str):
             self.tracker_id = tracker_id

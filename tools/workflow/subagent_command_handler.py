@@ -4,21 +4,21 @@ SubAgent連携コマンドハンドラー - KIRO-011実装
 ワークフローシステムとSubAgent監視システムの統合
 """
 
+import logging
 import os
 import sys
 import time
-import logging
-from typing import Dict, List, Optional, Any
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # プロジェクトパスを追加
 project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, project_root)
 
-from tools.workflow.state_manager import get_state_manager, StepStatus
-from tools.workflow.subagent_monitor import get_subagent_monitor, SubAgentStatus
-from tools.workflow.subagent_lock_manager import get_lock_manager, create_execution_context
 from config.workspace_config import get_workspace_config
+from tools.workflow.state_manager import StepStatus, get_state_manager
+from tools.workflow.subagent_lock_manager import create_execution_context, get_lock_manager
+from tools.workflow.subagent_monitor import SubAgentStatus, get_subagent_monitor
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -34,7 +34,9 @@ class SubAgentCommandHandler:
         self.lock_manager = get_lock_manager()
         self.workspace_config = get_workspace_config()
 
-    def handle_subagent_extraction(self, tracker_id: str, input_path: str = None, max_files: int = None) -> bool:
+    def handle_subagent_extraction(
+        self, tracker_id: str, input_path: str = None, max_files: int = None
+    ) -> bool:
         """SubAgent抽出処理の開始"""
         logger.info(f"SubAgent抽出処理開始: {tracker_id}")
 
@@ -49,8 +51,12 @@ class SubAgentCommandHandler:
                     print(f"  • 開始時刻: {existing_lock.get('created_at')}")
                     print(f"  • ホスト: {existing_lock.get('hostname')}")
                     print("🔧 対処方法:")
-                    print(f"  1. python tools/workflow/workflow_cli.py subagent-status {tracker_id}")
-                    print(f"  2. python tools/workflow/workflow_cli.py subagent-terminate {tracker_id}")
+                    print(
+                        f"  1. python tools/workflow/workflow_cli.py subagent-status {tracker_id}"
+                    )
+                    print(
+                        f"  2. python tools/workflow/workflow_cli.py subagent-terminate {tracker_id}"
+                    )
                     return False
                 else:
                     print(f"❌ エラー: SubAgent抽出処理の二重実行リスクが検出されました")
@@ -67,7 +73,7 @@ class SubAgentCommandHandler:
                 print(f"python tools/workflow/workflow_cli.py plan {tracker_id} <概要> <詳細> <作者名>")
                 return False
 
-            workspace_path = config['workspace_path']
+            workspace_path = config["workspace_path"]
 
             # 入力パスの決定
             if input_path:
@@ -94,7 +100,7 @@ class SubAgentCommandHandler:
                 process_type="extraction",
                 command=extraction_command,
                 workspace_path=workspace_path,
-                expected_duration=3600  # 1時間
+                expected_duration=3600,  # 1時間
             )
 
             if not success:
@@ -124,21 +130,23 @@ class SubAgentCommandHandler:
         """SubAgent状態確認"""
         try:
             # 抽出処理状態確認
-            extraction_status = self.subagent_monitor.check_subagent_status(tracker_id, "extraction")
+            extraction_status = self.subagent_monitor.check_subagent_status(
+                tracker_id, "extraction"
+            )
 
             print(f"📊 SubAgent状態確認: {tracker_id}")
-            print("="*50)
+            print("=" * 50)
             print(f"🔄 抽出処理状態: {extraction_status.value}")
 
             # アクティブプロセス一覧取得
             active_processes = self.subagent_monitor.get_all_active_processes()
-            tracker_processes = [p for p in active_processes if p['tracker_id'] == tracker_id]
+            tracker_processes = [p for p in active_processes if p["tracker_id"] == tracker_id]
 
             if tracker_processes:
                 print("\n📋 プロセス詳細:")
                 for process in tracker_processes:
-                    elapsed_min = int(process['elapsed_seconds'] / 60)
-                    expected_min = int(process['expected_duration'] / 60)
+                    elapsed_min = int(process["elapsed_seconds"] / 60)
+                    expected_min = int(process["expected_duration"] / 60)
 
                     print(f"  • プロセスタイプ: {process['process_type']}")
                     print(f"  • 状態: {process['status']}")
@@ -198,7 +206,9 @@ class SubAgentCommandHandler:
         try:
             print(f"🛑 SubAgent終了: {tracker_id} (強制: {force})")
 
-            success = self.subagent_monitor.terminate_subagent(tracker_id, "extraction", force=force)
+            success = self.subagent_monitor.terminate_subagent(
+                tracker_id, "extraction", force=force
+            )
 
             if success:
                 print("✅ SubAgent終了完了")
@@ -244,14 +254,14 @@ class SubAgentCommandHandler:
         """全SubAgentロック状況確認"""
         try:
             print("📊 SubAgentロック状況確認")
-            print("="*50)
+            print("=" * 50)
 
             locks_info = self.lock_manager.check_existing_locks()
 
             # グローバルロック
-            if locks_info['global_lock']:
-                lock = locks_info['global_lock']
-                status_icon = "✅" if lock['is_valid'] else "❌"
+            if locks_info["global_lock"]:
+                lock = locks_info["global_lock"]
+                status_icon = "✅" if lock["is_valid"] else "❌"
                 print(f"\n🌐 グローバルロック {status_icon}")
                 print(f"  • トラッカー: {lock.get('tracker_id')}")
                 print(f"  • PID: {lock.get('pid')}")
@@ -259,26 +269,26 @@ class SubAgentCommandHandler:
                 print(f"  • ホスト: {lock.get('hostname')}")
 
             # 個別ロック
-            if locks_info['specific_locks']:
+            if locks_info["specific_locks"]:
                 print(f"\n📋 アクティブな個別ロック ({len(locks_info['specific_locks'])}件)")
-                for i, lock in enumerate(locks_info['specific_locks'], 1):
+                for i, lock in enumerate(locks_info["specific_locks"], 1):
                     print(f"  {i}. {lock.get('tracker_id')} / {lock.get('process_type')}")
                     print(f"     PID: {lock.get('pid')}, 開始: {lock.get('created_at')}")
 
             # 無効ロック
-            if locks_info['stale_locks']:
+            if locks_info["stale_locks"]:
                 print(f"\n⚠️ 無効ロック ({len(locks_info['stale_locks'])}件)")
-                for i, lock in enumerate(locks_info['stale_locks'], 1):
+                for i, lock in enumerate(locks_info["stale_locks"], 1):
                     print(f"  {i}. {lock.get('tracker_id')} / {lock.get('process_type')}")
                     print(f"     PID: {lock.get('pid')} (プロセス停止済み)")
 
             # 総括
-            if locks_info['active_count'] == 0:
+            if locks_info["active_count"] == 0:
                 print("\n✅ アクティブなSubAgentプロセスなし")
             else:
                 print(f"\n⚠️ {locks_info['active_count']}件のアクティブプロセス")
 
-            if locks_info['stale_locks']:
+            if locks_info["stale_locks"]:
                 print("\n🔧 推奨対応:")
                 print("python tools/workflow/workflow_cli.py subagent-cleanup-all")
 
@@ -304,18 +314,26 @@ class SubAgentCommandHandler:
                 print("  • リトライ回数が上限内")
                 print("  • 最小実行時間経過済み")
                 print("\n🔧 実行オプション:")
-                print(f"  • 手動実行: python tools/workflow/workflow_cli.py subagent-retry {tracker_id}")
-                print(f"  • 自動実行: python tools/workflow/workflow_cli.py subagent-auto-retry {tracker_id}")
+                print(
+                    f"  • 手動実行: python tools/workflow/workflow_cli.py subagent-retry {tracker_id}"
+                )
+                print(
+                    f"  • 自動実行: python tools/workflow/workflow_cli.py subagent-auto-retry {tracker_id}"
+                )
             else:
                 print("❌ 自動再実行条件を満たしていません")
 
                 # 詳細理由確認
-                current_status = self.subagent_monitor.check_subagent_status(tracker_id, "extraction")
+                current_status = self.subagent_monitor.check_subagent_status(
+                    tracker_id, "extraction"
+                )
                 print(f"  • 現在の状態: {current_status.value}")
 
                 # プロセス情報確認
                 active_processes = self.subagent_monitor.get_all_active_processes()
-                tracker_process = next((p for p in active_processes if p['tracker_id'] == tracker_id), None)
+                tracker_process = next(
+                    (p for p in active_processes if p["tracker_id"] == tracker_id), None
+                )
 
                 if tracker_process:
                     print(f"  • リトライ回数: {tracker_process['retry_count']}/3")
@@ -339,7 +357,9 @@ class SubAgentCommandHandler:
             if not should_retry:
                 print("❌ 自動再実行条件を満たしていません")
                 print("🔍 詳細確認:")
-                print(f"python tools/workflow/workflow_cli.py subagent-auto-retry-check {tracker_id}")
+                print(
+                    f"python tools/workflow/workflow_cli.py subagent-auto-retry-check {tracker_id}"
+                )
                 return False
 
             # 自動再実行実行
@@ -374,8 +394,10 @@ class SubAgentCommandHandler:
                 # 実行後のアクティブプロセス確認
                 active_processes = self.subagent_monitor.get_all_active_processes()
                 for process in active_processes:
-                    if process['status'] == 'running':
-                        print(f"  • {process['tracker_id']} (PID: {process['pid']}, リトライ: {process['retry_count']})")
+                    if process["status"] == "running":
+                        print(
+                            f"  • {process['tracker_id']} (PID: {process['pid']}, リトライ: {process['retry_count']})"
+                        )
 
             else:
                 print("ℹ️ 自動再実行対象プロセスなし")
@@ -394,7 +416,7 @@ class SubAgentCommandHandler:
 
             # 確認プロンプト
             response = input("❗ 全てのSubAgentロックを削除します。続行しますか？ (y/N): ")
-            if response.lower() != 'y':
+            if response.lower() != "y":
                 print("❌ キャンセルされました")
                 return False
 
@@ -448,7 +470,9 @@ class SubAgentCommandHandler:
             print(f"❌ エラー: {e}")
             return False
 
-    def _build_extraction_command(self, input_directory: str, workspace_path: str, tracker_id: str, max_files: int = None) -> str:
+    def _build_extraction_command(
+        self, input_directory: str, workspace_path: str, tracker_id: str, max_files: int = None
+    ) -> str:
         """SubAgent抽出コマンド構築"""
         output_directory = os.path.join(workspace_path, "extraction")
 
@@ -476,7 +500,7 @@ class SubAgentCommandHandler:
             if not config:
                 return
 
-            extraction_dir = os.path.join(config['workspace_path'], "extraction")
+            extraction_dir = os.path.join(config["workspace_path"], "extraction")
 
             # 結果ファイル確認
             dashboard_file = os.path.join(extraction_dir, "dashboard.html")
@@ -504,7 +528,7 @@ class SubAgentCommandHandler:
             if not config:
                 return
 
-            log_dir = os.path.join(config['workspace_path'], "logs")
+            log_dir = os.path.join(config["workspace_path"], "logs")
             log_file = os.path.join(log_dir, "extraction.log")
 
             print("🔍 トラブルシューティング:")
@@ -512,7 +536,7 @@ class SubAgentCommandHandler:
 
             if os.path.exists(log_file):
                 # ログファイルの最後の10行を表示
-                with open(log_file, 'r', encoding='utf-8') as f:
+                with open(log_file, "r", encoding="utf-8") as f:
                     lines = f.readlines()
                     if lines:
                         print("  📋 最新のログ (最後の10行):")

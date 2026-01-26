@@ -5,17 +5,18 @@ KIRO-007: 強制ワークフロー実行システムのユニットテスト
 フェーズ遷移の正確な動作を検証します。
 """
 
-import unittest
-import tempfile
-import sqlite3
 import os
-from unittest.mock import patch, MagicMock, mock_open
+import sqlite3
 import sys
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+import tempfile
+import unittest
+from unittest.mock import MagicMock, mock_open, patch
 
-from tools.workflow.state_manager import WorkflowStateManager
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+
 from tools.workflow.create_command_handler import CreateCommandHandler
 from tools.workflow.plan_command_handler import PlanCommandHandler
+from tools.workflow.state_manager import WorkflowStateManager
 
 
 class TestWorkflowEnforcement(unittest.TestCase):
@@ -24,7 +25,7 @@ class TestWorkflowEnforcement(unittest.TestCase):
     def setUp(self):
         """テスト環境のセットアップ"""
         self.test_tracker_id = "TEST-001"
-        self.temp_db = tempfile.NamedTemporaryFile(suffix='.db', delete=False)
+        self.temp_db = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
         self.db_path = self.temp_db.name
         self.temp_db.close()
 
@@ -38,16 +39,18 @@ class TestWorkflowEnforcement(unittest.TestCase):
 
     def test_sqlite_state_initialization(self):
         """SQLite状態管理の初期化テスト"""
-        with patch('tools.workflow.state_manager.os.path.exists', return_value=True):
+        with patch("tools.workflow.state_manager.os.path.exists", return_value=True):
             manager = WorkflowStateManager(self.db_path)
 
             # データベーステーブルの存在確認
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT name FROM sqlite_master
                 WHERE type='table' AND name='workflow_states'
-            """)
+            """
+            )
             result = cursor.fetchone()
             conn.close()
 
@@ -56,18 +59,18 @@ class TestWorkflowEnforcement(unittest.TestCase):
     def test_approval_gate_blocking(self):
         """承認ゲートシステムのブロッキングテスト"""
         # CreateCommandHandlerを使用して承認ゲートをテスト
-        with patch('tools.workflow.create_command_handler.os.path.exists', return_value=True):
+        with patch("tools.workflow.create_command_handler.os.path.exists", return_value=True):
             handler = CreateCommandHandler(self.test_tracker_id, self.mock_workspace)
 
             # 承認が必要なステップのテスト
-            with patch.object(handler, 'execute') as mock_execute:
-                mock_execute.return_value = {'needs_approval': True}
+            with patch.object(handler, "execute") as mock_execute:
+                mock_execute.return_value = {"needs_approval": True}
                 result = handler.execute()
-                self.assertTrue(result.get('needs_approval'), "承認が必要なステップが正しく識別されていません")
+                self.assertTrue(result.get("needs_approval"), "承認が必要なステップが正しく識別されていません")
 
     def test_phase_transition_validation(self):
         """フェーズ遷移の検証テスト"""
-        with patch('tools.workflow.state_manager.os.path.exists', return_value=True):
+        with patch("tools.workflow.state_manager.os.path.exists", return_value=True):
             manager = WorkflowStateManager(self.db_path)
 
             # 初期状態の設定
@@ -80,12 +83,12 @@ class TestWorkflowEnforcement(unittest.TestCase):
 
             # 現在の状態確認
             state = manager.get_state(self.test_tracker_id)
-            self.assertEqual(state.get('current_phase'), "phase_0_5")
-            self.assertEqual(state.get('current_step'), "implementation")
+            self.assertEqual(state.get("current_phase"), "phase_0_5")
+            self.assertEqual(state.get("current_step"), "implementation")
 
     def test_non_idempotent_control(self):
         """非冪等的動作制御のテスト"""
-        with patch('tools.workflow.state_manager.os.path.exists', return_value=True):
+        with patch("tools.workflow.state_manager.os.path.exists", return_value=True):
             manager = WorkflowStateManager(self.db_path)
             manager.initialize_database()
 
@@ -105,18 +108,18 @@ class TestWorkflowEnforcement(unittest.TestCase):
         handler = CreateCommandHandler(self.test_tracker_id, self.mock_workspace)
 
         # Git状態のモック
-        with patch('subprocess.run') as mock_run:
+        with patch("subprocess.run") as mock_run:
             # gitコミットが存在しない場合
             mock_run.return_value = MagicMock(returncode=0, stdout="")
 
-            with patch.object(handler, '_check_git_commits', return_value=False):
+            with patch.object(handler, "_check_git_commits", return_value=False):
                 # 検証失敗のシミュレーション
                 can_proceed = handler._check_git_commits()
                 self.assertFalse(can_proceed, "検証失敗時にステップが進行してしまいました")
 
     def test_workflow_state_persistence(self):
         """ワークフロー状態の永続化テスト"""
-        with patch('tools.workflow.state_manager.os.path.exists', return_value=True):
+        with patch("tools.workflow.state_manager.os.path.exists", return_value=True):
             # 最初のマネージャーインスタンス
             manager1 = WorkflowStateManager(self.db_path)
             manager1.initialize_database()
@@ -127,12 +130,12 @@ class TestWorkflowEnforcement(unittest.TestCase):
             state = manager2.get_state(self.test_tracker_id)
 
             self.assertIsNotNone(state, "永続化された状態が読み込めません")
-            self.assertEqual(state['current_phase'], "phase_1")
-            self.assertEqual(state['current_step'], "analysis")
+            self.assertEqual(state["current_phase"], "phase_1")
+            self.assertEqual(state["current_step"], "analysis")
 
     def test_error_recovery_mechanism(self):
         """エラーリカバリーメカニズムのテスト"""
-        with patch('tools.workflow.state_manager.os.path.exists', return_value=True):
+        with patch("tools.workflow.state_manager.os.path.exists", return_value=True):
             manager = WorkflowStateManager(self.db_path)
             manager.initialize_database()
 
@@ -142,7 +145,7 @@ class TestWorkflowEnforcement(unittest.TestCase):
             # エラー状態のシミュレーション
             try:
                 # 不正な更新を試みる（エラーのシミュレーション）
-                with patch.object(manager, 'update_step', side_effect=Exception("Test error")):
+                with patch.object(manager, "update_step", side_effect=Exception("Test error")):
                     manager.update_step(self.test_tracker_id, "invalid", "invalid")
             except Exception:
                 pass
@@ -150,11 +153,11 @@ class TestWorkflowEnforcement(unittest.TestCase):
             # エラー後も状態が保持されることを確認
             state = manager.get_state(self.test_tracker_id)
             self.assertIsNotNone(state, "エラー後の状態が失われています")
-            self.assertEqual(state.get('current_phase'), "phase_0")
+            self.assertEqual(state.get("current_phase"), "phase_0")
 
     def test_concurrent_access_protection(self):
         """並行アクセス保護のテスト"""
-        with patch('tools.workflow.state_manager.os.path.exists', return_value=True):
+        with patch("tools.workflow.state_manager.os.path.exists", return_value=True):
             manager = WorkflowStateManager(self.db_path)
             manager.initialize_database()
 
@@ -180,12 +183,12 @@ class TestWorkflowCommandIntegration(unittest.TestCase):
 
     def test_plan_command_execution(self):
         """planコマンドの実行テスト"""
-        with patch('subprocess.run') as mock_run:
+        with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="Success")
 
             handler = PlanCommandHandler("KIRO-007", "概要", "詳細", "作者")
 
-            with patch.object(handler, 'execute', return_value=True):
+            with patch.object(handler, "execute", return_value=True):
                 result = handler.execute()
                 self.assertTrue(result, "planコマンドの実行に失敗しました")
 
@@ -199,9 +202,9 @@ class TestWorkflowCommandIntegration(unittest.TestCase):
         # 状態の取得
         state = manager.get_state("KIRO-007")
 
-        self.assertEqual(state.get('current_phase'), "phase_0_5")
-        self.assertEqual(state.get('current_step'), "implementation")
+        self.assertEqual(state.get("current_phase"), "phase_0_5")
+        self.assertEqual(state.get("current_step"), "implementation")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

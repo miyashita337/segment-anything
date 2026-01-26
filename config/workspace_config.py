@@ -4,12 +4,12 @@
 KIRO-006 解決策: ハードコードされたパスの動的設定化
 """
 
-import sqlite3
-import os
-from typing import Optional, Dict, Any
-from pathlib import Path
-import threading
 import logging
+import os
+import sqlite3
+import threading
+from pathlib import Path
+from typing import Any, Dict, Optional
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -45,7 +45,8 @@ class WorkspaceConfig:
         """データベースとテーブルを初期化"""
         with self.lock:
             with sqlite3.connect(self.db_path) as conn:
-                conn.execute("""
+                conn.execute(
+                    """
                     CREATE TABLE IF NOT EXISTS workspace_configs (
                         tracker_id TEXT PRIMARY KEY,
                         author_name TEXT NOT NULL,
@@ -54,7 +55,8 @@ class WorkspaceConfig:
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
-                """)
+                """
+                )
                 conn.commit()
                 logger.info("Workspace config database tables initialized successfully")
 
@@ -63,7 +65,7 @@ class WorkspaceConfig:
         tracker_id: str,
         author_name: str,
         workspace_path: str,
-        input_path: Optional[str] = None
+        input_path: Optional[str] = None,
     ) -> bool:
         """トラッカーのワークスペース設定を保存"""
         try:
@@ -73,11 +75,14 @@ class WorkspaceConfig:
 
             with self.lock:
                 with sqlite3.connect(self.db_path) as conn:
-                    conn.execute("""
+                    conn.execute(
+                        """
                         INSERT OR REPLACE INTO workspace_configs
                         (tracker_id, author_name, workspace_path, input_path, updated_at)
                         VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
-                    """, (tracker_id, author_name, workspace_path, input_path))
+                    """,
+                        (tracker_id, author_name, workspace_path, input_path),
+                    )
                     conn.commit()
 
             logger.info(f"Workspace config saved: {tracker_id} -> {author_name}@{workspace_path}")
@@ -92,22 +97,25 @@ class WorkspaceConfig:
         try:
             with self.lock:
                 with sqlite3.connect(self.db_path) as conn:
-                    cursor = conn.execute("""
+                    cursor = conn.execute(
+                        """
                         SELECT tracker_id, author_name, workspace_path, input_path,
                                created_at, updated_at
                         FROM workspace_configs
                         WHERE tracker_id = ?
-                    """, (tracker_id,))
+                    """,
+                        (tracker_id,),
+                    )
                     row = cursor.fetchone()
 
             if row:
                 return {
-                    'tracker_id': row[0],
-                    'author_name': row[1],
-                    'workspace_path': row[2],
-                    'input_path': row[3],
-                    'created_at': row[4],
-                    'updated_at': row[5]
+                    "tracker_id": row[0],
+                    "author_name": row[1],
+                    "workspace_path": row[2],
+                    "input_path": row[3],
+                    "created_at": row[4],
+                    "updated_at": row[5],
                 }
             return None
 
@@ -131,12 +139,12 @@ class WorkspaceConfig:
                 logger.error(f"No workspace config found for {tracker_id}")
                 return None
 
-            input_path = config.get('input_path')
+            input_path = config.get("input_path")
             if input_path and os.path.exists(input_path):
                 return input_path
 
             # フォールバック: 作者名からデフォルトパスを生成
-            author_name = config.get('author_name')
+            author_name = config.get("author_name")
             if author_name:
                 default_path = self.get_default_input_path(author_name)
                 if os.path.exists(default_path):
@@ -150,7 +158,9 @@ class WorkspaceConfig:
             logger.error(f"Failed to get input directory for {tracker_id}: {e}")
             return None
 
-    def _validate_workspace_path(self, workspace_path: str, author_name: str, tracker_id: str) -> bool:
+    def _validate_workspace_path(
+        self, workspace_path: str, author_name: str, tracker_id: str
+    ) -> bool:
         """ワークスペースパスの妥当性を検証"""
         expected_pattern = f"/mnt/c/AItools/lora/train/{author_name}/tracker-workspace/{tracker_id}"
 
@@ -168,12 +178,12 @@ class WorkspaceConfig:
             logger.error(f"No workspace config found for {tracker_id}")
             return False
 
-        workspace_path = Path(config['workspace_path'])
+        workspace_path = Path(config["workspace_path"])
         try:
             workspace_path.mkdir(parents=True, exist_ok=True)
 
             # 必要なサブディレクトリを作成
-            subdirs = ['extraction', 'dashboard', '.approvals', 'logs']
+            subdirs = ["extraction", "dashboard", ".approvals", "logs"]
             for subdir in subdirs:
                 (workspace_path / subdir).mkdir(exist_ok=True)
 
@@ -189,20 +199,19 @@ class WorkspaceConfig:
         try:
             with self.lock:
                 with sqlite3.connect(self.db_path) as conn:
-                    cursor = conn.execute("""
+                    cursor = conn.execute(
+                        """
                         SELECT tracker_id, workspace_path, created_at
                         FROM workspace_configs
                         WHERE author_name = ?
                         ORDER BY created_at DESC
-                    """, (author_name,))
+                    """,
+                        (author_name,),
+                    )
                     rows = cursor.fetchall()
 
             return [
-                {
-                    'tracker_id': row[0],
-                    'workspace_path': row[1],
-                    'created_at': row[2]
-                }
+                {"tracker_id": row[0], "workspace_path": row[1], "created_at": row[2]}
                 for row in rows
             ]
 
@@ -215,9 +224,12 @@ class WorkspaceConfig:
         try:
             with self.lock:
                 with sqlite3.connect(self.db_path) as conn:
-                    cursor = conn.execute("""
+                    cursor = conn.execute(
+                        """
                         DELETE FROM workspace_configs WHERE tracker_id = ?
-                    """, (tracker_id,))
+                    """,
+                        (tracker_id,),
+                    )
                     conn.commit()
 
             logger.info(f"Workspace config deleted: {tracker_id}")
@@ -233,10 +245,12 @@ class WorkspaceConfig:
             # SQLiteから任意のトラッカーの作者名を取得してベースパスを決定
             with self.lock:
                 with sqlite3.connect(self.db_path) as conn:
-                    cursor = conn.execute("""
+                    cursor = conn.execute(
+                        """
                         SELECT author_name FROM workspace_configs
                         ORDER BY updated_at DESC LIMIT 1
-                    """)
+                    """
+                    )
                     row = cursor.fetchone()
 
             if row:
@@ -244,11 +258,11 @@ class WorkspaceConfig:
                 return self.get_author_workspace_base(author_name)
 
             # フォールバック: デフォルト値
-            return '/mnt/c/AItools/lora/train/yado/tracker-workspace'
+            return "/mnt/c/AItools/lora/train/yado/tracker-workspace"
 
         except Exception as e:
             logger.warning(f"Failed to get dynamic workspace base: {e}")
-            return '/mnt/c/AItools/lora/train/yado/tracker-workspace'
+            return "/mnt/c/AItools/lora/train/yado/tracker-workspace"
 
     @classmethod
     def get_workspace_base(cls) -> str:
@@ -266,13 +280,13 @@ class WorkspaceConfig:
         if tracker_id:
             workspace_info = config.get_workspace_config(tracker_id)
             if workspace_info:
-                env_vars['TRACKER_ID'] = tracker_id
-                env_vars['AUTHOR_NAME'] = workspace_info.get('author_name', '')
-                env_vars['WORKSPACE_PATH'] = workspace_info.get('workspace_path', '')
-                env_vars['INPUT_PATH'] = workspace_info.get('input_path', '')
+                env_vars["TRACKER_ID"] = tracker_id
+                env_vars["AUTHOR_NAME"] = workspace_info.get("author_name", "")
+                env_vars["WORKSPACE_PATH"] = workspace_info.get("workspace_path", "")
+                env_vars["INPUT_PATH"] = workspace_info.get("input_path", "")
 
         # 動的ワークスペースベース取得（ハードコード除去）
-        env_vars.setdefault('WORKSPACE_BASE', config._get_dynamic_workspace_base())
+        env_vars.setdefault("WORKSPACE_BASE", config._get_dynamic_workspace_base())
 
         return env_vars
 
@@ -295,24 +309,26 @@ def validate_tracker_setup(tracker_id: str) -> Dict[str, Any]:
     workspace_config = config.get_workspace_config(tracker_id)
 
     result = {
-        'tracker_id': tracker_id,
-        'is_configured': workspace_config is not None,
-        'errors': [],
-        'warnings': []
+        "tracker_id": tracker_id,
+        "is_configured": workspace_config is not None,
+        "errors": [],
+        "warnings": [],
     }
 
     if not workspace_config:
-        result['errors'].append(f"❌ ワークスペース設定が未設定です: {tracker_id}")
-        result['errors'].append("🔧 以下のコマンドで設定してください:")
-        result['errors'].append(f"python tools/workflow/workflow_cli.py plan {tracker_id} <概要> <詳細> <作者名>")
+        result["errors"].append(f"❌ ワークスペース設定が未設定です: {tracker_id}")
+        result["errors"].append("🔧 以下のコマンドで設定してください:")
+        result["errors"].append(
+            f"python tools/workflow/workflow_cli.py plan {tracker_id} <概要> <詳細> <作者名>"
+        )
         return result
 
-    result['config'] = workspace_config
+    result["config"] = workspace_config
 
     # ワークスペースディレクトリの存在確認
-    workspace_path = Path(workspace_config['workspace_path'])
+    workspace_path = Path(workspace_config["workspace_path"])
     if not workspace_path.exists():
-        result['warnings'].append(f"⚠️ ワークスペースディレクトリが存在しません: {workspace_path}")
+        result["warnings"].append(f"⚠️ ワークスペースディレクトリが存在しません: {workspace_path}")
 
     return result
 
