@@ -16,15 +16,22 @@ KIRO-015: 後方互換性ラッパー
     # etc.
 """
 
-# 後方互換性のための再エクスポート
-from .task_queue import SubAgentTaskQueue
-from .task_validator import ExtractCharacterTaskValidator
-from .enhanced_task_queue import EnhancedSubAgentTaskQueue
-from .integrated_system import IntegratedSubAgentSystem
-from .system_coordinator import SubAgentSystemCoordinator
+import sys
+from pathlib import Path
 
-# main関数も移行（system_coordinatorから）
-from .system_coordinator import main
+# 直接実行時のパス設定
+if __name__ == "__main__":
+    # プロジェクトルートをパスに追加
+    project_root = Path(__file__).resolve().parent.parent.parent
+    if str(project_root) not in sys.path:
+        sys.path.insert(0, str(project_root))
+
+# 後方互換性のための再エクスポート（絶対インポート）
+from tools.queue.task_queue import SubAgentTaskQueue
+from tools.queue.task_validator import ExtractCharacterTaskValidator
+from tools.queue.enhanced_task_queue import EnhancedSubAgentTaskQueue
+from tools.queue.integrated_system import IntegratedSubAgentSystem
+from tools.queue.system_coordinator import SubAgentSystemCoordinator, main
 
 __all__ = [
     "SubAgentTaskQueue",
@@ -34,3 +41,6 @@ __all__ = [
     "SubAgentSystemCoordinator",
     "main",
 ]
+
+if __name__ == "__main__":
+    main()
