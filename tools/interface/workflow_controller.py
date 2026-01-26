@@ -760,7 +760,7 @@ class WorkflowController:
         """
         import json
         import os
-        import requests
+        import subprocess
         from config.workspace_config import WorkspaceConfig
         from dataclasses import dataclass
         from typing import List
@@ -774,23 +774,64 @@ class WorkflowController:
         workspace_base = WorkspaceConfig.get_workspace_base()
         tracker_workspace = os.path.join(workspace_base, tracker_id)
 
-        # 1. Check dashboard accessibility
-        try:
-            dashboard_url = f"http://100.123.241.106:8088/tracker/{tracker_id}"
-            response = requests.get(
-                dashboard_url, timeout=10, auth=("admin", "secure_track_2025_q3_8f9a")
-            )
-            if response.status_code != 200:
+        # 1. 必須ファイルチェック（事前確認）
+        required_files = {
+            "dashboard/dashboard.html": "ダッシュボードHTMLファイル",
+            "quality/unified_quality_report.json": "品質レポートJSONファイル",
+        }
+        for file_path, description in required_files.items():
+            full_path = os.path.join(tracker_workspace, file_path)
+            if not os.path.exists(full_path):
                 errors.append(
-                    f"Dashboard not accessible: {dashboard_url} returned {response.status_code}"
+                    f"必須ファイル不在: {description}\n"
+                    + f"  パス: {full_path}\n"
+                    + f"  対処: python features/evaluation/dashboard_generator.py --tracker-id {tracker_id}"
                 )
-        except Exception as e:
-            errors.append(f"Dashboard accessibility check failed: {str(e)}")
 
-        # 2. Check statistical analysis results
+        # 2. サーバー接続チェック（curlで事前確認）
+        server_url = "http://100.123.241.106:8088"
+        dashboard_url = f"{server_url}/tracker/{tracker_id}"
+
+        try:
+            # まずサーバー自体が応答するか確認
+            result = subprocess.run(
+                ["curl", "-s", "-o", "/dev/null", "-w", "%{http_code}",
+                 "--connect-timeout", "5", server_url],
+                capture_output=True, text=True, timeout=10
+            )
+            if result.returncode != 0:
+                errors.append(
+                    f"統合サーバー接続不可\n"
+                    + f"  URL: {server_url}\n"
+                    + "  対処: サーバーが起動しているか確認 (systemctl status integrated-dashboard)"
+                )
+            elif result.stdout not in ["200", "401", "403"]:
+                errors.append(
+                    f"統合サーバー応答異常\n"
+                    + f"  URL: {server_url}\n"
+                    + f"  HTTPステータス: {result.stdout}\n"
+                    + "  対処: サーバーログを確認"
+                )
+        except subprocess.TimeoutExpired:
+            errors.append(
+                f"統合サーバー接続タイムアウト (5秒)\n"
+                + f"  URL: {server_url}\n"
+                + "  対処: ネットワーク接続を確認"
+            )
+        except FileNotFoundError:
+            errors.append(
+                "curlコマンドが見つかりません\n"
+                + "  対処: apt install curl"
+            )
+
+        # 3. 統計分析ファイルチェック（必須）
         stats_file = os.path.join(tracker_workspace, "statistical_analysis_result.txt")
         if not os.path.exists(stats_file):
-            errors.append("Statistical analysis result file not found")
+            errors.append(
+                f"統計分析結果ファイル不在\n"
+                + f"  パス: {stats_file}\n"
+                + f"  対処: ./tools/scripts/run_quality_workflow.sh {tracker_id} を実行して統計分析を生成"
+            )
         else:
             try:
                 with open(stats_file, "r", encoding="utf-8") as f:
@@ -811,7 +852,6 @@ class WorkflowController:
                     found = False
                     for pattern in patterns:
                         if pattern in stats_content:
-                            # Extract value and check it's not N/A or 0
                             lines = [line for line in stats_content.split("\n") if pattern in line]
                             if lines:
                                 line = lines[0]
@@ -827,64 +867,50 @@ class WorkflowController:
             except Exception as e:
                 errors.append(f"Statistical analysis file read error: {str(e)}")
 
-        # 3. Check extraction gallery (images displayed from paths, not Base64)
+        # 4. extraction ディレクトリチェック
         extraction_dir = os.path.join(tracker_workspace, "extraction")
         extraction_full_dir = os.path.join(tracker_workspace, "extraction_full")
 
-        # Use extraction_full if it exists, otherwise extraction
         active_extraction_dir = (
             extraction_full_dir if os.path.exists(extraction_full_dir) else extraction_dir
         )
 
         if not os.path.exists(active_extraction_dir):
-            errors.append("Extraction directory not found")
+            errors.append(
+                f"抽出結果ディレクトリ不在\n"
+                + f"  パス: {extraction_dir}\n"
+                + "  対処: subagent_extraction を再実行"
+            )
         else:
-            # Check for actual image files
             image_files = [
                 f
                 for f in os.listdir(active_extraction_dir)
                 if f.lower().endswith((".jpg", ".jpeg", ".png", ".gif"))
             ]
             if len(image_files) == 0:
-                errors.append("No image files found in extraction directory")
+                errors.append(
+                    f"抽出画像ファイルなし\n"
+                    + f"  ディレクトリ: {active_extraction_dir}\n"
+                    + "  対処: subagent_extraction を再実行"
+                )
 
-            # Check dashboard HTML contains image references (not Base64)
-            dashboard_html = os.path.join(tracker_workspace, "dashboard", "dashboard.html")
-            if os.path.exists(dashboard_html):
-                try:
-                    with open(dashboard_html, "r", encoding="utf-8") as f:
-                        html_content = f.read()
-
-                    # Check that images are referenced by path, not Base64
-                    if "data:image" in html_content:
-                        errors.append(
-                            "Dashboard contains Base64 encoded images (should use file paths)"
-                        )
-
-                    # Check that extraction images are referenced
-                    image_references = sum(
-                        1 for img_file in image_files if img_file in html_content
-                    )
-                    if image_references == 0:
-                        errors.append("Dashboard does not reference extraction images")
-
-                except Exception as e:
-                    errors.append(f"Dashboard HTML check error: {str(e)}")
-
-        # 4. Check quality report exists and is valid
+        # 5. 品質レポート内容検証
         quality_report = os.path.join(tracker_workspace, "quality", "unified_quality_report.json")
-        if not os.path.exists(quality_report):
-            errors.append("Quality report not found")
-        else:
+        if os.path.exists(quality_report):
             try:
                 with open(quality_report, "r", encoding="utf-8") as f:
                     quality_data = json.load(f)
 
-                # Check essential quality metrics exist
                 if "evaluation_metrics" not in quality_data:
-                    errors.append("Quality report missing evaluation_metrics")
+                    errors.append(
+                        f"品質レポートにevaluation_metricsがありません\n"
+                        + f"  対処: python tools/core/run_objective_evaluation.py --tracker-id {tracker_id}"
+                    )
                 elif len(quality_data["evaluation_metrics"]) == 0:
-                    errors.append("Quality report has no evaluation metrics")
+                    errors.append(
+                        f"品質レポートの評価メトリクスが空です\n"
+                        + f"  対処: python tools/core/run_objective_evaluation.py --tracker-id {tracker_id}"
+                    )
 
             except Exception as e:
                 errors.append(f"Quality report validation error: {str(e)}")

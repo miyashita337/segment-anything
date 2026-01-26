@@ -651,7 +651,7 @@ class AutomaticWorkflowExecutor:
 
             monitor = SubAgentMonitor()
             workspace_base = WorkspaceConfig.get_workspace_base()
-            extraction_dir = Path(workspace_base) / tracker_id / "extraction_full"
+            extraction_dir = Path(workspace_base) / tracker_id / "extraction"
 
             # Primary validation: Check if extraction files exist
             if extraction_dir.exists():

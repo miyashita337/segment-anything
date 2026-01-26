@@ -20,8 +20,9 @@ from pathlib import Path
 from PIL import Image
 from typing import Dict, List, Optional
 
-# プロジェクトルートをPythonパスに追加
-project_root = Path(__file__).parent.parent
+# プロジェクトルートをPythonパスに追加（segment-anything/）
+# 注意: tools/ を追加すると tools/queue/ が標準ライブラリのqueueをシャドウする
+project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 from features.evaluation.objective_evaluation_system import ObjectiveEvaluationSystem
