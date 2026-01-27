@@ -11,6 +11,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.38] - 2026-01-27
+
+### Changed
+- **KIRO-015: subagent_wrapper.py分割によるLost-in-the-Middle問題解決**
+  - 2700行超の巨大ファイルを6つの専門モジュールに分割
+  - `task_queue.py`: 基本キュー管理（694行）
+  - `task_validator.py`: タスク検証（67行）
+  - `enhanced_task_queue.py`: 拡張キュー機能（378行）
+  - `integrated_system.py`: 統合システム（1121行）
+  - `system_coordinator.py`: コーディネーター・main（515行）
+  - 後方互換性維持: 既存importは引き続き動作
+- **絶対インポート化・直接実行サポート追加**: 依存関係明確化・保守性向上
+
+### Fixed
+- **ワークフローシステム3バグ修正**
+  - `automatic_executor.py`: extraction_full → extraction パス不整合修正
+  - `run_objective_evaluation.py`: sys.path修正によるqueueモジュール競合解消
+  - `workflow_controller.py`: requests.get → subprocess + curl、エラーメッセージ日本語化・対処方法明示
+- **subagent-extraction入力ディレクトリ事前検証追加**: 存在しないパス指定時の早期エラー検出
+- **sympyバージョン制約追加**: torch 2.8.0 + sympy 1.14.0 循環インポートバグ回避（`sympy>=1.13.1,<1.14.0`）
+- **KIRO-013: Google Sheets詳細情報消失バグ修正**
+- **CI: psutil依存関係追加**: documentation-test job修正
+
+### Removed
+- **deprecated sam_yolo_character_segment.py削除**: -7.6万トークン削減
+
+### Style
+- **コードフォーマット統一**: Black + isort適用
+
+### Documentation
+- **ワークフロードキュメント強化**: 6フェーズ構造統合・SOW強化・テストファースト明文化
+
+### Tests
+- **test_kiro_015_bug_fixes.py追加**: ワークフローバグ修正の10テスト
+
+### Thanks
+- @miyashita337 for KIRO-015 Lost-in-the-Middle resolution and workflow bug fixes
+
 ## [v0.9.37] - 2025-09-28
 
 ### Added
