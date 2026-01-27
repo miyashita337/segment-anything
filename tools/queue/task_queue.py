@@ -691,4 +691,3 @@ class SubAgentTaskQueue:
         """タスクレジストリー保存"""
         with open(self.task_registry_file, "w") as f:
             json.dump(registry, f, indent=2)
-

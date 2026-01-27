@@ -26,12 +26,13 @@ if __name__ == "__main__":
     if str(project_root) not in sys.path:
         sys.path.insert(0, str(project_root))
 
-# 後方互換性のための再エクスポート（絶対インポート）
-from tools.queue.task_queue import SubAgentTaskQueue
-from tools.queue.task_validator import ExtractCharacterTaskValidator
 from tools.queue.enhanced_task_queue import EnhancedSubAgentTaskQueue
 from tools.queue.integrated_system import IntegratedSubAgentSystem
 from tools.queue.system_coordinator import SubAgentSystemCoordinator, main
+
+# 後方互換性のための再エクスポート（絶対インポート）
+from tools.queue.task_queue import SubAgentTaskQueue
+from tools.queue.task_validator import ExtractCharacterTaskValidator
 
 __all__ = [
     "SubAgentTaskQueue",

@@ -795,9 +795,20 @@ class WorkflowController:
         try:
             # まずサーバー自体が応答するか確認
             result = subprocess.run(
-                ["curl", "-s", "-o", "/dev/null", "-w", "%{http_code}",
-                 "--connect-timeout", "5", server_url],
-                capture_output=True, text=True, timeout=10
+                [
+                    "curl",
+                    "-s",
+                    "-o",
+                    "/dev/null",
+                    "-w",
+                    "%{http_code}",
+                    "--connect-timeout",
+                    "5",
+                    server_url,
+                ],
+                capture_output=True,
+                text=True,
+                timeout=10,
             )
             if result.returncode != 0:
                 errors.append(
@@ -813,16 +824,9 @@ class WorkflowController:
                     + "  対処: サーバーログを確認"
                 )
         except subprocess.TimeoutExpired:
-            errors.append(
-                f"統合サーバー接続タイムアウト (5秒)\n"
-                + f"  URL: {server_url}\n"
-                + "  対処: ネットワーク接続を確認"
-            )
+            errors.append(f"統合サーバー接続タイムアウト (5秒)\n" + f"  URL: {server_url}\n" + "  対処: ネットワーク接続を確認")
         except FileNotFoundError:
-            errors.append(
-                "curlコマンドが見つかりません\n"
-                + "  対処: apt install curl"
-            )
+            errors.append("curlコマンドが見つかりません\n" + "  対処: apt install curl")
 
         # 3. 統計分析ファイルチェック（必須）
         stats_file = os.path.join(tracker_workspace, "statistical_analysis_result.txt")
@@ -877,9 +881,7 @@ class WorkflowController:
 
         if not os.path.exists(active_extraction_dir):
             errors.append(
-                f"抽出結果ディレクトリ不在\n"
-                + f"  パス: {extraction_dir}\n"
-                + "  対処: subagent_extraction を再実行"
+                f"抽出結果ディレクトリ不在\n" + f"  パス: {extraction_dir}\n" + "  対処: subagent_extraction を再実行"
             )
         else:
             image_files = [
