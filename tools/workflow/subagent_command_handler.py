@@ -77,7 +77,16 @@ class SubAgentCommandHandler:
 
             # 入力パスの決定
             if input_path:
-                # カスタムパスが指定された場合
+                # カスタムパスが指定された場合 - 事前検証追加（KIRO-015）
+                if not os.path.exists(input_path):
+                    logger.error(f"入力パスが存在しません: {input_path}")
+                    print(f"❌ エラー: 入力パスが存在しません: {input_path}")
+                    return False
+                if not os.path.isdir(input_path):
+                    logger.error(f"入力パスがディレクトリではありません: {input_path}")
+                    print(f"❌ エラー: 入力パスがディレクトリではありません（ファイルパスが指定されました）: {input_path}")
+                    return False
+
                 input_directory = input_path
                 logger.info(f"カスタム入力パス使用: {input_path}")
                 print(f"📁 カスタム入力パス: {input_path}")
