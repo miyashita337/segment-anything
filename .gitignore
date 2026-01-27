@@ -112,7 +112,10 @@ visualizations/
 PRINCIPLE.md
 
 # Claude Code integration files
-.claude/
+.claude/*
+!.claude/plugins/
+.claude/settings.local.json
+.claude/settings.local.json.backup
 .serena/
 
 # Dashboard server logs
