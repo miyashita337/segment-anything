@@ -20,8 +20,6 @@ from tools.workflow.state_manager import StepStatus, get_state_manager
 from tools.workflow.subagent_lock_manager import create_execution_context, get_lock_manager
 from tools.workflow.subagent_monitor import SubAgentStatus, get_subagent_monitor
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 

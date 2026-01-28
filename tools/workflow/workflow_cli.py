@@ -28,14 +28,18 @@ LOG_DIR = Path(__file__).parent / "logs"
 LOG_DIR.mkdir(exist_ok=True)
 LOG_FILE = LOG_DIR / "workflow_cli.log"
 
-# Configure logging with file output
+# Console: WARNING以上、File: INFO以上
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.WARNING)
+
+file_handler = logging.FileHandler(LOG_FILE, encoding="utf-8")
+file_handler.setLevel(logging.INFO)
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s: %(message)s",
-    handlers=[
-        logging.StreamHandler(),  # コンソール出力
-        logging.FileHandler(LOG_FILE, encoding="utf-8"),  # ファイル出力
-    ],
+    handlers=[console_handler, file_handler],
+    force=True,
 )
 logger = logging.getLogger(__name__)
 
