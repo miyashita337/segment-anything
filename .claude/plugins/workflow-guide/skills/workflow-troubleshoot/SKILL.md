@@ -14,6 +14,14 @@ description: |
 
 ワークフロー強制実行システムの基本コマンド。
 
+## ⚠️ 重要な前提条件
+
+1. **1ワークフロー1画像抽出がマスト**: `create`を実行したら、画像抽出（SubAgent）は必ず通るステップ。タスクの種類に関係なく全ステップを完了する必要がある。
+
+2. **stepでエラー → status/instructionsで解決策を探す**: エラーが出たら「このワークフローは不要」と判断せず、コマンドで状態を確認して解決する。
+
+3. **ブランチ一致が必須**: `feature/{TRACKER_ID}`ブランチでないとワークフローは進行しない。
+
 ## Quick Reference
 
 ```bash
@@ -37,6 +45,21 @@ python tools/workflow/workflow_cli.py approvals
 ```
 
 ## Common Issues
+
+### 「stepでエラーが発生した」
+
+```bash
+# 1. まず状態確認
+python tools/workflow/workflow_cli.py status {TRACKER_ID}
+
+# 2. 現在のステップで何をすべきか確認
+python tools/workflow/workflow_cli.py instructions {TRACKER_ID}
+
+# 3. エラー内容に応じて対処
+# - ブランチ不一致 → git checkout feature/{TRACKER_ID}
+# - SubAgent未起動 → subagent-extractionコマンドを実行
+# - 承認待ち → approvalsで確認して承認ファイル作成
+```
 
 ### 「Google Sheets接続エラー」
 
@@ -66,6 +89,18 @@ python tools/workflow/workflow_cli.py status {TRACKER_ID}
 
 # 指示確認
 python tools/workflow/workflow_cli.py instructions {TRACKER_ID}
+```
+
+### 「間違ったブランチでcreateしてしまった」
+
+ワークフロー状態をリセットする:
+```bash
+# SQLiteから該当トラッカーの状態を削除
+sqlite3 workflow_state.db "DELETE FROM workflow_states WHERE tracker_id='{TRACKER_ID}';"
+
+# 正しいブランチに切り替えてから再度create
+git checkout -b feature/{TRACKER_ID}
+python tools/workflow/workflow_cli.py create {TRACKER_ID}
 ```
 
 ---
