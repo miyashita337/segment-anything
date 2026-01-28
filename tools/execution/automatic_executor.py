@@ -23,8 +23,6 @@ from datetime import datetime
 from tools.queue.task_integration import TaskIntegration
 from typing import Any, Dict, List, Optional, Tuple
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
