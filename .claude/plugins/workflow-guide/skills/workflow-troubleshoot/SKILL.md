@@ -91,6 +91,27 @@ python tools/workflow/workflow_cli.py status {TRACKER_ID}
 python tools/workflow/workflow_cli.py instructions {TRACKER_ID}
 ```
 
+### 「quality_workflowでDashboard/Quality report not found」
+
+**原因**: ステップごとの生成物と検証対象の対応
+
+| ステップ | 生成物 | 検証対象 |
+|---------|--------|---------|
+| quality_workflow | unified_quality_report.json | unified_quality_report.json |
+| dashboard_generation | dashboard.html, index.html | dashboard.html, index.html |
+
+**対処**:
+```bash
+# quality_workflowの場合: 品質レポートを確認
+ls -la {workspace}/{TRACKER_ID}/quality/unified_quality_report.json
+
+# 存在しない場合: run_quality_workflow.shを手動実行
+./tools/scripts/run_quality_workflow.sh {TRACKER_ID}
+
+# dashboard_generationの場合: ダッシュボードを確認
+ls -la {workspace}/{TRACKER_ID}/dashboard/dashboard.html
+```
+
 ### 「間違ったブランチでcreateしてしまった」
 
 ワークフロー状態をリセットする:
