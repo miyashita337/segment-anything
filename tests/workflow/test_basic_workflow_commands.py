@@ -233,6 +233,8 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
         mock_result.approval_id = None
         mock_result.next_step = None
 
+        # side_effectをクリアしてからreturn_valueを設定
+        self.mock_workflow_controller.attempt_step_completion.side_effect = None
         self.mock_workflow_controller.attempt_step_completion.return_value = mock_result
 
         output = CLITestHelper.capture_output(attempt_step, SAMPLE_TRACKER_ID)
@@ -242,6 +244,8 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
 
         self.assertIn("🚫", stdout)
         self.assertIn("ステップがブロックされています", stdout)
+        self.assertIn("💡", stdout)
+        self.assertIn("/workflow-troubleshoot", stdout)
 
     def test_attempt_step_failed(self):
         """stepコマンド - 失敗テスト"""
@@ -254,6 +258,8 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
         mock_result.approval_id = None
         mock_result.next_step = None
 
+        # side_effectをクリアしてからreturn_valueを設定
+        self.mock_workflow_controller.attempt_step_completion.side_effect = None
         self.mock_workflow_controller.attempt_step_completion.return_value = mock_result
 
         output = CLITestHelper.capture_output(attempt_step, SAMPLE_TRACKER_ID)
@@ -263,6 +269,8 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
 
         self.assertIn("❌", stdout)
         self.assertIn("ステップが失敗しました", stdout)
+        self.assertIn("💡", stdout)
+        self.assertIn("/workflow-troubleshoot", stdout)
 
     def test_attempt_step_controller_unavailable(self):
         """stepコマンド - コントローラー利用不可テスト"""
