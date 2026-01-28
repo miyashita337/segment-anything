@@ -242,6 +242,8 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
 
         self.assertIn("🚫", stdout)
         self.assertIn("ステップがブロックされています", stdout)
+        self.assertIn("💡", stdout)
+        self.assertIn("/workflow-troubleshoot", stdout)
 
     def test_attempt_step_failed(self):
         """stepコマンド - 失敗テスト"""
@@ -263,6 +265,8 @@ class TestBasicWorkflowCommands(WorkflowTestBase):
 
         self.assertIn("❌", stdout)
         self.assertIn("ステップが失敗しました", stdout)
+        self.assertIn("💡", stdout)
+        self.assertIn("/workflow-troubleshoot", stdout)
 
     def test_attempt_step_controller_unavailable(self):
         """stepコマンド - コントローラー利用不可テスト"""

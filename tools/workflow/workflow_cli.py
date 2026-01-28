@@ -274,9 +274,11 @@ def attempt_step(tracker_id: str) -> bool:
         elif result.status == "blocked":
             print(f"🚫 ステップがブロックされています")
             print(f"   メッセージ: {result.message}")
+            print(f"\n💡 対処法を確認: /workflow-troubleshoot または instructions {tracker_id}")
         elif result.status == "failed":
             print(f"❌ ステップが失敗しました")
             print(f"   メッセージ: {result.message}")
+            print(f"\n💡 対処法を確認: /workflow-troubleshoot または instructions {tracker_id}")
 
         return result.status in ["completed", "pending_approval"]
     except Exception as e:

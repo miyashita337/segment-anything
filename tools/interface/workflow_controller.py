@@ -865,14 +865,19 @@ class WorkflowController:
                             lines = [line for line in stats_content.split("\n") if pattern in line]
                             if lines:
                                 line = lines[0]
+                                # NOTE: ": 0"は"0.194"などの有効な値も誤検出するため削除
+                                # 代わりに": 0\n"や"= 0,"など末尾の0のみをチェック
                                 if "N/A" not in line and not any(
-                                    x in line for x in ["0.0000", "0.000", ": 0"]
+                                    x in line for x in ["0.0000", "0.000", ": 0\n", ": 0,", "= 0,", "= 0\n"]
                                 ):
                                     found = True
                                     break
 
                     if not found:
-                        errors.append(f"統計分析結果で{stat_name}が有効な値ではありません")
+                        errors.append(
+                            f"統計分析結果で{stat_name}が有効な値ではありません\n"
+                            + f"  対処: ./tools/scripts/run_quality_workflow.sh {tracker_id} を再実行"
+                        )
 
             except Exception as e:
                 errors.append(f"Statistical analysis file read error: {str(e)}")
