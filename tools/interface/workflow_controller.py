@@ -238,8 +238,8 @@ class WorkflowController:
                 description="Execute character extraction via SubAgent system",
                 prerequisites=["testing"],
                 validation_required=True,
-                approval_required=False,
-                auto_executable=True,
+                approval_required=True,  # KIRO-016: ユーザー確認必須
+                auto_executable=False,   # KIRO-016: 自動実行禁止
             ),
             "waiting_for_subagent": WorkflowStep(
                 step_id="waiting_for_subagent",
@@ -258,8 +258,8 @@ class WorkflowController:
                 description="Validate SubAgent extraction results and trigger retry if needed",
                 prerequisites=["waiting_for_subagent"],
                 validation_required=True,
-                approval_required=False,
-                auto_executable=True,
+                approval_required=True,   # KIRO-016: ユーザー確認必須（本来の仕様）
+                auto_executable=False,    # KIRO-016: 自動実行禁止
             ),
             "extraction": WorkflowStep(
                 step_id="extraction",
