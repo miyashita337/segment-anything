@@ -44,7 +44,86 @@ python tools/workflow/workflow_cli.py status {TRACKER_ID}
 python tools/workflow/workflow_cli.py approvals
 ```
 
+## Step-Specific Error Patterns
+
+ステップ別のエラーパターンと対処法。stepコマンドでエラーが発生したらこのセクションを参照。
+
+### quality_workflow ステップ
+
+| エラーパターン | 原因 | 対処法 |
+|---------------|------|--------|
+| `Quality report not found` | unified_quality_report.jsonが未生成 | `./tools/scripts/run_quality_workflow.sh {TRACKER_ID}` |
+| `Dashboard/Quality report not found` | 品質レポートまたはダッシュボードが未生成 | 下記の詳細対処を参照 |
+
+**詳細対処**:
+```bash
+# 品質レポートを確認
+ls -la {workspace}/{TRACKER_ID}/quality/unified_quality_report.json
+
+# 存在しない場合: run_quality_workflow.shを手動実行
+./tools/scripts/run_quality_workflow.sh {TRACKER_ID}
+```
+
+### dashboard_generation ステップ
+
+| エラーパターン | 原因 | 対処法 |
+|---------------|------|--------|
+| `必須ファイル不在: ダッシュボードHTMLファイル` | dashboard.htmlが未生成 | `python features/evaluation/dashboard_generator.py --tracker-id {TRACKER_ID}` |
+| `統計分析結果でBaseLineが有効な値ではありません` | 検証ロジックのバグ（`: 0`パターン） | workflow_controller.pyの検証ロジック修正が必要 |
+| `Dashboard HTML not found` | index.htmlへのコピーが未完了 | 下記の詳細対処を参照 |
+
+**詳細対処**:
+```bash
+# ダッシュボードを確認
+ls -la {workspace}/{TRACKER_ID}/dashboard/dashboard.html
+
+# 存在しない場合: ダッシュボード生成
+python features/evaluation/dashboard_generator.py --tracker-id {TRACKER_ID}
+
+# index.htmlへのコピー
+cp {workspace}/{TRACKER_ID}/dashboard/dashboard.html {workspace}/{TRACKER_ID}/index.html
+
+# 統合サーバー更新
+curl -u admin:secure_track_2025_q3_8f9a http://100.123.241.106:8088/refresh
+```
+
+### final_approval ステップ
+
+| エラーパターン | 原因 | 対処法 |
+|---------------|------|--------|
+| `承認待ち` | ユーザーの承認が必要 | 承認ファイル作成 |
+| `Approval file not found` | 承認ファイルが未作成 | 下記の詳細対処を参照 |
+
+**詳細対処**:
+```bash
+# 承認待ち確認
+python tools/workflow/workflow_cli.py approvals
+
+# 承認ファイル作成
+echo '{"approved": true, "approved_by": "ユーザー名"}' > .workflow_approvals/{APPROVAL_ID}_approved.json
+```
+
+### extraction ステップ
+
+| エラーパターン | 原因 | 対処法 |
+|---------------|------|--------|
+| `入力ディレクトリが存在しません` | source_imagesが未設定 | 入力画像を配置 |
+| `SubAgent未起動` | 抽出処理が未実行 | `subagent-extraction`コマンドを実行 |
+
+**詳細対処**:
+```bash
+# 入力ディレクトリ確認
+ls -la {workspace}/{TRACKER_ID}/source_images/
+
+# 入力画像を配置してから抽出実行
+python features/extraction/commands/extract_character.py --batch --input {workspace}/{TRACKER_ID}/source_images/
+```
+
+---
+
 ## Common Issues
+
+汎用的なトラブルシューティング。ステップ固有でないエラーに対応。
 
 ### 「stepでエラーが発生した」
 
@@ -55,10 +134,7 @@ python tools/workflow/workflow_cli.py status {TRACKER_ID}
 # 2. 現在のステップで何をすべきか確認
 python tools/workflow/workflow_cli.py instructions {TRACKER_ID}
 
-# 3. エラー内容に応じて対処
-# - ブランチ不一致 → git checkout feature/{TRACKER_ID}
-# - SubAgent未起動 → subagent-extractionコマンドを実行
-# - 承認待ち → approvalsで確認して承認ファイル作成
+# 3. エラー内容に応じて対処（上記Step-Specific Error Patternsを参照）
 ```
 
 ### 「Google Sheets接続エラー」
@@ -71,14 +147,15 @@ python tools/progress_tracker/cli.py check-config
 python tools/progress_tracker/test_connection.py
 ```
 
-### 「承認待ちでブロックされている」
+### 「間違ったブランチでcreateしてしまった」
 
 ```bash
-# 承認待ち確認
-python tools/workflow/workflow_cli.py approvals
+# SQLiteから該当トラッカーの状態を削除
+sqlite3 workflow_state.db "DELETE FROM workflow_states WHERE tracker_id='{TRACKER_ID}';"
 
-# 承認ファイル作成（手動）
-echo '{"approved": true, "approved_by": "ユーザー名"}' > .workflow_approvals/{APPROVAL_ID}_approved.json
+# 正しいブランチに切り替えてから再度create
+git checkout -b feature/{TRACKER_ID}
+python tools/workflow/workflow_cli.py create {TRACKER_ID}
 ```
 
 ### 「ステップが進まない」
@@ -89,39 +166,6 @@ python tools/workflow/workflow_cli.py status {TRACKER_ID}
 
 # 指示確認
 python tools/workflow/workflow_cli.py instructions {TRACKER_ID}
-```
-
-### 「quality_workflowでDashboard/Quality report not found」
-
-**原因**: ステップごとの生成物と検証対象の対応
-
-| ステップ | 生成物 | 検証対象 |
-|---------|--------|---------|
-| quality_workflow | unified_quality_report.json | unified_quality_report.json |
-| dashboard_generation | dashboard.html, index.html | dashboard.html, index.html |
-
-**対処**:
-```bash
-# quality_workflowの場合: 品質レポートを確認
-ls -la {workspace}/{TRACKER_ID}/quality/unified_quality_report.json
-
-# 存在しない場合: run_quality_workflow.shを手動実行
-./tools/scripts/run_quality_workflow.sh {TRACKER_ID}
-
-# dashboard_generationの場合: ダッシュボードを確認
-ls -la {workspace}/{TRACKER_ID}/dashboard/dashboard.html
-```
-
-### 「間違ったブランチでcreateしてしまった」
-
-ワークフロー状態をリセットする:
-```bash
-# SQLiteから該当トラッカーの状態を削除
-sqlite3 workflow_state.db "DELETE FROM workflow_states WHERE tracker_id='{TRACKER_ID}';"
-
-# 正しいブランチに切り替えてから再度create
-git checkout -b feature/{TRACKER_ID}
-python tools/workflow/workflow_cli.py create {TRACKER_ID}
 ```
 
 ---
