@@ -107,6 +107,43 @@ curl -u admin:secure_track_2025_q3_8f9a http://100.123.241.106:8088/refresh
 - 実際のファイル出力（画像ファイル）
 - 完全な機能実装
 
+## 📝 Skill自動更新ルール
+
+### 新規知見の追加
+
+workflow_cli.py 関連で以下を発見した場合、Skillを更新すること：
+- 新しいエラーパターンと解決策
+- よく使うコマンドパターン
+- トラブルシューティング手順
+
+**更新先**: `.claude/plugins/workflow-guide/skills/workflow-troubleshoot/`
+
+**更新手順**:
+1. SKILL.md の「Common Issues」セクションに追加（軽量な内容のみ）
+2. 詳細は `references/` に新規ファイルまたは既存ファイルに追記
+3. コミットメッセージ: `docs(skill): {追加内容の概要}`
+
+**制約**: SKILL.md は500行以下を維持。メタデータコメントは追加しない。
+
+### 修正連動ルール
+
+ユーザーから「それは間違い」「違う」等の指摘を受けた場合：
+
+1. **Skill確認**: 直近でSkillに追加した内容を確認
+   ```bash
+   git log --oneline -5 -- .claude/plugins/workflow-guide/
+   ```
+
+2. **該当箇所特定**: `git blame` で追加箇所を特定
+   ```bash
+   git blame .claude/plugins/workflow-guide/skills/workflow-troubleshoot/SKILL.md
+   ```
+
+3. **連動修正**: 間違った内容を修正または削除
+   - コミットメッセージ: `fix(skill): 誤情報修正 - {内容}`
+
+4. **確認**: ユーザーに「Skillも修正しました」と報告
+
 ## 🚨 Git操作安全性ガイドライン
 
 ### 絶対禁止コマンド
