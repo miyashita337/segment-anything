@@ -778,7 +778,9 @@ def main():
   %(prog)s step TRACKER-001                       # 現在のステップの完了を試行
   %(prog)s approvals                              # 承認待ちリストを表示
   %(prog)s process TRACKER-001                    # バックグラウンドプロセス状態を確認
-  %(prog)s sheets TRACKER-001                     # Google Sheets状態を確認
+  %(prog)s sheets TRACKER-001                     # Google Sheets状態を確認（簡易）
+  %(prog)s sheetget TRACKER-001                   # Google Sheet全列データ取得（詳細）
+  %(prog)s sheetget TRACKER-001 --json            # JSON形式で出力
   %(prog)s template TRACKER-001                   # 統合テンプレートを生成
   %(prog)s guide                                  # 統合ワークフローガイドを表示
 
