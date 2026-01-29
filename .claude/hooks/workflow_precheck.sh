@@ -21,6 +21,44 @@ log() {
     echo -e "\033[33m[workflow_precheck] $1\033[0m" >&2
 }
 
+# Read tool input from stdin (Claude Code passes JSON)
+TOOL_INPUT=$(cat)
+TOOL_NAME=$(echo "$TOOL_INPUT" | jq -r '.tool_name // empty' 2>/dev/null)
+COMMAND=$(echo "$TOOL_INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
+
+# KIRO-016: 確認系コマンドはブロック対象外
+# status, list, git status などの読み取り専用コマンドは常に許可
+is_readonly_command() {
+    local cmd="$1"
+    # workflow_cli.py の読み取り専用サブコマンド
+    if [[ "$cmd" =~ workflow_cli\.py.*(status|list|instructions|help) ]]; then
+        return 0
+    fi
+    # git の読み取り専用コマンド
+    if [[ "$cmd" =~ ^git\ (status|log|diff|show|branch) ]]; then
+        return 0
+    fi
+    # sqlite3 の読み取り専用コマンド (SELECT)
+    if [[ "$cmd" =~ sqlite3.*SELECT ]]; then
+        return 0
+    fi
+    # その他の読み取り専用コマンド
+    if [[ "$cmd" =~ ^(ls|cat|head|tail|grep|find|pwd|echo|which|type) ]]; then
+        return 0
+    fi
+    return 1
+}
+
+# Bash以外のツール、または読み取り専用コマンドは早期リターン（ブロックしない）
+if [[ "$TOOL_NAME" != "Bash" ]]; then
+    exit 0
+fi
+
+if [[ -n "$COMMAND" ]] && is_readonly_command "$COMMAND"; then
+    log "INFO: Read-only command detected, allowing execution"
+    exit 0
+fi
+
 # Check if jq is available
 if ! command -v jq &> /dev/null; then
     log "WARNING: jq not found, skipping workflow check"
