@@ -822,17 +822,24 @@ class WorkflowController:
                 errors.append(
                     f"統合サーバー接続不可\n"
                     + f"  URL: {server_url}\n"
-                    + "  対処: サーバーが起動しているか確認 (systemctl status integrated-dashboard)"
+                    + "  対処: サーバーが起動しているか確認 (systemctl status integrated-dashboard)\n"
+                    + "  💡 詳細: /workflow-troubleshoot (dashboard_generation セクション参照)"
                 )
             elif result.stdout not in ["200", "401", "403"]:
                 errors.append(
                     f"統合サーバー応答異常\n"
                     + f"  URL: {server_url}\n"
                     + f"  HTTPステータス: {result.stdout}\n"
-                    + "  対処: サーバーログを確認"
+                    + "  対処: サーバーログを確認\n"
+                    + "  💡 詳細: /workflow-troubleshoot (dashboard_generation セクション参照)"
                 )
         except subprocess.TimeoutExpired:
-            errors.append(f"統合サーバー接続タイムアウト (5秒)\n" + f"  URL: {server_url}\n" + "  対処: ネットワーク接続を確認")
+            errors.append(
+                f"統合サーバー接続タイムアウト (5秒)\n"
+                + f"  URL: {server_url}\n"
+                + "  対処: ネットワーク接続を確認\n"
+                + "  💡 詳細: /workflow-troubleshoot (dashboard_generation セクション参照)"
+            )
         except FileNotFoundError:
             errors.append("curlコマンドが見つかりません\n" + "  対処: apt install curl")
 
