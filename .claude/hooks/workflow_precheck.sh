@@ -16,8 +16,9 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 TIMEOUT_SECONDS=5
 
 # Log function (stderr to avoid interfering with tool output)
+# Yellow color for visibility
 log() {
-    echo "[workflow_precheck] $1" >&2
+    echo -e "\033[33m[workflow_precheck] $1\033[0m" >&2
 }
 
 # Check if jq is available

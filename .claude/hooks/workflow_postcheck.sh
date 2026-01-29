@@ -17,8 +17,9 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 TIMEOUT_SECONDS=5
 
 # Log function (stderr)
+# Yellow color for visibility
 log() {
-    echo "[workflow_postcheck] $1" >&2
+    echo -e "\033[33m[workflow_postcheck] $1\033[0m" >&2
 }
 
 # Read tool output from stdin (if available)
