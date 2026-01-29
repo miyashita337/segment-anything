@@ -664,6 +664,10 @@ class WorkflowController:
         # Step completed - advance to next
         next_step = self._get_next_step(current_step_id)
         if next_step:
+            # KIRO-025: sow_creation → implementation 遷移時に /pre-implementation-check を推奨
+            if current_step_id == "sow_creation" and next_step == "implementation":
+                self._show_pre_implementation_check_recommendation(tracker_id)
+
             self.state_manager.advance_to_next_step(tracker_id)
             return StepResult.COMPLETED(next_step)
         else:
@@ -927,6 +931,51 @@ class WorkflowController:
                 errors.append(f"Quality report validation error: {str(e)}")
 
         return ApprovalResult(success=len(errors) == 0, errors=errors)
+
+    # KIRO-025: /pre-implementation-check 推奨機能
+    def _show_pre_implementation_check_recommendation(self, tracker_id: str) -> None:
+        """
+        sow_creation → implementation 遷移時に /pre-implementation-check を推奨する。
+        1回のみ表示し、フラグで管理する。
+        """
+        if not self.state_manager:
+            return
+
+        flag_name = "pre_impl_check_shown"
+
+        # 既に表示済みの場合はスキップ
+        if self.state_manager.is_flag_set(tracker_id, flag_name):
+            logger.info(f"Pre-implementation check recommendation already shown for {tracker_id}")
+            return
+
+        # 推奨メッセージを表示
+        print("\n" + "=" * 70)
+        print("📋 推奨: /pre-implementation-check を実行してください")
+        print("=" * 70)
+        print()
+        print("実装開始前に以下のGateチェックを推奨します:")
+        print("  - Gate 1: 要件理解")
+        print("  - Gate 2: 影響度調査")
+        print("  - Gate 3: アーキテクチャ整合性")
+        print("  - Gate 4: テスト先行")
+        print("  - Gate 5: 既存コード理解")
+        print()
+        print("💡 実行結果はSOWに自動追記されます。")
+        print("   コマンド: /pre-implementation-check")
+        print()
+        print("=" * 70)
+        print("🎯 重要: 抽出実行はデフォルト必須です")
+        print("=" * 70)
+        print()
+        print("実装完了後、subagent_extractionステップでキャラクター抽出を実行します。")
+        print("「抽出不要」という独断判断は禁止されています。")
+        print()
+        print("⚠️  抽出をスキップする場合は、必ずユーザーの明示的な承認が必要です。")
+        print("=" * 70 + "\n")
+
+        # フラグを設定して次回以降は表示しない
+        self.state_manager.set_flag(tracker_id, flag_name, True)
+        logger.info(f"Pre-implementation check recommendation shown for {tracker_id}")
 
 
 # Global instance for easy access
