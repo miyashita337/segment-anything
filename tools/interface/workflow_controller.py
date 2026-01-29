@@ -15,8 +15,6 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -455,19 +453,24 @@ class WorkflowController:
 
             workspace_base = WorkspaceConfig.get_workspace_base()
 
+            # NOTE: dashboard.htmlはdashboard_generationステップで生成される
             actions = [
                 f"./tools/scripts/run_quality_workflow.sh {tracker_id}",
                 f"tail -f {workspace_base}/{tracker_id}/quality_workflow.log",
-                f"ls -la {workspace_base}/{tracker_id}/dashboard/dashboard.html",
-                f"curl -u $(cat config/auth.conf) http://100.123.241.106:8088/tracker/{tracker_id}",
+                f"ls -la {workspace_base}/{tracker_id}/quality/unified_quality_report.json",
                 f"python tools/workflow/workflow_cli.py step {tracker_id}  # 完了後の次ステップ実行",
             ]
         elif step_config.step_id == "dashboard_generation":
+            from config.workspace_config import WorkspaceConfig
+
+            workspace_base = WorkspaceConfig.get_workspace_base()
+
             actions = [
                 "統一ダッシュボードシステム v2.0 で自動実行されます",
                 "features/evaluation/dashboard_generator.py が使用されます",
+                f"ls -la {workspace_base}/{tracker_id}/dashboard/dashboard.html",
+                f"curl -u $(cat config/auth.conf) http://100.123.241.106:8088/tracker/{tracker_id}",
                 "index.html が自動生成され、統合サーバーと連携されます",
-                "Test server accessibility",
             ]
         elif step_config.step_id == "final_approval":
             actions = [
@@ -529,15 +532,16 @@ class WorkflowController:
                     "Successful extractions > 0",
                 ]
             elif step_config.step_id == "quality_workflow":
+                # NOTE: dashboard.htmlはdashboard_generationステップで検証
                 criteria = [
-                    "Dashboard HTML file exists",
-                    "Contains required sections",
-                    "Quality report JSON valid",
+                    "Quality report JSON exists (unified_quality_report.json)",
+                    "Quality report contains average_quality_score or evaluation_metrics",
                 ]
             elif step_config.step_id == "dashboard_generation":
                 criteria = [
+                    "Dashboard HTML file exists (dashboard/dashboard.html)",
+                    "Contains required sections (統計分析結果, 抽出結果ギャラリー)",
                     "index.html exists (統合サーバー用)",
-                    "dashboard/dashboard.html exists (統一システム生成)",
                     "Contains tracker-specific content",
                     "Valid HTML structure",
                     "統一ダッシュボードシステム v2.0 ヘッダー含有",
@@ -859,14 +863,19 @@ class WorkflowController:
                             lines = [line for line in stats_content.split("\n") if pattern in line]
                             if lines:
                                 line = lines[0]
+                                # NOTE: ": 0"は"0.194"などの有効な値も誤検出するため削除
+                                # 代わりに": 0\n"や"= 0,"など末尾の0のみをチェック
                                 if "N/A" not in line and not any(
-                                    x in line for x in ["0.0000", "0.000", ": 0"]
+                                    x in line for x in ["0.0000", "0.000", ": 0\n", ": 0,", "= 0,", "= 0\n"]
                                 ):
                                     found = True
                                     break
 
                     if not found:
-                        errors.append(f"統計分析結果で{stat_name}が有効な値ではありません")
+                        errors.append(
+                            f"統計分析結果で{stat_name}が有効な値ではありません\n"
+                            + f"  対処: ./tools/scripts/run_quality_workflow.sh {tracker_id} を再実行"
+                        )
 
             except Exception as e:
                 errors.append(f"Statistical analysis file read error: {str(e)}")

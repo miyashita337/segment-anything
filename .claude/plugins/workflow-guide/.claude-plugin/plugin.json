@@ -1,0 +1,9 @@
+{
+  "name": "workflow-guide",
+  "version": "1.0.0",
+  "description": "segment-anything プロジェクトのワークフローガイダンスを提供するプラグイン",
+  "author": {
+    "name": "Claude Code"
+  },
+  "skills": "./skills/"
+}

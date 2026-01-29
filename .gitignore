@@ -6,6 +6,9 @@ config/auth.conf
 # Progress tracking files (auto-generated)
 progress_history.json
 
+# Workflow CLI logs
+tools/workflow/logs/
+
 # PR description files (temporary)
 pull_request_description.md
 
