@@ -13,6 +13,7 @@ import logging
 import os
 import sys
 from datetime import datetime
+from pathlib import Path
 from typing import Optional
 
 # プロジェクトルートをパスに追加
@@ -22,8 +23,24 @@ if current_dir not in sys.path:
 
 from tools.workflow.subagent_command_handler import SubAgentCommandHandler
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+# ログファイルパス設定
+LOG_DIR = Path(__file__).parent / "logs"
+LOG_DIR.mkdir(exist_ok=True)
+LOG_FILE = LOG_DIR / "workflow_cli.log"
+
+# Console: WARNING以上、File: INFO以上
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.WARNING)
+
+file_handler = logging.FileHandler(LOG_FILE, encoding="utf-8")
+file_handler.setLevel(logging.INFO)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s: %(message)s",
+    handlers=[console_handler, file_handler],
+    force=True,
+)
 logger = logging.getLogger(__name__)
 
 
@@ -104,284 +121,366 @@ def create_tracker(tracker_id: str) -> bool:
 
 def get_status(tracker_id: str) -> bool:
     """トラッカーのワークフロー状態を取得"""
-    # ワークスペース設定の検証
-    from config.workspace_config import validate_tracker_setup
+    try:
+        # ワークスペース設定の検証
+        from config.workspace_config import validate_tracker_setup
 
-    validation = validate_tracker_setup(tracker_id)
+        validation = validate_tracker_setup(tracker_id)
 
-    if not validation["is_configured"]:
-        for error in validation["errors"]:
-            print(error)
+        if not validation["is_configured"]:
+            for error in validation["errors"]:
+                print(error)
+            return False
+
+        controller = get_workflow_controller()
+        if not controller:
+            return False
+
+        status = controller.get_workflow_status(tracker_id)
+
+        if "error" in status:
+            print(f"❌ エラー: {status['error']}")
+            return False
+
+        print(f"📋 {tracker_id} のワークフロー状態")
+        print(f"   現在のフェーズ: {status.get('current_phase', '不明')}")
+        print(f"   現在のステップ: {status.get('current_step', '不明')}")
+        print(f"   進行可能: {'✅' if status.get('can_proceed', False) else '❌'}")
+
+        # 完了したステップを表示
+        completed_steps = status.get("completed_steps", [])
+        if completed_steps:
+            print(f"   完了したステップ ({len(completed_steps)}):")
+            for step in completed_steps:
+                print(f"     ✅ {step['step_id']} ({step.get('completed_at', '時刻不明')})")
+
+        # 承認待ちを表示
+        pending_approvals = status.get("pending_approvals", [])
+        if pending_approvals:
+            print(f"   承認待ち ({len(pending_approvals)}):")
+            for approval in pending_approvals:
+                print(f"     ⏳ {approval['title']} (ID: {approval['approval_id']})")
+
+        # ブロックされたアクションを表示
+        blocked_actions = status.get("blocked_actions", [])
+        if blocked_actions:
+            print(f"   ブロックされたアクション ({len(blocked_actions)}):")
+            for action in blocked_actions:
+                print(f"     🚫 {action['action']}: {action['reason']}")
+
+        # 現在のステップ指示を表示
+        if "current_step_instructions" in status:
+            instructions = status["current_step_instructions"]
+            print(f"\n📝 現在のステップ指示:")
+            print(f"   タイトル: {instructions['title']}")
+            print(f"   説明: {instructions['description']}")
+
+            if instructions["required_actions"]:
+                print(f"   必要なアクション:")
+                for action in instructions["required_actions"]:
+                    print(f"     • {action}")
+
+            if instructions["validation_criteria"]:
+                print(f"   検証基準:")
+                for criterion in instructions["validation_criteria"]:
+                    print(f"     ✓ {criterion}")
+
+            if instructions["approval_required"]:
+                print(f"   ⚠️  承認が必要: はい")
+
+            if not instructions["can_proceed"] and instructions.get("blocking_reasons"):
+                print(f"   🚫 ブロック理由:")
+                for reason in instructions["blocking_reasons"]:
+                    print(f"     • {reason}")
+
+        # バックグラウンドプロセス状態を表示
+        if "background_process" in status:
+            process = status["background_process"]
+            print(f"\n🔄 バックグラウンドプロセス:")
+            print(f"   状態: {process['status']}")
+            print(f"   ステップ: {process['step']}")
+            if process["status"] == "running":
+                print(f"   PID: {process['pid']}")
+                print(f"   ログ: {process['log_file']}")
+
+        return True
+    except Exception as e:
+        logger.error(f"ステータス取得エラー [{tracker_id}]: {e}")
+        print(f"❌ ステータス取得エラー: {e}")
         return False
-
-    controller = get_workflow_controller()
-    if not controller:
-        return False
-
-    status = controller.get_workflow_status(tracker_id)
-
-    if "error" in status:
-        print(f"❌ エラー: {status['error']}")
-        return False
-
-    print(f"📋 {tracker_id} のワークフロー状態")
-    print(f"   現在のフェーズ: {status.get('current_phase', '不明')}")
-    print(f"   現在のステップ: {status.get('current_step', '不明')}")
-    print(f"   進行可能: {'✅' if status.get('can_proceed', False) else '❌'}")
-
-    # 完了したステップを表示
-    completed_steps = status.get("completed_steps", [])
-    if completed_steps:
-        print(f"   完了したステップ ({len(completed_steps)}):")
-        for step in completed_steps:
-            print(f"     ✅ {step['step_id']} ({step.get('completed_at', '時刻不明')})")
-
-    # 承認待ちを表示
-    pending_approvals = status.get("pending_approvals", [])
-    if pending_approvals:
-        print(f"   承認待ち ({len(pending_approvals)}):")
-        for approval in pending_approvals:
-            print(f"     ⏳ {approval['title']} (ID: {approval['approval_id']})")
-
-    # ブロックされたアクションを表示
-    blocked_actions = status.get("blocked_actions", [])
-    if blocked_actions:
-        print(f"   ブロックされたアクション ({len(blocked_actions)}):")
-        for action in blocked_actions:
-            print(f"     🚫 {action['action']}: {action['reason']}")
-
-    # 現在のステップ指示を表示
-    if "current_step_instructions" in status:
-        instructions = status["current_step_instructions"]
-        print(f"\n📝 現在のステップ指示:")
-        print(f"   タイトル: {instructions['title']}")
-        print(f"   説明: {instructions['description']}")
-
-        if instructions["required_actions"]:
-            print(f"   必要なアクション:")
-            for action in instructions["required_actions"]:
-                print(f"     • {action}")
-
-        if instructions["validation_criteria"]:
-            print(f"   検証基準:")
-            for criterion in instructions["validation_criteria"]:
-                print(f"     ✓ {criterion}")
-
-        if instructions["approval_required"]:
-            print(f"   ⚠️  承認が必要: はい")
-
-        if not instructions["can_proceed"] and instructions.get("blocking_reasons"):
-            print(f"   🚫 ブロック理由:")
-            for reason in instructions["blocking_reasons"]:
-                print(f"     • {reason}")
-
-    # バックグラウンドプロセス状態を表示
-    if "background_process" in status:
-        process = status["background_process"]
-        print(f"\n🔄 バックグラウンドプロセス:")
-        print(f"   状態: {process['status']}")
-        print(f"   ステップ: {process['step']}")
-        if process["status"] == "running":
-            print(f"   PID: {process['pid']}")
-            print(f"   ログ: {process['log_file']}")
-
-    return True
 
 
 def get_instructions(tracker_id: str) -> bool:
     """現在のステップ指示を取得"""
-    controller = get_workflow_controller()
-    if not controller:
+    try:
+        controller = get_workflow_controller()
+        if not controller:
+            return False
+
+        instructions = controller.get_current_step_instructions(tracker_id)
+        if not instructions:
+            print(f"❌ トラッカーの指示が見つかりません: {tracker_id}")
+            return False
+
+        print(f"📝 {tracker_id} の現在のステップ指示")
+        print(f"   ステップ: {instructions.step_id}")
+        print(f"   タイトル: {instructions.title}")
+        print(f"   説明: {instructions.description}")
+
+        if instructions.required_actions:
+            print(f"\n🔧 必要なアクション:")
+            for i, action in enumerate(instructions.required_actions, 1):
+                print(f"   {i}. {action}")
+
+        if instructions.validation_criteria:
+            print(f"\n✅ 検証基準:")
+            for criterion in instructions.validation_criteria:
+                print(f"   • {criterion}")
+
+        if instructions.approval_required:
+            print(f"\n⚠️  このステップには人間の承認が必要です")
+
+        if not instructions.can_proceed:
+            print(f"\n🚫 進行できません - 以下によりブロック:")
+            for reason in instructions.blocking_reasons or []:
+                print(f"   • {reason}")
+        else:
+            print(f"\n✅ 進行準備完了")
+
+        return True
+    except Exception as e:
+        logger.error(f"指示取得エラー [{tracker_id}]: {e}")
+        print(f"❌ 指示取得エラー: {e}")
         return False
-
-    instructions = controller.get_current_step_instructions(tracker_id)
-    if not instructions:
-        print(f"❌ トラッカーの指示が見つかりません: {tracker_id}")
-        return False
-
-    print(f"📝 {tracker_id} の現在のステップ指示")
-    print(f"   ステップ: {instructions.step_id}")
-    print(f"   タイトル: {instructions.title}")
-    print(f"   説明: {instructions.description}")
-
-    if instructions.required_actions:
-        print(f"\n🔧 必要なアクション:")
-        for i, action in enumerate(instructions.required_actions, 1):
-            print(f"   {i}. {action}")
-
-    if instructions.validation_criteria:
-        print(f"\n✅ 検証基準:")
-        for criterion in instructions.validation_criteria:
-            print(f"   • {criterion}")
-
-    if instructions.approval_required:
-        print(f"\n⚠️  このステップには人間の承認が必要です")
-
-    if not instructions.can_proceed:
-        print(f"\n🚫 進行できません - 以下によりブロック:")
-        for reason in instructions.blocking_reasons or []:
-            print(f"   • {reason}")
-    else:
-        print(f"\n✅ 進行準備完了")
-
-    return True
 
 
 def attempt_step(tracker_id: str) -> bool:
     """現在のステップの完了を試行"""
-    controller = get_workflow_controller()
-    if not controller:
+    try:
+        controller = get_workflow_controller()
+        if not controller:
+            return False
+
+        print(f"🔄 {tracker_id} の現在のステップ完了を試行中...")
+
+        result = controller.attempt_step_completion(tracker_id)
+
+        if result.status == "completed":
+            print(f"✅ ステップが正常に完了しました!")
+            print(f"   メッセージ: {result.message}")
+            if result.next_step:
+                print(f"   次のステップ: {result.next_step}")
+        elif result.status == "pending_approval":
+            print(f"⏳ ステップには承認が必要です")
+            print(f"   承認ID: {result.approval_id}")
+            print(f"   メッセージ: {result.message}")
+            print(f"\n   承認するには、承認ディレクトリで指示を確認してください")
+        elif result.status == "blocked":
+            print(f"🚫 ステップがブロックされています")
+            print(f"   メッセージ: {result.message}")
+            print(f"\n💡 対処法を確認: /workflow-troubleshoot または instructions {tracker_id}")
+        elif result.status == "failed":
+            print(f"❌ ステップが失敗しました")
+            print(f"   メッセージ: {result.message}")
+            print(f"\n💡 対処法を確認: /workflow-troubleshoot または instructions {tracker_id}")
+
+        return result.status in ["completed", "pending_approval"]
+    except Exception as e:
+        logger.error(f"ステップ実行エラー [{tracker_id}]: {e}")
+        print(f"❌ ステップ実行エラー: {e}")
         return False
-
-    print(f"🔄 {tracker_id} の現在のステップ完了を試行中...")
-
-    result = controller.attempt_step_completion(tracker_id)
-
-    if result.status == "completed":
-        print(f"✅ ステップが正常に完了しました!")
-        print(f"   メッセージ: {result.message}")
-        if result.next_step:
-            print(f"   次のステップ: {result.next_step}")
-    elif result.status == "pending_approval":
-        print(f"⏳ ステップには承認が必要です")
-        print(f"   承認ID: {result.approval_id}")
-        print(f"   メッセージ: {result.message}")
-        print(f"\n   承認するには、承認ディレクトリで指示を確認してください")
-    elif result.status == "blocked":
-        print(f"🚫 ステップがブロックされています")
-        print(f"   メッセージ: {result.message}")
-    elif result.status == "failed":
-        print(f"❌ ステップが失敗しました")
-        print(f"   メッセージ: {result.message}")
-
-    return result.status in ["completed", "pending_approval"]
 
 
 def list_approvals() -> bool:
     """承認待ちリストを表示"""
-    controller = get_workflow_controller()
-    if not controller or not controller.approval_controller:
-        print("❌ 承認コントローラーが利用できません")
-        return False
+    try:
+        controller = get_workflow_controller()
+        if not controller or not controller.approval_controller:
+            print("❌ 承認コントローラーが利用できません")
+            return False
 
-    pending = controller.approval_controller.list_pending_approvals()
+        pending = controller.approval_controller.list_pending_approvals()
 
-    if not pending:
-        print("✅ 承認待ちはありません")
+        if not pending:
+            print("✅ 承認待ちはありません")
+            return True
+
+        print(f"⏳ 承認待ち ({len(pending)}):")
+        for approval in pending:
+            print(f"\n📋 {approval['approval_id']}")
+            print(f"   トラッカー: {approval['tracker_id']}")
+            print(f"   ステップ: {approval['step_name']}")
+            print(f"   優先度: {approval['priority']}")
+            print(f"   要求日時: {approval['requested_at']}")
+            print(f"   残り時間: {approval.get('time_remaining_hours', 0):.1f} 時間")
+
+            if approval.get("approval_criteria"):
+                print(f"   基準:")
+                for criterion in approval["approval_criteria"]:
+                    print(f"     • {criterion}")
+
         return True
-
-    print(f"⏳ 承認待ち ({len(pending)}):")
-    for approval in pending:
-        print(f"\n📋 {approval['approval_id']}")
-        print(f"   トラッカー: {approval['tracker_id']}")
-        print(f"   ステップ: {approval['step_name']}")
-        print(f"   優先度: {approval['priority']}")
-        print(f"   要求日時: {approval['requested_at']}")
-        print(f"   残り時間: {approval.get('time_remaining_hours', 0):.1f} 時間")
-
-        if approval.get("approval_criteria"):
-            print(f"   基準:")
-            for criterion in approval["approval_criteria"]:
-                print(f"     • {criterion}")
-
-    return True
+    except Exception as e:
+        logger.error(f"承認リスト取得エラー: {e}")
+        print(f"❌ 承認リスト取得エラー: {e}")
+        return False
 
 
 def check_process(tracker_id: str) -> bool:
     """バックグラウンドプロセス状態を確認"""
-    controller = get_workflow_controller()
-    if not controller or not controller.executor:
-        print("❌ エグゼキューターが利用できません")
-        return False
+    try:
+        controller = get_workflow_controller()
+        if not controller or not controller.executor:
+            print("❌ エグゼキューターが利用できません")
+            return False
 
-    status = controller.executor.check_process_status(tracker_id)
+        status = controller.executor.check_process_status(tracker_id)
 
-    if not status:
-        print(f"ℹ️  {tracker_id} のバックグラウンドプロセスは実行されていません")
+        if not status:
+            print(f"ℹ️  {tracker_id} のバックグラウンドプロセスは実行されていません")
+            return True
+
+        print(f"🔄 {tracker_id} のバックグラウンドプロセス:")
+        print(f"   状態: {status['status']}")
+        print(f"   ステップ: {status['step']}")
+        print(f"   開始時刻: {status['started_at']}")
+
+        if status["status"] == "running":
+            print(f"   PID: {status['pid']}")
+            print(f"   ログ: {status['log_file']}")
+        elif status["status"] == "completed":
+            print(f"   完了時刻: {status['completed_at']}")
+            print(f"   リターンコード: {status['return_code']}")
+            if "validation" in status:
+                print(f"   検証: {status['validation']}")
+
         return True
-
-    print(f"🔄 {tracker_id} のバックグラウンドプロセス:")
-    print(f"   状態: {status['status']}")
-    print(f"   ステップ: {status['step']}")
-    print(f"   開始時刻: {status['started_at']}")
-
-    if status["status"] == "running":
-        print(f"   PID: {status['pid']}")
-        print(f"   ログ: {status['log_file']}")
-    elif status["status"] == "completed":
-        print(f"   完了時刻: {status['completed_at']}")
-        print(f"   リターンコード: {status['return_code']}")
-        if "validation" in status:
-            print(f"   検証: {status['validation']}")
-
-    return True
+    except Exception as e:
+        logger.error(f"プロセス状態確認エラー [{tracker_id}]: {e}")
+        print(f"❌ プロセス状態確認エラー: {e}")
+        return False
 
 
 # SubAgent関連のコマンドハンドラー関数
 def subagent_extraction(tracker_id: str, input_path: str = None, max_files: int = None) -> bool:
     """SubAgent抽出処理開始"""
-    handler = SubAgentCommandHandler()
-    return handler.handle_subagent_extraction(tracker_id, input_path, max_files)
+    try:
+        handler = SubAgentCommandHandler()
+        return handler.handle_subagent_extraction(tracker_id, input_path, max_files)
+    except Exception as e:
+        logger.error(f"SubAgent抽出エラー [{tracker_id}]: {e}")
+        print(f"❌ SubAgent抽出エラー: {e}")
+        return False
 
 
 def subagent_status(tracker_id: str) -> bool:
     """SubAgent状態確認"""
-    handler = SubAgentCommandHandler()
-    return handler.handle_subagent_status(tracker_id)
+    try:
+        handler = SubAgentCommandHandler()
+        return handler.handle_subagent_status(tracker_id)
+    except Exception as e:
+        logger.error(f"SubAgent状態確認エラー [{tracker_id}]: {e}")
+        print(f"❌ SubAgent状態確認エラー: {e}")
+        return False
 
 
 def subagent_retry(tracker_id: str) -> bool:
     """SubAgent再実行"""
-    handler = SubAgentCommandHandler()
-    return handler.handle_subagent_retry(tracker_id)
+    try:
+        handler = SubAgentCommandHandler()
+        return handler.handle_subagent_retry(tracker_id)
+    except Exception as e:
+        logger.error(f"SubAgent再実行エラー [{tracker_id}]: {e}")
+        print(f"❌ SubAgent再実行エラー: {e}")
+        return False
 
 
 def subagent_terminate(tracker_id: str, force: bool = False) -> bool:
     """SubAgent終了"""
-    handler = SubAgentCommandHandler()
-    return handler.handle_subagent_terminate(tracker_id, force)
+    try:
+        handler = SubAgentCommandHandler()
+        return handler.handle_subagent_terminate(tracker_id, force)
+    except Exception as e:
+        logger.error(f"SubAgent終了エラー [{tracker_id}]: {e}")
+        print(f"❌ SubAgent終了エラー: {e}")
+        return False
 
 
 def subagent_wait(tracker_id: str, timeout_minutes: int = 60) -> bool:
     """SubAgent完了待機"""
-    handler = SubAgentCommandHandler()
-    return handler.handle_subagent_wait(tracker_id, timeout_minutes)
+    try:
+        handler = SubAgentCommandHandler()
+        return handler.handle_subagent_wait(tracker_id, timeout_minutes)
+    except Exception as e:
+        logger.error(f"SubAgent待機エラー [{tracker_id}]: {e}")
+        print(f"❌ SubAgent待機エラー: {e}")
+        return False
 
 
 def subagent_cleanup(tracker_id: str) -> bool:
     """SubAgentロック強制クリーンアップ"""
-    handler = SubAgentCommandHandler()
-    return handler.handle_subagent_cleanup(tracker_id)
+    try:
+        handler = SubAgentCommandHandler()
+        return handler.handle_subagent_cleanup(tracker_id)
+    except Exception as e:
+        logger.error(f"SubAgentクリーンアップエラー [{tracker_id}]: {e}")
+        print(f"❌ SubAgentクリーンアップエラー: {e}")
+        return False
 
 
 def subagent_locks_status() -> bool:
     """全SubAgentロック状況確認"""
-    handler = SubAgentCommandHandler()
-    return handler.handle_subagent_locks_status()
+    try:
+        handler = SubAgentCommandHandler()
+        return handler.handle_subagent_locks_status()
+    except Exception as e:
+        logger.error(f"SubAgentロック状況確認エラー: {e}")
+        print(f"❌ SubAgentロック状況確認エラー: {e}")
+        return False
 
 
 def subagent_cleanup_all() -> bool:
     """全SubAgentロック強制クリーンアップ"""
-    handler = SubAgentCommandHandler()
-    return handler.handle_subagent_cleanup_all()
+    try:
+        handler = SubAgentCommandHandler()
+        return handler.handle_subagent_cleanup_all()
+    except Exception as e:
+        logger.error(f"SubAgent全クリーンアップエラー: {e}")
+        print(f"❌ SubAgent全クリーンアップエラー: {e}")
+        return False
 
 
 def subagent_auto_retry_check(tracker_id: str) -> bool:
     """SubAgent自動再実行条件確認"""
-    handler = SubAgentCommandHandler()
-    return handler.handle_subagent_auto_retry_check(tracker_id)
+    try:
+        handler = SubAgentCommandHandler()
+        return handler.handle_subagent_auto_retry_check(tracker_id)
+    except Exception as e:
+        logger.error(f"SubAgent自動再実行確認エラー [{tracker_id}]: {e}")
+        print(f"❌ SubAgent自動再実行確認エラー: {e}")
+        return False
 
 
 def subagent_auto_retry(tracker_id: str) -> bool:
     """SubAgent自動再実行実行"""
-    handler = SubAgentCommandHandler()
-    return handler.handle_subagent_auto_retry(tracker_id)
+    try:
+        handler = SubAgentCommandHandler()
+        return handler.handle_subagent_auto_retry(tracker_id)
+    except Exception as e:
+        logger.error(f"SubAgent自動再実行エラー [{tracker_id}]: {e}")
+        print(f"❌ SubAgent自動再実行エラー: {e}")
+        return False
 
 
 def subagent_auto_retry_all() -> bool:
     """全SubAgent自動再実行バッチ実行"""
-    handler = SubAgentCommandHandler()
-    return handler.handle_subagent_auto_retry_all()
+    try:
+        handler = SubAgentCommandHandler()
+        return handler.handle_subagent_auto_retry_all()
+    except Exception as e:
+        logger.error(f"SubAgent全自動再実行エラー: {e}")
+        print(f"❌ SubAgent全自動再実行エラー: {e}")
+        return False
 
 
 def generate_template(tracker_id: str, output_path: str = None) -> bool:
