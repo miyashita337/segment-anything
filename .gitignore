@@ -121,6 +121,7 @@ PRINCIPLE.md
 .claude/projects/
 .claude/config.toml
 .claude/project.json
+.claude/transcripts/
 
 # Serena integration files
 .serena/
