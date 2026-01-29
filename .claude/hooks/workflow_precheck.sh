@@ -46,14 +46,36 @@ if [[ ! -f "$DB_PATH" ]]; then
 fi
 
 # Get current active workflow (with timeout)
+# Note: workflow_states table doesn't have 'status' column
+# We get the most recent workflow by updated_at
 get_active_workflow() {
     timeout "$TIMEOUT_SECONDS" sqlite3 "$DB_PATH" \
         "SELECT tracker_id, current_phase, current_step, requires_approval
          FROM workflow_states
-         WHERE status = 'active'
          ORDER BY updated_at DESC
          LIMIT 1;" 2>/dev/null
 }
+
+# KIRO-016: シングルトン抽出制御
+# 抽出ステップにあるワークフローが存在するかチェック（並列抽出防止）
+check_extraction_in_progress() {
+    local count=$(timeout "$TIMEOUT_SECONDS" sqlite3 "$DB_PATH" \
+        "SELECT COUNT(*) FROM workflow_states
+         WHERE current_step IN ('subagent_extraction', 'subagent_validation');" 2>/dev/null)
+    echo "${count:-0}"
+}
+
+# シングルトン抽出制御: 抽出処理中は無条件でブロック
+EXTRACTION_COUNT=$(check_extraction_in_progress)
+if [[ "$EXTRACTION_COUNT" -gt 0 ]]; then
+    log "BLOCKED: 抽出処理が実行中です（シングルトン制御）"
+    echo "" >&2
+    echo "⚠️ 抽出処理が他のワークフローで実行中のため、新しい処理をブロックしました" >&2
+    echo "   GPUリソース保護のため、抽出処理は同時に1つのみ実行可能です" >&2
+    echo "" >&2
+    echo "確認コマンド: python tools/workflow/workflow_cli.py status" >&2
+    exit 2
+fi
 
 # Main check
 WORKFLOW_INFO=$(get_active_workflow)
@@ -73,22 +95,8 @@ APPROVAL_EXISTS=$(timeout "$TIMEOUT_SECONDS" sqlite3 "$DB_PATH" \
      AND step_id = '$CURRENT_STEP'
      AND status = 'approved';" 2>/dev/null)
 
-# KIRO-016: 抽出関連ステップの強制承認チェック
-# subagent_extraction または subagent_validation ステップは承認なしで進めることができない
-EXTRACTION_STEPS="subagent_extraction|subagent_validation"
-if [[ "$CURRENT_STEP" =~ $EXTRACTION_STEPS ]]; then
-    if [[ "$APPROVAL_EXISTS" != "1" ]]; then
-        log "BLOCKED: 画像抽出関連ステップには承認が必須です"
-        echo "" >&2
-        echo "⚠️ 画像抽出ステップは承認なしで進めることができません" >&2
-        echo "   ユーザーに確認してください：" >&2
-        echo "   - 画像抽出を実行しますか？" >&2
-        echo "   - スキップする場合はユーザーの明示的な指示が必要です" >&2
-        echo "" >&2
-        echo "承認コマンド: python tools/workflow/workflow_cli.py approve $TRACKER_ID" >&2
-        exit 2
-    fi
-fi
+# NOTE: 抽出ステップのシングルトン制御は上部で実行済み
+# ここに到達した場合、現在のワークフローは抽出ステップではない
 
 # Check if approval is required for current step (general case)
 if [[ "$REQUIRES_APPROVAL" == "1" ]]; then

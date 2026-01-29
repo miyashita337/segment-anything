@@ -520,25 +520,30 @@ class TestKIRO016ExtractionApprovalRequired(unittest.TestCase):
         )
 
     def test_precheck_contains_extraction_step_block_logic(self):
-        """workflow_precheck.sh に抽出ステップブロック処理が含まれること"""
+        """workflow_precheck.sh にシングルトン抽出制御処理が含まれること"""
         with open(self.precheck_script, "r", encoding="utf-8") as f:
             content = f.read()
 
-        # KIRO-016で追加された抽出ステップブロック処理の確認
+        # KIRO-016で追加されたシングルトン抽出制御処理の確認
         self.assertIn(
-            "EXTRACTION_STEPS",
+            "check_extraction_in_progress",
             content,
-            "EXTRACTION_STEPS variable should be defined in precheck hook",
+            "check_extraction_in_progress function should be defined in precheck hook",
         )
         self.assertIn(
-            "subagent_extraction|subagent_validation",
+            "subagent_extraction",
             content,
-            "Both extraction steps should be in EXTRACTION_STEPS pattern",
+            "subagent_extraction step should be in extraction check",
         )
         self.assertIn(
-            "画像抽出関連ステップには承認が必須",
+            "subagent_validation",
             content,
-            "Japanese error message for extraction step block should be present",
+            "subagent_validation step should be in extraction check",
+        )
+        self.assertIn(
+            "シングルトン制御",
+            content,
+            "Japanese message for singleton control should be present",
         )
 
     def test_postcheck_contains_extraction_warning_message(self):
@@ -652,9 +657,9 @@ class TestKIRO016ExtractionStepBlocking(unittest.TestCase):
         conn.commit()
         conn.close()
 
-    def test_subagent_extraction_blocked_without_approval(self):
-        """subagent_extraction は承認なしでブロックされること"""
-        # KIRO-016: この設定でrequires_approval=0でも抽出ステップはブロック
+    def test_subagent_extraction_blocked_singleton_control(self):
+        """subagent_extraction はシングルトン制御でブロックされること"""
+        # KIRO-016: シングルトン制御 - 抽出ステップにあるワークフローが存在すれば無条件ブロック
         self._insert_workflow("TEST-EXT-001", "phase_2", "subagent_extraction", requires_approval=0)
 
         env = os.environ.copy()
@@ -668,13 +673,14 @@ class TestKIRO016ExtractionStepBlocking(unittest.TestCase):
             env=env
         )
         self.assertEqual(result.returncode, 2,
-                         f"Should block (exit 2) subagent_extraction without approval. "
+                         f"Should block (exit 2) subagent_extraction due to singleton control. "
                          f"stderr: {result.stderr}")
-        self.assertIn("画像抽出ステップは承認なしで進めることができません", result.stderr,
-                      "Should show Japanese block message")
+        self.assertIn("シングルトン制御", result.stderr,
+                      "Should show singleton control message")
 
-    def test_subagent_validation_blocked_without_approval(self):
-        """subagent_validation は承認なしでブロックされること"""
+    def test_subagent_validation_blocked_singleton_control(self):
+        """subagent_validation はシングルトン制御でブロックされること"""
+        # KIRO-016: シングルトン制御 - 抽出ステップにあるワークフローが存在すれば無条件ブロック
         self._insert_workflow("TEST-VAL-001", "phase_2", "subagent_validation", requires_approval=0)
 
         env = os.environ.copy()
@@ -688,15 +694,18 @@ class TestKIRO016ExtractionStepBlocking(unittest.TestCase):
             env=env
         )
         self.assertEqual(result.returncode, 2,
-                         f"Should block (exit 2) subagent_validation without approval. "
+                         f"Should block (exit 2) subagent_validation due to singleton control. "
                          f"stderr: {result.stderr}")
-        self.assertIn("画像抽出ステップは承認なしで進めることができません", result.stderr,
-                      "Should show Japanese block message")
+        self.assertIn("シングルトン制御", result.stderr,
+                      "Should show singleton control message")
 
-    def test_subagent_extraction_allowed_with_approval(self):
-        """subagent_extraction は承認があれば許可されること"""
+    def test_multiple_extraction_records_all_blocked(self):
+        """複数ワークフローで抽出ステップが1つでもあればブロック"""
+        # KIRO-016: シングルトン制御 - いずれかのレコードが抽出ステップならブロック
+        # 古いレコード: 非抽出ステップ
+        self._insert_workflow("TEST-IMPL-001", "phase_2", "implementation", requires_approval=0)
+        # 新しいレコード: 抽出ステップ
         self._insert_workflow("TEST-EXT-002", "phase_2", "subagent_extraction", requires_approval=0)
-        self._insert_approval("TEST-EXT-002", "subagent_extraction", "approved")
 
         env = os.environ.copy()
         env["WORKFLOW_DB"] = str(self.mock_db)
@@ -708,14 +717,32 @@ class TestKIRO016ExtractionStepBlocking(unittest.TestCase):
             cwd=str(self.project_root),
             env=env
         )
-        self.assertEqual(result.returncode, 0,
-                         f"Should allow (exit 0) subagent_extraction with approval. "
+        self.assertEqual(result.returncode, 2,
+                         f"Should block (exit 2) when any workflow is in extraction step. "
                          f"stderr: {result.stderr}")
 
-    def test_subagent_validation_allowed_with_approval(self):
-        """subagent_validation は承認があれば許可されること"""
-        self._insert_workflow("TEST-VAL-002", "phase_2", "subagent_validation", requires_approval=0)
-        self._insert_approval("TEST-VAL-002", "subagent_validation", "approved")
+    def test_old_extraction_new_non_extraction_blocked(self):
+        """古い抽出ワークフロー + 新しい非抽出でもブロック"""
+        # KIRO-016: 最新が非抽出でも、古いレコードが抽出ステップならブロック
+        import sqlite3
+        conn = sqlite3.connect(str(self.mock_db))
+        cursor = conn.cursor()
+        # 古いレコード: 抽出ステップ
+        cursor.execute(
+            "INSERT INTO workflow_states "
+            "(tracker_id, current_phase, current_step, status, requires_approval, updated_at) "
+            "VALUES (?, ?, ?, 'active', 0, datetime('now', '-1 hour'))",
+            ("TEST-EXT-OLD", "phase_2", "subagent_extraction")
+        )
+        # 新しいレコード: 非抽出ステップ（最新）
+        cursor.execute(
+            "INSERT INTO workflow_states "
+            "(tracker_id, current_phase, current_step, status, requires_approval, updated_at) "
+            "VALUES (?, ?, ?, 'active', 0, datetime('now'))",
+            ("TEST-IMPL-NEW", "phase_2", "implementation")
+        )
+        conn.commit()
+        conn.close()
 
         env = os.environ.copy()
         env["WORKFLOW_DB"] = str(self.mock_db)
@@ -727,8 +754,8 @@ class TestKIRO016ExtractionStepBlocking(unittest.TestCase):
             cwd=str(self.project_root),
             env=env
         )
-        self.assertEqual(result.returncode, 0,
-                         f"Should allow (exit 0) subagent_validation with approval. "
+        self.assertEqual(result.returncode, 2,
+                         f"Should block when older workflow is in extraction. "
                          f"stderr: {result.stderr}")
 
     def test_non_extraction_step_not_blocked_by_extraction_logic(self):
