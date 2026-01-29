@@ -278,11 +278,27 @@ def attempt_step(tracker_id: str) -> bool:
         elif result.status == "blocked":
             print(f"🚫 ステップがブロックされています")
             print(f"   メッセージ: {result.message}")
-            print(f"\n💡 対処法を確認: /workflow-troubleshoot または instructions {tracker_id}")
+            print()
+            print("=" * 60)
+            print("⚠️  【必須】エラー発生 - スキル確認後に続行してください")
+            print("=" * 60)
+            print("   コマンド: /workflow-troubleshoot")
+            print(f"   または: instructions {tracker_id}")
+            print()
+            print("⛔ スキル未参照での独自対処は禁止です（KIRO-025）")
+            print("=" * 60)
         elif result.status == "failed":
             print(f"❌ ステップが失敗しました")
             print(f"   メッセージ: {result.message}")
-            print(f"\n💡 対処法を確認: /workflow-troubleshoot または instructions {tracker_id}")
+            print()
+            print("=" * 60)
+            print("⚠️  【必須】エラー発生 - スキル確認後に続行してください")
+            print("=" * 60)
+            print("   コマンド: /workflow-troubleshoot")
+            print(f"   または: instructions {tracker_id}")
+            print()
+            print("⛔ スキル未参照での独自対処は禁止です（KIRO-025）")
+            print("=" * 60)
 
         return result.status in ["completed", "pending_approval"]
     except Exception as e:

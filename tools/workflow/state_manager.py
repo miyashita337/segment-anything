@@ -86,6 +86,21 @@ class WorkflowStateManager:
             """
             )
 
+            # KIRO-025: フラグ管理テーブル追加
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS workflow_flags (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    tracker_id TEXT NOT NULL,
+                    flag_name TEXT NOT NULL,
+                    flag_value TEXT NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(tracker_id, flag_name)
+                )
+            """
+            )
+
             conn.commit()
             logger.info("Database tables initialized successfully")
 
@@ -96,7 +111,7 @@ class WorkflowStateManager:
                 with sqlite3.connect(self.db_path) as conn:
                     conn.execute(
                         """
-                        INSERT OR REPLACE INTO workflow_states 
+                        INSERT OR REPLACE INTO workflow_states
                         (tracker_id, current_phase, current_step, updated_at)
                         VALUES (?, ?, ?, CURRENT_TIMESTAMP)
                     """,
@@ -115,7 +130,7 @@ class WorkflowStateManager:
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
                 """
-                SELECT current_step FROM workflow_states 
+                SELECT current_step FROM workflow_states
                 WHERE tracker_id = ?
             """,
                 (tracker_id,),
@@ -173,7 +188,7 @@ class WorkflowStateManager:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
                     """
-                    UPDATE workflow_states 
+                    UPDATE workflow_states
                     SET current_step = ?, updated_at = CURRENT_TIMESTAMP
                     WHERE tracker_id = ?
                 """,
@@ -240,7 +255,7 @@ class WorkflowStateManager:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
                     """
-                    INSERT OR REPLACE INTO step_completions 
+                    INSERT OR REPLACE INTO step_completions
                     (tracker_id, step_id, status, completed_at, validation_evidence)
                     VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?)
                 """,
@@ -298,7 +313,7 @@ class WorkflowStateManager:
             with sqlite3.connect(self.db_path) as conn:
                 conn.execute(
                     """
-                    INSERT OR REPLACE INTO step_completions 
+                    INSERT OR REPLACE INTO step_completions
                     (tracker_id, step_id, status, completed_at, validation_evidence)
                     VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?)
                 """,
@@ -342,6 +357,93 @@ class WorkflowStateManager:
                 "blocked_actions": [],
                 "can_proceed": True,
             }
+
+    # KIRO-025: フラグ管理メソッド追加
+    def is_flag_set(self, tracker_id: str, flag_name: str) -> bool:
+        """
+        指定されたフラグが設定されているか確認する。
+
+        Args:
+            tracker_id: トラッカーID
+            flag_name: フラグ名
+
+        Returns:
+            フラグが設定されていてTrueの場合はTrue、それ以外はFalse
+        """
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.execute(
+                    """
+                    SELECT flag_value FROM workflow_flags
+                    WHERE tracker_id = ? AND flag_name = ?
+                    """,
+                    (tracker_id, flag_name),
+                )
+                row = cursor.fetchone()
+                if row:
+                    # "true", "1", "True" などを True として扱う
+                    return row[0].lower() in ("true", "1", "yes")
+                return False
+        except Exception as e:
+            logger.error(f"Error checking flag {flag_name} for {tracker_id}: {e}")
+            return False
+
+    def set_flag(self, tracker_id: str, flag_name: str, value: bool) -> bool:
+        """
+        フラグを設定する。
+
+        Args:
+            tracker_id: トラッカーID
+            flag_name: フラグ名
+            value: フラグ値（True/False）
+
+        Returns:
+            設定成功時True、失敗時False
+        """
+        try:
+            with self.lock:
+                with sqlite3.connect(self.db_path) as conn:
+                    conn.execute(
+                        """
+                        INSERT OR REPLACE INTO workflow_flags
+                        (tracker_id, flag_name, flag_value, updated_at)
+                        VALUES (?, ?, ?, CURRENT_TIMESTAMP)
+                        """,
+                        (tracker_id, flag_name, str(value).lower()),
+                    )
+                    conn.commit()
+                    logger.info(f"Set flag {flag_name}={value} for {tracker_id}")
+                    return True
+        except Exception as e:
+            logger.error(f"Error setting flag {flag_name} for {tracker_id}: {e}")
+            return False
+
+    def get_all_flags(self, tracker_id: str) -> Dict[str, bool]:
+        """
+        トラッカーの全フラグを取得する。
+
+        Args:
+            tracker_id: トラッカーID
+
+        Returns:
+            フラグ名とその値の辞書
+        """
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.execute(
+                    """
+                    SELECT flag_name, flag_value FROM workflow_flags
+                    WHERE tracker_id = ?
+                    """,
+                    (tracker_id,),
+                )
+                flags = {}
+                for row in cursor.fetchall():
+                    flags[row[0]] = row[1].lower() in ("true", "1", "yes")
+                return flags
+        except Exception as e:
+            logger.error(f"Error getting flags for {tracker_id}: {e}")
+            return {}
 
 
 # Singleton instance for global access
