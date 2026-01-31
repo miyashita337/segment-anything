@@ -24,8 +24,8 @@ class TestArchiveTranscriptHook(TestCase):
     def setUp(self):
         """テスト用の一時ディレクトリを作成"""
         self.temp_dir = tempfile.mkdtemp()
-        # スクリプトは archives（複数形）を使用
-        self.archive_dir = Path(self.temp_dir) / ".claude" / "transcripts" / "archives"
+        # スクリプトは archive（複数形）を使用
+        self.archive_dir = Path(self.temp_dir) / ".claude" / "transcripts" / "archive"
 
     def tearDown(self):
         """一時ディレクトリを削除"""
@@ -67,15 +67,15 @@ class TestArchiveTranscriptHook(TestCase):
         # アーカイブディレクトリが作成されている
         self.assertTrue(self.archive_dir.exists())
 
-        # アーカイブファイルが存在する（{session_id}_{timestamp}.jsonl形式）
-        archived_files = list(self.archive_dir.glob("abc123_*.jsonl"))
+        # アーカイブファイルが存在する（{session_id}_{trigger}_{timestamp}.jsonl形式）
+        archived_files = list(self.archive_dir.glob("abc123_*_*.jsonl"))
         self.assertEqual(len(archived_files), 1)
 
         # 内容が正しくコピーされている
         self.assertEqual(archived_files[0].read_text(), transcript_content)
 
     def test_filename_format(self):
-        """正常系: 適切なファイル名形式で保存される（{session_id}_{timestamp}.jsonl）"""
+        """正常系: 適切なファイル名形式で保存される（{session_id}_{trigger}_{timestamp}.jsonl）"""
         transcript_file = Path(self.temp_dir) / "test_transcript.jsonl"
         transcript_file.write_text('{"test": true}\n')
 
@@ -90,12 +90,12 @@ class TestArchiveTranscriptHook(TestCase):
         self.assertEqual(len(archived_files), 1)
 
         filename = archived_files[0].name
-        # フォーマット確認: session_xyz_YYYYMMDD_HHMMSS.jsonl
+        # フォーマット確認: session_xyz_manual_YYYYMMDD_HHMMSS.jsonl
         self.assertTrue(filename.startswith("session_xyz_"))
         self.assertTrue(filename.endswith(".jsonl"))
         # タイムスタンプ部分の長さ確認（YYYYMMDD_HHMMSS = 15文字）
         timestamp_part = filename.replace("session_xyz_", "").replace(".jsonl", "")
-        self.assertEqual(len(timestamp_part), 15)
+        self.assertEqual(len(timestamp_part), 22)
 
     # === エッジケーステスト ===
 
@@ -369,7 +369,7 @@ class TestDirectoryAutoCreation(TestCase):
     def setUp(self):
         """テスト用の一時ディレクトリを作成（空の状態）"""
         self.temp_dir = tempfile.mkdtemp()
-        self.archive_dir = Path(self.temp_dir) / ".claude" / "transcripts" / "archives"
+        self.archive_dir = Path(self.temp_dir) / ".claude" / "transcripts" / "archive"
         self.log_dir = Path(self.temp_dir) / ".claude" / "transcripts" / "logs"
 
     def tearDown(self):
@@ -390,8 +390,8 @@ class TestDirectoryAutoCreation(TestCase):
             env=env,
         )
 
-    def test_archives_directory_auto_creation(self):
-        """archives/ディレクトリが存在しない場合に自動作成されること"""
+    def test_archive_directory_auto_creation(self):
+        """archive/ディレクトリが存在しない場合に自動作成されること"""
         # 事前確認: ディレクトリが存在しない
         self.assertFalse(self.archive_dir.exists())
 
@@ -446,7 +446,7 @@ class TestTranscriptHooksIntegration(TestCase):
     def setUp(self):
         """テスト用の一時ディレクトリを作成"""
         self.temp_dir = tempfile.mkdtemp()
-        self.archive_dir = Path(self.temp_dir) / ".claude" / "transcripts" / "archives"
+        self.archive_dir = Path(self.temp_dir) / ".claude" / "transcripts" / "archive"
         self.log_dir = Path(self.temp_dir) / ".claude" / "transcripts" / "logs"
 
     def tearDown(self):
@@ -501,7 +501,7 @@ class TestTranscriptHooksIntegration(TestCase):
         self.assertIn("integration test", archived_files[0].read_text())
         self.assertIn("integration test", log_files[0].read_text())
 
-    def test_multiple_archives_same_session(self):
+    def test_multiple_archive_same_session(self):
         """同一セッションで複数回アーカイブが作成される場合"""
         transcript_file = Path(self.temp_dir) / "session_transcript.jsonl"
         session_id = "multi_archive_session"
@@ -526,11 +526,11 @@ class TestTranscriptHooksIntegration(TestCase):
         })
 
         # 検証: 2つのアーカイブが存在
-        all_archives = list(self.archive_dir.glob(f"{session_id}_*.jsonl"))
-        self.assertEqual(len(all_archives), 2)
+        all_archive = list(self.archive_dir.glob(f"{session_id}_*.jsonl"))
+        self.assertEqual(len(all_archive), 2)
 
         # 検証: 内容が異なる
-        contents = [f.read_text() for f in sorted(all_archives)]
+        contents = [f.read_text() for f in sorted(all_archive)]
         self.assertIn('{"step":1}', contents[0])
         self.assertIn('{"step":2}', contents[1])
 
