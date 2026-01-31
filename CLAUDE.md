@@ -152,6 +152,14 @@ Claudeはこのルールを会話開始時に内部的に再確認すること�
 - メインコンテキストで大量のファイルを直接読み込む
 - 無関係なタスクを同一セッションで混在させる（キッチンシンク）
 
+### workflow_cli.py出力時の自動動作
+
+`workflow_cli.py step`の出力に`[TASK_TOOL_REQUIRED]`マーカーを含む場合、
+Claudeは自動的にTask toolを呼び出すこと。
+
+- マーカー検知 → 即座にTask tool（Explore or general-purpose）を使用
+- Lost-in-the-Middle対策として、このルールを会話開始時に再確認すること
+
 ## 最重要原則
 
 [PRINCIPLE.md](PRINCIPLE.md)を参照
