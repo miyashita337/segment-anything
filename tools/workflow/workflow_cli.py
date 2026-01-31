@@ -278,11 +278,27 @@ def attempt_step(tracker_id: str) -> bool:
         elif result.status == "blocked":
             print(f"🚫 ステップがブロックされています")
             print(f"   メッセージ: {result.message}")
-            print(f"\n💡 対処法を確認: /workflow-troubleshoot または instructions {tracker_id}")
+            print()
+            print("=" * 60)
+            print("⚠️  【必須】エラー発生 - スキル確認後に続行してください")
+            print("=" * 60)
+            print("   コマンド: /workflow-troubleshoot")
+            print(f"   または: instructions {tracker_id}")
+            print()
+            print("⛔ スキル未参照での独自対処は禁止です（KIRO-025）")
+            print("=" * 60)
         elif result.status == "failed":
             print(f"❌ ステップが失敗しました")
             print(f"   メッセージ: {result.message}")
-            print(f"\n💡 対処法を確認: /workflow-troubleshoot または instructions {tracker_id}")
+            print()
+            print("=" * 60)
+            print("⚠️  【必須】エラー発生 - スキル確認後に続行してください")
+            print("=" * 60)
+            print("   コマンド: /workflow-troubleshoot")
+            print(f"   または: instructions {tracker_id}")
+            print()
+            print("⛔ スキル未参照での独自対処は禁止です（KIRO-025）")
+            print("=" * 60)
 
         return result.status in ["completed", "pending_approval"]
     except Exception as e:
@@ -632,10 +648,12 @@ def check_sheets_status(tracker_id: str) -> bool:
         if current_dir not in sys.path:
             sys.path.insert(0, current_dir)
 
+        from tools.progress_tracker.config import get_default_config
         from tools.progress_tracker.progress_manager import ProgressManager
 
         # Google Sheetsマネージャー初期化
-        progress_manager = ProgressManager()
+        config = get_default_config()
+        progress_manager = ProgressManager(config)
 
         # タスク情報取得
         task = progress_manager.get_task(tracker_id)
@@ -662,6 +680,78 @@ def check_sheets_status(tracker_id: str) -> bool:
         print(f"❌ Google Sheets確認でエラーが発生: {e}")
         print(f"📋 Google Sheets設定を確認してください:")
         print(f"   python tools/progress_tracker/cli.py check-config")
+        return False
+
+
+def get_sheet_row(tracker_id: str, output_json: bool = False) -> bool:
+    """Google Sheetから指定トラッカーIDの全列データを取得"""
+    try:
+        # 既存のGoogle Sheets連携システムを使用
+        import os
+        import sys
+
+        current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        if current_dir not in sys.path:
+            sys.path.insert(0, current_dir)
+
+        from tools.progress_tracker.config import get_default_config
+        from tools.progress_tracker.sheets_client import GoogleSheetsClient
+
+        # GoogleSheetsClient初期化
+        config = get_default_config()
+        client = GoogleSheetsClient(config)
+
+        # 全タスク取得してIDでフィルタ
+        tasks = client.get_all_tasks()
+        task = None
+        for t in tasks:
+            if t.tracker_id == tracker_id:
+                task = t
+                break
+
+        if not task:
+            print(f"❌ トラッカーが見つかりません: {tracker_id}")
+            return False
+
+        if output_json:
+            # JSON形式出力
+            import json
+
+            task_dict = {
+                "tracker_id": task.tracker_id,
+                "description": task.description,
+                "status": task.status.value if hasattr(task.status, "value") else str(task.status),
+                "priority": (
+                    task.priority.value if hasattr(task.priority, "value") else str(task.priority)
+                ),
+                "created_date": str(task.created_date) if task.created_date else None,
+                "updated_date": str(task.updated_date) if task.updated_date else None,
+                "details": task.details if task.details else None,
+            }
+            print(json.dumps(task_dict, indent=2, ensure_ascii=False))
+        else:
+            # テキスト形式出力（全フィールド）
+            print(f"📊 Google Sheet行データ: {tracker_id}")
+            print("─" * 50)
+            print(f"  tracker_id: {task.tracker_id}")
+            print(f"  description: {task.description}")
+            status_val = task.status.value if hasattr(task.status, "value") else task.status
+            print(f"  status: {status_val}")
+            priority_val = task.priority.value if hasattr(task.priority, "value") else task.priority
+            print(f"  priority: {priority_val}")
+            if task.created_date:
+                print(f"  created_date: {task.created_date}")
+            if task.updated_date:
+                print(f"  updated_date: {task.updated_date}")
+            if task.details:
+                print(f"  details: {task.details}")
+
+        return True
+
+    except Exception as e:
+        print(f"❌ シートデータ取得エラー: {e}")
+        print("📋 Google Sheets設定を確認してください:")
+        print("   python tools/progress_tracker/cli.py check-config")
         return False
 
 
@@ -803,7 +893,9 @@ def main():
   %(prog)s step TRACKER-001                       # 現在のステップの完了を試行
   %(prog)s approvals                              # 承認待ちリストを表示
   %(prog)s process TRACKER-001                    # バックグラウンドプロセス状態を確認
-  %(prog)s sheets TRACKER-001                     # Google Sheets状態を確認
+  %(prog)s sheets TRACKER-001                     # Google Sheets状態を確認（簡易）
+  %(prog)s sheetget TRACKER-001                   # Google Sheet全列データ取得（詳細）
+  %(prog)s sheetget TRACKER-001 --json            # JSON形式で出力
   %(prog)s template TRACKER-001                   # 統合テンプレートを生成
   %(prog)s guide                                  # 統合ワークフローガイドを表示
 
@@ -859,6 +951,11 @@ def main():
     # Google Sheets確認
     sheets_parser = subparsers.add_parser("sheets", help="Google Sheets状態を確認")
     sheets_parser.add_argument("tracker_id", help="トラッカーID")
+
+    # Google Sheetデータ取得
+    sheetget_parser = subparsers.add_parser("sheetget", help="Google Sheetから指定トラッカーIDの全列データを取得")
+    sheetget_parser.add_argument("tracker_id", help="トラッカーID (例: TRACKER-001)")
+    sheetget_parser.add_argument("--json", action="store_true", help="JSON形式で出力")
 
     # テンプレート生成
     template_parser = subparsers.add_parser("template", help="統合テンプレートを生成")
@@ -943,6 +1040,8 @@ def main():
             success = generate_template(args.tracker_id, args.output)
         elif args.command == "sheets":
             success = check_sheets_status(args.tracker_id)
+        elif args.command == "sheetget":
+            success = get_sheet_row(args.tracker_id, getattr(args, "json", False))
         elif args.command == "guide":
             success = show_guide()
         # SubAgentコマンド処理

@@ -115,11 +115,14 @@ visualizations/
 PRINCIPLE.md
 
 # Claude Code integration files
-.claude/*
-!.claude/plugins/
-!.claude/commands/
+# .claude/ - 基本的にはgit管理対象、以下を除外
 .claude/settings.local.json
 .claude/settings.local.json.backup
+.claude/projects/
+.claude/config.toml
+.claude/project.json
+
+# Serena integration files
 .serena/
 
 # Dashboard server logs

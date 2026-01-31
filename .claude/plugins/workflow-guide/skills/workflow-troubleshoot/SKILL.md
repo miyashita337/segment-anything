@@ -87,6 +87,34 @@ cp {workspace}/{TRACKER_ID}/dashboard/dashboard.html {workspace}/{TRACKER_ID}/in
 curl -u admin:secure_track_2025_q3_8f9a http://100.123.241.106:8088/refresh
 ```
 
+### 複数作者ワークスペース対応
+
+統合サーバーが特定の作者のワークスペースしかスキャンしていない場合：
+
+| エラーパターン | 原因 | 対処法 |
+|---------------|------|--------|
+| `/tracker/{ID}` で404 | サーバーがワークスペースをスキャンしていない | サーバー設定確認・refresh実行 |
+| refreshしても認識されない | 作者別ワークスペースが対象外 | 手動でindex.htmlをコピー |
+
+**詳細対処**:
+```bash
+# 1. 現在のワークスペース確認
+ls /mnt/c/AItools/lora/train/*/tracker-workspace/{TRACKER_ID}/
+
+# 2. 統合サーバーのスキャン対象を確認
+# サーバーは主に yado/tracker-workspace をスキャン
+
+# 3. 別作者のワークスペースの場合、yadoにシンボリックリンク作成
+ln -s /mnt/c/AItools/lora/train/{作者名}/tracker-workspace/{TRACKER_ID} \
+      /mnt/c/AItools/lora/train/yado/tracker-workspace/{TRACKER_ID}
+
+# 4. サーバー再スキャン
+curl -u admin:secure_track_2025_q3_8f9a http://100.123.241.106:8088/refresh
+
+# 5. アクセス確認
+curl -u admin:secure_track_2025_q3_8f9a http://100.123.241.106:8088/tracker/{TRACKER_ID}
+```
+
 ### final_approval ステップ
 
 | エラーパターン | 原因 | 対処法 |

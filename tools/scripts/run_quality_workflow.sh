@@ -403,6 +403,8 @@ if [ -d "$WORKSPACE_BASE" ]; then
         echo "ℹ️  利用可能トラッカー: $(ls "$WORKSPACE_BASE" | grep -E "^(QUAL|INTG|INCI)-[0-9]" | grep -v "$TRACKER_ID" | tr '\n' ' ')"
         echo "ℹ️  統計分析をスキップしました。手動実行する場合："
         echo "    sam-env/bin/python3 tools/progress_tracker/universal_statistical_analyzer.py --current $TRACKER_ID --baseline BASELINE_ID"
+        echo ""
+        echo "💡 対処法を確認: /workflow-troubleshoot (BaseLine参照エラー セクション参照)"
     fi
 else
     echo "⚠️  ワークスペースベースディレクトリが見つかりません: $WORKSPACE_BASE"

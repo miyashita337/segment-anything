@@ -11,6 +11,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 本プロジェクトは開発段階にあり、v0.x.x のバージョニングが適切です。
 今後は v0.1.2 から継続し、真の安定版達成時に v1.0.0 をリリースします。
 
+## [v0.9.39] - 2026-01-29
+
+### Added
+- **KIRO-021: sheetgetコマンド新規追加**
+  - Google Sheetから指定トラッカーIDの全列データを取得
+  - テキスト形式（デフォルト）とJSON形式（`--json`フラグ）の出力に対応
+  - 使用例: `workflow_cli.py sheetget TRACKER-001 --json`
+- **sheets/sheetgetコマンドのユニットテスト追加**: 12件のテストケース（成功/失敗シナリオをカバー）
+
+### Fixed
+- **sheetsコマンドのバグ修正**: `ProgressManager`初期化時の`config`引数不足エラーを解消
+
+### Thanks
+- @miyashita337 for KIRO-021 implementation
+
 ## [v0.9.38] - 2026-01-27
 
 ### Changed
