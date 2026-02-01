@@ -18,7 +18,7 @@ from unittest.mock import MagicMock, patch
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 
-from tools.workflow.workflow_cli import step_requires_investigation, _output_task_tool_marker
+from tools.workflow.workflow_cli import _output_task_tool_marker, step_requires_investigation
 
 
 class TestStepRequiresInvestigation(unittest.TestCase):
@@ -27,24 +27,18 @@ class TestStepRequiresInvestigation(unittest.TestCase):
     def test_plan_step_requires_investigation(self):
         """KIRO-024: planステップがinvestigation_stepsに含まれることを検証"""
         result = step_requires_investigation("plan")
-        self.assertTrue(
-            result,
-            "planは調査必須ステップのためTrueを返すべき"
-        )
+        self.assertTrue(result, "planは調査必須ステップのためTrueを返すべき")
 
     def test_create_step_requires_investigation(self):
         """KIRO-024: createステップがinvestigation_stepsに含まれることを検証"""
         result = step_requires_investigation("create")
-        self.assertTrue(
-            result,
-            "createは調査必須ステップのためTrueを返すべき"
-        )
+        self.assertTrue(result, "createは調査必須ステップのためTrueを返すべき")
 
     def test_investigation_required_steps(self):
         """調査必須ステップでTrueを返すこと（plan/create含む8ステップ）"""
         investigation_steps = [
-            "plan",                   # KIRO-024で追加
-            "create",                 # KIRO-024で追加
+            "plan",  # KIRO-024で追加
+            "create",  # KIRO-024で追加
             "sow_creation",
             "implementation",
             "quality_workflow",
@@ -56,10 +50,7 @@ class TestStepRequiresInvestigation(unittest.TestCase):
         for step in investigation_steps:
             with self.subTest(step=step):
                 result = step_requires_investigation(step)
-                self.assertTrue(
-                    result,
-                    f"{step} は調査必須ステップのためTrueを返すべき"
-                )
+                self.assertTrue(result, f"{step} は調査必須ステップのためTrueを返すべき")
 
     def test_investigation_not_required_steps(self):
         """調査不要ステップでFalseを返すこと"""
@@ -77,10 +68,7 @@ class TestStepRequiresInvestigation(unittest.TestCase):
         for step in non_investigation_steps:
             with self.subTest(step=step):
                 result = step_requires_investigation(step)
-                self.assertFalse(
-                    result,
-                    f"{step} は調査不要ステップのためFalseを返すべき"
-                )
+                self.assertFalse(result, f"{step} は調査不要ステップのためFalseを返すべき")
 
     def test_empty_string(self):
         """空文字列でFalseを返すこと"""
@@ -96,27 +84,12 @@ class TestStepRequiresInvestigation(unittest.TestCase):
     def test_case_sensitivity(self):
         """大文字小文字を正しく区別すること"""
         # 大文字バリエーション
-        self.assertFalse(
-            step_requires_investigation("SOW_CREATION"),
-            "大文字はFalseを返すべき（厳密マッチ）"
-        )
-        self.assertFalse(
-            step_requires_investigation("Implementation"),
-            "キャメルケースはFalseを返すべき（厳密マッチ）"
-        )
-        self.assertFalse(
-            step_requires_investigation("TESTING"),
-            "全大文字はFalseを返すべき（厳密マッチ）"
-        )
+        self.assertFalse(step_requires_investigation("SOW_CREATION"), "大文字はFalseを返すべき（厳密マッチ）")
+        self.assertFalse(step_requires_investigation("Implementation"), "キャメルケースはFalseを返すべき（厳密マッチ）")
+        self.assertFalse(step_requires_investigation("TESTING"), "全大文字はFalseを返すべき（厳密マッチ）")
         # KIRO-024: plan/createの大文字小文字も確認
-        self.assertFalse(
-            step_requires_investigation("PLAN"),
-            "PLANはFalseを返すべき（厳密マッチ）"
-        )
-        self.assertFalse(
-            step_requires_investigation("CREATE"),
-            "CREATEはFalseを返すべき（厳密マッチ）"
-        )
+        self.assertFalse(step_requires_investigation("PLAN"), "PLANはFalseを返すべき（厳密マッチ）")
+        self.assertFalse(step_requires_investigation("CREATE"), "CREATEはFalseを返すべき（厳密マッチ）")
 
     def test_unknown_step(self):
         """未知のステップ名でFalseを返すこと"""
@@ -130,10 +103,7 @@ class TestStepRequiresInvestigation(unittest.TestCase):
         for step in unknown_steps:
             with self.subTest(step=step):
                 result = step_requires_investigation(step)
-                self.assertFalse(
-                    result,
-                    f"{step} は未知のステップのためFalseを返すべき"
-                )
+                self.assertFalse(result, f"{step} は未知のステップのためFalseを返すべき")
 
     def test_total_investigation_steps_count(self):
         """KIRO-024: investigation_stepsの総数が8であることを検証"""
@@ -150,8 +120,7 @@ class TestStepRequiresInvestigation(unittest.TestCase):
         # すべてのステップがTrueを返すことを確認
         for step in all_investigation_steps:
             self.assertTrue(
-                step_requires_investigation(step),
-                f"{step}がinvestigation_stepsに含まれていない"
+                step_requires_investigation(step), f"{step}がinvestigation_stepsに含まれていない"
             )
 
 
@@ -163,11 +132,7 @@ class TestOutputTaskToolMarker(unittest.TestCase):
         captured_output = StringIO()
         sys.stdout = captured_output
         try:
-            _output_task_tool_marker(
-                "テスト理由",
-                "テストタスク",
-                "テスト詳細"
-            )
+            _output_task_tool_marker("テスト理由", "テストタスク", "テスト詳細")
         finally:
             sys.stdout = sys.__stdout__
 
@@ -183,11 +148,7 @@ class TestOutputTaskToolMarker(unittest.TestCase):
         captured_output = StringIO()
         sys.stdout = captured_output
         try:
-            _output_task_tool_marker(
-                "Google Sheets接続エラー",
-                "plan",
-                "トラッカーID: TEST-001"
-            )
+            _output_task_tool_marker("Google Sheets接続エラー", "plan", "トラッカーID: TEST-001")
         finally:
             sys.stdout = sys.__stdout__
 
@@ -308,10 +269,7 @@ class TestCreateTrackerMarkerOutput(unittest.TestCase):
         """ワークスペース設定検証失敗時にマーカーが出力されることを検証"""
         from tools.workflow.workflow_cli import create_tracker
 
-        mock_validate.return_value = {
-            "is_configured": False,
-            "errors": ["❌ ワークスペースが設定されていません"]
-        }
+        mock_validate.return_value = {"is_configured": False, "errors": ["❌ ワークスペースが設定されていません"]}
 
         captured_output = StringIO()
         sys.stdout = captured_output
@@ -332,10 +290,7 @@ class TestCreateTrackerMarkerOutput(unittest.TestCase):
         """SQLiteワークフロー作成失敗時にマーカーが出力されることを検証"""
         from tools.workflow.workflow_cli import create_tracker
 
-        mock_validate.return_value = {
-            "is_configured": True,
-            "errors": []
-        }
+        mock_validate.return_value = {"is_configured": True, "errors": []}
 
         mock_handler = MagicMock()
         mock_handler.execute_create_command.return_value = (False, "❌ SQLite書き込みエラー")
@@ -359,10 +314,7 @@ class TestCreateTrackerMarkerOutput(unittest.TestCase):
         """create成功時にエラーマーカーが出力されないことを検証"""
         from tools.workflow.workflow_cli import create_tracker
 
-        mock_validate.return_value = {
-            "is_configured": True,
-            "errors": []
-        }
+        mock_validate.return_value = {"is_configured": True, "errors": []}
 
         mock_handler = MagicMock()
         mock_handler.execute_create_command.return_value = (True, "✅ ワークフローを作成しました")
@@ -560,8 +512,8 @@ class TestAllInvestigationStepsMarker(unittest.TestCase):
     def test_all_investigation_steps_trigger_marker(self, mock_get_controller):
         """全ての調査必須ステップでマーカーが出力されること（plan/create含む）"""
         investigation_steps = [
-            "plan",                   # KIRO-024で追加
-            "create",                 # KIRO-024で追加
+            "plan",  # KIRO-024で追加
+            "create",  # KIRO-024で追加
             "sow_creation",
             "implementation",
             "quality_workflow",
@@ -595,11 +547,7 @@ class TestAllInvestigationStepsMarker(unittest.TestCase):
                 output = captured_output.getvalue()
 
                 # マーカーが出力されていることを確認
-                self.assertIn(
-                    "[TASK_TOOL_REQUIRED]",
-                    output,
-                    f"{next_step} への遷移時にマーカーが出力されるべき"
-                )
+                self.assertIn("[TASK_TOOL_REQUIRED]", output, f"{next_step} への遷移時にマーカーが出力されるべき")
 
 
 if __name__ == "__main__":
