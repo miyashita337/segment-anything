@@ -4,6 +4,8 @@ KIRO-024 サブエージェントトリガーロジックのユニットテス�
 
 workflow_cli.py の step_requires_investigation 関数と
 attempt_step 関数のマーカー出力をテストする
+
+KIRO-024拡張: plan/createコマンドのinvestigation_steps追加テスト
 """
 
 import os
@@ -16,15 +18,33 @@ from unittest.mock import MagicMock, patch
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 
-from tools.workflow.workflow_cli import step_requires_investigation
+from tools.workflow.workflow_cli import step_requires_investigation, _output_task_tool_marker
 
 
 class TestStepRequiresInvestigation(unittest.TestCase):
     """step_requires_investigation関数のテスト"""
 
+    def test_plan_step_requires_investigation(self):
+        """KIRO-024: planステップがinvestigation_stepsに含まれることを検証"""
+        result = step_requires_investigation("plan")
+        self.assertTrue(
+            result,
+            "planは調査必須ステップのためTrueを返すべき"
+        )
+
+    def test_create_step_requires_investigation(self):
+        """KIRO-024: createステップがinvestigation_stepsに含まれることを検証"""
+        result = step_requires_investigation("create")
+        self.assertTrue(
+            result,
+            "createは調査必須ステップのためTrueを返すべき"
+        )
+
     def test_investigation_required_steps(self):
-        """調査必須ステップでTrueを返すこと"""
+        """調査必須ステップでTrueを返すこと（plan/create含む8ステップ）"""
         investigation_steps = [
+            "plan",                   # KIRO-024で追加
+            "create",                 # KIRO-024で追加
             "sow_creation",
             "implementation",
             "quality_workflow",
@@ -88,6 +108,15 @@ class TestStepRequiresInvestigation(unittest.TestCase):
             step_requires_investigation("TESTING"),
             "全大文字はFalseを返すべき（厳密マッチ）"
         )
+        # KIRO-024: plan/createの大文字小文字も確認
+        self.assertFalse(
+            step_requires_investigation("PLAN"),
+            "PLANはFalseを返すべき（厳密マッチ）"
+        )
+        self.assertFalse(
+            step_requires_investigation("CREATE"),
+            "CREATEはFalseを返すべき（厳密マッチ）"
+        )
 
     def test_unknown_step(self):
         """未知のステップ名でFalseを返すこと"""
@@ -105,6 +134,272 @@ class TestStepRequiresInvestigation(unittest.TestCase):
                     result,
                     f"{step} は未知のステップのためFalseを返すべき"
                 )
+
+    def test_total_investigation_steps_count(self):
+        """KIRO-024: investigation_stepsの総数が8であることを検証"""
+        all_investigation_steps = [
+            "plan",
+            "create",
+            "sow_creation",
+            "implementation",
+            "testing",
+            "subagent_validation",
+            "quality_workflow",
+            "dashboard_generation",
+        ]
+        # すべてのステップがTrueを返すことを確認
+        for step in all_investigation_steps:
+            self.assertTrue(
+                step_requires_investigation(step),
+                f"{step}がinvestigation_stepsに含まれていない"
+            )
+
+
+class TestOutputTaskToolMarker(unittest.TestCase):
+    """_output_task_tool_marker()関数のテスト"""
+
+    def test_marker_output_format(self):
+        """マーカー出力フォーマットの検証"""
+        captured_output = StringIO()
+        sys.stdout = captured_output
+        try:
+            _output_task_tool_marker(
+                "テスト理由",
+                "テストタスク",
+                "テスト詳細"
+            )
+        finally:
+            sys.stdout = sys.__stdout__
+
+        output = captured_output.getvalue()
+        self.assertIn("[TASK_TOOL_REQUIRED]", output)
+        self.assertIn("🤖 テスト理由", output)
+        self.assertIn("タスク: テストタスク", output)
+        self.assertIn("調査対象: テスト詳細", output)
+        self.assertIn("=" * 60, output)
+
+    def test_marker_contains_all_required_elements(self):
+        """マーカーが必須要素をすべて含むことを検証"""
+        captured_output = StringIO()
+        sys.stdout = captured_output
+        try:
+            _output_task_tool_marker(
+                "Google Sheets接続エラー",
+                "plan",
+                "トラッカーID: TEST-001"
+            )
+        finally:
+            sys.stdout = sys.__stdout__
+
+        output = captured_output.getvalue()
+        required_elements = [
+            "[TASK_TOOL_REQUIRED]",
+            "🤖",
+            "タスク:",
+            "調査対象:",
+        ]
+        for element in required_elements:
+            self.assertIn(element, output, f"必須要素 '{element}' がマーカー出力に含まれていない")
+
+
+class TestPlanTrackerMarkerOutput(unittest.TestCase):
+    """plan_tracker()のマーカー出力テスト"""
+
+    @patch("config.workspace_config.get_workspace_config")
+    def test_plan_workspace_config_failure_outputs_marker(self, mock_get_config):
+        """ワークスペース設定失敗時にマーカーが出力されることを検証"""
+        from tools.workflow.workflow_cli import plan_tracker
+
+        mock_config = MagicMock()
+        mock_config.set_workspace_config.return_value = False
+        mock_get_config.return_value = mock_config
+
+        captured_output = StringIO()
+        sys.stdout = captured_output
+        try:
+            result = plan_tracker("TEST-001", "テスト概要", "テスト詳細", "zundamon")
+        finally:
+            sys.stdout = sys.__stdout__
+
+        output = captured_output.getvalue()
+        self.assertFalse(result)
+        self.assertIn("[TASK_TOOL_REQUIRED]", output)
+        self.assertIn("ワークスペース設定エラー", output)
+
+    @patch("tools.workflow.plan_command_handler.PlanCommandHandler")
+    @patch("config.workspace_config.get_workspace_config")
+    def test_plan_success_outputs_next_step_marker(self, mock_get_config, mock_handler_class):
+        """plan成功時に次ステップ(create)のマーカーが出力されることを検証"""
+        from tools.workflow.workflow_cli import plan_tracker
+
+        mock_config = MagicMock()
+        mock_config.set_workspace_config.return_value = True
+        mock_get_config.return_value = mock_config
+
+        mock_handler = MagicMock()
+        mock_handler.execute_plan_command.return_value = (True, "✅ Google Sheetsに起票しました")
+        mock_handler_class.return_value = mock_handler
+
+        captured_output = StringIO()
+        sys.stdout = captured_output
+        try:
+            result = plan_tracker("TEST-001", "テスト概要", "テスト詳細", "zundamon")
+        finally:
+            sys.stdout = sys.__stdout__
+
+        output = captured_output.getvalue()
+        self.assertTrue(result)
+        self.assertIn("[TASK_TOOL_REQUIRED]", output)
+        self.assertIn("create", output)
+        self.assertIn("次のステップ", output)
+
+    @patch("tools.workflow.plan_command_handler.PlanCommandHandler")
+    @patch("config.workspace_config.get_workspace_config")
+    def test_plan_sheets_failure_outputs_marker(self, mock_get_config, mock_handler_class):
+        """Google Sheets起票失敗時にマーカーが出力されることを検証"""
+        from tools.workflow.workflow_cli import plan_tracker
+
+        mock_config = MagicMock()
+        mock_config.set_workspace_config.return_value = True
+        mock_get_config.return_value = mock_config
+
+        mock_handler = MagicMock()
+        mock_handler.execute_plan_command.return_value = (False, "❌ Google Sheets接続エラー")
+        mock_handler_class.return_value = mock_handler
+
+        captured_output = StringIO()
+        sys.stdout = captured_output
+        try:
+            result = plan_tracker("TEST-001", "テスト概要", "テスト詳細", "zundamon")
+        finally:
+            sys.stdout = sys.__stdout__
+
+        output = captured_output.getvalue()
+        self.assertFalse(result)
+        self.assertIn("[TASK_TOOL_REQUIRED]", output)
+        self.assertIn("Google Sheets接続エラー", output)
+
+    @patch("config.workspace_config.get_workspace_config")
+    def test_plan_exception_outputs_marker(self, mock_get_config):
+        """plan実行時の例外でマーカーが出力されることを検証"""
+        from tools.workflow.workflow_cli import plan_tracker
+
+        mock_get_config.side_effect = Exception("テスト例外")
+
+        captured_output = StringIO()
+        sys.stdout = captured_output
+        try:
+            result = plan_tracker("TEST-001", "テスト概要", "テスト詳細", "zundamon")
+        finally:
+            sys.stdout = sys.__stdout__
+
+        output = captured_output.getvalue()
+        self.assertFalse(result)
+        self.assertIn("[TASK_TOOL_REQUIRED]", output)
+        self.assertIn("例外発生", output)
+        self.assertIn("Exception", output)
+
+
+class TestCreateTrackerMarkerOutput(unittest.TestCase):
+    """create_tracker()のマーカー出力テスト"""
+
+    @patch("config.workspace_config.validate_tracker_setup")
+    def test_create_validation_failure_outputs_marker(self, mock_validate):
+        """ワークスペース設定検証失敗時にマーカーが出力されることを検証"""
+        from tools.workflow.workflow_cli import create_tracker
+
+        mock_validate.return_value = {
+            "is_configured": False,
+            "errors": ["❌ ワークスペースが設定されていません"]
+        }
+
+        captured_output = StringIO()
+        sys.stdout = captured_output
+        try:
+            result = create_tracker("TEST-001")
+        finally:
+            sys.stdout = sys.__stdout__
+
+        output = captured_output.getvalue()
+        self.assertFalse(result)
+        self.assertIn("[TASK_TOOL_REQUIRED]", output)
+        self.assertIn("ワークスペース設定が未完了", output)
+        self.assertIn("planコマンドを先に実行", output)
+
+    @patch("tools.workflow.create_command_handler.CreateCommandHandler")
+    @patch("config.workspace_config.validate_tracker_setup")
+    def test_create_sqlite_failure_outputs_marker(self, mock_validate, mock_handler_class):
+        """SQLiteワークフロー作成失敗時にマーカーが出力されることを検証"""
+        from tools.workflow.workflow_cli import create_tracker
+
+        mock_validate.return_value = {
+            "is_configured": True,
+            "errors": []
+        }
+
+        mock_handler = MagicMock()
+        mock_handler.execute_create_command.return_value = (False, "❌ SQLite書き込みエラー")
+        mock_handler_class.return_value = mock_handler
+
+        captured_output = StringIO()
+        sys.stdout = captured_output
+        try:
+            result = create_tracker("TEST-001")
+        finally:
+            sys.stdout = sys.__stdout__
+
+        output = captured_output.getvalue()
+        self.assertFalse(result)
+        self.assertIn("[TASK_TOOL_REQUIRED]", output)
+        self.assertIn("SQLiteワークフロー作成エラー", output)
+
+    @patch("tools.workflow.create_command_handler.CreateCommandHandler")
+    @patch("config.workspace_config.validate_tracker_setup")
+    def test_create_success_no_error_marker(self, mock_validate, mock_handler_class):
+        """create成功時にエラーマーカーが出力されないことを検証"""
+        from tools.workflow.workflow_cli import create_tracker
+
+        mock_validate.return_value = {
+            "is_configured": True,
+            "errors": []
+        }
+
+        mock_handler = MagicMock()
+        mock_handler.execute_create_command.return_value = (True, "✅ ワークフローを作成しました")
+        mock_handler_class.return_value = mock_handler
+
+        captured_output = StringIO()
+        sys.stdout = captured_output
+        try:
+            result = create_tracker("TEST-001")
+        finally:
+            sys.stdout = sys.__stdout__
+
+        output = captured_output.getvalue()
+        self.assertTrue(result)
+        # 成功時はエラー関連のマーカーは出力されない
+        self.assertNotIn("SQLiteワークフロー作成エラー", output)
+        self.assertNotIn("ワークスペース設定が未完了", output)
+
+    @patch("config.workspace_config.validate_tracker_setup")
+    def test_create_exception_outputs_marker(self, mock_validate):
+        """create実行時の例外でマーカーが出力されることを検証"""
+        from tools.workflow.workflow_cli import create_tracker
+
+        mock_validate.side_effect = Exception("SQLite接続エラー")
+
+        captured_output = StringIO()
+        sys.stdout = captured_output
+        try:
+            result = create_tracker("TEST-001")
+        finally:
+            sys.stdout = sys.__stdout__
+
+        output = captured_output.getvalue()
+        self.assertFalse(result)
+        self.assertIn("[TASK_TOOL_REQUIRED]", output)
+        self.assertIn("例外発生", output)
+        self.assertIn("Exception", output)
 
 
 class TestAttemptStepMarkerOutput(unittest.TestCase):
@@ -263,8 +558,10 @@ class TestAllInvestigationStepsMarker(unittest.TestCase):
 
     @patch("tools.workflow.workflow_cli.get_workflow_controller")
     def test_all_investigation_steps_trigger_marker(self, mock_get_controller):
-        """全ての調査必須ステップでマーカーが出力されること"""
+        """全ての調査必須ステップでマーカーが出力されること（plan/create含む）"""
         investigation_steps = [
+            "plan",                   # KIRO-024で追加
+            "create",                 # KIRO-024で追加
             "sow_creation",
             "implementation",
             "quality_workflow",
