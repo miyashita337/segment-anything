@@ -227,23 +227,6 @@ def get_instructions(tracker_id: str) -> bool:
     return True
 
 
-def step_requires_investigation(step_name: str) -> bool:
-    """サブエージェント（Task tool）による調査が必要なステップかどうかを判定
-
-    KIRO-024: アンチパターン回避のため、以下のステップでは
-    サブエージェントを使用してコンテキスト肥大化を防ぐ
-    """
-    investigation_steps = {
-        "sow_creation",           # 要件分析・既存パターン調査
-        "implementation",         # コードベース調査（5ファイル以上）
-        "quality_workflow",       # 並列品質チェック
-        "subagent_validation",    # 抽出結果の品質調査
-        "testing",                # テスト結果分析
-        "dashboard_generation",   # テンプレート調査
-    }
-    return step_name in investigation_steps
-
-
 def attempt_step(tracker_id: str) -> bool:
     """現在のステップの完了を試行"""
     controller = get_workflow_controller()
@@ -259,13 +242,6 @@ def attempt_step(tracker_id: str) -> bool:
         print(f"   メッセージ: {result.message}")
         if result.next_step:
             print(f"   次のステップ: {result.next_step}")
-            # KIRO-024: Task tool要求マーカーを追加
-            if step_requires_investigation(result.next_step):
-                print("\n" + "=" * 60)
-                print("[TASK_TOOL_REQUIRED]")
-                print("🤖 次のステップにはサブエージェント（Task tool）が必要です")
-                print(f"   タスク: {result.next_step}")
-                print("=" * 60 + "\n")
     elif result.status == "pending_approval":
         print(f"⏳ ステップには承認が必要です")
         print(f"   承認ID: {result.approval_id}")
