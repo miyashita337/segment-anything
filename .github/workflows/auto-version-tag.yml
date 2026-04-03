@@ -1,0 +1,102 @@
+name: Auto Version Tag
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  version-tag:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get PR commits
+        id: commits
+        run: |
+          COMMITS=$(gh pr view ${{ github.event.pull_request.number }} \
+            --json commits --jq '.commits[].messageHeadline' 2>/dev/null || \
+            git log --format="%s" ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }})
+          echo "messages<<EOF" >> $GITHUB_OUTPUT
+          echo "$COMMITS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Determine bump type
+        id: bump
+        run: |
+          COMMITS="${{ steps.commits.outputs.messages }}"
+
+          BUMP="patch"
+          if echo "$COMMITS" | grep -qE "BREAKING CHANGE:|^.+!:"; then
+            BUMP="major"
+          elif echo "$COMMITS" | grep -qE "^feat(\(.+\))?:"; then
+            BUMP="minor"
+          fi
+
+          echo "type=$BUMP" >> $GITHUB_OUTPUT
+          echo "Bump type: $BUMP"
+
+      - name: Calculate new version
+        id: version
+        run: |
+          CURRENT=$(cat VERSION)
+          BUMP="${{ steps.bump.outputs.type }}"
+
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+
+          case "$BUMP" in
+            major) NEW="$((MAJOR + 1)).0.0" ;;
+            minor) NEW="${MAJOR}.$((MINOR + 1)).0" ;;
+            patch) NEW="${MAJOR}.${MINOR}.$((PATCH + 1))" ;;
+          esac
+
+          echo "current=$CURRENT" >> $GITHUB_OUTPUT
+          echo "new=$NEW" >> $GITHUB_OUTPUT
+          echo "Version: $CURRENT -> $NEW ($BUMP)"
+
+      - name: Check for existing tag
+        id: check
+        run: |
+          NEW="${{ steps.version.outputs.new }}"
+          if git rev-parse "v${NEW}" >/dev/null 2>&1; then
+            echo "Tag v${NEW} already exists, skipping"
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update VERSION and create tag
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          NEW="${{ steps.version.outputs.new }}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          echo "$NEW" > VERSION
+          git add VERSION
+          git commit -m "chore: bump version to $NEW"
+          git tag "v${NEW}"
+          git push origin main --follow-tags
+
+      - name: Create GitHub Release
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          NEW="${{ steps.version.outputs.new }}"
+          gh release create "v${NEW}" \
+            --title "v${NEW}" \
+            --generate-notes \
+            --target main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
