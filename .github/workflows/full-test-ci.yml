@@ -305,6 +305,13 @@ jobs:
           htmlcov/
         retention-days: 30
 
+    - name: Upload coverage to Codecov
+      if: always()
+      uses: codecov/codecov-action@v5
+      with:
+        files: coverage-unit.xml,coverage-integration.xml,coverage-extraction.xml,coverage-qc.xml,coverage-workflow.xml,coverage-root.xml
+        fail_ci_if_error: false
+
     - name: 📝 Test Report Summary
       if: always()
       run: |
