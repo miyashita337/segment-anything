@@ -127,9 +127,17 @@ class WorkspaceConfig:
         """作者名に基づくワークスペースベースパスを生成"""
         return f"/mnt/c/AItools/lora/train/{author_name}/tracker-workspace"
 
-    def get_default_input_path(self, author_name: str) -> str:
-        """作者名に基づくデフォルト入力パスを生成"""
-        return f"/mnt/c/AItools/lora/train/{author_name}/org/kana05"
+    def get_default_input_path(self, author_name: str, folder_name: str = "kana05") -> str:
+        """作者名に基づくデフォルト入力パスを生成
+
+        Args:
+            author_name: 作者名
+            folder_name: フォルダ名（デフォルト: kana05、後方互換性のため）
+
+        Returns:
+            入力パス（例: /mnt/c/AItools/lora/train/{author_name}/org/{folder_name}）
+        """
+        return f"/mnt/c/AItools/lora/train/{author_name}/org/{folder_name}"
 
     def get_input_directory(self, tracker_id: str) -> Optional[str]:
         """トラッカーの入力ディレクトリを取得"""

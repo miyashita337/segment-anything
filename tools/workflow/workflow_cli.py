@@ -46,10 +46,37 @@ def get_workflow_controller():
         return None
 
 
+def _output_task_tool_marker(reason: str, task_name: str, details: str) -> None:
+    """[TASK_TOOL_REQUIRED]マーカーを出力するヘルパー関数
+
+    KIRO-024: サブエージェント調査をトリガーするためのマーカー出力
+    """
+    print("\n" + "=" * 60)
+    print("[TASK_TOOL_REQUIRED]")
+    print(f"🤖 {reason}")
+    print(f"   タスク: {task_name}")
+    print(f"   調査対象: {details}")
+    print("=" * 60 + "\n")
+
+
 def plan_tracker(
-    tracker_id: str, summary: str, details: str, author_name: str, priority: str = "medium"
+    tracker_id: str,
+    summary: str,
+    details: str,
+    author_name: str,
+    priority: str = "medium",
+    input_path: str = None,
 ) -> bool:
-    """Google Sheetsにトラッカーを起票"""
+    """Google Sheetsにトラッカーを起票
+
+    Args:
+        tracker_id: トラッカーID
+        summary: 概要
+        details: 詳細
+        author_name: 作者名
+        priority: 優先度（デフォルト: medium）
+        input_path: 入力ディレクトリパス（省略時は{author_name}/org/kana05を使用）
+    """
     try:
         # ワークスペース設定を保存
         from config.workspace_config import get_workspace_config
@@ -57,10 +84,18 @@ def plan_tracker(
         config = get_workspace_config()
 
         workspace_path = f"/mnt/c/AItools/lora/train/{author_name}/tracker-workspace/{tracker_id}"
-        input_path = f"/mnt/c/AItools/lora/train/{author_name}/org/kana05"
+        # input_pathが指定されていない場合はデフォルト値を使用
+        if input_path is None:
+            input_path = config.get_default_input_path(author_name)
 
         if not config.set_workspace_config(tracker_id, author_name, workspace_path, input_path):
             print(f"❌ ワークスペース設定の保存に失敗しました")
+            # KIRO-024: ワークスペース設定エラー時のマーカー出力
+            _output_task_tool_marker(
+                "ワークスペース設定エラーの調査が必要です",
+                "plan (workspace_config)",
+                f"トラッカーID: {tracker_id}, 作者名: {author_name}",
+            )
             return False
 
         print(f"✅ ワークスペース設定を保存しました:")
@@ -72,9 +107,29 @@ def plan_tracker(
         handler = PlanCommandHandler()
         success, message = handler.execute_plan_command(tracker_id, summary, details, priority)
         print(message)
+
+        if success:
+            # KIRO-024: 成功時、次ステップ(create)の調査必要性を通知
+            _output_task_tool_marker(
+                "次のステップ(create)にはサブエージェント調査が推奨されます", "create", f"SQLiteワークフロー状態管理、ワークスペースパス検証"
+            )
+        else:
+            # KIRO-024: Google Sheetsエラー時のマーカー出力
+            _output_task_tool_marker(
+                "Google Sheets接続エラーの調査が必要です",
+                "plan (Google Sheets)",
+                f"トラッカーID: {tracker_id}, エラー詳細はログを確認",
+            )
+
         return success
     except Exception as e:
         print(f"❌ planコマンド実行エラー: {e}")
+        # KIRO-024: 例外時のマーカー出力
+        _output_task_tool_marker(
+            f"例外発生: {type(e).__name__}の調査が必要です",
+            "plan (exception)",
+            f"トラッカーID: {tracker_id}, 例外: {str(e)}",
+        )
         return False
 
 
@@ -89,6 +144,12 @@ def create_tracker(tracker_id: str) -> bool:
         if not validation["is_configured"]:
             for error in validation["errors"]:
                 print(error)
+            # KIRO-024: ワークスペース設定未完了時のマーカー出力
+            _output_task_tool_marker(
+                "ワークスペース設定が未完了です。planコマンドを先に実行してください",
+                "create (validation)",
+                f"トラッカーID: {tracker_id}, エラー数: {len(validation['errors'])}",
+            )
             return False
 
         from tools.workflow.create_command_handler import CreateCommandHandler
@@ -96,9 +157,24 @@ def create_tracker(tracker_id: str) -> bool:
         handler = CreateCommandHandler()
         success, message = handler.execute_create_command(tracker_id)
         print(message)
+
+        if not success:
+            # KIRO-024: SQLite/ワークスペースエラー時のマーカー出力
+            _output_task_tool_marker(
+                "SQLiteワークフロー作成エラーの調査が必要です",
+                "create (SQLite)",
+                f"トラッカーID: {tracker_id}, ワークスペースパスまたはDB問題の可能性",
+            )
+
         return success
     except Exception as e:
         print(f"❌ createコマンド実行エラー: {e}")
+        # KIRO-024: 例外時のマーカー出力
+        _output_task_tool_marker(
+            f"例外発生: {type(e).__name__}の調査が必要です",
+            "create (exception)",
+            f"トラッカーID: {tracker_id}, 例外: {str(e)}",
+        )
         return False
 
 
@@ -227,6 +303,29 @@ def get_instructions(tracker_id: str) -> bool:
     return True
 
 
+def step_requires_investigation(step_name: str) -> bool:
+    """サブエージェント（Task tool）による調査が必要なステップかどうかを判定
+
+    KIRO-024: アンチパターン回避のため、以下のステップでは
+    サブエージェントを使用してコンテキスト肥大化を防ぐ
+    """
+    investigation_steps = {
+        # Phase 0: 計画・準備（KIRO-024拡張）
+        "plan",  # Google Sheets接続エラー調査
+        "create",  # SQLite/ワークスペース問題調査
+        # Phase 1: 要件定義
+        "sow_creation",  # 要件分析・既存パターン調査
+        # Phase 2: 実装
+        "implementation",  # コードベース調査（5ファイル以上）
+        "testing",  # テスト結果分析
+        "subagent_validation",  # 抽出結果の品質調査
+        # Phase 3: 品質保証
+        "quality_workflow",  # 並列品質チェック
+        "dashboard_generation",  # テンプレート調査
+    }
+    return step_name in investigation_steps
+
+
 def attempt_step(tracker_id: str) -> bool:
     """現在のステップの完了を試行"""
     controller = get_workflow_controller()
@@ -242,6 +341,13 @@ def attempt_step(tracker_id: str) -> bool:
         print(f"   メッセージ: {result.message}")
         if result.next_step:
             print(f"   次のステップ: {result.next_step}")
+            # KIRO-024: Task tool要求マーカーを追加
+            if step_requires_investigation(result.next_step):
+                print("\n" + "=" * 60)
+                print("[TASK_TOOL_REQUIRED]")
+                print("🤖 次のステップにはサブエージェント（Task tool）が必要です")
+                print(f"   タスク: {result.next_step}")
+                print("=" * 60 + "\n")
     elif result.status == "pending_approval":
         print(f"⏳ ステップには承認が必要です")
         print(f"   承認ID: {result.approval_id}")
@@ -772,6 +878,7 @@ def main():
         epilog="""
 使用例:
   %(prog)s plan TRACKER-001 "概要" "詳細" "作者名"  # Google Sheetsにトラッカーを起票
+  %(prog)s plan TRACKER-001 "概要" "詳細" "作者名" -i /path/to/input  # 入力パス指定
   %(prog)s create TRACKER-001                     # 新しいトラッカーワークフローを作成（SQLite専用）
   %(prog)s status TRACKER-001                     # ワークフロー状態を取得
   %(prog)s instructions TRACKER-001               # 現在のステップ指示を取得
@@ -792,6 +899,7 @@ def main():
 注意:
 - planコマンドでは作者名が必須です（例: yado, kiri, zundamon）
 - ワークスペースパスは /mnt/c/AItools/lora/train/{作者名}/tracker-workspace/{トラッカーID} となります
+- --input-path (-i) オプションで入力ディレクトリを指定可能（省略時: {作者名}/org/kana05）
         """,
     )
 
@@ -808,6 +916,13 @@ def main():
         choices=["highest", "high", "medium", "low"],
         default="medium",
         help="優先度 (デフォルト: medium)",
+    )
+    plan_parser.add_argument(
+        "--input-path",
+        "-i",
+        dest="input_path",
+        default=None,
+        help="入力ディレクトリパス (省略時: {author_name}/org/kana05)",
     )
 
     # トラッカー作成
@@ -907,7 +1022,12 @@ def main():
     try:
         if args.command == "plan":
             success = plan_tracker(
-                args.tracker_id, args.summary, args.details, args.author_name, args.priority
+                args.tracker_id,
+                args.summary,
+                args.details,
+                args.author_name,
+                args.priority,
+                getattr(args, "input_path", None),
             )
         elif args.command == "create":
             success = create_tracker(args.tracker_id)

@@ -7,13 +7,12 @@ finalize-session-log.sh: SessionEndでMarkdown形式の可読ログを生成
 
 import json
 import os
+import pytest
 import stat
 import subprocess
 import tempfile
 from pathlib import Path
 from unittest import TestCase
-
-import pytest
 
 
 class TestArchiveTranscriptHook(TestCase):
@@ -30,6 +29,7 @@ class TestArchiveTranscriptHook(TestCase):
     def tearDown(self):
         """一時ディレクトリを削除"""
         import shutil
+
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def _run_hook(self, hook_input: dict) -> subprocess.CompletedProcess:
@@ -186,6 +186,7 @@ class TestFinalizeSessionLogHook(TestCase):
     def tearDown(self):
         """一時ディレクトリを削除"""
         import shutil
+
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def _run_hook(self, hook_input: dict) -> subprocess.CompletedProcess:
@@ -208,8 +209,7 @@ class TestFinalizeSessionLogHook(TestCase):
         # トランスクリプトファイルを作成
         transcript_file = Path(self.temp_dir) / "test_transcript.jsonl"
         transcript_content = (
-            '{"type":"message","content":"hello"}\n'
-            '{"type":"response","content":"world"}\n'
+            '{"type":"message","content":"hello"}\n' '{"type":"response","content":"world"}\n'
         )
         transcript_file.write_text(transcript_content)
 
@@ -333,9 +333,7 @@ class TestScriptPermissions(TestCase):
     """ファイル権限テスト"""
 
     ARCHIVE_SCRIPT = Path(__file__).parent.parent / ".claude" / "hooks" / "archive-transcript.sh"
-    FINALIZE_SCRIPT = (
-        Path(__file__).parent.parent / ".claude" / "hooks" / "finalize-session-log.sh"
-    )
+    FINALIZE_SCRIPT = Path(__file__).parent.parent / ".claude" / "hooks" / "finalize-session-log.sh"
 
     def test_archive_script_exists(self):
         """archive-transcript.sh が存在すること"""
@@ -362,9 +360,7 @@ class TestDirectoryAutoCreation(TestCase):
     """ディレクトリ自動作成テスト"""
 
     ARCHIVE_SCRIPT = Path(__file__).parent.parent / ".claude" / "hooks" / "archive-transcript.sh"
-    FINALIZE_SCRIPT = (
-        Path(__file__).parent.parent / ".claude" / "hooks" / "finalize-session-log.sh"
-    )
+    FINALIZE_SCRIPT = Path(__file__).parent.parent / ".claude" / "hooks" / "finalize-session-log.sh"
 
     def setUp(self):
         """テスト用の一時ディレクトリを作成（空の状態）"""
@@ -375,6 +371,7 @@ class TestDirectoryAutoCreation(TestCase):
     def tearDown(self):
         """一時ディレクトリを削除"""
         import shutil
+
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def _run_hook(self, script_path: Path, hook_input: dict) -> subprocess.CompletedProcess:
@@ -439,9 +436,7 @@ class TestTranscriptHooksIntegration(TestCase):
     """統合テスト: 両方のフックが連携して動作する"""
 
     ARCHIVE_SCRIPT = Path(__file__).parent.parent / ".claude" / "hooks" / "archive-transcript.sh"
-    FINALIZE_SCRIPT = (
-        Path(__file__).parent.parent / ".claude" / "hooks" / "finalize-session-log.sh"
-    )
+    FINALIZE_SCRIPT = Path(__file__).parent.parent / ".claude" / "hooks" / "finalize-session-log.sh"
 
     def setUp(self):
         """テスト用の一時ディレクトリを作成"""
@@ -452,6 +447,7 @@ class TestTranscriptHooksIntegration(TestCase):
     def tearDown(self):
         """一時ディレクトリを削除"""
         import shutil
+
         shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def _run_hook(self, script_path: Path, hook_input: dict) -> subprocess.CompletedProcess:
@@ -510,20 +506,26 @@ class TestTranscriptHooksIntegration(TestCase):
 
         # 1回目のアーカイブ
         transcript_file.write_text('{"step":1}\n')
-        self._run_hook(self.ARCHIVE_SCRIPT, {
-            "session_id": session_id,
-            "transcript_path": str(transcript_file),
-        })
+        self._run_hook(
+            self.ARCHIVE_SCRIPT,
+            {
+                "session_id": session_id,
+                "transcript_path": str(transcript_file),
+            },
+        )
 
         # 少し待機してタイムスタンプを変える
         time.sleep(1)
 
         # 2回目のアーカイブ
         transcript_file.write_text('{"step":2}\n')
-        self._run_hook(self.ARCHIVE_SCRIPT, {
-            "session_id": session_id,
-            "transcript_path": str(transcript_file),
-        })
+        self._run_hook(
+            self.ARCHIVE_SCRIPT,
+            {
+                "session_id": session_id,
+                "transcript_path": str(transcript_file),
+            },
+        )
 
         # 検証: 2つのアーカイブが存在
         all_archive = list(self.archive_dir.glob(f"{session_id}_*.jsonl"))

@@ -107,6 +107,40 @@ class WorkflowController:
 
         logger.info("WorkflowController initialized with all enforcement components")
 
+    def _get_tracker_workspace_base(self, tracker_id: str) -> str:
+        """
+        Get the correct workspace base path for a specific tracker.
+        Uses tracker-specific author information instead of last-updated tracker.
+
+        KIRO-029: Fix for multi-author workspace path resolution bug.
+        """
+        try:
+            from config.workspace_config import get_workspace_config
+
+            config_manager = get_workspace_config()
+            workspace_config = config_manager.get_workspace_config(tracker_id)
+
+            if workspace_config and workspace_config.get("author_name"):
+                author_name = workspace_config["author_name"]
+                return config_manager.get_author_workspace_base(author_name)
+            else:
+                # Fallback: determine from tracker ID pattern (legacy behavior)
+                if tracker_id.startswith("KIRO"):
+                    return "/mnt/c/AItools/lora/train/kiri/tracker-workspace"
+                elif tracker_id.startswith("TRACKER"):
+                    return "/mnt/c/AItools/lora/train/yado/tracker-workspace"
+                else:
+                    return "/mnt/c/AItools/lora/train/generic/tracker-workspace"
+        except Exception as e:
+            logger.warning(f"Failed to get workspace config for {tracker_id}: {e}")
+            # Fallback: legacy behavior
+            if tracker_id.startswith("KIRO"):
+                return "/mnt/c/AItools/lora/train/kiri/tracker-workspace"
+            elif tracker_id.startswith("TRACKER"):
+                return "/mnt/c/AItools/lora/train/yado/tracker-workspace"
+            else:
+                return "/mnt/c/AItools/lora/train/generic/tracker-workspace"
+
     def _init_state_manager(self):
         """Initialize state manager"""
         try:
@@ -450,10 +484,8 @@ class WorkflowController:
                 f"Verify results in workspace/{tracker_id}/extraction/",
             ]
         elif step_config.step_id == "quality_workflow":
-            # 動的パス生成（作者名を動的検出）
-            from config.workspace_config import WorkspaceConfig
-
-            workspace_base = WorkspaceConfig.get_workspace_base()
+            # KIRO-029: 動的パス生成（トラッカー固有の作者名を使用）
+            workspace_base = self._get_tracker_workspace_base(tracker_id)
 
             actions = [
                 f"./tools/scripts/run_quality_workflow.sh {tracker_id}",
@@ -668,7 +700,9 @@ class WorkflowController:
     def _get_step_artifacts(self, tracker_id: str, step_id: str) -> List[str]:
         """Get artifacts for approval review"""
         artifacts = []
-        workspace = f"/mnt/c/AItools/lora/train/yado/tracker-workspace/{tracker_id}"
+        # KIRO-029: トラッカー固有の作者名からワークスペースパスを取得
+        workspace_base = self._get_tracker_workspace_base(tracker_id)
+        workspace = os.path.join(workspace_base, tracker_id)
 
         if step_id == "sow_creation":
             artifacts = [f"{workspace}/sow_document.md"]
@@ -761,7 +795,6 @@ class WorkflowController:
         import json
         import os
         import subprocess
-        from config.workspace_config import WorkspaceConfig
         from dataclasses import dataclass
         from typing import List
 
@@ -771,7 +804,8 @@ class WorkflowController:
             errors: List[str]
 
         errors = []
-        workspace_base = WorkspaceConfig.get_workspace_base()
+        # KIRO-029: トラッカー固有の作者名からワークスペースパスを取得
+        workspace_base = self._get_tracker_workspace_base(tracker_id)
         tracker_workspace = os.path.join(workspace_base, tracker_id)
 
         # 1. 必須ファイルチェック（事前確認）
